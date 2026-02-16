@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTM Rentals | Malas Residence - Your Safe Space in Hulhumale'</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ocean-blue: #006994;
+            --maldives-teal: #40B5AD;
+            --sand-beige: #F5E8C7;
+            --coral: #FF6B6B;
+            --deep-blue: #0A2463;
+            --white: #FFFFFF;
+            --dark-gray: #495057;
+            --medium-gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --shadow: 0 4px 12px rgba(0, 105, 148, 0.1);
+            --radius: 10px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            background-color: var(--white);
+            font-weight: 400;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: var(--deep-blue);
+        }
+
+        h1 { font-size: 2.8rem; }
+        h2 { font-size: 2.2rem; color: var(--ocean-blue); }
+        h3 { font-size: 1.5rem; }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--dark-gray);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background-color: var(--coral);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background-color: var(--maldives-teal);
+        }
+
+        .btn-secondary:hover {
+            background-color: #36a099;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--ocean-blue);
+            color: var(--ocean-blue);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--ocean-blue);
+            color: white;
+        }
+
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 105, 148, 0.08);
+            padding: 15px 0;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ocean-blue);
+        }
+
+        .logo-text span {
+            color: var(--coral);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--deep-blue);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            color: var(--coral);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--coral);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 105, 148, 0.85), rgba(64, 181, 173, 0.85)), url('https://i.ibb.co/j9m74BLN/IMG-20260206-WA0077.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding-top: 150px;
+            padding-bottom: 100px;
+            margin-top: 70px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .highlight {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            margin: 5px 0;
+        }
+
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px 20px;
+            border-radius: var(--radius);
+            backdrop-filter: blur(10px);
+            min-width: 150px;
+        }
+
+        .badge i {
+            font-size: 2rem;
+            color: var(--sand-beige);
+        }
+
+        .badge span {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Property Highlights */
+        .rate-box {
+            background: linear-gradient(135deg, var(--ocean-blue), var(--maldives-teal));
+            color: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .rate-amount {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .rate-note {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+
+        /* Photo Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .gallery-item {
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: 250px;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 105, 148, 0.15);
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .img-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            padding: 15px;
+            font-weight: 500;
+        }
+
+        /* Amenities */
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .amenity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background-color: var(--light-gray);
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .amenity-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            background-color: white;
+        }
+
+        .amenity-item i {
+            font-size: 1.5rem;
+            color: var(--maldives-teal);
+            min-width: 30px;
+        }
+
+        .amenity-item strong {
+            color: var(--deep-blue);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .amenity-item p {
+            font-size: 0.9rem;
+            margin: 0;
+            color: var(--medium-gray);
+        }
+
+        /* Booking Section */
+        .booking-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .calendar-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header h3 {
+            margin: 0;
+            color: var(--ocean-blue);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            background: var(--light-gray);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .calendar-nav button:hover {
+            background: var(--maldives-teal);
+            color: white;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+        }
+
+        .calendar-weekday {
+            font-weight: 600;
+            color: var(--deep-blue);
+            padding: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day {
+            padding: 10px 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .calendar-day:hover:not(.booked):not(.empty) {
+            background-color: var(--maldives-teal);
+            color: white;
+        }
+
+        .calendar-day.booked {
+            background-color: #ffebee;
+            color: #f44336;
+            text-decoration: line-through;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .calendar-day.booked::after {
+            content: "📅";
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+
+        .calendar-day.selected {
+            background-color: var(--ocean-blue);
+            color: white;
+            font-weight: 600;
+        }
+
+        .calendar-day.today {
+            border: 2px solid var(--coral);
+            font-weight: 600;
+        }
+
+        .calendar-day.empty {
+            cursor: default;
+        }
+
+        .calendar-legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color.available {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 2px solid var(--maldives-teal);
+            border-radius: 4px;
+        }
+
+        .legend-color.booked {
+            width: 20px;
+            height: 20px;
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 4px;
+        }
+
+        .legend-color.selected {
+            width: 20px;
+            height: 20px;
+            background-color: var(--ocean-blue);
+            border-radius: 4px;
+        }
+
+        .booking-form-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--deep-blue);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--maldives-teal);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .price-breakdown {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin: 20px 0;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .price-row.total {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--deep-blue);
+            padding-top: 15px;
+        }
+
+        .booking-message {
+            padding: 15px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .booking-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .booking-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        /* Info Cards */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .info-card {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--maldives-teal);
+            transition: var(--transition);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 105, 148, 0.15);
+        }
+
+        .info-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--ocean-blue);
+        }
+
+        .info-card h3 i {
+            color: var(--maldives-teal);
+        }
+
+        .info-card p {
+            margin-bottom: 10px;
+            color: var(--dark-gray);
+        }
+
+        .info-card strong {
+            color: var(--deep-blue);
+        }
+
+        /* Contact Section */
+        .contact-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .contact-card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            min-width: 250px;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .contact-card:hover {
+            border-color: var(--maldives-teal);
+            transform: translateY(-5px);
+        }
+
+        .contact-card i {
+            font-size: 2.5rem;
+            color: var(--ocean-blue);
+            margin-bottom: 15px;
+        }
+
+        .contact-card h3 {
+            margin-bottom: 10px;
+            color: var(--deep-blue);
+        }
+
+        /* Services */
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .service-card {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .service-card:hover {
+            border-color: var(--maldives-teal);
+            transform: translateY(-5px);
+        }
+
+        .service-card i {
+            font-size: 2.5rem;
+            color: var(--ocean-blue);
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            color: var(--deep-blue);
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--deep-blue);
+            color: white;
+            padding: 60px 0 30px;
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo-img {
+            height: 40px;
+            width: auto;
+        }
+
+        .footer-logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .footer-contact p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-contact i {
+            color: var(--maldives-teal);
+            width: 20px;
+        }
+
+        .footer-links h4 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-links a:hover {
+            color: var(--maldives-teal);
+            transform: translateX(5px);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+
+        .social-icons a:hover {
+            background-color: var(--maldives-teal);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            
+            .hero {
+                padding-top: 130px;
+                padding-bottom: 80px;
+            }
+            
+            .trust-badges {
+                gap: 20px;
+            }
+            
+            .badge {
+                min-width: 130px;
+                padding: 12px 15px;
+            }
+
+            .booking-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+                padding: 0 20px;
+            }
+            
+            .rate-amount {
+                font-size: 2.5rem;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contact-card {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .nav-links {
+                justify-content: center;
+            }
+            
+            .hero {
+                padding: 120px 20px 60px;
+                margin-top: 120px;
+                border-radius: 0;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .trust-badges {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .badge {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-contact p {
+                justify-content: center;
+            }
+            
+            .social-icons {
+                justify-content: center;
+            }
+            
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .calendar-grid {
+                font-size: 0.8rem;
+            }
+            
+            .calendar-day {
+                padding: 8px 3px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/9609373113?text=Hello%20HTM%20Rentals!%20I'm%20interested%20in%20booking%20Malas%20Residence%20in%20Hulhumale'." class="whatsapp-float" target="_blank" title="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <img src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="HTM Rentals Logo" class="logo-img">
+                <div class="logo-text">HTM<span>Rentals</span></div>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#property"><i class="fas fa-building"></i> Property</a></li>
+                    <li><a href="#gallery"><i class="fas fa-images"></i> Photos</a></li>
+                    <li><a href="#amenities"><i class="fas fa-star"></i> Amenities</a></li>
+                    <li><a href="#booking"><i class="fas fa-calendar-alt"></i> Book Now</a></li>
+                    <li><a href="#contact"><i class="fas fa-phone"></i> Contact</a></li>
+                    <li><a href="tel:9373113" class="btn"><i class="fas fa-phone"></i> Call Now</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container fade-in">
+            <h1>Your Safe Space in Hulhumale'</h1>
+            <p>Experience comfortable living at <span class="highlight">Malas Residence - MWSC Hiyaa</span> - A modern 1-room apartment in Phase 2 with security, essential amenities, and your home away from home in the Maldives.</p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px;">
+                <a href="#booking" class="btn btn-secondary"><i class="fas fa-calendar-check"></i> Check Availability & Book</a>
+                <a href="tel:9373113" class="btn btn-outline"><i class="fas fa-phone"></i> Call: 9373113</a>
+            </div>
+            
+            <div class="trust-badges">
+                <div class="badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Building Security</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-wifi"></i>
+                    <span>Free WiFi</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-key"></i>
+                    <span>Easy Check-in</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-coffee"></i>
+                    <span>Tea/Coffee</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Property Details -->
+    <section id="property">
+        <div class="container">
+            <h2><i class="fas fa-building"></i> Malas Residence - MWSC Hiyaa</h2>
+            <p>Located on the 2nd floor in Hulhumale' Phase 2, our modern apartment offers comfort, security, and convenience for your stay in the Maldives.</p>
+            
+            <div class="rate-box fade-in">
+                <div class="rate-amount">$90 USD</div>
+                <p>Per Night | Maximum 3 Guests</p>
+                <p class="rate-note">Free cleaning every 3rd day • Essential amenities included</p>
+            </div>
+
+            <div class="amenities-grid">
+                <div class="amenity-item">
+                    <i class="fas fa-bed"></i>
+                    <div>
+                        <strong>Sleeping Arrangements</strong>
+                        <p>1 Double bed + 1 Single sliding bed + 1 Sofa day bed</p>
+                    </div>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-tv"></i>
+                    <div>
+                        <strong>Entertainment</strong>
+                        <p>Smart TV for your relaxation</p>
+                    </div>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-wifi"></i>
+                    <div>
+                        <strong>Free Connectivity</strong>
+                        <p>High-speed WiFi included</p>
+                    </div>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-kitchen-set"></i>
+                    <div>
+                        <strong>Equipped Kitchen</strong>
+                        <p>Fridge, Oven, Stove, Utensils</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Photo Gallery -->
+    <section id="gallery" style="background-color: var(--light-gray);">
+        <div class="container">
+            <h2><i class="fas fa-images"></i> Photo Gallery</h2>
+            <p>Take a look inside your potential stay at Malas Residence:</p>
+            
+            <div class="gallery">
+                <div class="gallery-item">
+                    <img src="https://i.ibb.co/5g0GFrDR/IMG-20260206-WA0024.jpg" alt="Living Area with Sofa Day Bed" class="gallery-img">
+                    <div class="img-label">Living Area with Sofa Day Bed</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.ibb.co/GQVzXYqk/IMG-20260206-WA0053.jpg" alt="Bedroom with Double Bed" class="gallery-img">
+                    <div class="img-label">Bedroom with Double Bed</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.ibb.co/FkVZLZLh/IMG-20260206-WA0029.jpg" alt="Modern Kitchen Area" class="gallery-img">
+                    <div class="img-label">Modern Kitchen Area</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.ibb.co/sdvR6x3T/IMG-20260206-WA0022.jpg" alt="Kitchen Appliances" class="gallery-img">
+                    <div class="img-label">Kitchen Appliances & Storage</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.ibb.co/Hp3TY54g/IMG-20260206-WA0069.jpg" alt="Clean Bathroom" class="gallery-img">
+                    <div class="img-label">Clean Bathroom</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.ibb.co/hF2QqtdX/IMG-20260206-WA0071.jpg" alt="Balcony Open Area" class="gallery-img">
+                    <div class="img-label">Balcony Open Area</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Full Amenities List -->
+    <section id="amenities">
+        <div class="container">
+            <h2><i class="fas fa-star"></i> What's Included</h2>
+            <p>We provide essential home comforts for a comfortable stay:</p>
+            
+            <div class="amenities-grid">
+                <div class="amenity-item">
+                    <i class="fas fa-bed"></i>
+                    <div>
+                        <strong>Bedding & Linens</strong>
+                        <p>Fresh bedding for all sleeping areas</p>
+                    </div>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-utensils"></i>
+                    <div>
+                        <strong>Kitchen Essentials</strong>
+                        <p>Cooking utensils, plates, cups, cutlery</p>
+                    </div>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-temperature-low"></i>
+                    <div>
+                        <strong>Climate Control</strong>
+                        <p>Air conditioning for your comfort</p>
+                    </div>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-wind"></i>
+                    <div>
+                        <strong>Comfort Items</strong>
+                        <p>Iron & board, Hair dryer, Electric kettle</p>
+                    </div>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <div>
+                        <strong>Security Features</strong>
+                        <p>24/7 building security with guard monitoring</p>
+                    </div>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-coffee"></i>
+                    <div>
+                        <strong>Refreshments</strong>
+                        <p>Tea & coffee setup (refilled daily on request)</p>
+                    </div>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-sun"></i>
+                    <div>
+                        <strong>Open Balcony</strong>
+                        <p>Balcony area (open space, not fully private)</p>
+                    </div>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-broom"></i>
+                    <div>
+                        <strong>Cleaning Service</strong>
+                        <p>Free cleaning & linen change every 3rd day</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 20px; background-color: var(--light-gray); border-radius: var(--radius); border-left: 4px solid var(--maldives-teal);">
+                <p><strong>Note:</strong> We provide essential home amenities. For hotel-style toiletries (toothbrush, shampoo, slippers, etc.), please bring your own or purchase locally.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section with Calendar -->
+    <section id="booking" style="background-color: var(--sand-beige);">
+        <div class="container">
+            <h2><i class="fas fa-calendar-alt"></i> Check Availability & Book</h2>
+            <p>Select your dates below to check availability and request a booking. We'll confirm within 15-30 minutes!</p>
+            
+            <div class="booking-container">
+                <!-- Calendar Card -->
+                <div class="calendar-card">
+                    <div class="calendar-header">
+                        <h3 id="calendar-month-year">February 2026</h3>
+                        <div class="calendar-nav">
+                            <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                            <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendar-grid">
+                        <!-- Calendar will be generated by JavaScript -->
+                    </div>
+                    
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <div class="legend-color available"></div>
+                            <span>Available</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color booked"></div>
+                            <span>Booked</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color selected"></div>
+                            <span>Selected</span>
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 20px; font-size: 0.9rem; color: var(--medium-gray);">
+                        <i class="fas fa-info-circle"></i> Click on available dates to select your check-in. Click again for check-out.
+                    </p>
+                </div>
+                
+                <!-- Booking Form Card -->
+                <div class="booking-form-card">
+                    <h3 style="color: var(--ocean-blue); margin-bottom: 25px;">Request Booking</h3>
+                    
+                    <div id="booking-message" class="booking-message"></div>
+                    
+                    <form id="booking-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-calendar-check"></i> Check-in Date</label>
+                                <input type="text" id="check-in" readonly placeholder="Select from calendar" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-calendar-times"></i> Check-out Date</label>
+                                <input type="text" id="check-out" readonly placeholder="Select from calendar" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-users"></i> Number of Guests</label>
+                            <select id="guests" required>
+                                <option value="">Select guests</option>
+                                <option value="1">1 Guest</option>
+                                <option value="2">2 Guests</option>
+                                <option value="3">3 Guests (Maximum)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> Full Name</label>
+                                <input type="text" id="name" placeholder="John Doe" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-phone"></i> Phone Number</label>
+                                <input type="tel" id="phone" placeholder="+960 000-0000" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> Email Address</label>
+                            <input type="email" id="email" placeholder="john@example.com" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-comment"></i> Special Requests (Optional)</label>
+                            <textarea id="requests" rows="3" placeholder="Any special requirements or questions..."></textarea>
+                        </div>
+                        
+                        <!-- Price Breakdown - No Cleaning Fee -->
+                        <div class="price-breakdown" id="price-breakdown" style="display: none;">
+                            <div class="price-row">
+                                <span>Nightly Rate ($90 × <span id="night-count">0</span> nights)</span>
+                                <span>$<span id="subtotal">0</span></span>
+                            </div>
+                            <div class="price-row total">
+                                <span>Total</span>
+                                <span>$<span id="total">0</span></span>
+                            </div>
+                            <p style="font-size: 0.85rem; margin-top: 10px; color: var(--medium-gray);">
+                                <i class="fas fa-info-circle"></i> Final payment made after confirmation
+                            </p>
+                        </div>
+                        
+                        <div style="display: flex; gap: 15px; margin-top: 20px;">
+                            <button type="submit" class="btn btn-secondary" style="flex: 2;">
+                                <i class="fab fa-whatsapp"></i> Request Booking
+                            </button>
+                            <button type="button" class="btn btn-outline" style="flex: 1;" onclick="clearSelection()">
+                                Clear
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Booking Information Cards -->
+            <div class="info-cards" style="margin-top: 40px;">
+                <div class="info-card">
+                    <h3><i class="fas fa-clock"></i> Check-in/Check-out</h3>
+                    <p><strong>Check-in:</strong> 2:00 PM (14:00)</p>
+                    <p><strong>Check-out:</strong> 12:00 PM (12:00)</p>
+                    <p>Flexible timing based on availability</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-broom"></i> Cleaning Services</h3>
+                    <p><strong>Included:</strong> Free cleaning every 3rd day with linen change</p>
+                    <p><strong>Additional:</strong> Housekeeping service available for $15 (optional)</p>
+                    <p>Professional cleaning between guests</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-credit-card"></i> Payment Options</h3>
+                    <p>• Cash upon arrival (USD/MVR)</p>
+                    <p>• Online bank transfer</p>
+                    <p>• Cryptocurrency (USDT accepted)</p>
+                    <p><em>Payment made after check-in confirmation</em></p>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-times-circle"></i> Cancellation Policy</h3>
+                    <p>• Inform at least 6 hours before check-in time</p>
+                    <p>• No cancellation fees when informed timely</p>
+                    <p>• Flexibility for changes based on availability</p>
+                    <p><em>Please communicate schedule changes early</em></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Additional Services -->
+    <section id="services">
+        <div class="container">
+            <h2><i class="fas fa-concierge-bell"></i> Additional Services We Can Arrange</h2>
+            <p>We help connect you with trusted local services at competitive prices:</p>
+            
+            <div class="services">
+                <div class="service-card">
+                    <i class="fas fa-water"></i>
+                    <h3>Water Sports Activities</h3>
+                    <p>We can help arrange and escort you to various water sports at fair market prices. Experience the best of Maldives waters safely.</p>
+                </div>
+                
+                <div class="service-card">
+                    <i class="fas fa-motorcycle"></i>
+                    <h3>Vehicle Rentals</h3>
+                    <p>Need transportation? We help arrange motorcycle and car rentals at competitive rates. Explore Hulhumale' conveniently.</p>
+                </div>
+                
+                <div class="service-card">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Local Guidance</h3>
+                    <p>Get recommendations for restaurants, shopping, attractions, and hidden gems in Hulhumale' and nearby areas.</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; font-style: italic; color: var(--ocean-blue);">
+                <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> We help arrange these services. Prices and availability vary - contact us for current options.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" style="background-color: var(--light-gray);">
+        <div class="container">
+            <h2><i class="fas fa-phone"></i> Contact Us</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 40px; font-size: 1.1rem;">Contact us directly to check availability, ask questions, or make a booking. We respond quickly!</p>
+            
+            <div class="contact-options">
+                <div class="contact-card fade-in">
+                    <i class="fab fa-whatsapp"></i>
+                    <h3>WhatsApp</h3>
+                    <p>Fastest response</p>
+                    <a href="https://wa.me/9609373113" class="btn btn-secondary" target="_blank">
+                        <i class="fab fa-whatsapp"></i> Message Us
+                    </a>
+                </div>
+                
+                <div class="contact-card fade-in">
+                    <i class="fas fa-phone"></i>
+                    <h3>Phone</h3>
+                    <p>Speak directly</p>
+                    <a href="tel:9373113" class="btn">
+                        <i class="fas fa-phone"></i> Call 9373113
+                    </a>
+                </div>
+                
+                <div class="contact-card fade-in">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Email</h3>
+                    <p>For detailed inquiries</p>
+                    <a href="mailto:htmrentalss@gmail.com" class="btn btn-outline">
+                        <i class="fas fa-envelope"></i> Email Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-contact">
+                    <div class="footer-logo">
+                        <img src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="HTM Rentals Logo" class="footer-logo-img">
+                        <div class="footer-logo-text">HTM Rentals</div>
+                    </div>
+                    <p><i class="fas fa-map-marker-alt"></i> Malas Residence, Hulhumale' Phase 2</p>
+                    <p><i class="fas fa-phone"></i> +960 9373113</p>
+                    <p><i class="fas fa-envelope"></i> htmrentalss@gmail.com</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#property">Property</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#amenities">Amenities</a></li>
+                        <li><a href="#booking">Book Now</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2026 HTM Rentals. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Backend API Connection -->
+    <script>
+        // API Configuration - Updated with your phone's IP
+        const API_BASE_URL = 'http://192.168.67.222:3000/api';
+
+        // Global variables
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        let selectedCheckIn = null;
+        let selectedCheckOut = null;
+        let bookedDates = [];
+        let blockedDates = [];
+        let nightlyRate = 90;
+        let cleaningFee = 0; // No cleaning fee
+
+        // Month names
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        // Fetch availability from backend
+        async function fetchAvailability() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/bookings/availability`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    bookedDates = [];
+                    data.bookings.forEach(booking => {
+                        const start = new Date(booking.check_in_date);
+                        const end = new Date(booking.check_out_date);
+                        
+                        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                            bookedDates.push(d.toISOString().split('T')[0]);
+                        }
+                    });
+                    
+                    blockedDates = data.blocked_dates || [];
+                }
+            } catch (error) {
+                console.error('Error fetching availability:', error);
+                showMessage('Could not load availability. Please try again.', 'error');
+            }
+        }
+
+        // Fetch price settings
+        async function fetchPrices() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/bookings/prices`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    nightlyRate = data.nightly_rate;
+                    // cleaningFee is set to 0, ignore what backend says
+                    
+                    document.querySelector('.rate-amount').textContent = `$${nightlyRate} USD`;
+                }
+            } catch (error) {
+                console.error('Error fetching prices:', error);
+            }
+        }
+
+        // Generate calendar
+        async function generateCalendar(month, year) {
+            await fetchAvailability();
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            let calendarHtml = '';
+            
+            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            weekdays.forEach(day => {
+                calendarHtml += `<div class="calendar-weekday">${day}</div>`;
+            });
+            
+            for (let i = 0; i < firstDay; i++) {
+                calendarHtml += '<div class="calendar-day empty"></div>';
+            }
+            
+            const today = new Date();
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const isBooked = bookedDates.includes(dateStr);
+                const isBlocked = blockedDates.some(block => 
+                    dateStr >= block.start_date && dateStr <= block.end_date
+                );
+                const isToday = today.getDate() === d && today.getMonth() === month && today.getFullYear() === year;
+                const isSelected = (selectedCheckIn === dateStr || selectedCheckOut === dateStr);
+                
+                let classes = 'calendar-day';
+                if (isBooked || isBlocked) classes += ' booked';
+                if (isToday) classes += ' today';
+                if (isSelected) classes += ' selected';
+                
+                calendarHtml += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isBooked || isBlocked})">${d}</div>`;
+            }
+            
+            document.getElementById('calendar-grid').innerHTML = calendarHtml;
+            document.getElementById('calendar-month-year').textContent = `${monthNames[month]} ${year}`;
+        }
+
+        // Handle date selection
+        function selectDate(dateStr, isBooked) {
+            if (isBooked) {
+                showMessage('This date is not available. Please select another date.', 'error');
+                return;
+            }
+            
+            if (!selectedCheckIn || (selectedCheckIn && selectedCheckOut)) {
+                selectedCheckIn = dateStr;
+                selectedCheckOut = null;
+                document.getElementById('check-in').value = formatDate(dateStr);
+                document.getElementById('check-out').value = '';
+                document.getElementById('price-breakdown').style.display = 'none';
+            } else if (selectedCheckIn && !selectedCheckOut) {
+                const checkInDate = new Date(selectedCheckIn);
+                const checkOutDate = new Date(dateStr);
+                
+                if (checkOutDate <= checkInDate) {
+                    showMessage('Check-out date must be after check-in date', 'error');
+                    return;
+                }
+                
+                let hasBookedInBetween = false;
+                let currentDate = new Date(checkInDate);
+                currentDate.setDate(currentDate.getDate() + 1);
+                
+                while (currentDate < checkOutDate) {
+                    const dateBetween = currentDate.toISOString().split('T')[0];
+                    if (bookedDates.includes(dateBetween)) {
+                        hasBookedInBetween = true;
+                        break;
+                    }
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+                
+                if (hasBookedInBetween) {
+                    showMessage('Some dates between your selection are already booked', 'error');
+                    return;
+                }
+                
+                selectedCheckOut = dateStr;
+                document.getElementById('check-out').value = formatDate(dateStr);
+                
+                const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+                const total = nights * nightlyRate; // No cleaning fee
+                
+                document.getElementById('night-count').textContent = nights;
+                document.getElementById('subtotal').textContent = total;
+                document.getElementById('total').textContent = total;
+                document.getElementById('price-breakdown').style.display = 'block';
+            }
+            
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        // Format date for display
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        // Clear selection
+        function clearSelection() {
+            selectedCheckIn = null;
+            selectedCheckOut = null;
+            document.getElementById('check-in').value = '';
+            document.getElementById('check-out').value = '';
+            document.getElementById('guests').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('requests').value = '';
+            document.getElementById('price-breakdown').style.display = 'none';
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('booking-message');
+            messageDiv.textContent = text;
+            messageDiv.className = `booking-message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Handle form submission
+        document.getElementById('booking-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!selectedCheckIn || !selectedCheckOut) {
+                showMessage('Please select check-in and check-out dates from the calendar', 'error');
+                return;
+            }
+            
+            const guests = document.getElementById('guests').value;
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const requests = document.getElementById('requests').value;
+            
+            if (!guests || !name || !phone || !email) {
+                showMessage('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/bookings/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        guest_name: name,
+                        guest_email: email,
+                        guest_phone: phone,
+                        check_in_date: selectedCheckIn,
+                        check_out_date: selectedCheckOut,
+                        number_of_guests: parseInt(guests),
+                        special_requests: requests
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Booking request sent successfully! Check your email for confirmation.', 'success');
+                    
+                    const checkInDate = new Date(selectedCheckIn);
+                    const checkOutDate = new Date(selectedCheckOut);
+                    const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+                    const total = nights * nightlyRate;
+                    
+                    const whatsappMessage = `*Booking Confirmed - Malas Residence*%0A%0A` +
+                        `*Booking ID:* ${data.booking_id}%0A` +
+                        `*Guest:* ${name}%0A` +
+                        `*Check-in:* ${formatDate(selectedCheckIn)}%0A` +
+                        `*Check-out:* ${formatDate(selectedCheckOut)}%0A` +
+                        `*Nights:* ${nights}%0A` +
+                        `*Guests:* ${guests}%0A` +
+                        `*Total:* $${total}%0A%0A` +
+                        `Thank you for choosing HTM Rentals! We'll contact you shortly.`;
+                    
+                    window.open(`https://wa.me/9609373113?text=${whatsappMessage}`, '_blank');
+                    
+                    clearSelection();
+                } else {
+                    showMessage(data.error || 'Failed to create booking. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Network error. Please try again or contact us directly.', 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Navigation
+        document.getElementById('prev-month').addEventListener('click', function() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        document.getElementById('next-month').addEventListener('click', function() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        // Initialize
+        async function init() {
+            await fetchPrices();
+            await generateCalendar(currentMonth, currentYear);
+        }
+
+        init();
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
