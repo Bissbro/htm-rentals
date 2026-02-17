@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTM Rentals | Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>HTM Rentals | Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -18,335 +18,299 @@
         :root {
             --ocean-blue: #006994;
             --maldives-teal: #40B5AD;
-            --sand-beige: #F5E8C7;
             --coral: #FF6B6B;
             --deep-blue: #0A2463;
             --white: #FFFFFF;
-            --dark-gray: #495057;
-            --medium-gray: #6C757D;
             --light-gray: #F8F9FA;
-            --shadow: 0 4px 12px rgba(0, 105, 148, 0.1);
-            --radius: 10px;
-            --transition: all 0.3s ease;
+            --shadow: 0 2px 8px rgba(0,105,148,0.1);
+            --radius: 8px;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--light-gray);
-            color: var(--dark-gray);
+            background: var(--light-gray);
+            padding: 15px;
         }
 
+        /* Login Page */
         .login-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .login-box {
             background: white;
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 40px;
+            padding: 30px 20px;
             width: 100%;
-            max-width: 400px;
+            max-width: 350px;
+            box-shadow: var(--shadow);
         }
 
         .login-box h1 {
+            font-size: 1.8rem;
             color: var(--ocean-blue);
-            margin-bottom: 10px;
-            font-size: 2rem;
+            margin-bottom: 5px;
         }
 
-        .login-box p {
-            color: var(--medium-gray);
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--deep-blue);
-        }
-
-        .form-group input {
+        .login-box input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid var(--light-gray);
+            padding: 12px;
+            border: 1px solid #ddd;
             border-radius: var(--radius);
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--maldives-teal);
+            margin-bottom: 15px;
+            font-size: 16px;
         }
 
         .btn {
             width: 100%;
             padding: 14px;
-            background-color: var(--ocean-blue);
+            background: var(--ocean-blue);
             color: white;
             border: none;
             border-radius: var(--radius);
+            font-size: 16px;
             font-weight: 600;
-            font-size: 1rem;
             cursor: pointer;
-            transition: var(--transition);
         }
 
-        .btn:hover {
-            background-color: var(--maldives-teal);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .error-message {
-            color: var(--coral);
-            margin-top: 10px;
-            font-size: 0.9rem;
-            display: none;
-        }
-
+        /* Dashboard - Mobile First */
         .dashboard-container {
             display: none;
-            min-height: 100vh;
+            max-width: 100%;
+            margin: 0 auto;
         }
 
-        .sidebar {
-            background: var(--deep-blue);
-            color: white;
-            width: 250px;
-            padding: 30px 20px;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .sidebar h2 {
-            color: white;
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(255,255,255,0.2);
-        }
-
-        .sidebar h2 span {
-            color: var(--maldives-teal);
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu li {
-            margin-bottom: 10px;
-        }
-
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 15px;
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
+        /* Top Bar */
+        .top-bar {
+            background: white;
+            padding: 15px;
             border-radius: var(--radius);
-            transition: var(--transition);
-        }
-
-        .sidebar-menu a:hover, .sidebar-menu a.active {
-            background-color: var(--ocean-blue);
-            color: white;
-        }
-
-        .sidebar-menu i {
-            width: 20px;
-        }
-
-        .main-content {
-            flex: 1;
-            margin-left: 250px;
-            padding: 30px;
-        }
-
-        .header {
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            background: white;
-            padding: 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 1.8rem;
+        .top-bar h1 {
+            font-size: 1.3rem;
+            color: var(--ocean-blue);
         }
 
         .logout-btn {
             background: var(--coral);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: var(--radius);
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
+            font-size: 14px;
         }
 
-        .logout-btn:hover {
-            background-color: #ff5252;
-            transform: translateY(-2px);
+        /* Menu Tabs */
+        .menu-tabs {
+            display: flex;
+            gap: 5px;
+            background: white;
+            padding: 10px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
         }
 
+        .menu-tabs button {
+            flex: 1;
+            min-width: 70px;
+            padding: 10px 5px;
+            border: none;
+            background: none;
+            font-size: 13px;
+            color: var(--deep-blue);
+            border-radius: var(--radius);
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .menu-tabs button i {
+            font-size: 1.2rem;
+        }
+
+        .menu-tabs button.active {
+            background: var(--ocean-blue);
+            color: white;
+        }
+
+        /* Stats Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
         .stat-card {
             background: white;
-            padding: 25px;
+            padding: 15px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
         }
 
         .stat-card h3 {
-            color: var(--medium-gray);
-            font-size: 0.9rem;
-            margin-bottom: 10px;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
         }
 
         .stat-number {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--ocean-blue);
         }
 
+        /* Cards */
         .card {
             background: white;
             border-radius: var(--radius);
+            padding: 15px;
             box-shadow: var(--shadow);
-            padding: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         .card h2 {
+            font-size: 1.2rem;
             color: var(--ocean-blue);
-            margin-bottom: 20px;
-            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--light-gray);
         }
 
-        .table-responsive {
-            overflow-x: auto;
+        /* Bookings List */
+        .booking-item {
+            background: var(--light-gray);
+            padding: 12px;
+            border-radius: var(--radius);
+            margin-bottom: 10px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
-        th {
-            text-align: left;
-            padding: 15px;
-            background-color: var(--light-gray);
-            color: var(--deep-blue);
+        .guest-name {
             font-weight: 600;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid var(--light-gray);
+            color: var(--deep-blue);
         }
 
         .status-badge {
-            display: inline-block;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
         .status-pending {
-            background-color: #fff3cd;
+            background: #fff3cd;
             color: #856404;
         }
 
         .status-confirmed {
-            background-color: #d4edda;
+            background: #d4edda;
             color: #155724;
         }
 
-        .status-cancelled {
-            background-color: #f8d7da;
-            color: #721c24;
+        .booking-dates {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
         }
 
         .btn-small {
-            padding: 5px 10px;
+            flex: 1;
+            padding: 8px;
             border: none;
             border-radius: var(--radius);
-            cursor: pointer;
             font-size: 0.8rem;
-            margin: 0 2px;
+            font-weight: 600;
         }
 
         .btn-confirm {
-            background-color: #28a745;
+            background: #28a745;
             color: white;
         }
 
         .btn-cancel {
-            background-color: #dc3545;
+            background: #dc3545;
             color: white;
         }
 
-        .form-row {
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 16px;
+        }
+
+        .date-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: 10px;
         }
 
-        .price-input {
-            padding: 12px;
-            border: 2px solid var(--light-gray);
+        .blocked-item {
+            background: var(--light-gray);
+            padding: 10px;
             border-radius: var(--radius);
-            width: 100%;
-            font-size: 1rem;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
         }
 
-        .block-dates {
-            background-color: var(--light-gray);
-            padding: 20px;
-            border-radius: var(--radius);
-            margin-top: 20px;
+        .text-center {
+            text-align: center;
+            margin-top: 15px;
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            .form-row {
-                grid-template-columns: 1fr;
-            }
+        .text-center a {
+            color: var(--ocean-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            color: var(--coral);
+            margin-top: 10px;
+            display: none;
+            text-align: center;
         }
     </style>
 </head>
@@ -354,430 +318,341 @@
     <!-- Login Page -->
     <div id="login-page" class="login-container">
         <div class="login-box">
-            <h1>HTM <span style="color: var(--coral);">Rentals</span></h1>
-            <p>Admin Dashboard Login</p>
+            <h1>HTM Rentals</h1>
+            <p style="margin-bottom: 20px; color: #666;">Admin Login</p>
             
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="username" placeholder="Enter username" value="bissbro">
-            </div>
-            
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" placeholder="Enter password" value="admin123">
-            </div>
+            <input type="text" id="username" placeholder="Username" value="bissbro">
+            <input type="password" id="password" placeholder="Password" value="admin123">
             
             <button class="btn" onclick="login()">Login</button>
-            <div id="login-error" class="error-message">Invalid username or password</div>
+            <div id="login-error" class="error-message">Invalid credentials</div>
             
-            <p style="margin-top: 20px; text-align: center; font-size: 0.85rem;">
-                <a href="https://htmrentals.com" style="color: var(--ocean-blue);">← Back to Website</a>
-            </p>
+            <div class="text-center">
+                <a href="https://htmrentals.com">← Back to Website</a>
+            </div>
         </div>
     </div>
 
     <!-- Dashboard -->
     <div id="dashboard-page" class="dashboard-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <h2>HTM<span>Rentals</span></h2>
-            <ul class="sidebar-menu">
-                <li><a href="#" onclick="showSection('dashboard')" class="active" id="menu-dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="#" onclick="showSection('bookings')" id="menu-bookings"><i class="fas fa-calendar-alt"></i> Bookings</a></li>
-                <li><a href="#" onclick="showSection('block-dates')" id="menu-block"><i class="fas fa-ban"></i> Block Dates</a></li>
-                <li><a href="#" onclick="showSection('settings')" id="menu-settings"><i class="fas fa-cog"></i> Settings</a></li>
-            </ul>
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h1>HTM Rentals</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <h1 id="page-title">Dashboard</h1>
-                <button class="logout-btn" onclick="logout()">Logout</button>
-            </div>
+        <!-- Mobile Menu Tabs -->
+        <div class="menu-tabs">
+            <button onclick="showSection('dashboard')" id="menu-dashboard" class="active">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </button>
+            <button onclick="showSection('bookings')" id="menu-bookings">
+                <i class="fas fa-calendar"></i>
+                <span>Bookings</span>
+            </button>
+            <button onclick="showSection('block')" id="menu-block">
+                <i class="fas fa-ban"></i>
+                <span>Block</span>
+            </button>
+            <button onclick="showSection('settings')" id="menu-settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </button>
+        </div>
 
-            <!-- Dashboard Section -->
-            <div id="section-dashboard">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>Total Bookings</h3>
-                        <div class="stat-number" id="total-bookings">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Pending</h3>
-                        <div class="stat-number" id="pending-count">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Confirmed</h3>
-                        <div class="stat-number" id="confirmed-count">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Revenue</h3>
-                        <div class="stat-number" id="total-revenue">$0</div>
-                    </div>
+        <!-- Dashboard Section -->
+        <div id="section-dashboard">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>PENDING</h3>
+                    <div class="stat-number" id="pending-count">0</div>
                 </div>
-
-                <div class="card">
-                    <h2>Recent Bookings</h2>
-                    <div class="table-responsive" id="recent-bookings-table">
-                        <!-- Table will be populated by JavaScript -->
-                    </div>
+                <div class="stat-card">
+                    <h3>CONFIRMED</h3>
+                    <div class="stat-number" id="confirmed-count">0</div>
                 </div>
-            </div>
-
-            <!-- Bookings Section -->
-            <div id="section-bookings" style="display: none;">
-                <div class="card">
-                    <h2>All Bookings</h2>
-                    <div class="table-responsive" id="all-bookings-table">
-                        <!-- Table will be populated by JavaScript -->
-                    </div>
+                <div class="stat-card">
+                    <h3>TOTAL</h3>
+                    <div class="stat-number" id="total-bookings">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>REVENUE</h3>
+                    <div class="stat-number" id="total-revenue">$0</div>
                 </div>
             </div>
 
-            <!-- Block Dates Section -->
-            <div id="section-block-dates" style="display: none;">
-                <div class="card">
-                    <h2>Block Dates</h2>
-                    <p>Select dates to block (no bookings allowed)</p>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Start Date</label>
-                            <input type="date" id="block-start" class="price-input">
-                        </div>
-                        <div class="form-group">
-                            <label>End Date</label>
-                            <input type="date" id="block-end" class="price-input">
-                        </div>
-                    </div>
-                    
+            <div class="card">
+                <h2>Recent Bookings</h2>
+                <div id="recent-bookings-list"></div>
+            </div>
+        </div>
+
+        <!-- Bookings Section -->
+        <div id="section-bookings" style="display: none;">
+            <div class="card">
+                <h2>All Bookings</h2>
+                <div id="all-bookings-list"></div>
+            </div>
+        </div>
+
+        <!-- Block Dates Section -->
+        <div id="section-block" style="display: none;">
+            <div class="card">
+                <h2>Block Dates</h2>
+                
+                <div class="date-row">
                     <div class="form-group">
-                        <label>Reason (Optional)</label>
-                        <input type="text" id="block-reason" class="price-input" placeholder="e.g., Maintenance">
+                        <label>From</label>
+                        <input type="date" id="block-start">
                     </div>
-                    
-                    <button class="btn" onclick="blockDates()" style="width: auto; padding: 12px 30px;">Block Selected Dates</button>
-                    
-                    <div class="block-dates">
-                        <h3>Currently Blocked Dates</h3>
-                        <div id="blocked-list"></div>
+                    <div class="form-group">
+                        <label>To</label>
+                        <input type="date" id="block-end">
                     </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Reason</label>
+                    <input type="text" id="block-reason" placeholder="Maintenance, etc">
+                </div>
+                
+                <button class="btn" onclick="blockDates()">Block Dates</button>
+                
+                <div style="margin-top: 20px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 10px;">Blocked Dates</h3>
+                    <div id="blocked-list"></div>
                 </div>
             </div>
+        </div>
 
-            <!-- Settings Section -->
-            <div id="section-settings" style="display: none;">
-                <div class="card">
-                    <h2>Price Settings</h2>
-                    
-                    <div class="form-group">
-                        <label>Nightly Rate (USD)</label>
-                        <input type="number" id="nightly-rate" class="price-input" value="90" min="1">
-                    </div>
-                    
-                    <button class="btn" onclick="updatePrice()" style="width: auto; padding: 12px 30px;">Update Price</button>
+        <!-- Settings Section -->
+        <div id="section-settings" style="display: none;">
+            <div class="card">
+                <h2>Price Settings</h2>
+                
+                <div class="form-group">
+                    <label>Nightly Rate ($)</label>
+                    <input type="number" id="nightly-rate" value="90">
                 </div>
+                
+                <button class="btn" onclick="updatePrice()">Update Price</button>
             </div>
         </div>
     </div>
 
     <script>
-        // API Configuration
         const API_BASE_URL = 'http://13.212.34.47:3000/api';
         const ADMIN_USERNAME = 'bissbro';
         const ADMIN_PASSWORD = 'admin123';
 
-        // Login function
+        let allBookings = [];
+
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
             if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
                 document.getElementById('login-page').style.display = 'none';
-                document.getElementById('dashboard-page').style.display = 'flex';
-                loadDashboardData();
+                document.getElementById('dashboard-page').style.display = 'block';
+                loadDashboard();
             } else {
                 document.getElementById('login-error').style.display = 'block';
             }
         }
 
-        // Logout function
         function logout() {
             document.getElementById('login-page').style.display = 'flex';
             document.getElementById('dashboard-page').style.display = 'none';
         }
 
-        // Show different sections
         function showSection(section) {
             // Hide all sections
             document.getElementById('section-dashboard').style.display = 'none';
             document.getElementById('section-bookings').style.display = 'none';
-            document.getElementById('section-block-dates').style.display = 'none';
+            document.getElementById('section-block').style.display = 'none';
             document.getElementById('section-settings').style.display = 'none';
             
-            // Remove active class from all menu items
+            // Remove active class
             document.getElementById('menu-dashboard').classList.remove('active');
             document.getElementById('menu-bookings').classList.remove('active');
             document.getElementById('menu-block').classList.remove('active');
             document.getElementById('menu-settings').classList.remove('active');
             
-            // Show selected section
+            // Show selected
             if (section === 'dashboard') {
                 document.getElementById('section-dashboard').style.display = 'block';
                 document.getElementById('menu-dashboard').classList.add('active');
-                document.getElementById('page-title').textContent = 'Dashboard';
-                loadDashboardData();
+                loadDashboard();
             } else if (section === 'bookings') {
                 document.getElementById('section-bookings').style.display = 'block';
                 document.getElementById('menu-bookings').classList.add('active');
-                document.getElementById('page-title').textContent = 'All Bookings';
                 loadAllBookings();
-            } else if (section === 'block-dates') {
-                document.getElementById('section-block-dates').style.display = 'block';
+            } else if (section === 'block') {
+                document.getElementById('section-block').style.display = 'block';
                 document.getElementById('menu-block').classList.add('active');
-                document.getElementById('page-title').textContent = 'Block Dates';
                 loadBlockedDates();
             } else if (section === 'settings') {
                 document.getElementById('section-settings').style.display = 'block';
                 document.getElementById('menu-settings').classList.add('active');
-                document.getElementById('page-title').textContent = 'Settings';
-                loadPriceSettings();
+                loadPrice();
             }
         }
 
-        // Load dashboard data
-        async function loadDashboardData() {
+        async function loadDashboard() {
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/bookings`, {
-                    headers: {
-                        'Authorization': 'Bearer dummy-token'
-                    }
-                });
-                const data = await response.json();
+                const res = await fetch(`${API_BASE_URL}/admin/bookings`);
+                const data = await res.json();
                 
                 if (data.success) {
-                    const bookings = data.bookings;
+                    allBookings = data.bookings;
                     
-                    // Update stats
-                    document.getElementById('total-bookings').textContent = bookings.length;
-                    
-                    const pending = bookings.filter(b => b.booking_status === 'pending').length;
-                    const confirmed = bookings.filter(b => b.booking_status === 'confirmed').length;
-                    const revenue = bookings
+                    const pending = allBookings.filter(b => b.booking_status === 'pending').length;
+                    const confirmed = allBookings.filter(b => b.booking_status === 'confirmed').length;
+                    const revenue = allBookings
                         .filter(b => b.booking_status === 'confirmed')
                         .reduce((sum, b) => sum + parseFloat(b.total_amount), 0);
                     
                     document.getElementById('pending-count').textContent = pending;
                     document.getElementById('confirmed-count').textContent = confirmed;
+                    document.getElementById('total-bookings').textContent = allBookings.length;
                     document.getElementById('total-revenue').textContent = `$${revenue}`;
                     
-                    // Show recent bookings (last 5)
-                    const recent = bookings.slice(0, 5);
-                    displayBookingsTable(recent, 'recent-bookings-table');
+                    displayRecentBookings(allBookings.slice(0, 5));
                 }
             } catch (error) {
-                console.error('Error loading dashboard:', error);
+                console.error(error);
             }
         }
 
-        // Load all bookings
-        async function loadAllBookings() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/bookings`, {
-                    headers: {
-                        'Authorization': 'Bearer dummy-token'
-                    }
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    displayBookingsTable(data.bookings, 'all-bookings-table', true);
-                }
-            } catch (error) {
-                console.error('Error loading bookings:', error);
-            }
-        }
-
-        // Display bookings table
-        function displayBookingsTable(bookings, elementId, showActions = false) {
-            let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Guest</th>
-                            <th>Check In</th>
-                            <th>Check Out</th>
-                            <th>Nights</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            ${showActions ? '<th>Actions</th>' : ''}
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-            
-            bookings.forEach(booking => {
-                const statusClass = `status-badge status-${booking.booking_status}`;
+        function displayRecentBookings(bookings) {
+            let html = '';
+            bookings.forEach(b => {
                 html += `
-                    <tr>
-                        <td>#${booking.id}</td>
-                        <td>${booking.guest_name}</td>
-                        <td>${booking.check_in_date}</td>
-                        <td>${booking.check_out_date}</td>
-                        <td>${booking.total_nights}</td>
-                        <td>$${booking.total_amount}</td>
-                        <td><span class="${statusClass}">${booking.booking_status}</span></td>
-                        ${showActions ? `
-                        <td>
-                            ${booking.booking_status === 'pending' ? 
-                                `<button class="btn-small btn-confirm" onclick="updateBookingStatus(${booking.id}, 'confirmed')">✓ Confirm</button>
-                                 <button class="btn-small btn-cancel" onclick="updateBookingStatus(${booking.id}, 'cancelled')">✗ Cancel</button>` : 
-                                ''}
-                        </td>
-                        ` : ''}
-                    </tr>
+                    <div class="booking-item">
+                        <div class="booking-header">
+                            <span class="guest-name">${b.guest_name}</span>
+                            <span class="status-badge status-${b.booking_status}">${b.booking_status}</span>
+                        </div>
+                        <div class="booking-dates">
+                            ${b.check_in_date} → ${b.check_out_date}<br>
+                            $${b.total_amount} (${b.total_nights} nights)
+                        </div>
+                    </div>
                 `;
             });
-            
-            html += '</tbody></table>';
-            document.getElementById(elementId).innerHTML = html;
+            document.getElementById('recent-bookings-list').innerHTML = html || '<p>No bookings</p>';
         }
 
-        // Update booking status
-        async function updateBookingStatus(id, status) {
+        async function loadAllBookings() {
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer dummy-token'
-                    },
-                    body: JSON.stringify({ status })
-                });
-                
-                const data = await response.json();
+                const res = await fetch(`${API_BASE_URL}/admin/bookings`);
+                const data = await res.json();
                 
                 if (data.success) {
-                    alert(`Booking #${id} ${status} successfully!`);
-                    loadAllBookings();
-                    loadDashboardData();
+                    let html = '';
+                    data.bookings.forEach(b => {
+                        html += `
+                            <div class="booking-item">
+                                <div class="booking-header">
+                                    <span class="guest-name">${b.guest_name}</span>
+                                    <span class="status-badge status-${b.booking_status}">${b.booking_status}</span>
+                                </div>
+                                <div class="booking-dates">
+                                    📅 ${b.check_in_date} → ${b.check_out_date}<br>
+                                    👤 ${b.number_of_guests} guests • $${b.total_amount}
+                                </div>
+                                ${b.booking_status === 'pending' ? `
+                                <div class="booking-actions">
+                                    <button class="btn-small btn-confirm" onclick="updateStatus(${b.id}, 'confirmed')">✓ Confirm</button>
+                                    <button class="btn-small btn-cancel" onclick="updateStatus(${b.id}, 'cancelled')">✗ Cancel</button>
+                                </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    });
+                    document.getElementById('all-bookings-list').innerHTML = html || '<p>No bookings</p>';
                 }
             } catch (error) {
-                console.error('Error updating booking:', error);
-                alert('Failed to update booking');
+                console.error(error);
             }
         }
 
-        // Block dates
+        async function updateStatus(id, status) {
+            try {
+                await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`, {
+                    method: 'PATCH',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({status})
+                });
+                loadAllBookings();
+                loadDashboard();
+            } catch (error) {
+                alert('Failed to update');
+            }
+        }
+
         async function blockDates() {
             const start = document.getElementById('block-start').value;
             const end = document.getElementById('block-end').value;
             const reason = document.getElementById('block-reason').value;
             
             if (!start || !end) {
-                alert('Please select start and end dates');
+                alert('Select dates');
                 return;
             }
             
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/block-dates`, {
+                await fetch(`${API_BASE_URL}/admin/block-dates`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer dummy-token'
-                    },
-                    body: JSON.stringify({ start_date: start, end_date: end, reason })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({start_date: start, end_date: end, reason})
                 });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert('Dates blocked successfully!');
-                    document.getElementById('block-start').value = '';
-                    document.getElementById('block-end').value = '';
-                    document.getElementById('block-reason').value = '';
-                    loadBlockedDates();
-                }
+                alert('Dates blocked');
+                loadBlockedDates();
             } catch (error) {
-                console.error('Error blocking dates:', error);
-                alert('Failed to block dates');
+                alert('Failed');
             }
         }
 
-        // Load blocked dates
         async function loadBlockedDates() {
             try {
-                const response = await fetch(`${API_BASE_URL}/bookings/availability`);
-                const data = await response.json();
+                const res = await fetch(`${API_BASE_URL}/bookings/availability`);
+                const data = await res.json();
                 
-                if (data.success) {
-                    let html = '<ul style="list-style: none; padding: 0;">';
-                    data.blocked_dates.forEach(block => {
-                        html += `<li style="padding: 10px; border-bottom: 1px solid #eee;">
-                            <strong>${block.start_date} to ${block.end_date}</strong>
-                            ${block.reason ? `<br><small>Reason: ${block.reason}</small>` : ''}
-                        </li>`;
-                    });
-                    html += '</ul>';
-                    
-                    if (data.blocked_dates.length === 0) {
-                        html = '<p>No blocked dates</p>';
-                    }
-                    
-                    document.getElementById('blocked-list').innerHTML = html;
-                }
+                let html = '';
+                data.blocked_dates.forEach(b => {
+                    html += `<div class="blocked-item">📅 ${b.start_date} → ${b.end_date} ${b.reason ? '<br>📝 ' + b.reason : ''}</div>`;
+                });
+                document.getElementById('blocked-list').innerHTML = html || '<p>No blocked dates</p>';
             } catch (error) {
-                console.error('Error loading blocked dates:', error);
+                console.error(error);
             }
         }
 
-        // Load price settings
-        async function loadPriceSettings() {
+        async function loadPrice() {
             try {
-                const response = await fetch(`${API_BASE_URL}/bookings/prices`);
-                const data = await response.json();
-                
-                if (data.success) {
-                    document.getElementById('nightly-rate').value = data.nightly_rate;
-                }
+                const res = await fetch(`${API_BASE_URL}/bookings/prices`);
+                const data = await res.json();
+                document.getElementById('nightly-rate').value = data.nightly_rate;
             } catch (error) {
-                console.error('Error loading price settings:', error);
+                console.error(error);
             }
         }
 
-        // Update price
         async function updatePrice() {
             const rate = document.getElementById('nightly-rate').value;
-            
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/prices`, {
+                await fetch(`${API_BASE_URL}/admin/prices`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer dummy-token'
-                    },
-                    body: JSON.stringify({ nightly_rate: rate, cleaning_fee: 0 })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({nightly_rate: rate})
                 });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert('Price updated successfully!');
-                }
+                alert('Price updated');
             } catch (error) {
-                console.error('Error updating price:', error);
-                alert('Failed to update price');
+                alert('Failed');
             }
         }
-
-        // Check login status on page load
-        window.onload = function() {
-            document.getElementById('login-page').style.display = 'flex';
-            document.getElementById('dashboard-page').style.display = 'none';
-        };
     </script>
 </body>
-
 </html>
