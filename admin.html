@@ -764,7 +764,7 @@
             }
         }
 
-        // Unblock date
+        // Unblock date - FIXED VERSION
         async function unblockDate(id) {
             if (!confirm('Are you sure you want to unblock this date?')) {
                 return;
@@ -780,12 +780,14 @@
                 if (data.success) {
                     showMessage('success', 'Date unblocked successfully');
                     loadBlockedDates();
-                    loadUnblockList();
+                    if (document.getElementById('section-unblock').style.display === 'block') {
+                        loadUnblockList();
+                    }
                 } else {
-                    showMessage('error', 'Failed to unblock date');
+                    showMessage('error', 'Failed to unblock date: ' + (data.error || 'Unknown error'));
                 }
             } catch (error) {
-                showMessage('error', 'Error unblocking date');
+                showMessage('error', 'Error unblocking date: ' + error.message);
             }
         }
 
