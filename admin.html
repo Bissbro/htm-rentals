@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>HTM Rentals | Admin</title>
+    <title>HTM Rentals | Admin Panel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -32,7 +32,6 @@
             padding: 15px;
         }
 
-        /* Login Page */
         .login-container {
             min-height: 100vh;
             display: flex;
@@ -77,14 +76,32 @@
             cursor: pointer;
         }
 
-        /* Dashboard - Mobile First */
+        .btn-small {
+            padding: 8px 12px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .btn-danger {
+            background: var(--coral);
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
         .dashboard-container {
             display: none;
             max-width: 100%;
             margin: 0 auto;
         }
 
-        /* Top Bar */
         .top-bar {
             background: white;
             padding: 15px;
@@ -108,9 +125,9 @@
             padding: 8px 15px;
             border-radius: var(--radius);
             font-size: 14px;
+            cursor: pointer;
         }
 
-        /* Menu Tabs */
         .menu-tabs {
             display: flex;
             gap: 5px;
@@ -121,7 +138,6 @@
             margin-bottom: 15px;
             overflow-x: auto;
             white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
         }
 
         .menu-tabs button {
@@ -137,6 +153,7 @@
             flex-direction: column;
             align-items: center;
             gap: 5px;
+            cursor: pointer;
         }
 
         .menu-tabs button i {
@@ -148,7 +165,22 @@
             color: white;
         }
 
-        /* Stats Cards */
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            color: var(--ocean-blue);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -175,24 +207,6 @@
             color: var(--ocean-blue);
         }
 
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: var(--radius);
-            padding: 15px;
-            box-shadow: var(--shadow);
-            margin-bottom: 15px;
-        }
-
-        .card h2 {
-            font-size: 1.2rem;
-            color: var(--ocean-blue);
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--light-gray);
-        }
-
-        /* Bookings List */
         .booking-item {
             background: var(--light-gray);
             padding: 12px;
@@ -229,51 +243,24 @@
             color: #155724;
         }
 
-        .booking-dates {
-            font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 8px;
-        }
-
         .booking-actions {
             display: flex;
             gap: 8px;
             margin-top: 8px;
         }
 
-        .btn-small {
-            flex: 1;
-            padding: 8px;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .btn-confirm {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-cancel {
-            background: #dc3545;
-            color: white;
-        }
-
-        /* Form Elements */
-        .form-group {
+        /* Simple Date Blocking */
+        .date-input-group {
             margin-bottom: 15px;
         }
 
-        .form-group label {
+        .date-input-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: 500;
-            font-size: 0.9rem;
         }
 
-        .form-group input, 
-        .form-group select {
+        .date-input-group input {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
@@ -281,36 +268,45 @@
             font-size: 16px;
         }
 
-        .date-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+        .blocked-list {
+            margin-top: 20px;
         }
 
         .blocked-item {
             background: var(--light-gray);
-            padding: 10px;
+            padding: 12px;
             border-radius: var(--radius);
             margin-bottom: 8px;
-            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .text-center {
-            text-align: center;
-            margin-top: 15px;
+        .blocked-date {
+            font-weight: 600;
+            color: var(--deep-blue);
         }
 
-        .text-center a {
-            color: var(--ocean-blue);
-            text-decoration: none;
-            font-size: 0.9rem;
+        .blocked-reason {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 4px;
         }
 
-        .error-message {
-            color: var(--coral);
-            margin-top: 10px;
-            display: none;
-            text-align: center;
+        .unblock-btn {
+            background: var(--coral);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: var(--radius);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .info-text {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -325,10 +321,10 @@
             <input type="password" id="password" placeholder="Password" value="admin123">
             
             <button class="btn" onclick="login()">Login</button>
-            <div id="login-error" class="error-message">Invalid credentials</div>
+            <div id="login-error" style="color: var(--coral); margin-top: 10px; display: none;">Invalid credentials</div>
             
-            <div class="text-center">
-                <a href="https://htmrentals.com">← Back to Website</a>
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="https://htmrentals.com" style="color: var(--ocean-blue); text-decoration: none;">← Back to Website</a>
             </div>
         </div>
     </div>
@@ -337,15 +333,15 @@
     <div id="dashboard-page" class="dashboard-container">
         <!-- Top Bar -->
         <div class="top-bar">
-            <h1>HTM Rentals</h1>
+            <h1>HTM Rentals Admin</h1>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
 
-        <!-- Mobile Menu Tabs -->
+        <!-- Menu Tabs -->
         <div class="menu-tabs">
             <button onclick="showSection('dashboard')" id="menu-dashboard" class="active">
                 <i class="fas fa-home"></i>
-                <span>Home</span>
+                <span>Dashboard</span>
             </button>
             <button onclick="showSection('bookings')" id="menu-bookings">
                 <i class="fas fa-calendar"></i>
@@ -353,7 +349,11 @@
             </button>
             <button onclick="showSection('block')" id="menu-block">
                 <i class="fas fa-ban"></i>
-                <span>Block</span>
+                <span>Block Dates</span>
+            </button>
+            <button onclick="showSection('unblock')" id="menu-unblock">
+                <i class="fas fa-check-circle"></i>
+                <span>Unblock</span>
             </button>
             <button onclick="showSection('settings')" id="menu-settings">
                 <i class="fas fa-cog"></i>
@@ -363,28 +363,13 @@
 
         <!-- Dashboard Section -->
         <div id="section-dashboard">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>PENDING</h3>
-                    <div class="stat-number" id="pending-count">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>CONFIRMED</h3>
-                    <div class="stat-number" id="confirmed-count">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>TOTAL</h3>
-                    <div class="stat-number" id="total-bookings">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>REVENUE</h3>
-                    <div class="stat-number" id="total-revenue">$0</div>
-                </div>
+            <div class="stats-grid" id="stats-container">
+                <!-- Stats will load here -->
             </div>
-
+            
             <div class="card">
                 <h2>Recent Bookings</h2>
-                <div id="recent-bookings-list"></div>
+                <div id="recent-bookings"></div>
             </div>
         </div>
 
@@ -392,37 +377,41 @@
         <div id="section-bookings" style="display: none;">
             <div class="card">
                 <h2>All Bookings</h2>
-                <div id="all-bookings-list"></div>
+                <div id="all-bookings"></div>
             </div>
         </div>
 
-        <!-- Block Dates Section -->
+        <!-- Block Dates Section (Simple) -->
         <div id="section-block" style="display: none;">
             <div class="card">
-                <h2>Block Dates</h2>
+                <h2>Block a Single Date</h2>
+                <p class="info-text">Select a date to block it (guests cannot book this day)</p>
                 
-                <div class="date-row">
-                    <div class="form-group">
-                        <label>From</label>
-                        <input type="date" id="block-start">
-                    </div>
-                    <div class="form-group">
-                        <label>To</label>
-                        <input type="date" id="block-end">
-                    </div>
+                <div class="date-input-group">
+                    <label>Date to Block</label>
+                    <input type="date" id="block-date">
                 </div>
                 
-                <div class="form-group">
-                    <label>Reason</label>
-                    <input type="text" id="block-reason" placeholder="Maintenance, etc">
+                <div class="date-input-group">
+                    <label>Reason (optional)</label>
+                    <input type="text" id="block-reason" placeholder="e.g., Maintenance, Personal use">
                 </div>
                 
-                <button class="btn" onclick="blockDates()">Block Dates</button>
-                
-                <div style="margin-top: 20px;">
-                    <h3 style="font-size: 1rem; margin-bottom: 10px;">Blocked Dates</h3>
-                    <div id="blocked-list"></div>
-                </div>
+                <button class="btn" onclick="blockSingleDate()">Block This Date</button>
+            </div>
+            
+            <div class="card">
+                <h2>Currently Blocked Dates</h2>
+                <div id="blocked-dates-list" class="blocked-list"></div>
+            </div>
+        </div>
+
+        <!-- Unblock Dates Section -->
+        <div id="section-unblock" style="display: none;">
+            <div class="card">
+                <h2>Unblock Dates</h2>
+                <p class="info-text">Click on any blocked date to unblock it</p>
+                <div id="unblock-dates-list" class="blocked-list"></div>
             </div>
         </div>
 
@@ -431,9 +420,9 @@
             <div class="card">
                 <h2>Price Settings</h2>
                 
-                <div class="form-group">
+                <div class="date-input-group">
                     <label>Nightly Rate ($)</label>
-                    <input type="number" id="nightly-rate" value="90">
+                    <input type="number" id="nightly-rate" value="90" min="1">
                 </div>
                 
                 <button class="btn" onclick="updatePrice()">Update Price</button>
@@ -446,8 +435,7 @@
         const ADMIN_USERNAME = 'bissbro';
         const ADMIN_PASSWORD = 'admin123';
 
-        let allBookings = [];
-
+        // Login function
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
@@ -456,6 +444,7 @@
                 document.getElementById('login-page').style.display = 'none';
                 document.getElementById('dashboard-page').style.display = 'block';
                 loadDashboard();
+                loadBlockedDates();
             } else {
                 document.getElementById('login-error').style.display = 'block';
             }
@@ -471,15 +460,17 @@
             document.getElementById('section-dashboard').style.display = 'none';
             document.getElementById('section-bookings').style.display = 'none';
             document.getElementById('section-block').style.display = 'none';
+            document.getElementById('section-unblock').style.display = 'none';
             document.getElementById('section-settings').style.display = 'none';
             
             // Remove active class
             document.getElementById('menu-dashboard').classList.remove('active');
             document.getElementById('menu-bookings').classList.remove('active');
             document.getElementById('menu-block').classList.remove('active');
+            document.getElementById('menu-unblock').classList.remove('active');
             document.getElementById('menu-settings').classList.remove('active');
             
-            // Show selected
+            // Show selected section
             if (section === 'dashboard') {
                 document.getElementById('section-dashboard').style.display = 'block';
                 document.getElementById('menu-dashboard').classList.add('active');
@@ -491,6 +482,9 @@
             } else if (section === 'block') {
                 document.getElementById('section-block').style.display = 'block';
                 document.getElementById('menu-block').classList.add('active');
+            } else if (section === 'unblock') {
+                document.getElementById('section-unblock').style.display = 'block';
+                document.getElementById('menu-unblock').classList.add('active');
                 loadBlockedDates();
             } else if (section === 'settings') {
                 document.getElementById('section-settings').style.display = 'block';
@@ -499,29 +493,145 @@
             }
         }
 
-        async function loadDashboard() {
+        // Block a single date
+        async function blockSingleDate() {
+            const date = document.getElementById('block-date').value;
+            const reason = document.getElementById('block-reason').value || 'Blocked';
+            
+            if (!date) {
+                alert('Please select a date');
+                return;
+            }
+            
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/bookings`);
-                const data = await res.json();
+                const response = await fetch(`${API_BASE_URL}/admin/block-dates`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        start_date: date,
+                        end_date: date,
+                        reason: reason
+                    })
+                });
+                
+                const data = await response.json();
                 
                 if (data.success) {
-                    allBookings = data.bookings;
-                    
-                    const pending = allBookings.filter(b => b.booking_status === 'pending').length;
-                    const confirmed = allBookings.filter(b => b.booking_status === 'confirmed').length;
-                    const revenue = allBookings
+                    alert(`Date ${date} blocked successfully`);
+                    document.getElementById('block-date').value = '';
+                    document.getElementById('block-reason').value = '';
+                    loadBlockedDates();
+                } else {
+                    alert('Failed to block date');
+                }
+            } catch (error) {
+                alert('Error blocking date');
+            }
+        }
+
+        // Unblock a date
+        async function unblockDate(id) {
+            try {
+                // You'll need to add this endpoint to your backend
+                const response = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Date unblocked successfully');
+                    loadBlockedDates();
+                } else {
+                    alert('Failed to unblock date');
+                }
+            } catch (error) {
+                alert('Error unblocking date');
+            }
+        }
+
+        // Load blocked dates
+        async function loadBlockedDates() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/bookings/availability`);
+                const data = await response.json();
+                
+                let blockHtml = '';
+                let unblockHtml = '';
+                
+                if (data.blocked_dates && data.blocked_dates.length > 0) {
+                    data.blocked_dates.forEach(block => {
+                        // For block section
+                        blockHtml += `
+                            <div class="blocked-item">
+                                <div>
+                                    <div class="blocked-date">📅 ${block.start_date}</div>
+                                    ${block.reason ? `<div class="blocked-reason">${block.reason}</div>` : ''}
+                                </div>
+                            </div>
+                        `;
+                        
+                        // For unblock section with delete button
+                        unblockHtml += `
+                            <div class="blocked-item">
+                                <div>
+                                    <div class="blocked-date">📅 ${block.start_date}</div>
+                                    ${block.reason ? `<div class="blocked-reason">${block.reason}</div>` : ''}
+                                </div>
+                                <button class="unblock-btn" onclick="unblockDate(${block.id})">Unblock</button>
+                            </div>
+                        `;
+                    });
+                } else {
+                    blockHtml = '<p style="color: #666;">No blocked dates</p>';
+                    unblockHtml = '<p style="color: #666;">No blocked dates to unblock</p>';
+                }
+                
+                document.getElementById('blocked-dates-list').innerHTML = blockHtml;
+                document.getElementById('unblock-dates-list').innerHTML = unblockHtml;
+            } catch (error) {
+                console.error('Error loading blocked dates:', error);
+            }
+        }
+
+        // Load dashboard stats
+        async function loadDashboard() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/bookings`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const bookings = data.bookings;
+                    const pending = bookings.filter(b => b.booking_status === 'pending').length;
+                    const confirmed = bookings.filter(b => b.booking_status === 'confirmed').length;
+                    const revenue = bookings
                         .filter(b => b.booking_status === 'confirmed')
                         .reduce((sum, b) => sum + parseFloat(b.total_amount), 0);
                     
-                    document.getElementById('pending-count').textContent = pending;
-                    document.getElementById('confirmed-count').textContent = confirmed;
-                    document.getElementById('total-bookings').textContent = allBookings.length;
-                    document.getElementById('total-revenue').textContent = `$${revenue}`;
+                    document.getElementById('stats-container').innerHTML = `
+                        <div class="stat-card">
+                            <h3>PENDING</h3>
+                            <div class="stat-number">${pending}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>CONFIRMED</h3>
+                            <div class="stat-number">${confirmed}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>TOTAL</h3>
+                            <div class="stat-number">${bookings.length}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>REVENUE</h3>
+                            <div class="stat-number">$${revenue}</div>
+                        </div>
+                    `;
                     
-                    displayRecentBookings(allBookings.slice(0, 5));
+                    displayRecentBookings(bookings.slice(0, 5));
                 }
             } catch (error) {
-                console.error(error);
+                console.error('Error loading dashboard:', error);
             }
         }
 
@@ -534,20 +644,22 @@
                             <span class="guest-name">${b.guest_name}</span>
                             <span class="status-badge status-${b.booking_status}">${b.booking_status}</span>
                         </div>
-                        <div class="booking-dates">
-                            ${b.check_in_date} → ${b.check_out_date}<br>
-                            $${b.total_amount} (${b.total_nights} nights)
+                        <div style="font-size: 0.9rem; margin-bottom: 5px;">
+                            📅 ${b.check_in_date} → ${b.check_out_date}
+                        </div>
+                        <div style="font-size: 0.8rem; color: #666;">
+                            $${b.total_amount} • ${b.total_nights} nights • ${b.number_of_guests} guests
                         </div>
                     </div>
                 `;
             });
-            document.getElementById('recent-bookings-list').innerHTML = html || '<p>No bookings</p>';
+            document.getElementById('recent-bookings').innerHTML = html || '<p>No recent bookings</p>';
         }
 
         async function loadAllBookings() {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/bookings`);
-                const data = await res.json();
+                const response = await fetch(`${API_BASE_URL}/admin/bookings`);
+                const data = await response.json();
                 
                 if (data.success) {
                     let html = '';
@@ -558,106 +670,77 @@
                                     <span class="guest-name">${b.guest_name}</span>
                                     <span class="status-badge status-${b.booking_status}">${b.booking_status}</span>
                                 </div>
-                                <div class="booking-dates">
-                                    📅 ${b.check_in_date} → ${b.check_out_date}<br>
-                                    👤 ${b.number_of_guests} guests • $${b.total_amount}
+                                <div style="font-size: 0.9rem; margin-bottom: 5px;">
+                                    📅 ${b.check_in_date} → ${b.check_out_date}
+                                </div>
+                                <div style="font-size: 0.8rem; color: #666; margin-bottom: 8px;">
+                                    $${b.total_amount} • ${b.total_nights} nights • ${b.number_of_guests} guests
                                 </div>
                                 ${b.booking_status === 'pending' ? `
                                 <div class="booking-actions">
-                                    <button class="btn-small btn-confirm" onclick="updateStatus(${b.id}, 'confirmed')">✓ Confirm</button>
-                                    <button class="btn-small btn-cancel" onclick="updateStatus(${b.id}, 'cancelled')">✗ Cancel</button>
+                                    <button class="btn-small btn-success" onclick="updateStatus(${b.id}, 'confirmed')">✓ Confirm</button>
+                                    <button class="btn-small btn-danger" onclick="updateStatus(${b.id}, 'cancelled')">✗ Cancel</button>
                                 </div>
                                 ` : ''}
                             </div>
                         `;
                     });
-                    document.getElementById('all-bookings-list').innerHTML = html || '<p>No bookings</p>';
+                    document.getElementById('all-bookings').innerHTML = html || '<p>No bookings found</p>';
                 }
             } catch (error) {
-                console.error(error);
+                console.error('Error loading bookings:', error);
             }
         }
 
         async function updateStatus(id, status) {
             try {
-                await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`, {
+                const response = await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`, {
                     method: 'PATCH',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({status})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
                 });
-                loadAllBookings();
-                loadDashboard();
-            } catch (error) {
-                alert('Failed to update');
-            }
-        }
-
-        async function blockDates() {
-            const start = document.getElementById('block-start').value;
-            const end = document.getElementById('block-end').value;
-            const reason = document.getElementById('block-reason').value;
-            
-            if (!start || !end) {
-                alert('Select dates');
-                return;
-            }
-            
-            try {
-                await fetch(`${API_BASE_URL}/admin/block-dates`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({start_date: start, end_date: end, reason})
-                });
-                alert('Dates blocked');
-                loadBlockedDates();
-            } catch (error) {
-                alert('Failed');
-            }
-        }
-
-        async function loadBlockedDates() {
-            try {
-                const res = await fetch(`${API_BASE_URL}/bookings/availability`);
-                const data = await res.json();
                 
-                let html = '';
-                data.blocked_dates.forEach(b => {
-                    html += `<div class="blocked-item">📅 ${b.start_date} → ${b.end_date} ${b.reason ? '<br>📝 ' + b.reason : ''}</div>`;
-                });
-                document.getElementById('blocked-list').innerHTML = html || '<p>No blocked dates</p>';
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`Booking ${status} successfully`);
+                    loadAllBookings();
+                    loadDashboard();
+                }
             } catch (error) {
-                console.error(error);
+                alert('Failed to update status');
             }
         }
 
         async function loadPrice() {
             try {
-                const res = await fetch(`${API_BASE_URL}/bookings/prices`);
-                const data = await res.json();
+                const response = await fetch(`${API_BASE_URL}/bookings/prices`);
+                const data = await response.json();
                 document.getElementById('nightly-rate').value = data.nightly_rate;
             } catch (error) {
-                console.error(error);
+                console.error('Error loading price:', error);
             }
         }
 
         async function updatePrice() {
             const rate = document.getElementById('nightly-rate').value;
+            
             try {
-                await fetch(`${API_BASE_URL}/admin/prices`, {
+                const response = await fetch(`${API_BASE_URL}/admin/prices`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({nightly_rate: rate})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nightly_rate: rate })
                 });
-                alert('Price updated');
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Price updated successfully');
+                }
             } catch (error) {
-                alert('Failed');
+                alert('Failed to update price');
             }
         }
     </script>
 </body>
-
 </html>
-
-
-
-
