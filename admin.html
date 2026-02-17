@@ -86,14 +86,19 @@
             margin-right: 5px;
         }
 
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
         .btn-danger {
             background: var(--coral);
             color: white;
         }
 
-        .btn-success {
-            background: #28a745;
-            color: white;
+        .btn-warning {
+            background: #ffc107;
+            color: #000;
         }
 
         .dashboard-container {
@@ -249,18 +254,51 @@
             margin-top: 8px;
         }
 
-        /* Simple Date Blocking */
-        .date-input-group {
+        /* Block Dates Styles */
+        .block-type-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 10px;
+        }
+
+        .block-type-tab {
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: var(--radius);
+            color: var(--deep-blue);
+        }
+
+        .block-type-tab.active {
+            background: var(--ocean-blue);
+            color: white;
+        }
+
+        .block-section {
+            display: none;
+        }
+
+        .block-section.active {
+            display: block;
+        }
+
+        .form-group {
             margin-bottom: 15px;
         }
 
-        .date-input-group label {
+        .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: 500;
+            font-size: 14px;
         }
 
-        .date-input-group input {
+        .form-group input {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
@@ -268,8 +306,10 @@
             font-size: 16px;
         }
 
-        .blocked-list {
-            margin-top: 20px;
+        .date-range {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
         .blocked-item {
@@ -282,7 +322,11 @@
             align-items: center;
         }
 
-        .blocked-date {
+        .blocked-info {
+            flex: 1;
+        }
+
+        .blocked-dates {
             font-weight: 600;
             color: var(--deep-blue);
         }
@@ -297,16 +341,35 @@
             background: var(--coral);
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: var(--radius);
             font-size: 12px;
             cursor: pointer;
+            margin-left: 10px;
         }
 
         .info-text {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #666;
-            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: var(--radius);
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: var(--radius);
+            margin-bottom: 15px;
+            display: none;
         }
     </style>
 </head>
@@ -336,6 +399,10 @@
             <h1>HTM Rentals Admin</h1>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
+
+        <!-- Success/Error Messages -->
+        <div id="success-message" class="success-message"></div>
+        <div id="error-message" class="error-message"></div>
 
         <!-- Menu Tabs -->
         <div class="menu-tabs">
@@ -381,28 +448,55 @@
             </div>
         </div>
 
-        <!-- Block Dates Section (Simple) -->
+        <!-- Block Dates Section -->
         <div id="section-block" style="display: none;">
             <div class="card">
-                <h2>Block a Single Date</h2>
-                <p class="info-text">Select a date to block it (guests cannot book this day)</p>
+                <h2>Block Dates</h2>
                 
-                <div class="date-input-group">
-                    <label>Date to Block</label>
-                    <input type="date" id="block-date">
+                <!-- Tabs for Single or Range -->
+                <div class="block-type-tabs">
+                    <button id="tab-single" class="block-type-tab active" onclick="showBlockType('single')">Single Date</button>
+                    <button id="tab-range" class="block-type-tab" onclick="showBlockType('range')">Date Range</button>
                 </div>
                 
-                <div class="date-input-group">
-                    <label>Reason (optional)</label>
-                    <input type="text" id="block-reason" placeholder="e.g., Maintenance, Personal use">
+                <!-- Single Date Block -->
+                <div id="single-block" class="block-section active">
+                    <p class="info-text">Block one specific date</p>
+                    <div class="form-group">
+                        <label>Select Date</label>
+                        <input type="date" id="single-date">
+                    </div>
+                    <div class="form-group">
+                        <label>Reason (optional)</label>
+                        <input type="text" id="single-reason" placeholder="e.g., Maintenance">
+                    </div>
+                    <button class="btn" onclick="blockSingleDate()">Block This Date</button>
                 </div>
                 
-                <button class="btn" onclick="blockSingleDate()">Block This Date</button>
+                <!-- Date Range Block -->
+                <div id="range-block" class="block-section">
+                    <p class="info-text">Block a range of dates</p>
+                    <div class="date-range">
+                        <div class="form-group">
+                            <label>From</label>
+                            <input type="date" id="range-start">
+                        </div>
+                        <div class="form-group">
+                            <label>To</label>
+                            <input type="date" id="range-end">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Reason (optional)</label>
+                        <input type="text" id="range-reason" placeholder="e.g., Renovation">
+                    </div>
+                    <button class="btn" onclick="blockDateRange()">Block Date Range</button>
+                </div>
             </div>
             
             <div class="card">
                 <h2>Currently Blocked Dates</h2>
-                <div id="blocked-dates-list" class="blocked-list"></div>
+                <div id="blocked-list"></div>
             </div>
         </div>
 
@@ -410,8 +504,8 @@
         <div id="section-unblock" style="display: none;">
             <div class="card">
                 <h2>Unblock Dates</h2>
-                <p class="info-text">Click on any blocked date to unblock it</p>
-                <div id="unblock-dates-list" class="blocked-list"></div>
+                <p class="info-text">Click the Unblock button to remove a blocked date</p>
+                <div id="unblock-list"></div>
             </div>
         </div>
 
@@ -420,7 +514,7 @@
             <div class="card">
                 <h2>Price Settings</h2>
                 
-                <div class="date-input-group">
+                <div class="form-group">
                     <label>Nightly Rate ($)</label>
                     <input type="number" id="nightly-rate" value="90" min="1">
                 </div>
@@ -455,6 +549,22 @@
             document.getElementById('dashboard-page').style.display = 'none';
         }
 
+        function showMessage(type, message) {
+            if (type === 'success') {
+                document.getElementById('success-message').textContent = message;
+                document.getElementById('success-message').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('success-message').style.display = 'none';
+                }, 3000);
+            } else {
+                document.getElementById('error-message').textContent = message;
+                document.getElementById('error-message').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('error-message').style.display = 'none';
+                }, 3000);
+            }
+        }
+
         function showSection(section) {
             // Hide all sections
             document.getElementById('section-dashboard').style.display = 'none';
@@ -482,10 +592,11 @@
             } else if (section === 'block') {
                 document.getElementById('section-block').style.display = 'block';
                 document.getElementById('menu-block').classList.add('active');
+                loadBlockedDates();
             } else if (section === 'unblock') {
                 document.getElementById('section-unblock').style.display = 'block';
                 document.getElementById('menu-unblock').classList.add('active');
-                loadBlockedDates();
+                loadUnblockList();
             } else if (section === 'settings') {
                 document.getElementById('section-settings').style.display = 'block';
                 document.getElementById('menu-settings').classList.add('active');
@@ -493,13 +604,27 @@
             }
         }
 
-        // Block a single date
+        function showBlockType(type) {
+            if (type === 'single') {
+                document.getElementById('single-block').classList.add('active');
+                document.getElementById('range-block').classList.remove('active');
+                document.getElementById('tab-single').classList.add('active');
+                document.getElementById('tab-range').classList.remove('active');
+            } else {
+                document.getElementById('single-block').classList.remove('active');
+                document.getElementById('range-block').classList.add('active');
+                document.getElementById('tab-single').classList.remove('active');
+                document.getElementById('tab-range').classList.add('active');
+            }
+        }
+
+        // Block single date
         async function blockSingleDate() {
-            const date = document.getElementById('block-date').value;
-            const reason = document.getElementById('block-reason').value || 'Blocked';
+            const date = document.getElementById('single-date').value;
+            const reason = document.getElementById('single-reason').value || 'Blocked';
             
             if (!date) {
-                alert('Please select a date');
+                showMessage('error', 'Please select a date');
                 return;
             }
             
@@ -517,66 +642,112 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert(`Date ${date} blocked successfully`);
-                    document.getElementById('block-date').value = '';
-                    document.getElementById('block-reason').value = '';
+                    showMessage('success', `Date ${date} blocked successfully`);
+                    document.getElementById('single-date').value = '';
+                    document.getElementById('single-reason').value = '';
                     loadBlockedDates();
                 } else {
-                    alert('Failed to block date');
+                    showMessage('error', 'Failed to block date');
                 }
             } catch (error) {
-                alert('Error blocking date');
+                showMessage('error', 'Error blocking date');
             }
         }
 
-        // Unblock a date
-        async function unblockDate(id) {
+        // Block date range
+        async function blockDateRange() {
+            const start = document.getElementById('range-start').value;
+            const end = document.getElementById('range-end').value;
+            const reason = document.getElementById('range-reason').value || 'Blocked';
+            
+            if (!start || !end) {
+                showMessage('error', 'Please select start and end dates');
+                return;
+            }
+            
+            if (new Date(start) > new Date(end)) {
+                showMessage('error', 'Start date must be before end date');
+                return;
+            }
+            
             try {
-                // You'll need to add this endpoint to your backend
-                const response = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' }
+                const response = await fetch(`${API_BASE_URL}/admin/block-dates`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        start_date: start,
+                        end_date: end,
+                        reason: reason
+                    })
                 });
                 
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('Date unblocked successfully');
+                    showMessage('success', `Dates ${start} to ${end} blocked successfully`);
+                    document.getElementById('range-start').value = '';
+                    document.getElementById('range-end').value = '';
+                    document.getElementById('range-reason').value = '';
                     loadBlockedDates();
                 } else {
-                    alert('Failed to unblock date');
+                    showMessage('error', 'Failed to block dates');
                 }
             } catch (error) {
-                alert('Error unblocking date');
+                showMessage('error', 'Error blocking dates');
             }
         }
 
-        // Load blocked dates
+        // Load blocked dates for display
         async function loadBlockedDates() {
             try {
                 const response = await fetch(`${API_BASE_URL}/bookings/availability`);
                 const data = await response.json();
                 
-                let blockHtml = '';
-                let unblockHtml = '';
+                let html = '';
                 
                 if (data.blocked_dates && data.blocked_dates.length > 0) {
                     data.blocked_dates.forEach(block => {
-                        // For block section
-                        blockHtml += `
+                        const dateDisplay = block.start_date === block.end_date 
+                            ? block.start_date 
+                            : `${block.start_date} to ${block.end_date}`;
+                        
+                        html += `
                             <div class="blocked-item">
-                                <div>
-                                    <div class="blocked-date">📅 ${block.start_date}</div>
+                                <div class="blocked-info">
+                                    <div class="blocked-dates">📅 ${dateDisplay}</div>
                                     ${block.reason ? `<div class="blocked-reason">${block.reason}</div>` : ''}
                                 </div>
                             </div>
                         `;
+                    });
+                } else {
+                    html = '<p>No blocked dates</p>';
+                }
+                
+                document.getElementById('blocked-list').innerHTML = html;
+            } catch (error) {
+                console.error('Error loading blocked dates:', error);
+            }
+        }
+
+        // Load unblock list with buttons
+        async function loadUnblockList() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/bookings/availability`);
+                const data = await response.json();
+                
+                let html = '';
+                
+                if (data.blocked_dates && data.blocked_dates.length > 0) {
+                    data.blocked_dates.forEach(block => {
+                        const dateDisplay = block.start_date === block.end_date 
+                            ? block.start_date 
+                            : `${block.start_date} to ${block.end_date}`;
                         
-                        // For unblock section with delete button
-                        unblockHtml += `
+                        html += `
                             <div class="blocked-item">
-                                <div>
-                                    <div class="blocked-date">📅 ${block.start_date}</div>
+                                <div class="blocked-info">
+                                    <div class="blocked-dates">📅 ${dateDisplay}</div>
                                     ${block.reason ? `<div class="blocked-reason">${block.reason}</div>` : ''}
                                 </div>
                                 <button class="unblock-btn" onclick="unblockDate(${block.id})">Unblock</button>
@@ -584,14 +755,37 @@
                         `;
                     });
                 } else {
-                    blockHtml = '<p style="color: #666;">No blocked dates</p>';
-                    unblockHtml = '<p style="color: #666;">No blocked dates to unblock</p>';
+                    html = '<p>No blocked dates to unblock</p>';
                 }
                 
-                document.getElementById('blocked-dates-list').innerHTML = blockHtml;
-                document.getElementById('unblock-dates-list').innerHTML = unblockHtml;
+                document.getElementById('unblock-list').innerHTML = html;
             } catch (error) {
-                console.error('Error loading blocked dates:', error);
+                console.error('Error loading unblock list:', error);
+            }
+        }
+
+        // Unblock date
+        async function unblockDate(id) {
+            if (!confirm('Are you sure you want to unblock this date?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('success', 'Date unblocked successfully');
+                    loadBlockedDates();
+                    loadUnblockList();
+                } else {
+                    showMessage('error', 'Failed to unblock date');
+                }
+            } catch (error) {
+                showMessage('error', 'Error unblocking date');
             }
         }
 
@@ -703,12 +897,14 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert(`Booking ${status} successfully`);
+                    showMessage('success', `Booking ${status} successfully`);
                     loadAllBookings();
                     loadDashboard();
+                } else {
+                    showMessage('error', 'Failed to update status');
                 }
             } catch (error) {
-                alert('Failed to update status');
+                showMessage('error', 'Error updating status');
             }
         }
 
@@ -725,6 +921,11 @@
         async function updatePrice() {
             const rate = document.getElementById('nightly-rate').value;
             
+            if (!rate || rate < 1) {
+                showMessage('error', 'Please enter a valid price');
+                return;
+            }
+            
             try {
                 const response = await fetch(`${API_BASE_URL}/admin/prices`, {
                     method: 'POST',
@@ -735,10 +936,12 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('Price updated successfully');
+                    showMessage('success', 'Price updated successfully');
+                } else {
+                    showMessage('error', 'Failed to update price');
                 }
             } catch (error) {
-                alert('Failed to update price');
+                showMessage('error', 'Error updating price');
             }
         }
     </script>
