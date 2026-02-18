@@ -638,6 +638,64 @@
             color: var(--deep-blue);
         }
 
+        /* Enhanced Experiences Section */
+        .experiences-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .experience-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .experience-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 105, 148, 0.15);
+        }
+
+        .experience-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+            background-color: #ddd;
+        }
+
+        .experience-images img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .experience-content {
+            padding: 20px;
+        }
+
+        .experience-content h3 {
+            color: var(--ocean-blue);
+            margin-bottom: 10px;
+        }
+
+        .experience-content p {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .experience-meta {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        .experience-meta i {
+            margin-right: 5px;
+        }
+
         /* Contact Section */
         .contact-options {
             display: flex;
@@ -998,6 +1056,7 @@
                     <li><a href="#gallery"><i class="fas fa-images"></i> Photos</a></li>
                     <li><a href="#amenities"><i class="fas fa-star"></i> Amenities</a></li>
                     <li><a href="#booking"><i class="fas fa-calendar-alt"></i> Book Now</a></li>
+                    <li><a href="#experiences"><i class="fas fa-umbrella-beach"></i> Experiences</a></li>
                     <li><a href="#contact"><i class="fas fa-phone"></i> Contact</a></li>
                     <li><a href="tel:9373113" class="btn"><i class="fas fa-phone"></i> Call Now</a></li>
                 </ul>
@@ -1081,7 +1140,7 @@
         </div>
     </section>
 
-    <!-- Photo Gallery -->
+    <!-- Photo Gallery (UPDATED with new bathroom and balcony images) -->
     <section id="gallery" style="background-color: var(--light-gray);">
         <div class="container">
             <h2><i class="fas fa-images"></i> Photo Gallery</h2>
@@ -1104,12 +1163,14 @@
                     <img src="https://i.ibb.co/sdvR6x3T/IMG-20260206-WA0022.jpg" alt="Kitchen Appliances" class="gallery-img">
                     <div class="img-label">Kitchen Appliances & Storage</div>
                 </div>
+                <!-- Updated Bathroom Image -->
                 <div class="gallery-item">
-                    <img src="https://i.ibb.co/Hp3TY54g/IMG-20260206-WA0069.jpg" alt="Clean Bathroom" class="gallery-img">
+                    <img src="https://i.ibb.co/b5VGxpym/IMG-20260218-195614.jpg" alt="Clean Bathroom" class="gallery-img">
                     <div class="img-label">Clean Bathroom</div>
                 </div>
+                <!-- Updated Balcony Image -->
                 <div class="gallery-item">
-                    <img src="https://i.ibb.co/hF2QqtdX/IMG-20260206-WA0071.jpg" alt="Balcony Open Area" class="gallery-img">
+                    <img src="https://i.ibb.co/F4NNMG7S/IMG-20260206-WA0073.jpg" alt="Balcony Open Area" class="gallery-img">
                     <div class="img-label">Balcony Open Area</div>
                 </div>
             </div>
@@ -1339,6 +1400,72 @@
         </div>
     </section>
 
+    <!-- Enhanced Experiences Section (NEW) -->
+    <section id="experiences" style="background-color: var(--light-gray);">
+        <div class="container">
+            <h2 style="text-align: center;"><i class="fas fa-umbrella-beach"></i> Curated Maldives Experiences</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 40px;">Let us help you create unforgettable memories. Contact us for details and pricing on any of these activities.</p>
+
+            <div class="experiences-grid">
+                <!-- 1. Dolphin Cruise -->
+                <div class="experience-card">
+                    <div class="experience-images">
+                        <img src="https://i.ibb.co/1f0JYvQb/DBI-Amilla-dolphin1-1600x900-1030x579.jpg" alt="Dolphin Cruise">
+                        <img src="https://i.ibb.co/XfjdBdnR/images-5.jpg" alt="Dolphin Sunset">
+                    </div>
+                    <div class="experience-content">
+                        <h3>🐬 Dolphin Cruise</h3>
+                        <p>Embark on a magical evening cruise to spot playful dolphins in their natural habitat. Experience a breathtaking sunset over the Indian Ocean.</p>
+                        <p class="experience-meta"><i class="fas fa-clock"></i> Availability & Price: Please contact us to discuss.</p>
+                    </div>
+                </div>
+
+                <!-- 2. Sandbank Trip -->
+                <div class="experience-card">
+                    <div class="experience-images">
+                        <img src="https://i.ibb.co/wNtqqp3W/images-7.jpg" alt="Sandbank Trip">
+                        <img src="https://i.ibb.co/sd0Z9Zs2/images-6.jpg" alt="Sandbank Paradise">
+                    </div>
+                    <div class="experience-content">
+                        <h3>🏝️ Sandbank Trip</h3>
+                        <p>Visit a pristine sandbank in the middle of the ocean. Relax on soft white sand, swim in crystal-clear waters, and enjoy complete seclusion.</p>
+                        <p class="experience-meta"><i class="fas fa-clock"></i> Availability & Price: Please contact us to discuss.</p>
+                    </div>
+                </div>
+
+                <!-- 3. Snorkeling Trip -->
+                <div class="experience-card">
+                    <div class="experience-images">
+                        <img src="https://i.ibb.co/Y41nS4fR/maldives-snorkeling-trip-triton-hotels-tours-maafushi.jpg" alt="Snorkeling">
+                        <img src="https://i.ibb.co/5xhTJCfK/Happy-family-girl-in-snorkeling-mask-dive-underwater-with-tropical-fishes-in-coral-reef-sea-pool-Tr.jpg" alt="Underwater">
+                    </div>
+                    <div class="experience-content">
+                        <h3>🤿 Snorkeling Trip</h3>
+                        <p>Discover vibrant coral reefs and colorful tropical fish. Our guided snorkeling trips take you to the best spots for an unforgettable underwater adventure.</p>
+                        <p class="experience-meta"><i class="fas fa-clock"></i> Availability & Price: Please contact us to discuss.</p>
+                    </div>
+                </div>
+
+                <!-- 4. Local Island Hopping -->
+                <div class="experience-card">
+                    <div class="experience-images">
+                        <img src="https://i.ibb.co/sMbr6jm/900x600-maldives-baa-atoll-fehendhoo-street.jpg" alt="Local Island">
+                        <img src="https://i.ibb.co/FqyvmbFs/island-street.jpg" alt="Island Street">
+                    </div>
+                    <div class="experience-content">
+                        <h3>🏘️ Local Island Hopping</h3>
+                        <p>Experience the real Maldives by visiting local islands. Discover unique culture, friendly communities, and see a different side of paradise.</p>
+                        <p class="experience-meta"><i class="fas fa-clock"></i> Availability & Price: Please contact us to discuss.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="#contact" class="btn btn-secondary"><i class="fab fa-whatsapp"></i> Inquire About Activities</a>
+            </div>
+        </div>
+    </section>
+
     <!-- Additional Services -->
     <section id="services">
         <div class="container">
@@ -1375,7 +1502,7 @@
     <section id="contact" style="background-color: var(--light-gray);">
         <div class="container">
             <h2><i class="fas fa-phone"></i> Contact Us</h2>
-            <p style="text-align: center; max-width: 700px; margin: 0 auto 40px; font-size: 1.1rem;">Contact us directly to check availability, ask questions, or make a booking. We respond quickly!</p>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 40px;">Contact us directly to check availability, ask questions, or make a booking. We respond quickly!</p>
             
             <div class="contact-options">
                 <div class="contact-card fade-in">
@@ -1429,6 +1556,7 @@
                         <li><a href="#gallery">Gallery</a></li>
                         <li><a href="#amenities">Amenities</a></li>
                         <li><a href="#booking">Book Now</a></li>
+                        <li><a href="#experiences">Experiences</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
@@ -1451,7 +1579,7 @@
 
     <!-- Backend API Connection -->
     <script>
-        // API Configuration - Updated with your phone's IP
+        // API Configuration - UPDATED to use your domain
         const API_BASE_URL = 'https://api.htmrentals.com/api';
 
         // Global variables
@@ -1463,7 +1591,7 @@
         let bookedDates = [];
         let blockedDates = [];
         let nightlyRate = 90;
-        let cleaningFee = 0; // No cleaning fee
+        let cleaningFee = 0;
 
         // Month names
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -1501,8 +1629,6 @@
                 
                 if (data.success) {
                     nightlyRate = data.nightly_rate;
-                    // cleaningFee is set to 0, ignore what backend says
-                    
                     document.querySelector('.rate-amount').textContent = `$${nightlyRate} USD`;
                 }
             } catch (error) {
@@ -1594,7 +1720,7 @@
                 document.getElementById('check-out').value = formatDate(dateStr);
                 
                 const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
-                const total = nights * nightlyRate; // No cleaning fee
+                const total = nights * nightlyRate;
                 
                 document.getElementById('night-count').textContent = nights;
                 document.getElementById('subtotal').textContent = total;
@@ -1638,7 +1764,7 @@
             }, 5000);
         }
 
-        // Handle form submission
+        // Handle form submission - UPDATED with correct WhatsApp message
         document.getElementById('booking-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -1690,7 +1816,8 @@
                     const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
                     const total = nights * nightlyRate;
                     
-                    const whatsappMessage = `*Booking Confirmed - Malas Residence*%0A%0A` +
+                    // UPDATED: Changed from "Confirmed" to "Request"
+                    const whatsappMessage = `*Booking Request - Malas Residence*%0A%0A` +
                         `*Booking ID:* ${data.booking_id}%0A` +
                         `*Guest:* ${name}%0A` +
                         `*Check-in:* ${formatDate(selectedCheckIn)}%0A` +
@@ -1754,10 +1881,4 @@
         });
     </script>
 </body>
-
 </html>
-
-
-
-
-
