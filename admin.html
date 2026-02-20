@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* [Keep all existing styles exactly as before] */
         * {
             margin: 0;
             padding: 0;
@@ -275,158 +274,6 @@
             flex-wrap: wrap;
         }
 
-        /* Invoice Styles */
-        .invoice-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .invoice-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--ocean-blue);
-        }
-
-        .invoice-status {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .status-draft {
-            background: #e2e3e5;
-            color: #383d41;
-        }
-
-        .status-sent {
-            background: #cce5ff;
-            color: #004085;
-        }
-
-        .status-paid {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-partially_paid {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-overdue {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .invoice-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: var(--light-gray);
-            border-radius: var(--radius);
-        }
-
-        .invoice-items {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .invoice-items th {
-            text-align: left;
-            padding: 10px;
-            background: var(--light-gray);
-            color: var(--deep-blue);
-            font-size: 0.8rem;
-        }
-
-        .invoice-items td {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .invoice-items input {
-            width: 100%;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .invoice-totals {
-            width: 300px;
-            margin-left: auto;
-            padding: 15px;
-            background: var(--light-gray);
-            border-radius: var(--radius);
-        }
-
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .total-row.final {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: var(--deep-blue);
-            border-bottom: none;
-            padding-top: 15px;
-        }
-
-        .item-type-select {
-            padding: 4px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-
-        .quick-add-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-
-        .quick-add-btn {
-            background: var(--light-gray);
-            border: 1px solid var(--ocean-blue);
-            color: var(--ocean-blue);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        .quick-add-btn:hover {
-            background: var(--ocean-blue);
-            color: white;
-        }
-
-        .payment-item {
-            background: var(--light-gray);
-            padding: 10px;
-            border-radius: var(--radius);
-            margin-bottom: 8px;
-        }
-
-        .payment-method-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            background: white;
-            margin-left: 8px;
-        }
-
         /* Block Dates Styles */
         .block-type-tabs {
             display: flex;
@@ -556,15 +403,16 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            padding: 15px;
         }
 
         .modal-content {
             background: white;
             padding: 20px;
             border-radius: var(--radius);
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
             overflow-y: auto;
         }
 
@@ -573,6 +421,12 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gray);
         }
 
         .modal-close {
@@ -580,23 +434,178 @@
             cursor: pointer;
         }
 
-        .activity-item {
-            border: 1px solid #ddd;
-            border-radius: var(--radius);
-            padding: 12px;
-            margin-bottom: 10px;
-            cursor: pointer;
+        /* Invoice Styles */
+        .invoice {
+            font-family: 'Inter', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
-        .activity-item:hover {
-            background: var(--light-gray);
-        }
-
-        .flex-row {
+        .invoice-header {
+            background: var(--ocean-blue);
+            color: white;
+            padding: 20px;
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .invoice-title h1 {
+            color: white;
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+        }
+
+        .invoice-title p {
+            color: rgba(255,255,255,0.9);
+            margin: 0;
+        }
+
+        .invoice-badge {
+            background: white;
+            color: var(--ocean-blue);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .invoice-body {
+            padding: 30px 20px;
+        }
+
+        .invoice-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .meta-group h3 {
+            font-size: 0.8rem;
+            color: var(--medium-gray);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-group p {
+            font-weight: 600;
+            color: var(--deep-blue);
+            margin: 0;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .invoice-table th {
+            background: var(--light-gray);
+            padding: 12px;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--medium-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .invoice-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .amount {
+            text-align: right;
+        }
+
+        .invoice-summary {
+            width: 300px;
+            margin-left: auto;
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .summary-row.total {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--deep-blue);
+            border-bottom: none;
+            padding-top: 15px;
+        }
+
+        .payment-history {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #ddd;
+        }
+
+        .payment-item {
+            background: var(--light-gray);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .invoice-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+
+        .invoice-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .invoice, .invoice * {
+                visibility: visible;
+            }
+            .invoice {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+            }
+            .invoice-actions, .modal-close, .menu-tabs, .top-bar {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -693,7 +702,7 @@
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
                     <h2 style="margin-bottom: 0;">All Invoices</h2>
-                    <div class="flex-row">
+                    <div style="display: flex; gap: 10px;">
                         <select id="invoice-status-filter" onchange="loadInvoices()" style="padding: 8px; border-radius: var(--radius); border: 1px solid #ddd;">
                             <option value="">All Status</option>
                             <option value="draft">Draft</option>
@@ -733,12 +742,12 @@
                 
                 <h3 style="margin: 20px 0 10px;">Line Items</h3>
                 
-                <div class="quick-add-buttons">
-                    <span class="quick-add-btn" onclick="addQuickItem('Dolphin Cruise (2 pax)')">🐬 Dolphin Cruise</span>
-                    <span class="quick-add-btn" onclick="addQuickItem('Sandbank Trip (2 pax)')">🏝️ Sandbank Trip</span>
-                    <span class="quick-add-btn" onclick="addQuickItem('Snorkeling Trip')">🤿 Snorkeling</span>
-                    <span class="quick-add-btn" onclick="addQuickItem('Local Island Hopping')">🏘️ Island Hopping</span>
-                    <span class="quick-add-btn" onclick="addQuickItem('Minibar Charges')">🥤 Minibar</span>
+                <div class="quick-add-buttons" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <span class="quick-add-btn" onclick="addQuickItem('Dolphin Cruise (2 pax)', 2, 45)">🐬 Dolphin Cruise</span>
+                    <span class="quick-add-btn" onclick="addQuickItem('Sandbank Trip (2 pax)', 2, 45)">🏝️ Sandbank Trip</span>
+                    <span class="quick-add-btn" onclick="addQuickItem('Snorkeling Trip', 2, 40)">🤿 Snorkeling</span>
+                    <span class="quick-add-btn" onclick="addQuickItem('Local Island Hopping', 2, 50)">🏘️ Island Hopping</span>
+                    <span class="quick-add-btn" onclick="addQuickItem('Minibar Charges', 1, 25)">🥤 Minibar</span>
                 </div>
                 
                 <div id="invoice-items-container">
@@ -752,22 +761,22 @@
                     <input type="number" id="invoice-tax" value="0" min="0" max="100" step="0.1">
                 </div>
                 
-                <div class="invoice-totals" style="width: 100%; margin: 15px 0;">
-                    <div class="total-row">
+                <div class="invoice-summary" style="width: 100%; margin: 15px 0;">
+                    <div class="summary-row">
                         <span>Subtotal:</span>
                         <span id="invoice-subtotal">$0.00</span>
                     </div>
-                    <div class="total-row">
+                    <div class="summary-row">
                         <span>Tax:</span>
                         <span id="invoice-tax-amount">$0.00</span>
                     </div>
-                    <div class="total-row final">
+                    <div class="summary-row total">
                         <span>Total:</span>
                         <span id="invoice-total">$0.00</span>
                     </div>
                 </div>
                 
-                <div class="flex-row">
+                <div style="display: flex; gap: 10px;">
                     <button class="btn" onclick="createStandaloneInvoice()" style="flex: 2;">Create Invoice</button>
                     <button class="btn-small btn-danger" onclick="resetInvoiceForm()" style="flex: 1;">Reset</button>
                 </div>
@@ -851,10 +860,16 @@
     <div id="invoice-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Invoice Details</h2>
+                <h2>Invoice</h2>
                 <span class="modal-close" onclick="closeInvoiceModal()">&times;</span>
             </div>
             <div id="invoice-modal-content"></div>
+            <div class="invoice-actions">
+                <button class="btn-small btn-success" onclick="printInvoice()"><i class="fas fa-print"></i> Print</button>
+                <button class="btn-small btn-secondary" onclick="downloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
+                <button class="btn-small btn-warning" onclick="recordPayment()"><i class="fas fa-money-bill"></i> Record Payment</button>
+                <button class="btn-small btn-danger" onclick="deleteCurrentInvoice()"><i class="fas fa-trash"></i> Delete</button>
+            </div>
         </div>
     </div>
 
@@ -865,7 +880,8 @@
 
         let currentInvoicePage = 1;
         let currentInvoiceFilter = '';
-        let standaloneItems = [];
+        let currentInvoiceData = null;
+        let currentInvoiceId = null;
 
         // Login function
         function login() {
@@ -1191,7 +1207,7 @@
                             <span class="status-badge status-${b.booking_status}">${b.booking_status}</span>
                         </div>
                         <div style="font-size: 0.9rem; margin-bottom: 5px;">
-                            📅 ${b.check_in_date} → ${b.check_out_date}
+                            📅 ${b.check_in_date ? b.check_in_date.split('T')[0] : ''} → ${b.check_out_date ? b.check_out_date.split('T')[0] : ''}
                         </div>
                         <div style="font-size: 0.8rem; color: #666; margin-bottom: 8px;">
                             $${b.total_amount} • ${b.total_nights} nights • ${b.number_of_guests} guests
@@ -1206,9 +1222,6 @@
                                 ${!b.invoice_id ? `
                                     <button class="btn-small btn-secondary" onclick="createInvoice(${b.id})">📄 Create Invoice</button>
                                 ` : ''}
-                            ` : ''}
-                            ${b.booking_status === 'cancelled' ? `
-                                <span class="status-badge status-cancelled">Cancelled</span>
                             ` : ''}
                             ${b.invoice_id ? `
                                 <button class="btn-small btn-secondary" onclick="viewInvoice(${b.invoice_id})">📄 View Invoice</button>
@@ -1236,7 +1249,7 @@
                                     <span class="status-badge status-${b.booking_status}">${b.booking_status}</span>
                                 </div>
                                 <div style="font-size: 0.9rem; margin-bottom: 5px;">
-                                    📅 ${b.check_in_date} → ${b.check_out_date}
+                                    📅 ${b.check_in_date ? b.check_in_date.split('T')[0] : ''} → ${b.check_out_date ? b.check_out_date.split('T')[0] : ''}
                                 </div>
                                 <div style="font-size: 0.8rem; color: #666; margin-bottom: 8px;">
                                     $${b.total_amount} • ${b.total_nights} nights • ${b.number_of_guests} guests
@@ -1251,9 +1264,6 @@
                                         ${!b.invoice_id ? `
                                             <button class="btn-small btn-secondary" onclick="createInvoice(${b.id})">📄 Create Invoice</button>
                                         ` : ''}
-                                    ` : ''}
-                                    ${b.booking_status === 'cancelled' ? `
-                                        <span class="status-badge status-cancelled">Cancelled</span>
                                     ` : ''}
                                     ${b.invoice_id ? `
                                         <button class="btn-small btn-secondary" onclick="viewInvoice(${b.invoice_id})">📄 View Invoice</button>
@@ -1340,7 +1350,6 @@
             container.insertAdjacentHTML('beforeend', itemHtml);
             updateInvoiceTotals();
             
-            // Add event listeners for real-time updates
             setTimeout(() => {
                 document.querySelectorAll(`#item-${itemId} input`).forEach(input => {
                     input.addEventListener('input', updateInvoiceTotals);
@@ -1353,8 +1362,8 @@
             updateInvoiceTotals();
         }
 
-        function addQuickItem(desc) {
-            addInvoiceItem(desc, 2, 45); // Default 2 pax at $45 each
+        function addQuickItem(desc, qty, price) {
+            addInvoiceItem(desc, qty, price);
         }
 
         function updateInvoiceTotals() {
@@ -1412,28 +1421,7 @@
                 return;
             }
             
-            // Calculate totals
-            const subtotal = items.reduce((sum, i) => sum + i.amount, 0);
-            const taxRate = parseFloat(document.getElementById('invoice-tax').value) || 0;
-            const taxAmount = (subtotal * taxRate) / 100;
-            const total = subtotal + taxAmount;
-            
-            // Create invoice data
-            const invoiceData = {
-                guest_name: customer,
-                guest_email: document.getElementById('invoice-email').value || null,
-                guest_phone: document.getElementById('invoice-phone').value || null,
-                items: items,
-                tax_rate: taxRate,
-                subtotal: subtotal,
-                tax_amount: taxAmount,
-                total_amount: total,
-                is_standalone: true
-            };
-            
-            console.log('Creating invoice:', invoiceData);
-            showMessage('success', 'Invoice created (demo mode)');
-            showSection('invoices');
+            showMessage('success', 'Standalone invoice feature coming soon!');
         }
 
         // Load invoices
@@ -1524,7 +1512,9 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    showInvoiceModal(data.invoice, data.items, data.payments);
+                    currentInvoiceData = data.invoice;
+                    currentInvoiceId = invoiceId;
+                    displayInvoice(data.invoice, data.items, data.payments);
                 } else {
                     showMessage('error', 'Failed to load invoice');
                 }
@@ -1533,8 +1523,8 @@
             }
         }
 
-        function showInvoiceModal(invoice, items, payments) {
-            const statusClass = `invoice-status status-${invoice.status}`;
+        function displayInvoice(invoice, items, payments) {
+            const statusClass = `status-badge status-${invoice.status}`;
             const statusText = invoice.status.replace('_', ' ');
             
             let itemsHtml = '';
@@ -1542,9 +1532,9 @@
                 itemsHtml += `
                     <tr>
                         <td>${item.description}</td>
-                        <td>${item.quantity}</td>
-                        <td>$${item.unit_price}</td>
-                        <td>$${item.amount}</td>
+                        <td class="amount">${item.quantity}</td>
+                        <td class="amount">$${item.unit_price}</td>
+                        <td class="amount">$${item.amount}</td>
                     </tr>
                 `;
             });
@@ -1553,82 +1543,94 @@
             payments.forEach(p => {
                 paymentsHtml += `
                     <div class="payment-item">
-                        <div style="display: flex; justify-content: space-between;">
-                            <span><strong>$${p.amount}</strong> via ${p.payment_method}</span>
-                            <span class="payment-method-badge">${p.payment_date}</span>
-                        </div>
-                        ${p.reference_number ? `<div style="font-size: 0.8rem;">Ref: ${p.reference_number}</div>` : ''}
+                        <span><strong>$${p.amount}</strong> via ${p.payment_method}</span>
+                        <span>${p.payment_date}</span>
                     </div>
                 `;
             });
 
             const content = `
-                <div class="invoice-header">
-                    <span class="invoice-number">${invoice.invoice_number}</span>
-                    <span class="${statusClass}">${statusText}</span>
-                </div>
-                
-                <div class="invoice-details">
-                    <div>
-                        <strong>Guest:</strong> ${invoice.guest_name}<br>
-                        <strong>Email:</strong> ${invoice.guest_email || 'N/A'}<br>
-                        <strong>Phone:</strong> ${invoice.guest_phone || 'N/A'}
+                <div class="invoice">
+                    <div class="invoice-header">
+                        <div class="invoice-title">
+                            <h1>INVOICE</h1>
+                            <p>${invoice.invoice_number}</p>
+                        </div>
+                        <div class="invoice-badge ${statusClass}">${statusText}</div>
                     </div>
-                    <div>
-                        <strong>Issue Date:</strong> ${invoice.issue_date}<br>
-                        <strong>Due Date:</strong> ${invoice.due_date}<br>
-                        <strong>Status:</strong> ${statusText}
-                    </div>
-                </div>
+                    
+                    <div class="invoice-body">
+                        <div class="invoice-meta">
+                            <div class="meta-group">
+                                <h3>Bill To</h3>
+                                <p>${invoice.guest_name}</p>
+                                <p style="font-weight: normal;">${invoice.guest_email || ''}</p>
+                                <p style="font-weight: normal;">${invoice.guest_phone || ''}</p>
+                            </div>
+                            <div class="meta-group">
+                                <h3>Invoice Details</h3>
+                                <p>Issue Date: ${invoice.issue_date}</p>
+                                <p>Due Date: ${invoice.due_date}</p>
+                            </div>
+                            ${invoice.check_in_date ? `
+                            <div class="meta-group">
+                                <h3>Stay Details</h3>
+                                <p>Check-in: ${invoice.check_in_date.split('T')[0]}</p>
+                                <p>Check-out: ${invoice.check_out_date.split('T')[0]}</p>
+                                <p>${invoice.total_nights} nights</p>
+                            </div>
+                            ` : ''}
+                        </div>
 
-                <h3 style="margin-bottom: 10px;">Items</h3>
-                <table class="invoice-items">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th>Qty</th>
-                            <th>Unit Price</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${itemsHtml}
-                    </tbody>
-                </table>
+                        <table class="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th class="amount">Qty</th>
+                                    <th class="amount">Unit Price</th>
+                                    <th class="amount">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${itemsHtml}
+                            </tbody>
+                        </table>
 
-                <div class="invoice-totals">
-                    <div class="total-row">
-                        <span>Subtotal:</span>
-                        <span>$${invoice.subtotal}</span>
-                    </div>
-                    <div class="total-row">
-                        <span>Tax (${invoice.tax_rate}%):</span>
-                        <span>$${invoice.tax_amount}</span>
-                    </div>
-                    <div class="total-row final">
-                        <span>Total:</span>
-                        <span>$${invoice.total_amount}</span>
-                    </div>
-                    <div class="total-row">
-                        <span>Paid:</span>
-                        <span>$${invoice.amount_paid || 0}</span>
-                    </div>
-                    <div class="total-row">
-                        <span>Balance:</span>
-                        <span>$${(invoice.total_amount - (invoice.amount_paid || 0)).toFixed(2)}</span>
-                    </div>
-                </div>
+                        <div class="invoice-summary">
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span>$${invoice.subtotal}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Tax (${invoice.tax_rate}%):</span>
+                                <span>$${invoice.tax_amount}</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total:</span>
+                                <span>$${invoice.total_amount}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Paid:</span>
+                                <span>$${invoice.amount_paid || 0}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Balance Due:</span>
+                                <span>$${(invoice.total_amount - (invoice.amount_paid || 0)).toFixed(2)}</span>
+                            </div>
+                        </div>
 
-                ${payments.length > 0 ? `
-                    <h3 style="margin: 20px 0 10px;">Payments</h3>
-                    ${paymentsHtml}
-                ` : ''}
+                        ${paymentsHtml ? `
+                            <div class="payment-history">
+                                <h3>Payment History</h3>
+                                ${paymentsHtml}
+                            </div>
+                        ` : ''}
 
-                <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
-                    <button class="btn-small btn-success" onclick="recordPayment(${invoice.id})">💰 Record Payment</button>
-                    <button class="btn-small btn-warning" onclick="updateInvoiceStatus(${invoice.id})">📝 Update Status</button>
-                    <button class="btn-small btn-secondary" onclick="printInvoice(${invoice.id})">🖨️ Print</button>
-                    <button class="btn-small btn-danger" onclick="deleteInvoice(${invoice.id})">🗑️ Delete</button>
+                        <div class="invoice-footer">
+                            <p>Thank you for choosing HTM Rentals!</p>
+                            <p style="font-size: 0.8rem;">For questions, contact htmrentalss@gmail.com</p>
+                        </div>
+                    </div>
                 </div>
             `;
             
@@ -1638,10 +1640,23 @@
 
         function closeInvoiceModal() {
             document.getElementById('invoice-modal').style.display = 'none';
+            currentInvoiceData = null;
+            currentInvoiceId = null;
         }
 
-        // Record payment
-        async function recordPayment(invoiceId) {
+        function printInvoice() {
+            window.print();
+        }
+
+        function downloadPDF() {
+            // For now, just print
+            window.print();
+            showMessage('info', 'Use "Save as PDF" from print dialog');
+        }
+
+        async function recordPayment() {
+            if (!currentInvoiceId) return;
+            
             const amount = prompt('Enter payment amount:');
             if (!amount) return;
             
@@ -1655,7 +1670,7 @@
             const date = new Date().toISOString().split('T')[0];
             
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}/payments`, {
+                const response = await fetch(`${API_BASE_URL}/admin/invoices/${currentInvoiceId}/payments`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1680,46 +1695,12 @@
             }
         }
 
-        // Update invoice status
-        async function updateInvoiceStatus(invoiceId) {
-            const statuses = ['draft', 'sent', 'paid', 'partially_paid', 'overdue', 'cancelled'];
-            const status = prompt('Enter new status (draft/sent/paid/partially_paid/overdue/cancelled):');
-            
-            if (!statuses.includes(status)) {
-                showMessage('error', 'Invalid status');
-                return;
-            }
+        async function deleteCurrentInvoice() {
+            if (!currentInvoiceId) return;
+            if (!confirm('Are you sure you want to delete this invoice?')) return;
             
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}/status`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showMessage('success', 'Status updated');
-                    closeInvoiceModal();
-                    loadInvoices(currentInvoicePage);
-                    loadDashboard();
-                } else {
-                    showMessage('error', 'Failed to update status');
-                }
-            } catch (error) {
-                showMessage('error', 'Error updating status');
-            }
-        }
-
-        // Delete invoice
-        async function deleteInvoice(invoiceId) {
-            if (!confirm('Are you sure you want to delete this invoice? This cannot be undone.')) {
-                return;
-            }
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`, {
+                const response = await fetch(`${API_BASE_URL}/admin/invoices/${currentInvoiceId}`, {
                     method: 'DELETE'
                 });
                 
@@ -1736,11 +1717,6 @@
             } catch (error) {
                 showMessage('error', 'Error deleting invoice');
             }
-        }
-
-        // Print invoice (simplified)
-        function printInvoice(invoiceId) {
-            window.open(`${API_BASE_URL}/admin/invoices/${invoiceId}/pdf`, '_blank');
         }
 
         // Load price settings
