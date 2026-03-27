@@ -1022,6 +1022,7 @@
         // Invoice data
         let currentInvoiceItems = [];
         let currentInvoiceId = null;
+        let allBookingsCache = null;
         
         // Minibar items - Based on actual minibar menu
         let minibarItems = [
@@ -1038,6 +1039,34 @@
             { name: 'Sandwich', price_usd: 6, price_mvr: 90 },
             { name: 'Instant Noodles', price_usd: 2, price_mvr: 30 }
         ];
+        
+        // Helper function to format date: "29 Mar 2026, 14:00"
+        function formatDateTime(dateString, timeString = null) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const day = date.getDate();
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+            
+            let time = '';
+            if (timeString) {
+                time = `, ${timeString}`;
+            }
+            
+            return `${day} ${month} ${year}${time}`;
+        }
+        
+        // Helper function to format check-in and check-out with standard times
+        function formatCheckInDate(dateString) {
+            return formatDateTime(dateString, '14:00');
+        }
+        
+        function formatCheckOutDate(dateString) {
+            return formatDateTime(dateString, '12:00');
+        }
         
         // Initialize
         function init() {
@@ -1191,13 +1220,22 @@
             });
             renderMinibarSelect();
             updateInvoiceTotals();
+            // Reload all data with new currency
             loadDashboard();
+            if (allBookingsCache) {
+                displayBookings(allBookingsCache);
+            } else {
+                loadAllBookings();
+            }
             loadInvoices();
         }
         
         function updateAllDisplayedPrices() {
             updateInvoiceTotals();
             loadDashboard();
+            if (allBookingsCache) {
+                displayBookings(allBookingsCache);
+            }
             loadInvoices();
         }
         
@@ -1533,7 +1571,7 @@
                         <span class="badge badge-${b.booking_status}">${b.booking_status}</span>
                     </div>
                     <div style="font-size: 0.85rem; color: var(--gray-600); margin-top: 4px;">
-                        ${b.check_in_date} → ${b.check_out_date}
+                        ${formatCheckInDate(b.check_in_date)} → ${formatCheckOutDate(b.check_out_date)}
                     </div>
                     <div style="font-size: 0.85rem; margin-top: 4px;">
                         ${formatCurrency(b.total_amount)} • ${b.total_nights} nights
@@ -1547,11 +1585,12 @@
                 const response = await fetch(`${API_BASE_URL}/admin/bookings`);
                 const data = await response.json();
                 if (data.success) {
-                    window.allBookings = data.bookings;
+                    allBookingsCache = data.bookings;
                     displayBookings(data.bookings);
                 }
             } catch (error) {
                 console.error('Error loading bookings:', error);
+                showToast('Failed to load bookings', 'error');
             }
         }
         
@@ -1559,7 +1598,7 @@
             const container = document.getElementById('all-bookings');
             if (!container) return;
             
-            if (bookings.length === 0) {
+            if (!bookings || bookings.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 40px;">No bookings found</p>';
                 return;
             }
@@ -1581,8 +1620,8 @@
                         ${bookings.map(b => `
                             <tr>
                                 <td><strong>${escapeHtml(b.guest_name)}</strong><br><small>${b.guest_phone || ''}</small></td>
-                                <td>${b.check_in_date}</td>
-                                <td>${b.check_out_date}</td>
+                                <td>${formatCheckInDate(b.check_in_date)}</td>
+                                <td>${formatCheckOutDate(b.check_out_date)}</td>
                                 <td>${b.total_nights}</td>
                                 <td>${formatCurrency(b.total_amount)}</td>
                                 <td><span class="badge badge-${b.booking_status}">${b.booking_status}</span></td>
@@ -1591,7 +1630,7 @@
                                         `<button class="btn btn-success btn-sm" onclick="confirmBooking(${b.id})">Confirm</button>
                                          <button class="delete-btn" onclick="cancelBooking(${b.id})">Cancel</button>` : 
                                         b.booking_status === 'cancelled' ?
-                                        `<button class="delete-btn" onclick="deleteBooking(${b.id})">Delete</button>` :
+                                        `<button class="delete-btn" onclick="deleteBooking(${b.id})">Delete Permanently</button>` :
                                         `<button class="delete-btn" onclick="cancelBooking(${b.id})">Cancel</button>`
                                     }
                                 </td>
@@ -1603,8 +1642,8 @@
         }
         
         function filterBookings(searchTerm) {
-            if (!window.allBookings) return;
-            const filtered = window.allBookings.filter(b => 
+            if (!allBookingsCache) return;
+            const filtered = allBookingsCache.filter(b => 
                 b.guest_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 (b.guest_phone && b.guest_phone.includes(searchTerm))
             );
@@ -1624,6 +1663,8 @@
                     showToast('Booking confirmed', 'success');
                     loadAllBookings();
                     loadDashboard();
+                } else {
+                    showToast(data.error || 'Failed to confirm booking', 'error');
                 }
             } catch (error) {
                 showToast('Error confirming booking', 'error');
@@ -1643,6 +1684,8 @@
                     showToast('Booking cancelled', 'success');
                     loadAllBookings();
                     loadDashboard();
+                } else {
+                    showToast(data.error || 'Failed to cancel booking', 'error');
                 }
             } catch (error) {
                 showToast('Error cancelling booking', 'error');
@@ -1650,10 +1693,11 @@
         }
         
         async function deleteBooking(id) {
-            if (!confirm('Permanently delete this cancelled booking? This action cannot be undone.')) return;
+            if (!confirm('WARNING: This will permanently delete this cancelled booking. This action cannot be undone. Continue?')) return;
             try {
                 const response = await fetch(`${API_BASE_URL}/admin/bookings/${id}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
                 });
                 const data = await response.json();
                 if (data.success) {
@@ -1661,10 +1705,11 @@
                     loadAllBookings();
                     loadDashboard();
                 } else {
-                    showToast('Failed to delete booking', 'error');
+                    showToast(data.error || 'Failed to delete booking', 'error');
                 }
             } catch (error) {
-                showToast('Error deleting booking', 'error');
+                console.error('Delete error:', error);
+                showToast('Error deleting booking. Please check console for details.', 'error');
             }
         }
         
@@ -1717,7 +1762,7 @@
                     document.getElementById('block-single-date').value = '';
                     document.getElementById('block-single-reason').value = '';
                 } else {
-                    showToast('Failed to block date', 'error');
+                    showToast(data.error || 'Failed to block date', 'error');
                 }
             } catch (error) {
                 showToast('Error blocking date', 'error');
@@ -1750,7 +1795,7 @@
                     document.getElementById('block-range-end').value = '';
                     document.getElementById('block-range-reason').value = '';
                 } else {
-                    showToast('Failed to block dates', 'error');
+                    showToast(data.error || 'Failed to block dates', 'error');
                 }
             } catch (error) {
                 showToast('Error blocking dates', 'error');
@@ -1791,6 +1836,8 @@
                 if (data.success) {
                     showToast('Date unblocked', 'success');
                     loadBlockedDates();
+                } else {
+                    showToast(data.error || 'Failed to unblock date', 'error');
                 }
             } catch (error) {
                 showToast('Error unblocking date', 'error');
