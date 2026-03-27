@@ -18,19 +18,16 @@
         :root {
             --primary: #006994;
             --primary-dark: #005077;
-            --primary-light: #e6f3f5;
             --success: #28a745;
             --danger: #dc3545;
             --warning: #ffc107;
             --gray-100: #f8f9fa;
             --gray-200: #e9ecef;
             --gray-300: #dee2e6;
-            --gray-400: #ced4da;
             --gray-500: #adb5bd;
             --gray-600: #6c757d;
             --gray-700: #495057;
             --gray-800: #343a40;
-            --gray-900: #212529;
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
             --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
             --radius: 8px;
@@ -76,11 +73,6 @@
             font-size: 14px;
         }
 
-        .login-card input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
         .btn {
             padding: 12px 24px;
             border: none;
@@ -102,11 +94,6 @@
 
         .btn-success {
             background: var(--success);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger);
             color: white;
         }
 
@@ -132,7 +119,6 @@
             border-right: 1px solid var(--gray-200);
             overflow-y: auto;
             z-index: 100;
-            transition: transform 0.3s ease;
         }
 
         .sidebar-header {
@@ -143,12 +129,6 @@
         .sidebar-header h2 {
             font-size: 1.2rem;
             color: var(--primary);
-        }
-
-        .sidebar-header p {
-            font-size: 12px;
-            color: var(--gray-600);
-            margin-top: 4px;
         }
 
         .nav-item {
@@ -202,7 +182,6 @@
             border: none;
             font-size: 20px;
             cursor: pointer;
-            color: var(--gray-700);
         }
 
         .header-actions {
@@ -292,7 +271,6 @@
             color: var(--gray-600);
             margin-bottom: 8px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .stat-number {
@@ -324,130 +302,6 @@
             background: var(--gray-100);
         }
 
-        /* Forms */
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            font-size: 13px;
-            color: var(--gray-700);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius);
-            font-size: 14px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-
-        /* Invoice Builder */
-        .invoice-builder {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 24px;
-        }
-
-        .item-selector {
-            background: var(--gray-100);
-            border-radius: var(--radius);
-            padding: 20px;
-        }
-
-        .item-category {
-            margin-bottom: 24px;
-        }
-
-        .item-category h4 {
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-            color: var(--gray-700);
-            font-weight: 600;
-        }
-
-        .item-category select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius);
-            background: white;
-            margin-bottom: 8px;
-        }
-
-        .qty-input {
-            width: 80px;
-            padding: 8px;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius);
-        }
-
-        .add-item-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .add-item-row input {
-            flex: 1;
-        }
-
-        /* Invoice Items */
-        .invoice-items {
-            overflow-x: auto;
-        }
-
-        .invoice-items table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .invoice-items th,
-        .invoice-items td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .invoice-items th {
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: var(--gray-600);
-        }
-
-        .invoice-summary {
-            background: var(--gray-100);
-            padding: 20px;
-            border-radius: var(--radius);
-            margin-top: 20px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-        }
-
-        .summary-row.total {
-            font-weight: 700;
-            font-size: 1.1rem;
-            border-top: 2px solid var(--gray-300);
-            margin-top: 8px;
-            padding-top: 12px;
-        }
-
         /* Status Badges */
         .badge {
             display: inline-block;
@@ -472,61 +326,6 @@
             color: #721c24;
         }
 
-        .badge-paid {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .badge-draft {
-            background: var(--gray-200);
-            color: var(--gray-700);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: var(--radius);
-            max-width: 90vw;
-            max-height: 90vh;
-            overflow-y: auto;
-            width: 100%;
-            max-width: 900px;
-        }
-
-        .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--gray-200);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-body {
-            padding: 20px;
-        }
-
-        .modal-footer {
-            padding: 20px;
-            border-top: 1px solid var(--gray-200);
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-        }
-
         /* Delete button */
         .delete-btn {
             background: none;
@@ -541,7 +340,6 @@
             opacity: 0.7;
         }
 
-        /* Action buttons */
         .action-buttons {
             display: flex;
             gap: 8px;
@@ -580,25 +378,10 @@
             }
         }
 
-        /* Blocked dates list */
-        .blocked-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        /* Responsive */
-        @media (max-width: 992px) {
-            .invoice-builder {
-                grid-template-columns: 1fr;
-            }
-        }
-
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
+                transition: transform 0.3s;
             }
             
             .sidebar.open {
@@ -613,10 +396,6 @@
                 display: block;
             }
             
-            .top-header {
-                padding: 0 16px;
-            }
-            
             .content-area {
                 padding: 16px;
             }
@@ -629,38 +408,6 @@
             .data-table {
                 display: block;
                 overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            .card-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .modal-content {
-                max-width: 95vw;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .currency-toggle {
-                display: none;
-            }
-            
-            .top-header {
-                padding: 0 12px;
             }
         }
     </style>
@@ -684,7 +431,7 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2>HTM Rentals</h2>
-                <p>Administrator Portal</p>
+                <p style="font-size: 12px; color: var(--gray-600);">Administrator Portal</p>
             </div>
             <nav>
                 <div class="nav-item active" data-section="dashboard">
@@ -706,10 +453,6 @@
                 <div class="nav-item" data-section="block-dates">
                     <i class="fas fa-ban"></i>
                     <span>Block Dates</span>
-                </div>
-                <div class="nav-item" data-section="catalog">
-                    <i class="fas fa-box"></i>
-                    <span>Minibar Catalog</span>
                 </div>
                 <div class="nav-item" data-section="settings">
                     <i class="fas fa-cog"></i>
@@ -746,13 +489,6 @@
                         </div>
                         <div id="recent-bookings"></div>
                     </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>Recent Invoices</h2>
-                            <button class="btn btn-primary btn-sm" onclick="showSection('invoices')">View All</button>
-                        </div>
-                        <div id="recent-invoices"></div>
-                    </div>
                 </div>
 
                 <!-- Bookings Section -->
@@ -771,171 +507,43 @@
                     <div class="card">
                         <div class="card-header">
                             <h2>All Invoices</h2>
-                            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                                <select id="invoice-status-filter" onchange="loadInvoices()" style="padding: 8px; border-radius: var(--radius); border: 1px solid var(--gray-300);">
-                                    <option value="">All Status</option>
-                                    <option value="draft">Draft</option>
-                                    <option value="sent">Sent</option>
-                                    <option value="paid">Paid</option>
-                                    <option value="partially_paid">Partially Paid</option>
-                                </select>
-                                <button class="btn btn-primary btn-sm" onclick="showSection('new-invoice')">New Invoice</button>
-                            </div>
+                            <button class="btn btn-primary btn-sm" onclick="showSection('new-invoice')">New Invoice</button>
                         </div>
                         <div id="invoices-list"></div>
-                        <div id="invoices-pagination" style="display: flex; justify-content: center; gap: 8px; margin-top: 20px;"></div>
                     </div>
                 </div>
 
-                <!-- New Invoice Section -->
+                <!-- New Invoice Section (Simplified for now) -->
                 <div id="new-invoice-section" style="display: none;">
                     <div class="card">
                         <div class="card-header">
                             <h2>Create Invoice</h2>
                             <button class="btn btn-sm" style="background: var(--gray-200);" onclick="resetInvoice()">Reset</button>
                         </div>
-                        
-                        <!-- Customer Info -->
-                        <div style="margin-bottom: 24px;">
-                            <h3 style="margin-bottom: 16px; font-size: 1rem; font-weight: 600;">Customer Information</h3>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Full Name *</label>
-                                    <input type="text" id="invoice-customer-name" placeholder="Customer name">
-                                </div>
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" id="invoice-customer-email" placeholder="Email address">
-                                </div>
-                                <div class="form-group">
-                                    <label>Phone</label>
-                                    <input type="tel" id="invoice-customer-phone" placeholder="Phone number">
-                                </div>
+                        <div class="form-group">
+                            <label>Customer Name *</label>
+                            <input type="text" id="invoice-customer-name" placeholder="Customer name">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" id="invoice-description" placeholder="Item description">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" id="invoice-qty" value="1" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label>Amount (USD)</label>
+                                <input type="number" id="invoice-amount" step="0.01" placeholder="0.00">
                             </div>
                         </div>
-                        
-                        <!-- Invoice Builder -->
-                        <div class="invoice-builder">
-                            <!-- Item Selector -->
-                            <div class="item-selector">
-                                <h3 style="margin-bottom: 20px; font-size: 1rem; font-weight: 600;">Add Items</h3>
-                                
-                                <div class="item-category">
-                                    <h4>Room Stay</h4>
-                                    <select id="room-select">
-                                        <option value="">Select nights</option>
-                                        <option value="1">1 night - $90</option>
-                                        <option value="2">2 nights - $180</option>
-                                        <option value="3">3 nights - $270</option>
-                                        <option value="4">4 nights - $360</option>
-                                        <option value="5">5 nights - $450</option>
-                                        <option value="6">6 nights - $540</option>
-                                        <option value="7">7 nights - $630</option>
-                                    </select>
-                                    <button class="btn btn-primary btn-sm" style="width: 100%; margin-top: 8px;" onclick="addRoomItem()">Add Room Charge</button>
-                                </div>
-                                
-                                <div class="item-category">
-                                    <h4>Minibar</h4>
-                                    <select id="minibar-select">
-                                        <option value="">Select item</option>
-                                    </select>
-                                    <div class="add-item-row" style="margin-top: 8px;">
-                                        <input type="number" id="minibar-qty" placeholder="Qty" value="1" class="qty-input">
-                                        <button class="btn btn-primary btn-sm" onclick="addMinibarItem()">Add</button>
-                                    </div>
-                                </div>
-                                
-                                <div class="item-category">
-                                    <h4>Activities</h4>
-                                    <select id="activity-select">
-                                        <option value="">Select activity</option>
-                                        <option value="Dolphin Cruise">Dolphin Cruise</option>
-                                        <option value="Sandbank Trip">Sandbank Trip</option>
-                                        <option value="Snorkeling Trip">Snorkeling Trip</option>
-                                        <option value="Local Island Hopping">Local Island Hopping</option>
-                                        <option value="Water Sports">Water Sports</option>
-                                    </select>
-                                    <div class="add-item-row" style="margin-top: 8px;">
-                                        <input type="number" id="activity-price" placeholder="Price" step="0.01" style="flex: 1;">
-                                        <input type="number" id="activity-qty" placeholder="Qty" value="1" class="qty-input">
-                                        <button class="btn btn-primary btn-sm" onclick="addActivityItem()">Add</button>
-                                    </div>
-                                </div>
-                                
-                                <div class="item-category">
-                                    <h4>Services</h4>
-                                    <select id="service-select">
-                                        <option value="">Select service</option>
-                                        <option value="Vehicle Rental">Vehicle Rental</option>
-                                        <option value="Local Guidance">Local Guidance</option>
-                                        <option value="Housekeeping">Housekeeping</option>
-                                    </select>
-                                    <div class="add-item-row" style="margin-top: 8px;">
-                                        <input type="number" id="service-price" placeholder="Price" step="0.01" style="flex: 1;">
-                                        <input type="number" id="service-qty" placeholder="Qty" value="1" class="qty-input">
-                                        <button class="btn btn-primary btn-sm" onclick="addServiceItem()">Add</button>
-                                    </div>
-                                </div>
-                                
-                                <div class="item-category">
-                                    <h4>Custom Item</h4>
-                                    <input type="text" id="custom-desc" placeholder="Description" style="width: 100%; margin-bottom: 8px;">
-                                    <div class="add-item-row">
-                                        <input type="number" id="custom-price" placeholder="Price" step="0.01" style="flex: 1;">
-                                        <input type="number" id="custom-qty" placeholder="Qty" value="1" class="qty-input">
-                                        <button class="btn btn-primary btn-sm" onclick="addCustomItem()">Add</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Invoice Items -->
-                            <div>
-                                <h3 style="margin-bottom: 16px; font-size: 1rem; font-weight: 600;">Invoice Items</h3>
-                                <div class="invoice-items">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Description</th>
-                                                <th style="width: 80px;">Qty</th>
-                                                <th style="width: 100px;">Unit Price</th>
-                                                <th style="width: 100px;">Amount</th>
-                                                <th style="width: 50px;"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="invoice-items-body">
-                                            <tr>
-                                                <td colspan="5" style="text-align: center; color: var(--gray-500); padding: 40px;">No items added</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                
-                                <div class="invoice-summary">
-                                    <div class="summary-row">
-                                        <span>Subtotal</span>
-                                        <span id="invoice-subtotal">$0.00</span>
-                                    </div>
-                                    <div class="form-group" style="margin: 12px 0;">
-                                        <label>Tax Rate (%)</label>
-                                        <input type="number" id="invoice-tax-rate" value="0" step="0.1" style="width: 100px;">
-                                    </div>
-                                    <div class="summary-row">
-                                        <span>Tax</span>
-                                        <span id="invoice-tax-amount">$0.00</span>
-                                    </div>
-                                    <div class="summary-row total">
-                                        <span>Total</span>
-                                        <span id="invoice-total">$0.00</span>
-                                    </div>
-                                </div>
-                                
-                                <div style="display: flex; gap: 12px; margin-top: 20px;">
-                                    <button class="btn btn-primary" style="flex: 1;" onclick="createInvoice()">Create Invoice</button>
-                                    <button class="btn btn-success" style="flex: 1;" onclick="previewInvoice()">Preview</button>
-                                </div>
-                            </div>
+                        <button class="btn btn-primary" onclick="addInvoiceItemSimple()">Add Item</button>
+                        <div id="invoice-items-simple" style="margin-top: 20px;"></div>
+                        <div style="margin-top: 20px;">
+                            <strong>Total: </strong><span id="invoice-total-simple">$0.00</span>
                         </div>
+                        <button class="btn btn-success" style="margin-top: 20px;" onclick="createSimpleInvoice()">Create Invoice</button>
                     </div>
                 </div>
 
@@ -947,30 +555,19 @@
                             <div class="form-group">
                                 <label>Single Date</label>
                                 <input type="date" id="block-single-date">
-                                <input type="text" id="block-single-reason" placeholder="Reason (e.g., Maintenance)" style="margin-top: 8px;">
-                                <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="blockSingleDate()">Block This Date</button>
+                                <input type="text" id="block-single-reason" placeholder="Reason" style="margin-top: 8px;">
+                                <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="blockSingleDate()">Block Date</button>
                             </div>
                             <div class="form-group">
                                 <label>Date Range</label>
                                 <input type="date" id="block-range-start">
                                 <input type="date" id="block-range-end" style="margin-top: 8px;">
                                 <input type="text" id="block-range-reason" placeholder="Reason" style="margin-top: 8px;">
-                                <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="blockDateRange()">Block Date Range</button>
+                                <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="blockDateRange()">Block Range</button>
                             </div>
                         </div>
-                        <h3 style="margin-top: 32px; margin-bottom: 16px; font-size: 1rem; font-weight: 600;">Currently Blocked Dates</h3>
+                        <h3 style="margin-top: 24px; margin-bottom: 16px;">Blocked Dates</h3>
                         <div id="blocked-dates-list"></div>
-                    </div>
-                </div>
-
-                <!-- Minibar Catalog Section -->
-                <div id="catalog-section" style="display: none;">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>Minibar Catalog</h2>
-                            <button class="btn btn-primary btn-sm" onclick="addMinibarCatalogItem()">Add Item</button>
-                        </div>
-                        <div id="minibar-catalog-list" style="overflow-x: auto;"></div>
                     </div>
                 </div>
 
@@ -993,604 +590,54 @@
         </div>
     </div>
 
-    <!-- Invoice Modal -->
-    <div id="invoice-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Invoice</h2>
-                <button onclick="closeInvoiceModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
-            </div>
-            <div class="modal-body" id="invoice-preview-content"></div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" onclick="printInvoice()">Print</button>
-                <button class="btn btn-success" onclick="downloadInvoice()">Download PDF</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         // API Configuration
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         const ADMIN_USERNAME = 'bissbro';
         const ADMIN_PASSWORD = 'admin123';
         
-        // Session management
-        let isLoggedIn = false;
         let currentCurrency = 'USD';
         let exchangeRate = 15.42;
+        let allBookingsData = [];
+        let simpleInvoiceItems = [];
         
-        // Invoice data
-        let currentInvoiceItems = [];
-        let currentInvoiceId = null;
-        let allBookingsCache = null;
-        
-        // Minibar items - Based on actual minibar menu
-        let minibarItems = [
-            { name: 'Water Bottle (500ml)', price_usd: 2, price_mvr: 30 },
-            { name: 'Soft Drink (Can)', price_usd: 3, price_mvr: 45 },
-            { name: 'Juice', price_usd: 4, price_mvr: 60 },
-            { name: 'Beer (Local)', price_usd: 5, price_mvr: 75 },
-            { name: 'Beer (Imported)', price_usd: 7, price_mvr: 105 },
-            { name: 'Wine (Glass)', price_usd: 8, price_mvr: 120 },
-            { name: 'Wine (Bottle)', price_usd: 35, price_mvr: 525 },
-            { name: 'Chocolate Bar', price_usd: 3, price_mvr: 45 },
-            { name: 'Chips', price_usd: 2.50, price_mvr: 38 },
-            { name: 'Nuts', price_usd: 4, price_mvr: 60 },
-            { name: 'Sandwich', price_usd: 6, price_mvr: 90 },
-            { name: 'Instant Noodles', price_usd: 2, price_mvr: 30 }
-        ];
-        
-        // Helper function to format date: "29 Mar 2026, 14:00"
-        function formatDateTime(dateString, timeString = null) {
+        // Helper: Format date
+        function formatDateTime(dateString, timeString) {
             if (!dateString) return 'N/A';
             const date = new Date(dateString);
             if (isNaN(date.getTime())) return dateString;
-            
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const day = date.getDate();
-            const month = months[date.getMonth()];
-            const year = date.getFullYear();
-            
-            let time = '';
-            if (timeString) {
-                time = `, ${timeString}`;
-            }
-            
-            return `${day} ${month} ${year}${time}`;
+            const formattedDate = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+            return timeString ? `${formattedDate}, ${timeString}` : formattedDate;
         }
         
-        // Helper function to format check-in and check-out with standard times
-        function formatCheckInDate(dateString) {
-            return formatDateTime(dateString, '14:00');
-        }
-        
-        function formatCheckOutDate(dateString) {
-            return formatDateTime(dateString, '12:00');
-        }
-        
-        // Initialize
-        function init() {
-            loadSettings();
-            renderMinibarSelect();
-            renderMinibarCatalog();
-            setupEventListeners();
-            checkSession();
-        }
-        
-        function loadSettings() {
-            const savedRate = localStorage.getItem('exchangeRate');
-            if (savedRate) exchangeRate = parseFloat(savedRate);
-            const savedNightly = localStorage.getItem('nightlyRate');
-            if (savedNightly) document.getElementById('nightly-rate-setting').value = savedNightly;
-            document.getElementById('exchange-rate-setting').value = exchangeRate;
-        }
-        
-        function updateSettings() {
-            const nightlyRate = parseFloat(document.getElementById('nightly-rate-setting').value);
-            const newExchangeRate = parseFloat(document.getElementById('exchange-rate-setting').value);
-            if (!isNaN(nightlyRate)) localStorage.setItem('nightlyRate', nightlyRate);
-            if (!isNaN(newExchangeRate)) {
-                exchangeRate = newExchangeRate;
-                localStorage.setItem('exchangeRate', exchangeRate);
-            }
-            showToast('Settings saved', 'success');
-            updateAllDisplayedPrices();
-        }
-        
-        function checkSession() {
-            const session = sessionStorage.getItem('adminLoggedIn');
-            if (session === 'true') {
-                isLoggedIn = true;
-                document.getElementById('login-wrapper').style.display = 'none';
-                document.getElementById('admin-container').style.display = 'block';
-                showSection('dashboard');
-            }
-        }
-        
-        function setupEventListeners() {
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const section = item.dataset.section;
-                    showSection(section);
-                });
-            });
-            
-            document.getElementById('menu-toggle')?.addEventListener('click', () => {
-                document.getElementById('sidebar').classList.toggle('open');
-            });
-            
-            document.getElementById('booking-search')?.addEventListener('input', (e) => {
-                filterBookings(e.target.value);
-            });
-            
-            document.getElementById('invoice-tax-rate')?.addEventListener('input', updateInvoiceTotals);
-            
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', (e) => {
-                const sidebar = document.getElementById('sidebar');
-                const menuToggle = document.getElementById('menu-toggle');
-                if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
-                    if (!sidebar.contains(e.target) && e.target !== menuToggle && !menuToggle.contains(e.target)) {
-                        sidebar.classList.remove('open');
-                    }
-                }
-            });
-        }
-        
-        function renderMinibarSelect() {
-            const select = document.getElementById('minibar-select');
-            if (select) {
-                select.innerHTML = '<option value="">Select item</option>' + 
-                    minibarItems.map((item, idx) => {
-                        const price = currentCurrency === 'USD' ? item.price_usd : item.price_mvr;
-                        const symbol = currentCurrency === 'USD' ? '$' : 'MVR';
-                        return `<option value="${idx}" data-price-usd="${item.price_usd}" data-price-mvr="${item.price_mvr}">${item.name} - ${symbol}${price.toFixed(2)}</option>`;
-                    }).join('');
-            }
-        }
-        
-        function renderMinibarCatalog() {
-            const container = document.getElementById('minibar-catalog-list');
-            if (container) {
-                container.innerHTML = `
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Item Name</th>
-                                <th>Price (USD)</th>
-                                <th>Price (MVR)</th>
-                                <th style="width: 60px;"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${minibarItems.map((item, idx) => `
-                                <tr>
-                                    <td>${escapeHtml(item.name)}</td>
-                                    <td>$${item.price_usd.toFixed(2)}</td>
-                                    <td>MVR ${item.price_mvr.toFixed(2)}</td>
-                                    <td><button class="delete-btn" onclick="deleteMinibarItem(${idx})"><i class="fas fa-trash"></i></button></td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
-            }
-        }
-        
-        function addMinibarCatalogItem() {
-            const name = prompt('Enter item name:');
-            if (!name) return;
-            const priceUsd = parseFloat(prompt('Enter price in USD:'));
-            if (isNaN(priceUsd)) return;
-            const priceMvr = parseFloat(prompt('Enter price in MVR:'));
-            if (isNaN(priceMvr)) return;
-            minibarItems.push({ name, price_usd: priceUsd, price_mvr: priceMvr });
-            localStorage.setItem('minibarItems', JSON.stringify(minibarItems));
-            renderMinibarSelect();
-            renderMinibarCatalog();
-            showToast('Item added', 'success');
-        }
-        
-        function deleteMinibarItem(index) {
-            if (confirm('Delete this item?')) {
-                minibarItems.splice(index, 1);
-                localStorage.setItem('minibarItems', JSON.stringify(minibarItems));
-                renderMinibarSelect();
-                renderMinibarCatalog();
-                showToast('Item deleted', 'success');
-            }
-        }
+        function formatCheckIn(date) { return formatDateTime(date, '14:00'); }
+        function formatCheckOut(date) { return formatDateTime(date, '12:00'); }
         
         function formatCurrency(amount) {
-            if (currentCurrency === 'USD') {
-                return `$${amount.toFixed(2)}`;
-            } else {
-                return `MVR ${(amount * exchangeRate).toFixed(2)}`;
-            }
+            if (currentCurrency === 'USD') return `$${amount.toFixed(2)}`;
+            return `MVR ${(amount * exchangeRate).toFixed(2)}`;
         }
         
-        function setCurrency(currency) {
-            currentCurrency = currency;
-            document.querySelectorAll('.currency-option').forEach(opt => {
-                if (opt.dataset.currency === currency) {
-                    opt.classList.add('active');
-                } else {
-                    opt.classList.remove('active');
-                }
-            });
-            renderMinibarSelect();
-            updateInvoiceTotals();
-            // Reload all data with new currency
-            loadDashboard();
-            if (allBookingsCache) {
-                displayBookings(allBookingsCache);
-            } else {
-                loadAllBookings();
-            }
-            loadInvoices();
-        }
-        
-        function updateAllDisplayedPrices() {
-            updateInvoiceTotals();
-            loadDashboard();
-            if (allBookingsCache) {
-                displayBookings(allBookingsCache);
-            }
-            loadInvoices();
-        }
-        
-        // Invoice item functions
-        function addRoomItem() {
-            const select = document.getElementById('room-select');
-            const nights = parseInt(select.value);
-            if (!nights) {
-                showToast('Select number of nights', 'error');
-                return;
-            }
-            const rate = parseFloat(localStorage.getItem('nightlyRate') || 90);
-            const total = nights * rate;
-            addInvoiceItem({
-                id: Date.now(),
-                description: `Room Rent - ${nights} night(s) @ ${formatCurrency(rate)}/night`,
-                quantity: nights,
-                unit_price: rate,
-                amount: total
-            });
-            select.value = '';
-        }
-        
-        function addMinibarItem() {
-            const select = document.getElementById('minibar-select');
-            const selectedIndex = select.value;
-            if (selectedIndex === '') {
-                showToast('Select an item', 'error');
-                return;
-            }
-            const item = minibarItems[parseInt(selectedIndex)];
-            const price = currentCurrency === 'USD' ? item.price_usd : item.price_mvr / exchangeRate;
-            const qty = parseInt(document.getElementById('minibar-qty').value) || 1;
-            addInvoiceItem({
-                id: Date.now(),
-                description: item.name,
-                quantity: qty,
-                unit_price: price,
-                amount: qty * price
-            });
-            select.value = '';
-            document.getElementById('minibar-qty').value = '1';
-        }
-        
-        function addActivityItem() {
-            const select = document.getElementById('activity-select');
-            const activity = select.value;
-            if (!activity) {
-                showToast('Select an activity', 'error');
-                return;
-            }
-            let price = parseFloat(document.getElementById('activity-price').value);
-            if (isNaN(price) || price <= 0) {
-                showToast('Enter a valid price', 'error');
-                return;
-            }
-            const qty = parseInt(document.getElementById('activity-qty').value) || 1;
-            addInvoiceItem({
-                id: Date.now(),
-                description: activity,
-                quantity: qty,
-                unit_price: price,
-                amount: qty * price
-            });
-            select.value = '';
-            document.getElementById('activity-price').value = '';
-            document.getElementById('activity-qty').value = '1';
-        }
-        
-        function addServiceItem() {
-            const select = document.getElementById('service-select');
-            const service = select.value;
-            if (!service) {
-                showToast('Select a service', 'error');
-                return;
-            }
-            let price = parseFloat(document.getElementById('service-price').value);
-            if (isNaN(price) || price <= 0) {
-                if (service === 'Housekeeping') price = 15;
-                else {
-                    showToast('Enter a valid price', 'error');
-                    return;
-                }
-            }
-            const qty = parseInt(document.getElementById('service-qty').value) || 1;
-            addInvoiceItem({
-                id: Date.now(),
-                description: service,
-                quantity: qty,
-                unit_price: price,
-                amount: qty * price
-            });
-            select.value = '';
-            document.getElementById('service-price').value = '';
-            document.getElementById('service-qty').value = '1';
-        }
-        
-        function addCustomItem() {
-            const desc = document.getElementById('custom-desc').value;
-            if (!desc) {
-                showToast('Enter description', 'error');
-                return;
-            }
-            const price = parseFloat(document.getElementById('custom-price').value);
-            if (isNaN(price) || price <= 0) {
-                showToast('Enter a valid price', 'error');
-                return;
-            }
-            const qty = parseInt(document.getElementById('custom-qty').value) || 1;
-            addInvoiceItem({
-                id: Date.now(),
-                description: desc,
-                quantity: qty,
-                unit_price: price,
-                amount: qty * price
-            });
-            document.getElementById('custom-desc').value = '';
-            document.getElementById('custom-price').value = '';
-            document.getElementById('custom-qty').value = '1';
-        }
-        
-        function addInvoiceItem(item) {
-            currentInvoiceItems.push(item);
-            renderInvoiceItems();
-            updateInvoiceTotals();
-        }
-        
-        function removeInvoiceItem(id) {
-            currentInvoiceItems = currentInvoiceItems.filter(item => item.id !== id);
-            renderInvoiceItems();
-            updateInvoiceTotals();
-        }
-        
-        function renderInvoiceItems() {
-            const tbody = document.getElementById('invoice-items-body');
-            if (!tbody) return;
-            
-            if (currentInvoiceItems.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--gray-500); padding: 40px;">No items added</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = currentInvoiceItems.map(item => `
-                <tr>
-                    <td>${escapeHtml(item.description)}</td>
-                    <td>${item.quantity}</td>
-                    <td>${formatCurrency(item.unit_price)}</td>
-                    <td>${formatCurrency(item.amount)}</td>
-                    <td>
-                        <button class="delete-btn" onclick="removeInvoiceItem(${item.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-        
-        function updateInvoiceTotals() {
-            const subtotal = currentInvoiceItems.reduce((sum, item) => sum + item.amount, 0);
-            const taxRate = parseFloat(document.getElementById('invoice-tax-rate')?.value) || 0;
-            const tax = subtotal * taxRate / 100;
-            const total = subtotal + tax;
-            
-            document.getElementById('invoice-subtotal').textContent = formatCurrency(subtotal);
-            document.getElementById('invoice-tax-amount').textContent = formatCurrency(tax);
-            document.getElementById('invoice-total').textContent = formatCurrency(total);
-        }
-        
-        function resetInvoice() {
-            currentInvoiceItems = [];
-            document.getElementById('invoice-customer-name').value = '';
-            document.getElementById('invoice-customer-email').value = '';
-            document.getElementById('invoice-customer-phone').value = '';
-            document.getElementById('invoice-tax-rate').value = '0';
-            renderInvoiceItems();
-            updateInvoiceTotals();
-        }
-        
-        async function createInvoice() {
-            const customerName = document.getElementById('invoice-customer-name').value;
-            if (!customerName) {
-                showToast('Please enter customer name', 'error');
-                return;
-            }
-            if (currentInvoiceItems.length === 0) {
-                showToast('Please add at least one item', 'error');
-                return;
-            }
-            
-            const subtotal = currentInvoiceItems.reduce((s, i) => s + i.amount, 0);
-            const taxRate = parseFloat(document.getElementById('invoice-tax-rate').value) || 0;
-            const tax = subtotal * taxRate / 100;
-            
-            const invoiceData = {
-                guest_name: customerName,
-                guest_email: document.getElementById('invoice-customer-email').value,
-                guest_phone: document.getElementById('invoice-customer-phone').value,
-                items: currentInvoiceItems.map(item => ({
-                    description: item.description,
-                    quantity: item.quantity,
-                    unit_price: item.unit_price,
-                    amount: item.amount
-                })),
-                tax_rate: taxRate,
-                subtotal: subtotal,
-                tax_amount: tax,
-                total_amount: subtotal + tax
-            };
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/invoices/standalone`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(invoiceData)
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Invoice created successfully', 'success');
-                    resetInvoice();
-                    showSection('invoices');
-                    loadInvoices();
-                } else {
-                    showToast(data.error || 'Failed to create invoice', 'error');
-                }
-            } catch (error) {
-                showToast('Network error. Please try again.', 'error');
-            }
-        }
-        
-        function previewInvoice() {
-            const customerName = document.getElementById('invoice-customer-name').value || 'Guest';
-            const subtotal = currentInvoiceItems.reduce((s, i) => s + i.amount, 0);
-            const taxRate = parseFloat(document.getElementById('invoice-tax-rate').value) || 0;
-            const tax = subtotal * taxRate / 100;
-            const total = subtotal + tax;
-            
-            const previewHtml = `
-                <div style="font-family: 'Inter', sans-serif;">
-                    <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid var(--gray-200);">
-                        <h1 style="color: #006994; margin-bottom: 8px;">HTM Rentals</h1>
-                        <p style="color: var(--gray-600);">Malas Residence, Hulhumale' Phase 2</p>
-                        <p style="color: var(--gray-600);">+960 9373113 | htmrentalss@gmail.com</p>
-                    </div>
-                    <div style="margin-bottom: 30px;">
-                        <p><strong>Bill To:</strong> ${escapeHtml(customerName)}</p>
-                        <p><strong>Invoice Date:</strong> ${new Date().toLocaleDateString()}</p>
-                        <p><strong>Invoice Number:</strong> INV-${Date.now()}</p>
-                    </div>
-                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--gray-300);">
-                                <th style="text-align: left; padding: 10px;">Description</th>
-                                <th style="text-align: right; padding: 10px;">Qty</th>
-                                <th style="text-align: right; padding: 10px;">Unit Price</th>
-                                <th style="text-align: right; padding: 10px;">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${currentInvoiceItems.map(item => `
-                                <tr style="border-bottom: 1px solid var(--gray-200);">
-                                    <td style="padding: 10px;">${escapeHtml(item.description)}</td>
-                                    <td style="text-align: right; padding: 10px;">${item.quantity}</td>
-                                    <td style="text-align: right; padding: 10px;">${formatCurrency(item.unit_price)}</td>
-                                    <td style="text-align: right; padding: 10px;">${formatCurrency(item.amount)}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                        <tfoot>
-                            <tr><td colspan="3" style="text-align: right; padding: 10px;"><strong>Subtotal:</strong></td><td style="text-align: right;">${formatCurrency(subtotal)}</td></tr>
-                            ${taxRate > 0 ? `<tr><td colspan="3" style="text-align: right; padding: 10px;"><strong>Tax (${taxRate}%):</strong></td><td style="text-align: right;">${formatCurrency(tax)}</td></tr>` : ''}
-                            <tr style="border-top: 2px solid var(--gray-300);"><td colspan="3" style="text-align: right; padding: 10px;"><strong>Total:</strong></td><td style="text-align: right; font-size: 1.2rem;"><strong>${formatCurrency(total)}</strong></td></tr>
-                        </tfoot>
-                    </table>
-                    <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--gray-200); color: var(--gray-600);">
-                        <p>Thank you for choosing HTM Rentals</p>
-                        <p style="font-size: 0.85rem;">Payment accepted: Cash, Bank Transfer, Cryptocurrency</p>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('invoice-preview-content').innerHTML = previewHtml;
-            document.getElementById('invoice-modal').style.display = 'flex';
-        }
-        
-        function closeInvoiceModal() {
-            document.getElementById('invoice-modal').style.display = 'none';
-        }
-        
-        function printInvoice() {
-            window.print();
-        }
-        
-        function downloadInvoice() {
-            window.print();
-            showToast('Use "Save as PDF" in print dialog', 'success');
-        }
-        
-        // Dashboard
-        async function loadDashboard() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/bookings`);
-                const data = await response.json();
-                if (data.success) {
-                    const bookings = data.bookings;
-                    const pending = bookings.filter(b => b.booking_status === 'pending').length;
-                    const confirmed = bookings.filter(b => b.booking_status === 'confirmed').length;
-                    const cancelled = bookings.filter(b => b.booking_status === 'cancelled').length;
-                    const revenue = bookings.filter(b => b.booking_status === 'confirmed').reduce((s, b) => s + parseFloat(b.total_amount), 0);
-                    
-                    document.getElementById('stats-grid').innerHTML = `
-                        <div class="stat-card"><h3>Total Bookings</h3><div class="stat-number">${bookings.length}</div></div>
-                        <div class="stat-card"><h3>Pending</h3><div class="stat-number">${pending}</div></div>
-                        <div class="stat-card"><h3>Confirmed</h3><div class="stat-number">${confirmed}</div></div>
-                        <div class="stat-card"><h3>Cancelled</h3><div class="stat-number">${cancelled}</div></div>
-                        <div class="stat-card"><h3>Revenue</h3><div class="stat-number">${formatCurrency(revenue)}</div></div>
-                    `;
-                    
-                    displayRecentBookings(bookings.slice(0, 5));
-                }
-            } catch (error) {
-                console.error('Error loading dashboard:', error);
-            }
-        }
-        
-        function displayRecentBookings(bookings) {
-            const container = document.getElementById('recent-bookings');
-            if (!container) return;
-            
-            container.innerHTML = bookings.map(b => `
-                <div style="padding: 12px; border-bottom: 1px solid var(--gray-200);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                        <strong>${escapeHtml(b.guest_name)}</strong>
-                        <span class="badge badge-${b.booking_status}">${b.booking_status}</span>
-                    </div>
-                    <div style="font-size: 0.85rem; color: var(--gray-600); margin-top: 4px;">
-                        ${formatCheckInDate(b.check_in_date)} → ${formatCheckOutDate(b.check_out_date)}
-                    </div>
-                    <div style="font-size: 0.85rem; margin-top: 4px;">
-                        ${formatCurrency(b.total_amount)} • ${b.total_nights} nights
-                    </div>
-                </div>
-            `).join('');
-        }
-        
+        // Load bookings from API
         async function loadAllBookings() {
             try {
                 const response = await fetch(`${API_BASE_URL}/admin/bookings`);
                 const data = await response.json();
                 if (data.success) {
-                    allBookingsCache = data.bookings;
-                    displayBookings(data.bookings);
+                    allBookingsData = data.bookings;
+                    displayBookings(allBookingsData);
+                    updateDashboardStats(allBookingsData);
+                    displayRecentBookings(allBookingsData.slice(0, 5));
+                    return allBookingsData;
+                } else {
+                    showToast('Failed to load bookings', 'error');
+                    return [];
                 }
             } catch (error) {
                 console.error('Error loading bookings:', error);
-                showToast('Failed to load bookings', 'error');
+                showToast('Error loading bookings', 'error');
+                return [];
             }
         }
         
@@ -1599,29 +646,21 @@
             if (!container) return;
             
             if (!bookings || bookings.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 40px;">No bookings found</p>';
+                container.innerHTML = '<p style="text-align: center; padding: 40px;">No bookings found</p>';
                 return;
             }
             
             container.innerHTML = `
                 <table class="data-table">
                     <thead>
-                        <tr>
-                            <th>Guest</th>
-                            <th>Check In</th>
-                            <th>Check Out</th>
-                            <th>Nights</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
+                        <tr><th>Guest</th><th>Check In</th><th>Check Out</th><th>Nights</th><th>Amount</th><th>Status</th><th>Actions</th></tr>
                     </thead>
                     <tbody>
                         ${bookings.map(b => `
                             <tr>
                                 <td><strong>${escapeHtml(b.guest_name)}</strong><br><small>${b.guest_phone || ''}</small></td>
-                                <td>${formatCheckInDate(b.check_in_date)}</td>
-                                <td>${formatCheckOutDate(b.check_out_date)}</td>
+                                <td>${formatCheckIn(b.check_in_date)}</td>
+                                <td>${formatCheckOut(b.check_out_date)}</td>
                                 <td>${b.total_nights}</td>
                                 <td>${formatCurrency(b.total_amount)}</td>
                                 <td><span class="badge badge-${b.booking_status}">${b.booking_status}</span></td>
@@ -1630,7 +669,7 @@
                                         `<button class="btn btn-success btn-sm" onclick="confirmBooking(${b.id})">Confirm</button>
                                          <button class="delete-btn" onclick="cancelBooking(${b.id})">Cancel</button>` : 
                                         b.booking_status === 'cancelled' ?
-                                        `<button class="delete-btn" onclick="deleteBooking(${b.id})">Delete Permanently</button>` :
+                                        `<button class="delete-btn" onclick="deleteBooking(${b.id})">Delete</button>` :
                                         `<button class="delete-btn" onclick="cancelBooking(${b.id})">Cancel</button>`
                                     }
                                 </td>
@@ -1641,9 +680,38 @@
             `;
         }
         
+        function updateDashboardStats(bookings) {
+            const pending = bookings.filter(b => b.booking_status === 'pending').length;
+            const confirmed = bookings.filter(b => b.booking_status === 'confirmed').length;
+            const cancelled = bookings.filter(b => b.booking_status === 'cancelled').length;
+            const revenue = bookings.filter(b => b.booking_status === 'confirmed').reduce((s, b) => s + parseFloat(b.total_amount), 0);
+            
+            document.getElementById('stats-grid').innerHTML = `
+                <div class="stat-card"><h3>Total</h3><div class="stat-number">${bookings.length}</div></div>
+                <div class="stat-card"><h3>Pending</h3><div class="stat-number">${pending}</div></div>
+                <div class="stat-card"><h3>Confirmed</h3><div class="stat-number">${confirmed}</div></div>
+                <div class="stat-card"><h3>Cancelled</h3><div class="stat-number">${cancelled}</div></div>
+                <div class="stat-card"><h3>Revenue</h3><div class="stat-number">${formatCurrency(revenue)}</div></div>
+            `;
+        }
+        
+        function displayRecentBookings(bookings) {
+            const container = document.getElementById('recent-bookings');
+            if (!container) return;
+            container.innerHTML = bookings.map(b => `
+                <div style="padding: 12px; border-bottom: 1px solid var(--gray-200);">
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>${escapeHtml(b.guest_name)}</strong>
+                        <span class="badge badge-${b.booking_status}">${b.booking_status}</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--gray-600);">${formatCheckIn(b.check_in_date)} → ${formatCheckOut(b.check_out_date)}</div>
+                    <div style="font-size: 0.85rem;">${formatCurrency(b.total_amount)} • ${b.total_nights} nights</div>
+                </div>
+            `).join('');
+        }
+        
         function filterBookings(searchTerm) {
-            if (!allBookingsCache) return;
-            const filtered = allBookingsCache.filter(b => 
+            const filtered = allBookingsData.filter(b => 
                 b.guest_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 (b.guest_phone && b.guest_phone.includes(searchTerm))
             );
@@ -1661,10 +729,9 @@
                 const data = await response.json();
                 if (data.success) {
                     showToast('Booking confirmed', 'success');
-                    loadAllBookings();
-                    loadDashboard();
+                    await loadAllBookings();
                 } else {
-                    showToast(data.error || 'Failed to confirm booking', 'error');
+                    showToast(data.error || 'Failed', 'error');
                 }
             } catch (error) {
                 showToast('Error confirming booking', 'error');
@@ -1682,10 +749,9 @@
                 const data = await response.json();
                 if (data.success) {
                     showToast('Booking cancelled', 'success');
-                    loadAllBookings();
-                    loadDashboard();
+                    await loadAllBookings();
                 } else {
-                    showToast(data.error || 'Failed to cancel booking', 'error');
+                    showToast(data.error || 'Failed', 'error');
                 }
             } catch (error) {
                 showToast('Error cancelling booking', 'error');
@@ -1693,7 +759,7 @@
         }
         
         async function deleteBooking(id) {
-            if (!confirm('WARNING: This will permanently delete this cancelled booking. This action cannot be undone. Continue?')) return;
+            if (!confirm('WARNING: Permanently delete this cancelled booking? This cannot be undone.')) return;
             try {
                 const response = await fetch(`${API_BASE_URL}/admin/bookings/${id}`, {
                     method: 'DELETE',
@@ -1702,53 +768,20 @@
                 const data = await response.json();
                 if (data.success) {
                     showToast('Booking deleted permanently', 'success');
-                    loadAllBookings();
-                    loadDashboard();
+                    await loadAllBookings();
                 } else {
-                    showToast(data.error || 'Failed to delete booking', 'error');
+                    showToast(data.error || 'Failed to delete', 'error');
                 }
             } catch (error) {
                 console.error('Delete error:', error);
-                showToast('Error deleting booking. Please check console for details.', 'error');
+                showToast('Error deleting booking', 'error');
             }
         }
         
-        async function loadInvoices(page = 1) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/invoices?page=${page}`);
-                const data = await response.json();
-                if (data.success) {
-                    const container = document.getElementById('invoices-list');
-                    if (container) {
-                        container.innerHTML = data.invoices.map(inv => `
-                            <div style="padding: 12px; border-bottom: 1px solid var(--gray-200); cursor: pointer;" onclick="viewInvoiceDetail(${inv.id})">
-                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                                    <strong>${inv.invoice_number}</strong>
-                                    <span class="badge badge-${inv.status}">${inv.status.replace('_', ' ')}</span>
-                                </div>
-                                <div>${escapeHtml(inv.guest_name)} • ${formatCurrency(inv.total_amount)}</div>
-                                <div style="font-size: 0.85rem; color: var(--gray-600);">Issued: ${inv.issue_date}</div>
-                            </div>
-                        `).join('');
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading invoices:', error);
-            }
-        }
-        
-        function viewInvoiceDetail(id) {
-            showToast('Invoice details - Coming soon', 'info');
-        }
-        
-        // Block dates
         async function blockSingleDate() {
             const date = document.getElementById('block-single-date').value;
             const reason = document.getElementById('block-single-reason').value;
-            if (!date) {
-                showToast('Select a date', 'error');
-                return;
-            }
+            if (!date) { showToast('Select a date', 'error'); return; }
             try {
                 const response = await fetch(`${API_BASE_URL}/admin/block-dates`, {
                     method: 'POST',
@@ -1761,8 +794,6 @@
                     loadBlockedDates();
                     document.getElementById('block-single-date').value = '';
                     document.getElementById('block-single-reason').value = '';
-                } else {
-                    showToast(data.error || 'Failed to block date', 'error');
                 }
             } catch (error) {
                 showToast('Error blocking date', 'error');
@@ -1773,14 +804,7 @@
             const start = document.getElementById('block-range-start').value;
             const end = document.getElementById('block-range-end').value;
             const reason = document.getElementById('block-range-reason').value;
-            if (!start || !end) {
-                showToast('Select start and end dates', 'error');
-                return;
-            }
-            if (new Date(start) > new Date(end)) {
-                showToast('Start date must be before end date', 'error');
-                return;
-            }
+            if (!start || !end) { showToast('Select dates', 'error'); return; }
             try {
                 const response = await fetch(`${API_BASE_URL}/admin/block-dates`, {
                     method: 'POST',
@@ -1794,8 +818,6 @@
                     document.getElementById('block-range-start').value = '';
                     document.getElementById('block-range-end').value = '';
                     document.getElementById('block-range-reason').value = '';
-                } else {
-                    showToast(data.error || 'Failed to block dates', 'error');
                 }
             } catch (error) {
                 showToast('Error blocking dates', 'error');
@@ -1810,22 +832,17 @@
                 if (container) {
                     const blocked = data.blocked_dates || [];
                     if (blocked.length === 0) {
-                        container.innerHTML = '<p style="color: var(--gray-500); padding: 20px; text-align: center;">No blocked dates</p>';
+                        container.innerHTML = '<p>No blocked dates</p>';
                     } else {
                         container.innerHTML = blocked.map(b => `
-                            <div class="blocked-item">
-                                <div>
-                                    <strong>${b.start_date === b.end_date ? b.start_date : `${b.start_date} to ${b.end_date}`}</strong>
-                                    <div style="font-size: 0.85rem; color: var(--gray-600);">${b.reason || 'No reason provided'}</div>
-                                </div>
+                            <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--gray-200);">
+                                <div><strong>${b.start_date === b.end_date ? b.start_date : `${b.start_date} to ${b.end_date}`}</strong><br><small>${b.reason || ''}</small></div>
                                 <button class="delete-btn" onclick="unblockDate(${b.id})">Unblock</button>
                             </div>
                         `).join('');
                     }
                 }
-            } catch (error) {
-                console.error('Error loading blocked dates:', error);
-            }
+            } catch (error) { console.error(error); }
         }
         
         async function unblockDate(id) {
@@ -1836,39 +853,155 @@
                 if (data.success) {
                     showToast('Date unblocked', 'success');
                     loadBlockedDates();
-                } else {
-                    showToast(data.error || 'Failed to unblock date', 'error');
                 }
             } catch (error) {
                 showToast('Error unblocking date', 'error');
             }
         }
         
+        async function loadInvoices() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/invoices`);
+                const data = await response.json();
+                const container = document.getElementById('invoices-list');
+                if (container && data.success) {
+                    container.innerHTML = data.invoices.map(inv => `
+                        <div style="padding: 12px; border-bottom: 1px solid var(--gray-200);">
+                            <strong>${inv.invoice_number}</strong> - ${inv.guest_name}<br>
+                            <small>${formatCurrency(inv.total_amount)} • ${inv.status}</small>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) { console.error(error); }
+        }
+        
+        // Simple invoice functions
+        function addInvoiceItemSimple() {
+            const desc = document.getElementById('invoice-description').value;
+            const qty = parseInt(document.getElementById('invoice-qty').value) || 1;
+            const amount = parseFloat(document.getElementById('invoice-amount').value);
+            if (!desc || isNaN(amount)) { showToast('Enter description and amount', 'error'); return; }
+            simpleInvoiceItems.push({ id: Date.now(), description: desc, quantity: qty, unit_price: amount, amount: qty * amount });
+            renderSimpleInvoiceItems();
+            document.getElementById('invoice-description').value = '';
+            document.getElementById('invoice-amount').value = '';
+            document.getElementById('invoice-qty').value = '1';
+        }
+        
+        function renderSimpleInvoiceItems() {
+            const container = document.getElementById('invoice-items-simple');
+            const total = simpleInvoiceItems.reduce((s, i) => s + i.amount, 0);
+            container.innerHTML = simpleInvoiceItems.map(item => `
+                <div style="display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid var(--gray-200);">
+                    <span>${escapeHtml(item.description)} x${item.quantity}</span>
+                    <span>${formatCurrency(item.amount)}</span>
+                    <button class="delete-btn" onclick="removeSimpleItem(${item.id})">Remove</button>
+                </div>
+            `).join('');
+            document.getElementById('invoice-total-simple').innerHTML = formatCurrency(total);
+        }
+        
+        function removeSimpleItem(id) {
+            simpleInvoiceItems = simpleInvoiceItems.filter(i => i.id !== id);
+            renderSimpleInvoiceItems();
+        }
+        
+        function resetInvoice() {
+            simpleInvoiceItems = [];
+            renderSimpleInvoiceItems();
+            document.getElementById('invoice-customer-name').value = '';
+        }
+        
+        async function createSimpleInvoice() {
+            const customerName = document.getElementById('invoice-customer-name').value;
+            if (!customerName) { showToast('Enter customer name', 'error'); return; }
+            if (simpleInvoiceItems.length === 0) { showToast('Add at least one item', 'error'); return; }
+            const subtotal = simpleInvoiceItems.reduce((s, i) => s + i.amount, 0);
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/invoices/standalone`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        guest_name: customerName,
+                        items: simpleInvoiceItems,
+                        tax_rate: 0,
+                        subtotal: subtotal,
+                        total_amount: subtotal
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Invoice created', 'success');
+                    resetInvoice();
+                    showSection('invoices');
+                    loadInvoices();
+                } else {
+                    showToast(data.error || 'Failed', 'error');
+                }
+            } catch (error) {
+                showToast('Error creating invoice', 'error');
+            }
+        }
+        
+        function updateSettings() {
+            const nightlyRate = parseFloat(document.getElementById('nightly-rate-setting').value);
+            const newExchangeRate = parseFloat(document.getElementById('exchange-rate-setting').value);
+            if (!isNaN(nightlyRate)) localStorage.setItem('nightlyRate', nightlyRate);
+            if (!isNaN(newExchangeRate)) {
+                exchangeRate = newExchangeRate;
+                localStorage.setItem('exchangeRate', exchangeRate);
+            }
+            showToast('Settings saved', 'success');
+            // Refresh all displays with new currency
+            if (allBookingsData.length) {
+                displayBookings(allBookingsData);
+                updateDashboardStats(allBookingsData);
+                displayRecentBookings(allBookingsData.slice(0, 5));
+            }
+        }
+        
+        function setCurrency(currency) {
+            currentCurrency = currency;
+            document.querySelectorAll('.currency-option').forEach(opt => {
+                if (opt.dataset.currency === currency) opt.classList.add('active');
+                else opt.classList.remove('active');
+            });
+            // Refresh all displays
+            if (allBookingsData.length) {
+                displayBookings(allBookingsData);
+                updateDashboardStats(allBookingsData);
+                displayRecentBookings(allBookingsData.slice(0, 5));
+            }
+            loadInvoices();
+            renderSimpleInvoiceItems();
+        }
+        
         function showSection(section) {
-            const sections = ['dashboard', 'bookings', 'invoices', 'new-invoice', 'block-dates', 'catalog', 'settings'];
+            const sections = ['dashboard', 'bookings', 'invoices', 'new-invoice', 'block-dates', 'settings'];
             sections.forEach(s => {
                 const el = document.getElementById(`${s}-section`);
                 if (el) el.style.display = 'none';
             });
-            const activeEl = document.getElementById(`${section}-section`);
-            if (activeEl) activeEl.style.display = 'block';
+            document.getElementById(`${section}-section`).style.display = 'block';
             
             document.querySelectorAll('.nav-item').forEach(item => {
-                if (item.dataset.section === section) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
+                if (item.dataset.section === section) item.classList.add('active');
+                else item.classList.remove('active');
             });
             
-            // Load data for section
-            if (section === 'dashboard') loadDashboard();
-            else if (section === 'bookings') loadAllBookings();
-            else if (section === 'invoices') loadInvoices();
+            if (section === 'dashboard') {
+                if (allBookingsData.length) {
+                    updateDashboardStats(allBookingsData);
+                    displayRecentBookings(allBookingsData.slice(0, 5));
+                } else {
+                    loadAllBookings();
+                }
+            } else if (section === 'bookings') {
+                if (allBookingsData.length) displayBookings(allBookingsData);
+                else loadAllBookings();
+            } else if (section === 'invoices') loadInvoices();
             else if (section === 'block-dates') loadBlockedDates();
-            else if (section === 'catalog') renderMinibarCatalog();
             
-            // Close mobile sidebar
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebar')?.classList.remove('open');
             }
@@ -1895,35 +1028,52 @@
         function handleLogin() {
             const username = document.getElementById('login-username').value;
             const password = document.getElementById('login-password').value;
-            
             if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
                 sessionStorage.setItem('adminLoggedIn', 'true');
-                isLoggedIn = true;
                 document.getElementById('login-wrapper').style.display = 'none';
                 document.getElementById('admin-container').style.display = 'block';
-                init();
+                loadSettings();
+                loadAllBookings();
                 showSection('dashboard');
             } else {
                 const errorDiv = document.getElementById('login-error');
-                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.textContent = 'Invalid credentials';
                 errorDiv.style.display = 'block';
-                setTimeout(() => {
-                    errorDiv.style.display = 'none';
-                }, 3000);
+                setTimeout(() => errorDiv.style.display = 'none', 3000);
             }
         }
         
         function handleLogout() {
             sessionStorage.removeItem('adminLoggedIn');
-            isLoggedIn = false;
             document.getElementById('login-wrapper').style.display = 'flex';
             document.getElementById('admin-container').style.display = 'none';
-            document.getElementById('login-username').value = '';
-            document.getElementById('login-password').value = '';
         }
         
-        // Start
-        init();
+        function loadSettings() {
+            const savedRate = localStorage.getItem('exchangeRate');
+            if (savedRate) exchangeRate = parseFloat(savedRate);
+            const savedNightly = localStorage.getItem('nightlyRate');
+            if (savedNightly) document.getElementById('nightly-rate-setting').value = savedNightly;
+            document.getElementById('exchange-rate-setting').value = exchangeRate;
+        }
+        
+        // Event listeners
+        document.getElementById('menu-toggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+        
+        document.getElementById('booking-search')?.addEventListener('input', (e) => {
+            filterBookings(e.target.value);
+        });
+        
+        // Check session on load
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+            document.getElementById('login-wrapper').style.display = 'none';
+            document.getElementById('admin-container').style.display = 'block';
+            loadSettings();
+            loadAllBookings();
+            showSection('dashboard');
+        }
     </script>
 </body>
 </html>
