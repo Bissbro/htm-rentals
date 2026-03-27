@@ -103,8 +103,10 @@
         .admin-container {
             display: none;
             min-height: 100vh;
+            position: relative;
         }
 
+        /* SIDEBAR - Fixed positioning with high z-index */
         .sidebar {
             position: fixed;
             left: 0;
@@ -114,8 +116,9 @@
             background: white;
             border-right: 1px solid var(--gray-200);
             overflow-y: auto;
-            z-index: 100;
+            z-index: 1000;
             transition: transform 0.3s ease;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
         }
 
         .sidebar-header {
@@ -128,6 +131,13 @@
             color: var(--primary);
         }
 
+        .sidebar-header p {
+            font-size: 12px;
+            color: var(--gray-600);
+            margin-top: 4px;
+        }
+
+        /* MENU ITEMS - Ensure clickable */
         .nav-item {
             display: flex;
             align-items: center;
@@ -136,16 +146,37 @@
             margin: 4px 12px;
             border-radius: var(--radius);
             color: var(--gray-700);
-            cursor: pointer;
+            cursor: pointer !important;
             transition: all 0.2s;
+            position: relative;
+            z-index: 1001;
+            background: transparent;
         }
 
-        .nav-item:hover { background: var(--gray-100); }
-        .nav-item.active { background: var(--primary); color: white; }
+        .nav-item:hover {
+            background: var(--gray-100);
+        }
 
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-item i {
+            width: 20px;
+            pointer-events: none;
+        }
+
+        .nav-item span {
+            pointer-events: none;
+        }
+
+        /* Main content - positioned relative but not blocking clicks */
         .main-content {
             margin-left: 260px;
             min-height: 100vh;
+            position: relative;
+            z-index: 1;
         }
 
         .top-header {
@@ -403,7 +434,7 @@
             right: 0;
             bottom: 0;
             background: rgba(0,0,0,0.5);
-            z-index: 1000;
+            z-index: 2000;
             justify-content: center;
             align-items: center;
             padding: 20px;
@@ -456,13 +487,13 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header"><h2>HTM Rentals</h2><p>Administrator Portal</p></div>
             <nav>
-                <div class="nav-item active" data-section="dashboard"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
-                <div class="nav-item" data-section="bookings"><i class="fas fa-calendar-alt"></i><span>Bookings</span></div>
-                <div class="nav-item" data-section="invoices"><i class="fas fa-file-invoice"></i><span>Invoices</span></div>
-                <div class="nav-item" data-section="new-invoice"><i class="fas fa-plus-circle"></i><span>New Invoice</span></div>
-                <div class="nav-item" data-section="block-dates"><i class="fas fa-ban"></i><span>Block Dates</span></div>
-                <div class="nav-item" data-section="catalog"><i class="fas fa-box"></i><span>Minibar Catalog</span></div>
-                <div class="nav-item" data-section="settings"><i class="fas fa-cog"></i><span>Settings</span></div>
+                <div class="nav-item active" data-section="dashboard" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
+                <div class="nav-item" data-section="bookings" onclick="showSection('bookings')"><i class="fas fa-calendar-alt"></i><span>Bookings</span></div>
+                <div class="nav-item" data-section="invoices" onclick="showSection('invoices')"><i class="fas fa-file-invoice"></i><span>Invoices</span></div>
+                <div class="nav-item" data-section="new-invoice" onclick="showSection('new-invoice')"><i class="fas fa-plus-circle"></i><span>New Invoice</span></div>
+                <div class="nav-item" data-section="block-dates" onclick="showSection('block-dates')"><i class="fas fa-ban"></i><span>Block Dates</span></div>
+                <div class="nav-item" data-section="catalog" onclick="showSection('catalog')"><i class="fas fa-box"></i><span>Minibar Catalog</span></div>
+                <div class="nav-item" data-section="settings" onclick="showSection('settings')"><i class="fas fa-cog"></i><span>Settings</span></div>
             </nav>
         </aside>
 
@@ -503,7 +534,7 @@
                                 <div class="item-category"><h4>Minibar</h4><select id="minibar-select"><option value="">Select item</option></select><div class="add-item-row" style="margin-top: 8px;"><input type="number" id="minibar-qty" placeholder="Qty" value="1" class="qty-input"><button class="btn btn-primary btn-sm" onclick="addMinibarItem()">Add</button></div></div>
                                 <div class="item-category"><h4>Custom Item</h4><input type="text" id="custom-desc" placeholder="Description" style="width: 100%; margin-bottom: 8px;"><div class="add-item-row"><input type="number" id="custom-price" placeholder="Price" step="0.01" style="flex:1;"><input type="number" id="custom-qty" placeholder="Qty" value="1" class="qty-input"><button class="btn btn-primary btn-sm" onclick="addCustomItem()">Add</button></div></div>
                             </div>
-                            <div><h3 style="margin-bottom: 16px;">Invoice Items</h3><div class="invoice-items"><table style="width:100%"><thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th><th></th></tr></thead><tbody id="invoice-items-body"><tr><td colspan="5" style="text-align:center; padding:40px;">No items added</td></tr></tbody></table></div>
+                            <div><h3 style="margin-bottom: 16px;">Invoice Items</h3><div class="invoice-items"><table style="width:100%"><thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th><th></th></thead><tbody id="invoice-items-body">鱼缸<td colspan="5" style="text-align:center; padding:40px;">No items added</td></tr></tbody></table></div>
                                 <div class="invoice-summary"><div class="summary-row"><span>Subtotal</span><span id="invoice-subtotal">$0.00</span></div><div class="form-group" style="margin:12px 0;"><label>Tax Rate (%)</label><input type="number" id="invoice-tax-rate" value="0" step="0.1" style="width:100px;"></div><div class="summary-row"><span>Tax</span><span id="invoice-tax-amount">$0.00</span></div><div class="summary-row total"><span>Total</span><span id="invoice-total">$0.00</span></div></div>
                                 <div style="display:flex; gap:12px; margin-top:20px;"><button class="btn btn-primary" style="flex:1;" onclick="createInvoice()">Create Invoice</button><button class="btn btn-success" style="flex:1;" onclick="previewInvoice()">Preview</button></div>
                             </div>
@@ -538,7 +569,6 @@
         let currentInvoiceItems = [];
         let allBookingsCache = [];
 
-        // --- Core Utilities ---
         function parseAmount(amount) { return parseFloat(amount) || 0; }
         
         function formatCurrency(amount) {
@@ -560,11 +590,16 @@
         function updateAllCurrencyDisplays() {
             renderMinibarSelect();
             updateInvoiceTotals();
-            const active = document.querySelector('.nav-item.active')?.dataset.section;
-            if (active === 'dashboard') loadDashboard();
-            else if (active === 'bookings') loadAllBookings();
-            else if (active === 'invoices') loadInvoices();
-            else if (active === 'catalog') renderMinibarCatalog();
+            const activeSection = getActiveSection();
+            if (activeSection === 'dashboard') loadDashboard();
+            else if (activeSection === 'bookings') loadAllBookings();
+            else if (activeSection === 'invoices') loadInvoices();
+            else if (activeSection === 'catalog') renderMinibarCatalog();
+        }
+
+        function getActiveSection() {
+            const active = document.querySelector('.nav-item.active');
+            return active ? active.getAttribute('data-section') : 'dashboard';
         }
 
         function setCurrency(currency) {
@@ -576,11 +611,10 @@
             updateAllCurrencyDisplays();
         }
 
-        // --- Settings ---
         function loadSettings() { const saved = localStorage.getItem('exchangeRate'); if (saved) exchangeRate = parseFloat(saved); document.getElementById('exchange-rate-setting').value = exchangeRate; }
         function updateSettings() { const newRate = parseFloat(document.getElementById('exchange-rate-setting').value); if (!isNaN(newRate) && newRate > 0) { exchangeRate = newRate; localStorage.setItem('exchangeRate', exchangeRate); showToast('Settings saved','success'); updateAllCurrencyDisplays(); } }
 
-        // --- Minibar Catalog ---
+        // Minibar Catalog
         let minibarItems = [
             { name: 'Water Bottle (500ml)', price_usd: 2, price_mvr: 30 },
             { name: 'Soft Drink (Can)', price_usd: 3, price_mvr: 45 },
@@ -612,7 +646,7 @@
         
         function deleteMinibarItem(idx) { if(confirm('Delete?')) { minibarItems.splice(idx,1); renderMinibarSelect(); renderMinibarCatalog(); showToast('Deleted','success'); } }
 
-        // --- Invoice Builder ---
+        // Invoice Builder
         function addInvoiceItem(item) { currentInvoiceItems.push(item); renderInvoiceItems(); updateInvoiceTotals(); }
         function removeInvoiceItem(id) { currentInvoiceItems = currentInvoiceItems.filter(i => i.id !== id); renderInvoiceItems(); updateInvoiceTotals(); }
         
@@ -687,7 +721,7 @@
             const taxRate = parseFloat(document.getElementById('invoice-tax-rate').value) || 0;
             const tax = subtotal * taxRate / 100;
             const total = subtotal + tax;
-            document.getElementById('invoice-preview-content').innerHTML = `<div style="font-family:'Inter'"><div style="text-align:center; margin-bottom:30px"><h1 style="color:#006994">HTM Rentals</h1><p>Malas Residence, Hulhumale' Phase 2<br>+960 9373113 | htmrentalss@gmail.com</p></div><div><p><strong>Bill To:</strong> ${escapeHtml(name)}<br><strong>Date:</strong> ${new Date().toLocaleDateString()}</p></div><table style="width:100%; border-collapse:collapse"><thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th></tr></thead><tbody>${currentInvoiceItems.map(i => `<tr><td>${escapeHtml(i.description)}</td><td>${i.quantity}</td><td>${formatCurrency(i.unit_price)}</td><td>${formatCurrency(i.amount)}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="3"><strong>Subtotal</strong></td><td>${formatCurrency(subtotal)}</td></tr>${taxRate>0?`<tr><td colspan="3"><strong>Tax (${taxRate}%)</strong></td><td>${formatCurrency(tax)}</td></tr>`:''}<tr><td colspan="3"><strong>Total</strong></td><td><strong>${formatCurrency(total)}</strong></td></tr></tfoot></table><div style="text-align:center; margin-top:40px"><p>Thank you for choosing HTM Rentals</p></div></div>`;
+            document.getElementById('invoice-preview-content').innerHTML = `<div style="font-family:'Inter'"><div style="text-align:center; margin-bottom:30px"><h1 style="color:#006994">HTM Rentals</h1><p>Malas Residence, Hulhumale' Phase 2<br>+960 9373113 | htmrentalss@gmail.com</p></div><div><p><strong>Bill To:</strong> ${escapeHtml(name)}<br><strong>Date:</strong> ${new Date().toLocaleDateString()}</p></div><table style="width:100%; border-collapse:collapse"><thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th> </thead><tbody>${currentInvoiceItems.map(i => `<tr><td>${escapeHtml(i.description)}</td><td>${i.quantity}</td><td>${formatCurrency(i.unit_price)}</td><td>${formatCurrency(i.amount)}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="3"><strong>Subtotal</strong></td><td>${formatCurrency(subtotal)}</td></tr>${taxRate>0?`<tr><td colspan="3"><strong>Tax (${taxRate}%)</strong></td><td>${formatCurrency(tax)}</td></tr>`:''}<tr><td colspan="3"><strong>Total</strong></td><td><strong>${formatCurrency(total)}</strong></td></tr></tfoot></table><div style="text-align:center; margin-top:40px"><p>Thank you for choosing HTM Rentals</p></div></div>`;
             document.getElementById('invoice-modal').style.display = 'flex';
         }
         
@@ -695,7 +729,7 @@
         function printInvoice() { window.print(); }
         function downloadInvoice() { window.print(); showToast('Use "Save as PDF"','success'); }
 
-        // --- Dashboard & Bookings ---
+        // Dashboard & Bookings
         async function loadDashboard() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings`);
@@ -788,7 +822,7 @@
             } catch(e) { console.error(e); }
         }
         
-        // --- Block Dates ---
+        // Block Dates
         async function blockSingleDate() {
             const date = document.getElementById('block-single-date').value;
             if(!date) { showToast('Select date','error'); return; }
@@ -821,20 +855,41 @@
         
         async function unblockDate(id) { if(!confirm('Unblock?')) return; try { const r=await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`,{method:'DELETE'}); if(r.ok) { showToast('Unblocked','success'); loadBlockedDates(); } } catch(e){ showToast('Error','error'); } }
         
-        // --- Navigation ---
+        // Navigation - This is the critical fix
         function showSection(section) {
-            ['dashboard','bookings','invoices','new-invoice','block-dates','catalog','settings'].forEach(s => { const el = document.getElementById(`${s}-section`); if(el) el.style.display = 'none'; });
-            document.getElementById(`${section}-section`).style.display = 'block';
-            document.querySelectorAll('.nav-item').forEach(item => { if(item.dataset.section === section) item.classList.add('active'); else item.classList.remove('active'); });
+            // Hide all sections
+            const sections = ['dashboard','bookings','invoices','new-invoice','block-dates','catalog','settings'];
+            sections.forEach(s => {
+                const el = document.getElementById(`${s}-section`);
+                if(el) el.style.display = 'none';
+            });
+            // Show selected section
+            const activeEl = document.getElementById(`${section}-section`);
+            if(activeEl) activeEl.style.display = 'block';
+            
+            // Update active class on nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if(item.getAttribute('data-section') === section) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Load data for section
             if(section === 'dashboard') loadDashboard();
             else if(section === 'bookings') loadAllBookings();
             else if(section === 'invoices') loadInvoices();
             else if(section === 'block-dates') loadBlockedDates();
             else if(section === 'catalog') renderMinibarCatalog();
-            if(window.innerWidth <= 768) document.getElementById('sidebar')?.classList.remove('open');
+            
+            // Close sidebar on mobile
+            if(window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                if(sidebar) sidebar.classList.remove('open');
+            }
         }
         
-        // --- Login/Logout ---
         function handleLogin() {
             const u = document.getElementById('login-username').value, p = document.getElementById('login-password').value;
             if(u === ADMIN_USERNAME && p === ADMIN_PASSWORD) {
@@ -847,13 +902,13 @@
         
         function handleLogout() { sessionStorage.removeItem('adminLoggedIn'); document.getElementById('login-wrapper').style.display = 'flex'; document.getElementById('admin-container').style.display = 'none'; }
         
-        // --- Event Listeners ---
+        // Event Listeners
         document.getElementById('menu-toggle')?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
         document.getElementById('booking-search')?.addEventListener('input', e => filterBookings(e.target.value));
         document.getElementById('invoice-tax-rate')?.addEventListener('input', updateInvoiceTotals);
         window.onclick = e => { if(e.target === document.getElementById('invoice-modal')) closeInvoiceModal(); };
         
-        // --- Init ---
+        // Initialize
         if(sessionStorage.getItem('adminLoggedIn') === 'true') {
             document.getElementById('login-wrapper').style.display = 'none';
             document.getElementById('admin-container').style.display = 'block';
