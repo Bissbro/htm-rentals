@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>HTM Rentals | Admin Portal</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTM Rentals | Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,663 +12,491 @@
             padding: 0;
             box-sizing: border-box;
         }
-
-        :root {
-            --primary: #006994;
-            --primary-dark: #005077;
-            --success: #28a745;
-            --danger: #dc3545;
-            --warning: #ffc107;
-            --gray-100: #f8f9fa;
-            --gray-200: #e9ecef;
-            --gray-300: #dee2e6;
-            --gray-500: #adb5bd;
-            --gray-600: #6c757d;
-            --gray-700: #495057;
-            --gray-800: #343a40;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --radius: 8px;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--gray-100);
-            color: var(--gray-800);
+            background: #f5f5f5;
         }
-
-        /* Login */
-        .login-wrapper {
+        .login-page {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: #006994;
             padding: 20px;
         }
-
         .login-card {
             background: white;
-            border-radius: var(--radius);
             padding: 40px;
+            border-radius: 12px;
             width: 100%;
-            max-width: 400px;
-            box-shadow: var(--shadow-md);
+            max-width: 380px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-
         .login-card h1 {
-            font-size: 1.8rem;
-            color: var(--primary);
+            color: #006994;
             margin-bottom: 8px;
+            font-size: 28px;
         }
-
         .login-card input {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius);
-            margin-bottom: 16px;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             font-size: 14px;
         }
-
         .btn {
             padding: 12px 24px;
             border: none;
-            border-radius: var(--radius);
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             font-size: 14px;
-            transition: all 0.2s;
         }
-
         .btn-primary {
-            background: var(--primary);
+            background: #006994;
             color: white;
+            width: 100%;
         }
-
         .btn-primary:hover {
-            background: var(--primary-dark);
+            background: #005077;
         }
-
         .btn-success {
-            background: var(--success);
+            background: #28a745;
             color: white;
         }
-
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
         .btn-sm {
             padding: 6px 12px;
             font-size: 12px;
         }
-
-        /* Admin Layout */
         .admin-container {
             display: none;
-            min-height: 100vh;
         }
-
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 260px;
+        .top-bar {
             background: white;
-            border-right: 1px solid var(--gray-200);
-            overflow-y: auto;
-            z-index: 100;
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .sidebar-header h2 {
-            font-size: 1.2rem;
-            color: var(--primary);
-        }
-
-        .nav-item {
+            padding: 16px 24px;
             display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            margin: 4px 12px;
-            border-radius: var(--radius);
-            color: var(--gray-700);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .nav-item:hover {
-            background: var(--gray-100);
-        }
-
-        .nav-item.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .nav-item i {
-            width: 20px;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 260px;
-            min-height: 100vh;
-        }
-
-        /* Header */
-        .top-header {
-            background: white;
-            padding: 0 24px;
-            height: 64px;
-            display: flex;
-            align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--gray-200);
+            align-items: center;
+            border-bottom: 1px solid #ddd;
             position: sticky;
             top: 0;
-            z-index: 50;
         }
-
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
+        .top-bar h2 {
+            color: #006994;
             font-size: 20px;
-            cursor: pointer;
         }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
         .currency-toggle {
             display: flex;
-            gap: 4px;
-            background: var(--gray-100);
+            gap: 8px;
+            background: #f0f0f0;
             padding: 4px;
-            border-radius: var(--radius);
+            border-radius: 8px;
         }
-
-        .currency-option {
-            padding: 6px 12px;
+        .currency-btn {
+            padding: 6px 16px;
             border: none;
             background: none;
-            border-radius: var(--radius);
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 500;
-            font-size: 13px;
         }
-
-        .currency-option.active {
-            background: var(--primary);
+        .currency-btn.active {
+            background: #006994;
             color: white;
         }
-
-        .logout-btn {
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: var(--gray-600);
-            padding: 8px;
+        .nav-tabs {
+            background: white;
+            padding: 0 24px;
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid #ddd;
         }
-
-        /* Content Area */
-        .content-area {
+        .nav-tab {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+        }
+        .nav-tab.active {
+            color: #006994;
+            border-bottom: 2px solid #006994;
+        }
+        .content {
             padding: 24px;
         }
-
-        /* Cards */
         .card {
             background: white;
-            border-radius: var(--radius);
-            padding: 24px;
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
             gap: 12px;
         }
-
-        .card-header h2 {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
             margin-bottom: 24px;
         }
-
-        .stat-card {
+        .stat-box {
             background: white;
             padding: 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border-left: 3px solid var(--primary);
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-
-        .stat-card h3 {
-            font-size: 0.75rem;
-            color: var(--gray-600);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
         .stat-number {
-            font-size: 1.8rem;
+            font-size: 28px;
             font-weight: 700;
-            color: var(--primary);
+            color: #006994;
         }
-
-        /* Tables */
-        .data-table {
+        table {
             width: 100%;
             border-collapse: collapse;
         }
-
-        .data-table th,
-        .data-table td {
+        th, td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid var(--gray-200);
+            border-bottom: 1px solid #eee;
         }
-
-        .data-table th {
+        th {
             font-weight: 600;
-            color: var(--gray-600);
-            font-size: 0.8rem;
+            color: #666;
+            font-size: 13px;
         }
-
-        .data-table tr:hover {
-            background: var(--gray-100);
-        }
-
-        /* Status Badges */
         .badge {
             display: inline-block;
             padding: 4px 10px;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 11px;
             font-weight: 600;
         }
-
-        .badge-pending {
-            background: #fff3cd;
-            color: #856404;
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-confirmed { background: #d4edda; color: #155724; }
+        .badge-cancelled { background: #f8d7da; color: #721c24; }
+        .form-group {
+            margin-bottom: 16px;
         }
-
-        .badge-confirmed {
-            background: #d4edda;
-            color: #155724;
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 13px;
         }
-
-        .badge-cancelled {
-            background: #f8d7da;
-            color: #721c24;
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
         }
-
-        /* Delete button */
-        .delete-btn {
-            background: none;
-            border: none;
-            color: var(--danger);
-            cursor: pointer;
-            padding: 4px 8px;
-            font-size: 14px;
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
         }
-
-        .delete-btn:hover {
-            opacity: 0.7;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 20px;
             right: 20px;
             padding: 12px 20px;
-            background: var(--gray-800);
+            background: #333;
             color: white;
-            border-radius: var(--radius);
+            border-radius: 8px;
             z-index: 1000;
-            animation: slideIn 0.3s;
         }
-
-        .toast.success {
-            background: var(--success);
-        }
-
-        .toast.error {
-            background: var(--danger);
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-            
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .menu-toggle {
-                display: block;
-            }
-            
-            .content-area {
-                padding: 16px;
-            }
-            
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 12px;
             }
-            
-            .data-table {
+            table {
                 display: block;
+                overflow-x: auto;
+            }
+            .nav-tabs {
                 overflow-x: auto;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Login Page -->
-    <div id="login-wrapper" class="login-wrapper">
+    <!-- Login -->
+    <div id="loginPage" class="login-page">
         <div class="login-card">
             <h1>HTM Rentals</h1>
-            <p style="margin-bottom: 24px; color: var(--gray-600);">Administrator Access</p>
-            <input type="text" id="login-username" placeholder="Username">
-            <input type="password" id="login-password" placeholder="Password">
-            <button class="btn btn-primary" style="width: 100%;" onclick="handleLogin()">Login</button>
-            <div id="login-error" style="color: var(--danger); margin-top: 12px; display: none;"></div>
+            <p style="color: #666; margin-bottom: 24px;">Admin Login</p>
+            <input type="text" id="loginUser" placeholder="Username" value="bissbro">
+            <input type="password" id="loginPass" placeholder="Password" value="admin123">
+            <button class="btn btn-primary" onclick="login()">Login</button>
+            <div id="loginError" style="color: #dc3545; margin-top: 12px; display: none;"></div>
         </div>
     </div>
 
-    <!-- Admin Container -->
-    <div id="admin-container" class="admin-container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h2>HTM Rentals</h2>
-                <p style="font-size: 12px; color: var(--gray-600);">Administrator Portal</p>
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-container">
+        <div class="top-bar">
+            <h2>HTM Rentals Admin</h2>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <div class="currency-toggle">
+                    <button class="currency-btn active" data-curr="USD" onclick="setCurrency('USD')">USD</button>
+                    <button class="currency-btn" data-curr="MVR" onclick="setCurrency('MVR')">MVR</button>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
             </div>
-            <nav>
-                <div class="nav-item active" data-section="dashboard">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Dashboard</span>
-                </div>
-                <div class="nav-item" data-section="bookings">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Bookings</span>
-                </div>
-                <div class="nav-item" data-section="invoices">
-                    <i class="fas fa-file-invoice"></i>
-                    <span>Invoices</span>
-                </div>
-                <div class="nav-item" data-section="new-invoice">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>New Invoice</span>
-                </div>
-                <div class="nav-item" data-section="block-dates">
-                    <i class="fas fa-ban"></i>
-                    <span>Block Dates</span>
-                </div>
-                <div class="nav-item" data-section="settings">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <header class="top-header">
-                <button class="menu-toggle" id="menu-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="header-actions">
-                    <div class="currency-toggle">
-                        <button class="currency-option active" data-currency="USD" onclick="setCurrency('USD')">USD</button>
-                        <button class="currency-option" data-currency="MVR" onclick="setCurrency('MVR')">MVR</button>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="dashboard" onclick="showTab('dashboard')">Dashboard</button>
+            <button class="nav-tab" data-tab="bookings" onclick="showTab('bookings')">Bookings</button>
+            <button class="nav-tab" data-tab="invoices" onclick="showTab('invoices')">Invoices</button>
+            <button class="nav-tab" data-tab="new-invoice" onclick="showTab('new-invoice')">New Invoice</button>
+            <button class="nav-tab" data-tab="block" onclick="showTab('block')">Block Dates</button>
+        </div>
+        
+        <div class="content">
+            <!-- Dashboard Tab -->
+            <div id="dashboardTab">
+                <div class="stats-grid" id="statsGrid"></div>
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Recent Bookings</strong>
+                        <button class="btn btn-primary btn-sm" onclick="showTab('bookings')">View All</button>
                     </div>
-                    <button class="logout-btn" onclick="handleLogout()">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
+                    <div id="recentBookings"></div>
                 </div>
-            </header>
-
-            <div class="content-area" id="content-area">
-                <!-- Dashboard Section -->
-                <div id="dashboard-section">
-                    <div class="stats-grid" id="stats-grid"></div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>Recent Bookings</h2>
-                            <button class="btn btn-primary btn-sm" onclick="showSection('bookings')">View All</button>
-                        </div>
-                        <div id="recent-bookings"></div>
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Recent Invoices</strong>
                     </div>
+                    <div id="recentInvoices"></div>
                 </div>
-
-                <!-- Bookings Section -->
-                <div id="bookings-section" style="display: none;">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>All Bookings</h2>
-                            <input type="text" id="booking-search" placeholder="Search by name or phone..." style="padding: 8px 12px; border: 1px solid var(--gray-300); border-radius: var(--radius); width: 250px;">
-                        </div>
-                        <div id="all-bookings" style="overflow-x: auto;"></div>
+            </div>
+            
+            <!-- Bookings Tab -->
+            <div id="bookingsTab" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>All Bookings</strong>
+                        <input type="text" id="searchBookings" placeholder="Search by name..." style="padding: 8px; border: 1px solid #ddd; border-radius: 6px; width: 200px;">
                     </div>
+                    <div id="allBookingsList"></div>
                 </div>
-
-                <!-- Invoices Section -->
-                <div id="invoices-section" style="display: none;">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>All Invoices</h2>
-                            <button class="btn btn-primary btn-sm" onclick="showSection('new-invoice')">New Invoice</button>
-                        </div>
-                        <div id="invoices-list"></div>
+            </div>
+            
+            <!-- Invoices Tab -->
+            <div id="invoicesTab" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>All Invoices</strong>
+                        <button class="btn btn-primary btn-sm" onclick="showTab('new-invoice')">Create Invoice</button>
                     </div>
+                    <div id="invoicesList"></div>
                 </div>
-
-                <!-- New Invoice Section (Simplified for now) -->
-                <div id="new-invoice-section" style="display: none;">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>Create Invoice</h2>
-                            <button class="btn btn-sm" style="background: var(--gray-200);" onclick="resetInvoice()">Reset</button>
-                        </div>
-                        <div class="form-group">
-                            <label>Customer Name *</label>
-                            <input type="text" id="invoice-customer-name" placeholder="Customer name">
-                        </div>
+            </div>
+            
+            <!-- New Invoice Tab -->
+            <div id="newInvoiceTab" style="display: none;">
+                <div class="card">
+                    <h3 style="margin-bottom: 20px;">Create Invoice</h3>
+                    <div class="form-group">
+                        <label>Customer Name *</label>
+                        <input type="text" id="invCustomer" placeholder="Full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="invEmail" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" id="invPhone" placeholder="Phone">
+                    </div>
+                    <div class="row">
                         <div class="form-group">
                             <label>Description</label>
-                            <input type="text" id="invoice-description" placeholder="Item description">
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Quantity</label>
-                                <input type="number" id="invoice-qty" value="1" min="1">
-                            </div>
-                            <div class="form-group">
-                                <label>Amount (USD)</label>
-                                <input type="number" id="invoice-amount" step="0.01" placeholder="0.00">
-                            </div>
-                        </div>
-                        <button class="btn btn-primary" onclick="addInvoiceItemSimple()">Add Item</button>
-                        <div id="invoice-items-simple" style="margin-top: 20px;"></div>
-                        <div style="margin-top: 20px;">
-                            <strong>Total: </strong><span id="invoice-total-simple">$0.00</span>
-                        </div>
-                        <button class="btn btn-success" style="margin-top: 20px;" onclick="createSimpleInvoice()">Create Invoice</button>
-                    </div>
-                </div>
-
-                <!-- Block Dates Section -->
-                <div id="block-dates-section" style="display: none;">
-                    <div class="card">
-                        <h2>Block Dates</h2>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Single Date</label>
-                                <input type="date" id="block-single-date">
-                                <input type="text" id="block-single-reason" placeholder="Reason" style="margin-top: 8px;">
-                                <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="blockSingleDate()">Block Date</button>
-                            </div>
-                            <div class="form-group">
-                                <label>Date Range</label>
-                                <input type="date" id="block-range-start">
-                                <input type="date" id="block-range-end" style="margin-top: 8px;">
-                                <input type="text" id="block-range-reason" placeholder="Reason" style="margin-top: 8px;">
-                                <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="blockDateRange()">Block Range</button>
-                            </div>
-                        </div>
-                        <h3 style="margin-top: 24px; margin-bottom: 16px;">Blocked Dates</h3>
-                        <div id="blocked-dates-list"></div>
-                    </div>
-                </div>
-
-                <!-- Settings Section -->
-                <div id="settings-section" style="display: none;">
-                    <div class="card">
-                        <h2>Settings</h2>
-                        <div class="form-group">
-                            <label>Nightly Rate (USD)</label>
-                            <input type="number" id="nightly-rate-setting" value="90" step="1">
+                            <input type="text" id="itemDesc" placeholder="Item description">
                         </div>
                         <div class="form-group">
-                            <label>USD to MVR Exchange Rate</label>
-                            <input type="number" id="exchange-rate-setting" value="15.42" step="0.01">
+                            <label>Quantity</label>
+                            <input type="number" id="itemQty" value="1" min="1">
                         </div>
-                        <button class="btn btn-primary" onclick="updateSettings()">Save Settings</button>
+                        <div class="form-group">
+                            <label>Price (USD)</label>
+                            <input type="number" id="itemPrice" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="addInvoiceItem()" style="width: 100%;">Add Item</button>
+                        </div>
                     </div>
+                    <div id="invoiceItemsList" style="margin: 20px 0;"></div>
+                    <div style="text-align: right; font-size: 18px; font-weight: bold; padding: 16px 0; border-top: 1px solid #eee;">
+                        Total: <span id="invoiceTotal">$0.00</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="createInvoice()" style="width: 100%;">Create Invoice</button>
+                </div>
+            </div>
+            
+            <!-- Block Dates Tab -->
+            <div id="blockTab" style="display: none;">
+                <div class="card">
+                    <h3 style="margin-bottom: 20px;">Block Dates</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Single Date</label>
+                            <input type="date" id="blockDate">
+                            <input type="text" id="blockReason" placeholder="Reason" style="margin-top: 8px;">
+                            <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="blockSingleDate()">Block Date</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Date Range</label>
+                            <input type="date" id="blockStart">
+                            <input type="date" id="blockEnd" style="margin-top: 8px;">
+                            <input type="text" id="blockRangeReason" placeholder="Reason" style="margin-top: 8px;">
+                            <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="blockDateRange()">Block Range</button>
+                        </div>
+                    </div>
+                    <h3 style="margin: 24px 0 16px;">Blocked Dates</h3>
+                    <div id="blockedList"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // API Configuration
-        const API_BASE_URL = 'https://api.htmrentals.com/api';
-        const ADMIN_USERNAME = 'bissbro';
-        const ADMIN_PASSWORD = 'admin123';
+        const API = 'https://api.htmrentals.com/api';
+        const ADMIN_USER = 'bissbro';
+        const ADMIN_PASS = 'admin123';
         
         let currentCurrency = 'USD';
         let exchangeRate = 15.42;
-        let allBookingsData = [];
-        let simpleInvoiceItems = [];
+        let allBookings = [];
+        let invoiceItems = [];
         
-        // Helper: Format date
-        function formatDateTime(dateString, timeString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return dateString;
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const formattedDate = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
-            return timeString ? `${formattedDate}, ${timeString}` : formattedDate;
+        // Helper functions
+        function formatMoney(amount) {
+            if (currentCurrency === 'USD') {
+                return `$${amount.toFixed(2)}`;
+            } else {
+                return `MVR ${(amount * exchangeRate).toFixed(2)}`;
+            }
         }
         
-        function formatCheckIn(date) { return formatDateTime(date, '14:00'); }
-        function formatCheckOut(date) { return formatDateTime(date, '12:00'); }
-        
-        function formatCurrency(amount) {
-            if (currentCurrency === 'USD') return `$${amount.toFixed(2)}`;
-            return `MVR ${(amount * exchangeRate).toFixed(2)}`;
+        function showToast(msg, type) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.background = type === 'error' ? '#dc3545' : '#28a745';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
         
-        // Load bookings from API
-        async function loadAllBookings() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/bookings`);
-                const data = await response.json();
-                if (data.success) {
-                    allBookingsData = data.bookings;
-                    displayBookings(allBookingsData);
-                    updateDashboardStats(allBookingsData);
-                    displayRecentBookings(allBookingsData.slice(0, 5));
-                    return allBookingsData;
+        // Login
+        function login() {
+            const user = document.getElementById('loginUser').value;
+            const pass = document.getElementById('loginPass').value;
+            if (user === ADMIN_USER && pass === ADMIN_PASS) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAllData();
+                showTab('dashboard');
+            } else {
+                const err = document.getElementById('loginError');
+                err.textContent = 'Invalid credentials';
+                err.style.display = 'block';
+                setTimeout(() => err.style.display = 'none', 3000);
+            }
+        }
+        
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+        
+        // Set currency
+        function setCurrency(curr) {
+            currentCurrency = curr;
+            document.querySelectorAll('.currency-btn').forEach(btn => {
+                if (btn.dataset.curr === curr) {
+                    btn.classList.add('active');
                 } else {
-                    showToast('Failed to load bookings', 'error');
-                    return [];
+                    btn.classList.remove('active');
                 }
-            } catch (error) {
-                console.error('Error loading bookings:', error);
-                showToast('Error loading bookings', 'error');
-                return [];
+            });
+            // Refresh displays
+            if (allBookings.length) {
+                displayBookings(allBookings);
+                updateDashboardStats(allBookings);
+            }
+            displayInvoiceItems();
+        }
+        
+        // Load all data
+        async function loadAllData() {
+            await loadBookings();
+            await loadInvoices();
+            await loadBlockedDates();
+        }
+        
+        // Load bookings
+        async function loadBookings() {
+            try {
+                const res = await fetch(`${API}/admin/bookings`);
+                const data = await res.json();
+                if (data.success) {
+                    allBookings = data.bookings;
+                    displayBookings(allBookings);
+                    updateDashboardStats(allBookings);
+                }
+            } catch (err) {
+                showToast('Failed to load bookings', 'error');
             }
         }
         
         function displayBookings(bookings) {
-            const container = document.getElementById('all-bookings');
+            const container = document.getElementById('allBookingsList');
             if (!container) return;
             
             if (!bookings || bookings.length === 0) {
-                container.innerHTML = '<p style="text-align: center; padding: 40px;">No bookings found</p>';
+                container.innerHTML = '<p style="text-align:center; padding:40px;">No bookings found</p>';
                 return;
             }
             
             container.innerHTML = `
-                <table class="data-table">
+                <table>
                     <thead>
-                        <tr><th>Guest</th><th>Check In</th><th>Check Out</th><th>Nights</th><th>Amount</th><th>Status</th><th>Actions</th></tr>
+                        <tr><th>Guest</th><th>Check In</th><th>Check Out</th><th>Nights</th><th>Amount</th><th>Status</th><th>Action</th></tr>
                     </thead>
                     <tbody>
                         ${bookings.map(b => `
                             <tr>
                                 <td><strong>${escapeHtml(b.guest_name)}</strong><br><small>${b.guest_phone || ''}</small></td>
-                                <td>${formatCheckIn(b.check_in_date)}</td>
-                                <td>${formatCheckOut(b.check_out_date)}</td>
-                                <td>${b.total_nights}</td>
-                                <td>${formatCurrency(b.total_amount)}</td>
+                                <td>${b.check_in_date || ''}</td>
+                                <td>${b.check_out_date || ''}</td>
+                                <td>${b.total_nights || 0}</td>
+                                <td>${formatMoney(b.total_amount)}</td>
                                 <td><span class="badge badge-${b.booking_status}">${b.booking_status}</span></td>
-                                <td class="action-buttons">
+                                <td>
                                     ${b.booking_status === 'pending' ? 
-                                        `<button class="btn btn-success btn-sm" onclick="confirmBooking(${b.id})">Confirm</button>
-                                         <button class="delete-btn" onclick="cancelBooking(${b.id})">Cancel</button>` : 
+                                        `<button class="btn btn-success btn-sm" onclick="updateStatus(${b.id}, 'confirmed')">Confirm</button>
+                                         <button class="btn btn-danger btn-sm" onclick="updateStatus(${b.id}, 'cancelled')">Cancel</button>` : 
                                         b.booking_status === 'cancelled' ?
-                                        `<button class="delete-btn" onclick="deleteBooking(${b.id})">Delete</button>` :
-                                        `<button class="delete-btn" onclick="cancelBooking(${b.id})">Cancel</button>`
+                                        `<button class="btn btn-danger btn-sm" onclick="deleteBooking(${b.id})">Delete</button>` :
+                                        `<button class="btn btn-danger btn-sm" onclick="updateStatus(${b.id}, 'cancelled')">Cancel</button>`
                                     }
                                 </td>
                             </tr>
@@ -678,6 +504,21 @@
                     </tbody>
                 </table>
             `;
+            
+            // Recent bookings for dashboard
+            const recentContainer = document.getElementById('recentBookings');
+            if (recentContainer) {
+                recentContainer.innerHTML = bookings.slice(0, 5).map(b => `
+                    <div style="padding: 12px; border-bottom: 1px solid #eee;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>${escapeHtml(b.guest_name)}</strong>
+                            <span class="badge badge-${b.booking_status}">${b.booking_status}</span>
+                        </div>
+                        <div style="font-size:13px; color:#666;">${b.check_in_date || ''} → ${b.check_out_date || ''}</div>
+                        <div style="font-size:13px;">${formatMoney(b.total_amount)} • ${b.total_nights} nights</div>
+                    </div>
+                `).join('');
+            }
         }
         
         function updateDashboardStats(bookings) {
@@ -686,334 +527,310 @@
             const cancelled = bookings.filter(b => b.booking_status === 'cancelled').length;
             const revenue = bookings.filter(b => b.booking_status === 'confirmed').reduce((s, b) => s + parseFloat(b.total_amount), 0);
             
-            document.getElementById('stats-grid').innerHTML = `
-                <div class="stat-card"><h3>Total</h3><div class="stat-number">${bookings.length}</div></div>
-                <div class="stat-card"><h3>Pending</h3><div class="stat-number">${pending}</div></div>
-                <div class="stat-card"><h3>Confirmed</h3><div class="stat-number">${confirmed}</div></div>
-                <div class="stat-card"><h3>Cancelled</h3><div class="stat-number">${cancelled}</div></div>
-                <div class="stat-card"><h3>Revenue</h3><div class="stat-number">${formatCurrency(revenue)}</div></div>
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-box"><div class="stat-number">${bookings.length}</div><div>Total Bookings</div></div>
+                <div class="stat-box"><div class="stat-number">${pending}</div><div>Pending</div></div>
+                <div class="stat-box"><div class="stat-number">${confirmed}</div><div>Confirmed</div></div>
+                <div class="stat-box"><div class="stat-number">${cancelled}</div><div>Cancelled</div></div>
+                <div class="stat-box"><div class="stat-number">${formatMoney(revenue)}</div><div>Revenue</div></div>
             `;
         }
         
-        function displayRecentBookings(bookings) {
-            const container = document.getElementById('recent-bookings');
-            if (!container) return;
-            container.innerHTML = bookings.map(b => `
-                <div style="padding: 12px; border-bottom: 1px solid var(--gray-200);">
-                    <div style="display: flex; justify-content: space-between;">
-                        <strong>${escapeHtml(b.guest_name)}</strong>
-                        <span class="badge badge-${b.booking_status}">${b.booking_status}</span>
-                    </div>
-                    <div style="font-size: 0.85rem; color: var(--gray-600);">${formatCheckIn(b.check_in_date)} → ${formatCheckOut(b.check_out_date)}</div>
-                    <div style="font-size: 0.85rem;">${formatCurrency(b.total_amount)} • ${b.total_nights} nights</div>
-                </div>
-            `).join('');
-        }
-        
-        function filterBookings(searchTerm) {
-            const filtered = allBookingsData.filter(b => 
-                b.guest_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (b.guest_phone && b.guest_phone.includes(searchTerm))
-            );
-            displayBookings(filtered);
-        }
-        
-        async function confirmBooking(id) {
-            if (!confirm('Confirm this booking?')) return;
+        // Update booking status
+        async function updateStatus(id, status) {
+            if (!confirm(`${status === 'cancelled' ? 'Cancel' : 'Confirm'} this booking?`)) return;
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`, {
+                const res = await fetch(`${API}/admin/bookings/${id}/status`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: 'confirmed' })
+                    body: JSON.stringify({ status })
                 });
-                const data = await response.json();
+                const data = await res.json();
                 if (data.success) {
-                    showToast('Booking confirmed', 'success');
-                    await loadAllBookings();
+                    showToast(`Booking ${status}`, 'success');
+                    loadBookings();
                 } else {
                     showToast(data.error || 'Failed', 'error');
                 }
-            } catch (error) {
-                showToast('Error confirming booking', 'error');
+            } catch (err) {
+                showToast('Error updating status', 'error');
             }
         }
         
-        async function cancelBooking(id) {
-            if (!confirm('Cancel this booking?')) return;
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: 'cancelled' })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Booking cancelled', 'success');
-                    await loadAllBookings();
-                } else {
-                    showToast(data.error || 'Failed', 'error');
-                }
-            } catch (error) {
-                showToast('Error cancelling booking', 'error');
-            }
-        }
-        
+        // Delete booking
         async function deleteBooking(id) {
-            if (!confirm('WARNING: Permanently delete this cancelled booking? This cannot be undone.')) return;
+            if (!confirm('Permanently delete this cancelled booking? This cannot be undone.')) return;
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/bookings/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' }
+                const res = await fetch(`${API}/admin/bookings/${id}`, {
+                    method: 'DELETE'
                 });
-                const data = await response.json();
+                const data = await res.json();
                 if (data.success) {
-                    showToast('Booking deleted permanently', 'success');
-                    await loadAllBookings();
+                    showToast('Booking deleted', 'success');
+                    loadBookings();
                 } else {
                     showToast(data.error || 'Failed to delete', 'error');
                 }
-            } catch (error) {
-                console.error('Delete error:', error);
+            } catch (err) {
                 showToast('Error deleting booking', 'error');
             }
         }
         
-        async function blockSingleDate() {
-            const date = document.getElementById('block-single-date').value;
-            const reason = document.getElementById('block-single-reason').value;
-            if (!date) { showToast('Select a date', 'error'); return; }
+        // Load invoices
+        async function loadInvoices() {
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/block-dates`, {
+                const res = await fetch(`${API}/admin/invoices`);
+                const data = await res.json();
+                const container = document.getElementById('invoicesList');
+                if (container && data.success) {
+                    container.innerHTML = data.invoices.map(inv => `
+                        <div style="padding: 12px; border-bottom: 1px solid #eee;">
+                            <div style="display:flex; justify-content:space-between;">
+                                <strong>${inv.invoice_number}</strong>
+                                <span class="badge badge-${inv.status}">${inv.status}</span>
+                            </div>
+                            <div>${escapeHtml(inv.guest_name)} • ${formatMoney(inv.total_amount)}</div>
+                            <div style="font-size:12px; color:#666;">${inv.issue_date || ''}</div>
+                        </div>
+                    `).join('');
+                }
+                
+                const recentContainer = document.getElementById('recentInvoices');
+                if (recentContainer && data.success) {
+                    recentContainer.innerHTML = data.invoices.slice(0, 5).map(inv => `
+                        <div style="padding: 12px; border-bottom: 1px solid #eee;">
+                            <strong>${inv.invoice_number}</strong> - ${escapeHtml(inv.guest_name)}<br>
+                            <small>${formatMoney(inv.total_amount)} • ${inv.status}</small>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Error loading invoices', err);
+            }
+        }
+        
+        // Invoice items
+        function addInvoiceItem() {
+            const desc = document.getElementById('itemDesc').value;
+            const qty = parseInt(document.getElementById('itemQty').value) || 1;
+            const price = parseFloat(document.getElementById('itemPrice').value);
+            
+            if (!desc) {
+                showToast('Enter description', 'error');
+                return;
+            }
+            if (isNaN(price) || price <= 0) {
+                showToast('Enter valid price', 'error');
+                return;
+            }
+            
+            invoiceItems.push({
+                id: Date.now(),
+                description: desc,
+                quantity: qty,
+                unit_price: price,
+                amount: qty * price
+            });
+            
+            document.getElementById('itemDesc').value = '';
+            document.getElementById('itemPrice').value = '';
+            document.getElementById('itemQty').value = '1';
+            
+            displayInvoiceItems();
+        }
+        
+        function displayInvoiceItems() {
+            const container = document.getElementById('invoiceItemsList');
+            const total = invoiceItems.reduce((s, i) => s + i.amount, 0);
+            
+            container.innerHTML = invoiceItems.map(item => `
+                <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee;">
+                    <span>${escapeHtml(item.description)} x${item.quantity}</span>
+                    <span>${formatMoney(item.amount)}</span>
+                    <button class="btn btn-danger btn-sm" onclick="removeInvoiceItem(${item.id})">Remove</button>
+                </div>
+            `).join('');
+            
+            document.getElementById('invoiceTotal').innerHTML = formatMoney(total);
+        }
+        
+        function removeInvoiceItem(id) {
+            invoiceItems = invoiceItems.filter(i => i.id !== id);
+            displayInvoiceItems();
+        }
+        
+        async function createInvoice() {
+            const customer = document.getElementById('invCustomer').value;
+            if (!customer) {
+                showToast('Enter customer name', 'error');
+                return;
+            }
+            if (invoiceItems.length === 0) {
+                showToast('Add at least one item', 'error');
+                return;
+            }
+            
+            const subtotal = invoiceItems.reduce((s, i) => s + i.amount, 0);
+            
+            try {
+                const res = await fetch(`${API}/admin/invoices/standalone`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        guest_name: customer,
+                        guest_email: document.getElementById('invEmail').value,
+                        guest_phone: document.getElementById('invPhone').value,
+                        items: invoiceItems,
+                        tax_rate: 0,
+                        subtotal: subtotal,
+                        total_amount: subtotal
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Invoice created', 'success');
+                    invoiceItems = [];
+                    document.getElementById('invCustomer').value = '';
+                    document.getElementById('invEmail').value = '';
+                    document.getElementById('invPhone').value = '';
+                    displayInvoiceItems();
+                    loadInvoices();
+                    showTab('invoices');
+                } else {
+                    showToast(data.error || 'Failed', 'error');
+                }
+            } catch (err) {
+                showToast('Error creating invoice', 'error');
+            }
+        }
+        
+        // Block dates
+        async function blockSingleDate() {
+            const date = document.getElementById('blockDate').value;
+            const reason = document.getElementById('blockReason').value;
+            if (!date) {
+                showToast('Select a date', 'error');
+                return;
+            }
+            try {
+                const res = await fetch(`${API}/admin/block-dates`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ start_date: date, end_date: date, reason: reason || 'Blocked' })
                 });
-                const data = await response.json();
+                const data = await res.json();
                 if (data.success) {
                     showToast('Date blocked', 'success');
                     loadBlockedDates();
-                    document.getElementById('block-single-date').value = '';
-                    document.getElementById('block-single-reason').value = '';
+                    document.getElementById('blockDate').value = '';
+                    document.getElementById('blockReason').value = '';
                 }
-            } catch (error) {
+            } catch (err) {
                 showToast('Error blocking date', 'error');
             }
         }
         
         async function blockDateRange() {
-            const start = document.getElementById('block-range-start').value;
-            const end = document.getElementById('block-range-end').value;
-            const reason = document.getElementById('block-range-reason').value;
-            if (!start || !end) { showToast('Select dates', 'error'); return; }
+            const start = document.getElementById('blockStart').value;
+            const end = document.getElementById('blockEnd').value;
+            const reason = document.getElementById('blockRangeReason').value;
+            if (!start || !end) {
+                showToast('Select dates', 'error');
+                return;
+            }
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/block-dates`, {
+                const res = await fetch(`${API}/admin/block-dates`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ start_date: start, end_date: end, reason: reason || 'Blocked' })
                 });
-                const data = await response.json();
+                const data = await res.json();
                 if (data.success) {
                     showToast('Date range blocked', 'success');
                     loadBlockedDates();
-                    document.getElementById('block-range-start').value = '';
-                    document.getElementById('block-range-end').value = '';
-                    document.getElementById('block-range-reason').value = '';
+                    document.getElementById('blockStart').value = '';
+                    document.getElementById('blockEnd').value = '';
+                    document.getElementById('blockRangeReason').value = '';
                 }
-            } catch (error) {
+            } catch (err) {
                 showToast('Error blocking dates', 'error');
             }
         }
         
         async function loadBlockedDates() {
             try {
-                const response = await fetch(`${API_BASE_URL}/bookings/availability`);
-                const data = await response.json();
-                const container = document.getElementById('blocked-dates-list');
+                const res = await fetch(`${API}/bookings/availability`);
+                const data = await res.json();
+                const container = document.getElementById('blockedList');
                 if (container) {
                     const blocked = data.blocked_dates || [];
                     if (blocked.length === 0) {
                         container.innerHTML = '<p>No blocked dates</p>';
                     } else {
                         container.innerHTML = blocked.map(b => `
-                            <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--gray-200);">
-                                <div><strong>${b.start_date === b.end_date ? b.start_date : `${b.start_date} to ${b.end_date}`}</strong><br><small>${b.reason || ''}</small></div>
-                                <button class="delete-btn" onclick="unblockDate(${b.id})">Unblock</button>
+                            <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee;">
+                                <div>
+                                    <strong>${b.start_date === b.end_date ? b.start_date : `${b.start_date} to ${b.end_date}`}</strong>
+                                    <div style="font-size: 12px; color: #666;">${b.reason || ''}</div>
+                                </div>
+                                <button class="btn btn-danger btn-sm" onclick="unblockDate(${b.id})">Unblock</button>
                             </div>
                         `).join('');
                     }
                 }
-            } catch (error) { console.error(error); }
+            } catch (err) {
+                console.error('Error loading blocked dates', err);
+            }
         }
         
         async function unblockDate(id) {
             if (!confirm('Unblock this date?')) return;
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, { method: 'DELETE' });
-                const data = await response.json();
+                const res = await fetch(`${API}/admin/unblock-date/${id}`, { method: 'DELETE' });
+                const data = await res.json();
                 if (data.success) {
                     showToast('Date unblocked', 'success');
                     loadBlockedDates();
                 }
-            } catch (error) {
+            } catch (err) {
                 showToast('Error unblocking date', 'error');
             }
         }
         
-        async function loadInvoices() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/invoices`);
-                const data = await response.json();
-                const container = document.getElementById('invoices-list');
-                if (container && data.success) {
-                    container.innerHTML = data.invoices.map(inv => `
-                        <div style="padding: 12px; border-bottom: 1px solid var(--gray-200);">
-                            <strong>${inv.invoice_number}</strong> - ${inv.guest_name}<br>
-                            <small>${formatCurrency(inv.total_amount)} • ${inv.status}</small>
-                        </div>
-                    `).join('');
-                }
-            } catch (error) { console.error(error); }
-        }
-        
-        // Simple invoice functions
-        function addInvoiceItemSimple() {
-            const desc = document.getElementById('invoice-description').value;
-            const qty = parseInt(document.getElementById('invoice-qty').value) || 1;
-            const amount = parseFloat(document.getElementById('invoice-amount').value);
-            if (!desc || isNaN(amount)) { showToast('Enter description and amount', 'error'); return; }
-            simpleInvoiceItems.push({ id: Date.now(), description: desc, quantity: qty, unit_price: amount, amount: qty * amount });
-            renderSimpleInvoiceItems();
-            document.getElementById('invoice-description').value = '';
-            document.getElementById('invoice-amount').value = '';
-            document.getElementById('invoice-qty').value = '1';
-        }
-        
-        function renderSimpleInvoiceItems() {
-            const container = document.getElementById('invoice-items-simple');
-            const total = simpleInvoiceItems.reduce((s, i) => s + i.amount, 0);
-            container.innerHTML = simpleInvoiceItems.map(item => `
-                <div style="display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid var(--gray-200);">
-                    <span>${escapeHtml(item.description)} x${item.quantity}</span>
-                    <span>${formatCurrency(item.amount)}</span>
-                    <button class="delete-btn" onclick="removeSimpleItem(${item.id})">Remove</button>
-                </div>
-            `).join('');
-            document.getElementById('invoice-total-simple').innerHTML = formatCurrency(total);
-        }
-        
-        function removeSimpleItem(id) {
-            simpleInvoiceItems = simpleInvoiceItems.filter(i => i.id !== id);
-            renderSimpleInvoiceItems();
-        }
-        
-        function resetInvoice() {
-            simpleInvoiceItems = [];
-            renderSimpleInvoiceItems();
-            document.getElementById('invoice-customer-name').value = '';
-        }
-        
-        async function createSimpleInvoice() {
-            const customerName = document.getElementById('invoice-customer-name').value;
-            if (!customerName) { showToast('Enter customer name', 'error'); return; }
-            if (simpleInvoiceItems.length === 0) { showToast('Add at least one item', 'error'); return; }
-            const subtotal = simpleInvoiceItems.reduce((s, i) => s + i.amount, 0);
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/invoices/standalone`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        guest_name: customerName,
-                        items: simpleInvoiceItems,
-                        tax_rate: 0,
-                        subtotal: subtotal,
-                        total_amount: subtotal
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Invoice created', 'success');
-                    resetInvoice();
-                    showSection('invoices');
-                    loadInvoices();
+        // Tab navigation
+        function showTab(tab) {
+            document.getElementById('dashboardTab').style.display = 'none';
+            document.getElementById('bookingsTab').style.display = 'none';
+            document.getElementById('invoicesTab').style.display = 'none';
+            document.getElementById('newInvoiceTab').style.display = 'none';
+            document.getElementById('blockTab').style.display = 'none';
+            
+            document.getElementById(`${tab}Tab`).style.display = 'block';
+            
+            document.querySelectorAll('.nav-tab').forEach(t => {
+                if (t.dataset.tab === tab) {
+                    t.classList.add('active');
                 } else {
-                    showToast(data.error || 'Failed', 'error');
+                    t.classList.remove('active');
                 }
-            } catch (error) {
-                showToast('Error creating invoice', 'error');
-            }
-        }
-        
-        function updateSettings() {
-            const nightlyRate = parseFloat(document.getElementById('nightly-rate-setting').value);
-            const newExchangeRate = parseFloat(document.getElementById('exchange-rate-setting').value);
-            if (!isNaN(nightlyRate)) localStorage.setItem('nightlyRate', nightlyRate);
-            if (!isNaN(newExchangeRate)) {
-                exchangeRate = newExchangeRate;
-                localStorage.setItem('exchangeRate', exchangeRate);
-            }
-            showToast('Settings saved', 'success');
-            // Refresh all displays with new currency
-            if (allBookingsData.length) {
-                displayBookings(allBookingsData);
-                updateDashboardStats(allBookingsData);
-                displayRecentBookings(allBookingsData.slice(0, 5));
-            }
-        }
-        
-        function setCurrency(currency) {
-            currentCurrency = currency;
-            document.querySelectorAll('.currency-option').forEach(opt => {
-                if (opt.dataset.currency === currency) opt.classList.add('active');
-                else opt.classList.remove('active');
-            });
-            // Refresh all displays
-            if (allBookingsData.length) {
-                displayBookings(allBookingsData);
-                updateDashboardStats(allBookingsData);
-                displayRecentBookings(allBookingsData.slice(0, 5));
-            }
-            loadInvoices();
-            renderSimpleInvoiceItems();
-        }
-        
-        function showSection(section) {
-            const sections = ['dashboard', 'bookings', 'invoices', 'new-invoice', 'block-dates', 'settings'];
-            sections.forEach(s => {
-                const el = document.getElementById(`${s}-section`);
-                if (el) el.style.display = 'none';
-            });
-            document.getElementById(`${section}-section`).style.display = 'block';
-            
-            document.querySelectorAll('.nav-item').forEach(item => {
-                if (item.dataset.section === section) item.classList.add('active');
-                else item.classList.remove('active');
             });
             
-            if (section === 'dashboard') {
-                if (allBookingsData.length) {
-                    updateDashboardStats(allBookingsData);
-                    displayRecentBookings(allBookingsData.slice(0, 5));
-                } else {
-                    loadAllBookings();
-                }
-            } else if (section === 'bookings') {
-                if (allBookingsData.length) displayBookings(allBookingsData);
-                else loadAllBookings();
-            } else if (section === 'invoices') loadInvoices();
-            else if (section === 'block-dates') loadBlockedDates();
-            
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar')?.classList.remove('open');
-            }
+            if (tab === 'bookings') loadBookings();
+            if (tab === 'invoices') loadInvoices();
+            if (tab === 'block') loadBlockedDates();
         }
         
-        function showToast(message, type) {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
+        // Search
+        document.addEventListener('input', function(e) {
+            if (e.target.id === 'searchBookings') {
+                const term = e.target.value.toLowerCase();
+                const filtered = allBookings.filter(b => 
+                    b.guest_name.toLowerCase().includes(term) ||
+                    (b.guest_phone && b.guest_phone.includes(term))
+                );
+                displayBookings(filtered);
+            }
+        });
         
         function escapeHtml(str) {
             if (!str) return '';
@@ -1025,54 +842,12 @@
             });
         }
         
-        function handleLogin() {
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                document.getElementById('login-wrapper').style.display = 'none';
-                document.getElementById('admin-container').style.display = 'block';
-                loadSettings();
-                loadAllBookings();
-                showSection('dashboard');
-            } else {
-                const errorDiv = document.getElementById('login-error');
-                errorDiv.textContent = 'Invalid credentials';
-                errorDiv.style.display = 'block';
-                setTimeout(() => errorDiv.style.display = 'none', 3000);
-            }
-        }
-        
-        function handleLogout() {
-            sessionStorage.removeItem('adminLoggedIn');
-            document.getElementById('login-wrapper').style.display = 'flex';
-            document.getElementById('admin-container').style.display = 'none';
-        }
-        
-        function loadSettings() {
-            const savedRate = localStorage.getItem('exchangeRate');
-            if (savedRate) exchangeRate = parseFloat(savedRate);
-            const savedNightly = localStorage.getItem('nightlyRate');
-            if (savedNightly) document.getElementById('nightly-rate-setting').value = savedNightly;
-            document.getElementById('exchange-rate-setting').value = exchangeRate;
-        }
-        
-        // Event listeners
-        document.getElementById('menu-toggle')?.addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('open');
-        });
-        
-        document.getElementById('booking-search')?.addEventListener('input', (e) => {
-            filterBookings(e.target.value);
-        });
-        
-        // Check session on load
+        // Check session
         if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-            document.getElementById('login-wrapper').style.display = 'none';
-            document.getElementById('admin-container').style.display = 'block';
-            loadSettings();
-            loadAllBookings();
-            showSection('dashboard');
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadAllData();
+            showTab('dashboard');
         }
     </script>
 </body>
