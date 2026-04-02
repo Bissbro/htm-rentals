@@ -415,15 +415,19 @@
             }
 
             try {
-                let url = `${API_BASE_URL}/admin/units`;
-                let method = 'POST';
+                let url, method;
                 
                 if (id) {
+                    // EDIT existing unit
                     url = `${API_BASE_URL}/admin/units/${id}`;
                     method = 'PUT';
+                } else {
+                    // ADD new unit
+                    url = `${API_BASE_URL}/admin/units`;
+                    method = 'POST';
                 }
 
-                console.log('Saving unit:', { url, method, data: unitData });
+                console.log('Saving unit:', { id, url, method, data: unitData });
 
                 const res = await fetch(url, {
                     method: method,
