@@ -2,811 +2,101 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTM Rentals | Unit Details</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --ocean-blue: #006994;
-            --maldives-teal: #40B5AD;
-            --coral: #FF6B6B;
-            --deep-blue: #0A2463;
-            --white: #FFFFFF;
-            --light-gray: #F8F9FA;
-            --dark-gray: #495057;
-            --medium-gray: #6C757D;
-            --shadow: 0 4px 12px rgba(0, 105, 148, 0.1);
-            --radius: 12px;
-            --transition: all 0.3s ease;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--light-gray);
-            color: var(--dark-gray);
+            background: #f8f9fa;
+            margin: 0;
+            padding: 20px;
         }
-
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        header {
             background: white;
-            padding: 15px 0;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .logo-img {
-            height: 35px;
-        }
-
-        .logo-text {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--ocean-blue);
-        }
-
-        .logo-text span {
-            color: var(--coral);
-        }
-
-        .back-link {
-            color: var(--ocean-blue);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        /* Unit Details */
-        .unit-details {
-            padding: 30px 0;
-        }
-
-        .unit-header {
-            margin-bottom: 30px;
-        }
-
-        .unit-name {
-            font-size: 1.8rem;
-            color: var(--deep-blue);
-            margin-bottom: 10px;
-        }
-
-        .unit-price {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--ocean-blue);
-            margin-bottom: 15px;
-        }
-
-        .unit-features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: var(--radius);
-        }
-
-        .unit-features span {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-        }
-
-        /* Gallery */
-        .gallery {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        @media (min-width: 768px) {
-            .gallery {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .main-image {
-            grid-column: 1 / -1;
-            height: 300px;
-            overflow: hidden;
-            border-radius: var(--radius);
-        }
-
-        .main-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .gallery-img {
-            height: 150px;
-            overflow: hidden;
-            border-radius: var(--radius);
-            cursor: pointer;
-        }
-
-        .gallery-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Layout */
-        .details-layout {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-        }
-
-        @media (min-width: 992px) {
-            .details-layout {
-                grid-template-columns: 1fr 1.2fr;
-            }
-        }
-
-        /* Description & Amenities */
-        .description-card, .amenities-card {
-            background: white;
-            border-radius: var(--radius);
+            border-radius: 12px;
             padding: 20px;
-            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
-        .amenities-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .amenity-tag {
-            background: var(--light-gray);
-            padding: 8px 15px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Calendar & Booking */
-        .booking-card {
-            background: white;
-            border-radius: var(--radius);
-            padding: 20px;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .calendar-nav button {
-            background: var(--light-gray);
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            text-align: center;
-        }
-
-        .calendar-weekday {
-            font-weight: 600;
-            padding: 8px 0;
-            font-size: 0.8rem;
-        }
-
-        .calendar-day {
-            padding: 8px 4px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .calendar-day:hover:not(.booked):not(.empty) {
-            background: var(--maldives-teal);
-            color: white;
-        }
-
-        .calendar-day.booked {
-            background: #ffebee;
-            color: #f44336;
-            text-decoration: line-through;
-            cursor: not-allowed;
-        }
-
-        .calendar-day.selected {
-            background: var(--ocean-blue);
-            color: white;
-        }
-
-        .calendar-day.today {
-            border: 2px solid var(--coral);
-        }
-
-        .calendar-day.empty {
-            cursor: default;
-        }
-
-        .legend {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--light-gray);
-            font-size: 0.75rem;
-        }
-
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-right: 5px;
-        }
-
-        /* Form */
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: var(--radius);
-            font-size: 0.9rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .price-breakdown {
-            background: var(--light-gray);
-            padding: 15px;
-            border-radius: var(--radius);
-            margin: 15px 0;
-        }
-
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .price-row.total {
-            border-bottom: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            padding-top: 10px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--coral);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .btn-secondary {
-            background: var(--maldives-teal);
-        }
-
-        .message {
-            padding: 12px;
-            border-radius: var(--radius);
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-            display: block;
-        }
-
-        .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            display: block;
-        }
-
-        /* Loading */
         .loading {
             text-align: center;
             padding: 50px;
+            font-size: 18px;
+            color: #666;
         }
-
-        .whatsapp-float {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #25D366;
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+        .unit-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #006994;
+        }
+        .unit-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: #006994;
+            margin: 15px 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #006994;
             text-decoration: none;
-            z-index: 100;
         }
-
-        @media (max-width: 768px) {
-            .unit-name { font-size: 1.4rem; }
-            .unit-price { font-size: 1.2rem; }
-            .form-row { grid-template-columns: 1fr; }
-            .calendar-day { padding: 6px 2px; font-size: 0.75rem; }
+        .error {
+            color: red;
+            text-align: center;
+            padding: 40px;
         }
     </style>
 </head>
 <body>
-    <a href="https://wa.me/9609373113" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
-
-    <header>
-        <div class="container header-container">
-            <a href="index.html" class="logo">
-                <img src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="HTM Rentals" class="logo-img">
-                <div class="logo-text">HTM<span>Rentals</span></div>
-            </a>
-            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Units</a>
-        </div>
-    </header>
-
-    <div class="container unit-details" id="unit-details">
+    <div class="container" id="content">
         <div class="loading">Loading unit details...</div>
     </div>
 
     <script>
-        const API_BASE_URL = 'https://api.htmrentals.com/api';
-
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const unitId = urlParams.get('id');
         const currency = urlParams.get('currency') || 'USD';
 
-        let unit = null;
-        let selectedCheckIn = null;
-        let selectedCheckOut = null;
-        let bookedDates = [];
-        let currentDate = new Date();
-        let currentMonth = currentDate.getMonth();
-        let currentYear = currentDate.getFullYear();
-        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
         async function loadUnit() {
             if (!unitId) {
-                showError('No unit selected');
+                document.getElementById('content').innerHTML = '<div class="error">No unit selected. <a href="index.html">Go back</a></div>';
                 return;
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/units/${unitId}`);
+                const response = await fetch(`https://api.htmrentals.com/api/units/${unitId}`);
                 const data = await response.json();
-                if (data.success) {
-                    unit = data.unit;
-                    unit.blocked_dates = data.blocked_dates || [];
-                    renderUnitDetails();
-                    generateCalendar(currentMonth, currentYear);
+
+                if (data.success && data.unit) {
+                    const unit = data.unit;
+                    const price = currency === 'MVR' ? `MVR ${unit.rate_mvr}` : `$${unit.rate_usd}`;
+                    
+                    document.getElementById('content').innerHTML = `
+                        <a href="index.html" class="back-link">← Back to Units</a>
+                        <h1 class="unit-name">${unit.unit_name}</h1>
+                        <div class="unit-price">${price} <span style="font-size: 16px;">/night</span></div>
+                        <div style="margin: 15px 0;">
+                            <span>👥 ${unit.max_guests} guests</span> &nbsp;|&nbsp;
+                            <span>🛏️ ${unit.bedrooms} bed</span> &nbsp;|&nbsp;
+                            <span>🚿 ${unit.bathrooms} bath</span>
+                        </div>
+                        <p>${unit.description || 'Comfortable apartment with all essential amenities.'}</p>
+                        <hr>
+                        <p><strong>Currency:</strong> ${currency === 'MVR' ? 'MVR (Local Package)' : 'USD (Foreign Guest)'}</p>
+                        <p><strong>Booking:</strong> Contact us at <a href="https://wa.me/9609373113">WhatsApp</a> or call 9373113</p>
+                        <a href="index.html" class="back-link" style="margin-top: 20px;">← Back to Units</a>
+                    `;
                 } else {
-                    showError('Unit not found');
+                    document.getElementById('content').innerHTML = '<div class="error">Unit not found. <a href="index.html">Go back</a></div>';
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showError('Failed to load unit details');
+                document.getElementById('content').innerHTML = '<div class="error">Failed to load unit. Please check your connection. <a href="index.html">Go back</a></div>';
             }
-        }
-
-        function getDisplayPrice() {
-            if (currency === 'MVR') {
-                return `MVR ${unit.rate_mvr}`;
-            }
-            return `$${unit.rate_usd}`;
-        }
-
-        function getNightlyRate() {
-            if (currency === 'MVR') {
-                return parseFloat(unit.rate_mvr);
-            }
-            return parseFloat(unit.rate_usd);
-        }
-
-        function renderUnitDetails() {
-            const container = document.getElementById('unit-details');
-            const price = getDisplayPrice();
-            const nightlyRate = getNightlyRate();
-
-            container.innerHTML = `
-                <div class="unit-header">
-                    <h1 class="unit-name">${escapeHtml(unit.unit_name)}</h1>
-                    <div class="unit-price">${price} <small>/night</small></div>
-                    <div class="unit-features">
-                        <span><i class="fas fa-user-friends"></i> ${unit.max_guests} guests</span>
-                        <span><i class="fas fa-bed"></i> ${unit.bedrooms} bedroom(s)</span>
-                        <span><i class="fas fa-bath"></i> ${unit.bathrooms} bathroom(s)</span>
-                        <span><i class="fas fa-wifi"></i> Free WiFi</span>
-                        <span><i class="fas fa-coffee"></i> Tea & Coffee</span>
-                        <span><i class="fas fa-shield-alt"></i> 24/7 Security</span>
-                    </div>
-                </div>
-
-                <div class="gallery" id="gallery"></div>
-
-                <div class="details-layout">
-                    <div>
-                        <div class="description-card">
-                            <h3>About this unit</h3>
-                            <p>${unit.description || 'Comfortable apartment with all essential amenities for a relaxing stay in Hulhumale'.}</p>
-                        </div>
-                        <div class="amenities-card">
-                            <h3>Amenities</h3>
-                            <div class="amenities-list">
-                                <span class="amenity-tag"><i class="fas fa-wifi"></i> Free WiFi</span>
-                                <span class="amenity-tag"><i class="fas fa-tv"></i> Smart TV</span>
-                                <span class="amenity-tag"><i class="fas fa-snowflake"></i> Air Conditioning</span>
-                                <span class="amenity-tag"><i class="fas fa-utensils"></i> Kitchen</span>
-                                <span class="amenity-tag"><i class="fas fa-coffee"></i> Tea & Coffee</span>
-                                <span class="amenity-tag"><i class="fas fa-shower"></i> Hot Water</span>
-                                <span class="amenity-tag"><i class="fas fa-broom"></i> Cleaning Service</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="booking-card">
-                            <h3>Check Availability</h3>
-                            <div class="calendar-header">
-                                <h4 id="calendar-month-year">${monthNames[currentMonth]} ${currentYear}</h4>
-                                <div class="calendar-nav">
-                                    <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
-                                    <button id="next-month"><i class="fas fa-chevron-right"></i></button>
-                                </div>
-                            </div>
-                            <div id="calendar-grid" class="calendar-grid"></div>
-                            <div class="legend">
-                                <div><span class="legend-color" style="background: white; border: 2px solid var(--maldives-teal);"></span> Available</div>
-                                <div><span class="legend-color" style="background: #ffebee;"></span> Booked</div>
-                                <div><span class="legend-color" style="background: var(--ocean-blue);"></span> Selected</div>
-                            </div>
-
-                            <form id="booking-form" style="margin-top: 25px;">
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label>Check-in</label>
-                                        <input type="text" id="check-in" readonly placeholder="Select date" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Check-out</label>
-                                        <input type="text" id="check-out" readonly placeholder="Select date" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Guests</label>
-                                    <select id="guests" required>
-                                        <option value="">Select</option>
-                                        <option value="1">1 Guest</option>
-                                        <option value="2">2 Guests</option>
-                                        <option value="3">3 Guests</option>
-                                        <option value="4">4 Guests</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Full Name</label>
-                                    <input type="text" id="name" placeholder="Full name" required>
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label>Phone</label>
-                                        <input type="tel" id="phone" placeholder="Phone number" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Email</label>
-                                        <input type="email" id="email" placeholder="Email address" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Special Requests</label>
-                                    <textarea id="requests" rows="2" placeholder="Any special requirements?"></textarea>
-                                </div>
-
-                                <div id="price-breakdown" class="price-breakdown" style="display: none;">
-                                    <div class="price-row">
-                                        <span>${currency === 'MVR' ? 'MVR' : '$'} ${nightlyRate} × <span id="night-count">0</span> nights</span>
-                                        <span id="subtotal">0</span>
-                                    </div>
-                                    <div class="price-row total">
-                                        <span>Total</span>
-                                        <span id="total">0</span>
-                                    </div>
-                                </div>
-
-                                <div id="form-message" class="message"></div>
-                                <button type="submit" class="btn">Request Booking</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Build gallery
-            const galleryContainer = document.getElementById('gallery');
-            const images = unit.gallery_images && unit.gallery_images.length ? unit.gallery_images : [unit.featured_image];
-            if (images && images.length) {
-                galleryContainer.innerHTML = `
-                    <div class="main-image"><img src="${images[0] || unit.featured_image || 'https://via.placeholder.com/800x400'}" alt="${unit.unit_name}"></div>
-                    ${images.slice(1).map(img => `<div class="gallery-img"><img src="${img}" alt="${unit.unit_name}"></div>`).join('')}
-                `;
-            } else {
-                galleryContainer.innerHTML = `<div class="main-image"><img src="https://via.placeholder.com/800x400?text=HTM+Rentals" alt="${unit.unit_name}"></div>`;
-            }
-
-            // Attach event listeners
-            document.getElementById('prev-month').addEventListener('click', () => {
-                currentMonth--;
-                if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-                generateCalendar(currentMonth, currentYear);
-            });
-            document.getElementById('next-month').addEventListener('click', () => {
-                currentMonth++;
-                if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-                generateCalendar(currentMonth, currentYear);
-            });
-
-            document.getElementById('booking-form').addEventListener('submit', submitBooking);
-        }
-
-        async function fetchAvailability() {
-            if (!unit) return;
-            try {
-                const response = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${unit.id}`);
-                const data = await response.json();
-                if (data.success) {
-                    bookedDates = [];
-                    data.bookings.forEach(booking => {
-                        const start = new Date(booking.check_in_date);
-                        const end = new Date(booking.check_out_date);
-                        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-                            bookedDates.push(d.toISOString().split('T')[0]);
-                        }
-                    });
-                    if (unit.blocked_dates) {
-                        unit.blocked_dates.forEach(date => bookedDates.push(date));
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching availability:', error);
-            }
-        }
-
-        async function generateCalendar(month, year) {
-            await fetchAvailability();
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            let html = '';
-            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            weekdays.forEach(day => html += `<div class="calendar-weekday">${day}</div>`);
-            for (let i = 0; i < firstDay; i++) html += '<div class="calendar-day empty"></div>';
-            const today = new Date();
-            for (let d = 1; d <= daysInMonth; d++) {
-                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                const isBooked = bookedDates.includes(dateStr);
-                const isToday = today.getDate() === d && today.getMonth() === month && today.getFullYear() === year;
-                const isSelected = (selectedCheckIn === dateStr || selectedCheckOut === dateStr);
-                let classes = 'calendar-day';
-                if (isBooked) classes += ' booked';
-                if (isToday) classes += ' today';
-                if (isSelected) classes += ' selected';
-                html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isBooked})">${d}</div>`;
-            }
-            const grid = document.getElementById('calendar-grid');
-            if (grid) grid.innerHTML = html;
-            const monthYear = document.getElementById('calendar-month-year');
-            if (monthYear) monthYear.textContent = `${monthNames[month]} ${year}`;
-        }
-
-        function selectDate(dateStr, isBooked) {
-            if (isBooked) {
-                showMessage('This date is not available', 'error');
-                return;
-            }
-            if (!selectedCheckIn || (selectedCheckIn && selectedCheckOut)) {
-                selectedCheckIn = dateStr;
-                selectedCheckOut = null;
-                document.getElementById('check-in').value = formatDate(dateStr);
-                document.getElementById('check-out').value = '';
-                document.getElementById('price-breakdown').style.display = 'none';
-            } else if (selectedCheckIn && !selectedCheckOut) {
-                const checkInDate = new Date(selectedCheckIn);
-                const checkOutDate = new Date(dateStr);
-                if (checkOutDate <= checkInDate) {
-                    showMessage('Check-out must be after check-in', 'error');
-                    return;
-                }
-                let hasBooked = false;
-                let cur = new Date(checkInDate);
-                cur.setDate(cur.getDate() + 1);
-                while (cur < checkOutDate) {
-                    if (bookedDates.includes(cur.toISOString().split('T')[0])) { hasBooked = true; break; }
-                    cur.setDate(cur.getDate() + 1);
-                }
-                if (hasBooked) {
-                    showMessage('Some dates in between are booked', 'error');
-                    return;
-                }
-                selectedCheckOut = dateStr;
-                document.getElementById('check-out').value = formatDate(dateStr);
-                const nights = Math.ceil((checkOutDate - checkInDate) / (1000*60*60*24));
-                const nightlyRate = getNightlyRate();
-                const total = nights * nightlyRate;
-                document.getElementById('night-count').textContent = nights;
-                document.getElementById('subtotal').textContent = `${currency === 'MVR' ? 'MVR ' : '$'}${total}`;
-                document.getElementById('total').textContent = `${currency === 'MVR' ? 'MVR ' : '$'}${total}`;
-                document.getElementById('price-breakdown').style.display = 'block';
-            }
-            generateCalendar(currentMonth, currentYear);
-        }
-
-        function formatDate(dateStr) {
-            const d = new Date(dateStr);
-            return d.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-        }
-
-        function showMessage(msg, type) {
-            const el = document.getElementById('form-message');
-            if (!el) return;
-            el.textContent = msg;
-            el.className = `message ${type}`;
-            setTimeout(() => el.style.display = 'none', 5000);
-        }
-
-        async function submitBooking(e) {
-            e.preventDefault();
-            if (!selectedCheckIn || !selectedCheckOut) {
-                showMessage('Please select check-in and check-out dates', 'error');
-                return;
-            }
-            const guests = document.getElementById('guests').value;
-            const name = document.getElementById('name').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
-            const requests = document.getElementById('requests').value;
-            if (!guests || !name || !phone || !email) {
-                showMessage('Please fill all required fields', 'error');
-                return;
-            }
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            submitBtn.disabled = true;
-            try {
-                const response = await fetch(`${API_BASE_URL}/bookings/create`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        unit_id: unit.id,
-                        guest_name: name,
-                        guest_email: email,
-                        guest_phone: phone,
-                        check_in_date: selectedCheckIn,
-                        check_out_date: selectedCheckOut,
-                        number_of_guests: parseInt(guests),
-                        special_requests: requests,
-                        currency: currency
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showMessage('Booking request sent! We will contact you shortly.', 'success');
-                    const nights = Math.ceil((new Date(selectedCheckOut) - new Date(selectedCheckIn)) / (1000*60*60*24));
-                    const total = nights * getNightlyRate();
-                    const symbol = currency === 'MVR' ? 'MVR' : '$';
-                    const msg = `*Booking Request - HTM Rentals*%0A%0A` +
-                        `*Unit:* ${unit.unit_name}%0A` +
-                        `*Guest:* ${name}%0A` +
-                        `*Check-in:* ${formatDate(selectedCheckIn)}%0A` +
-                        `*Check-out:* ${formatDate(selectedCheckOut)}%0A` +
-                        `*Nights:* ${nights}%0A` +
-                        `*Guests:* ${guests}%0A` +
-                        `*Total:* ${symbol}${total}%0A%0A` +
-                        `Thank you for choosing HTM Rentals!`;
-                    window.open(`https://wa.me/9609373113?text=${msg}`, '_blank');
-                    selectedCheckIn = null;
-                    selectedCheckOut = null;
-                    document.getElementById('check-in').value = '';
-                    document.getElementById('check-out').value = '';
-                    document.getElementById('price-breakdown').style.display = 'none';
-                    document.getElementById('guests').value = '';
-                    document.getElementById('name').value = '';
-                    document.getElementById('phone').value = '';
-                    document.getElementById('email').value = '';
-                    document.getElementById('requests').value = '';
-                    generateCalendar(currentMonth, currentYear);
-                } else {
-                    showMessage(data.error || 'Booking failed', 'error');
-                }
-            } catch (error) {
-                showMessage('Network error. Please try again.', 'error');
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        }
-
-        function showError(msg) {
-            document.getElementById('unit-details').innerHTML = `<div class="loading">${msg}</div>`;
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
         }
 
         loadUnit();
