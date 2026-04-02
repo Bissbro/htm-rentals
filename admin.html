@@ -10,7 +10,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #f8f9fa; }
         
-        /* Login */
         .login-wrapper {
             min-height: 100vh;
             display: flex;
@@ -47,7 +46,6 @@
         .btn-danger { background: #dc3545; color: white; }
         .btn-sm { padding: 6px 12px; font-size: 12px; }
         
-        /* Admin */
         .admin-container { display: none; min-height: 100vh; }
         .sidebar {
             position: fixed;
@@ -174,7 +172,6 @@
             .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
             .sidebar.open { transform: translateX(0); }
             .main-content { margin-left: 0; }
-            .menu-toggle { display: block; }
             .form-row { grid-template-columns: 1fr; }
         }
     </style>
@@ -184,8 +181,8 @@
         <div class="login-card">
             <h1>HTM Rentals</h1>
             <p>Administrator Access</p>
-            <input type="text" id="login-username" placeholder="Username">
-            <input type="password" id="login-password" placeholder="Password">
+            <input type="text" id="login-username" placeholder="Username" value="bissbro">
+            <input type="password" id="login-password" placeholder="Password" value="admin123">
             <button class="btn btn-primary" style="width:100%" onclick="handleLogin()">Login</button>
             <div id="login-error" style="color:#dc3545; margin-top:12px; display:none;"></div>
         </div>
@@ -208,31 +205,26 @@
                 <button class="btn btn-sm" style="background:#006994; color:white;" onclick="handleLogout()">Logout</button>
             </header>
             <div class="content-area" id="content-area">
-                <!-- Dashboard -->
                 <div id="dashboard-section">
                     <div class="stats-grid" id="stats-grid"></div>
                     <div class="card"><div class="card-header"><h2>Recent Bookings</h2></div><div id="recent-bookings"></div></div>
                 </div>
 
-                <!-- Units -->
                 <div id="units-section" style="display:none">
                     <div class="card">
-                        <div class="card-header"><h2>Property Units</h2><button class="btn btn-primary btn-sm" onclick="showUnitModal()">+ Add Unit</button></div>
+                        <div class="card-header"><h2>Property Units</h2><button class="btn btn-primary btn-sm" onclick="openUnitModal()">+ Add Unit</button></div>
                         <div id="units-list"></div>
                     </div>
                 </div>
 
-                <!-- Bookings -->
                 <div id="bookings-section" style="display:none">
                     <div class="card"><h2>All Bookings</h2><div id="all-bookings"></div></div>
                 </div>
 
-                <!-- Invoices -->
                 <div id="invoices-section" style="display:none">
                     <div class="card"><h2>Invoices</h2><div id="invoices-list"></div></div>
                 </div>
 
-                <!-- Settings -->
                 <div id="settings-section" style="display:none">
                     <div class="card"><h2>Settings</h2><div class="form-group"><label>Exchange Rate (USD to MVR)</label><input type="number" id="exchange-rate" value="15.42" step="0.01"></div><button class="btn btn-primary" onclick="saveSettings()">Save</button></div>
                 </div>
@@ -243,7 +235,10 @@
     <!-- Unit Modal -->
     <div id="unit-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2 id="modal-title">Add Unit</h2><button onclick="closeUnitModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
+            <div class="modal-header">
+                <h2 id="modal-title">Add Unit</h2>
+                <button onclick="closeUnitModal()" style="background:none; border:none; font-size:24px;">&times;</button>
+            </div>
             <div class="modal-body">
                 <input type="hidden" id="unit-id">
                 <div class="form-group"><label>Unit Name *</label><input type="text" id="unit-name" placeholder="e.g., Malas Residence"></div>
@@ -258,7 +253,7 @@
                 </div>
                 <div class="form-group"><label>Description</label><textarea id="unit-description" rows="3"></textarea></div>
                 <div class="form-group"><label>Featured Image URL</label><input type="text" id="unit-image" placeholder="https://..."></div>
-                <div class="form-group"><label>Gallery Images (comma separated)</label><input type="text" id="unit-gallery" placeholder="url1, url2, url3"></div>
+                <div class="form-group"><label>Gallery Images (comma separated)</label><input type="text" id="unit-gallery" placeholder="url1, url2"></div>
                 <div class="form-group"><label>Amenities (comma separated)</label><input type="text" id="unit-amenities" placeholder="WiFi, AC, Kitchen"></div>
                 <div style="display:flex; gap:12px; margin-top:20px;">
                     <button class="btn btn-primary" onclick="saveUnit()">Save Unit</button>
@@ -306,16 +301,18 @@
         }
 
         function showSection(section) {
-            const sections = ['dashboard', 'units', 'bookings', 'invoices', 'settings'];
-            sections.forEach(s => {
-                const el = document.getElementById(`${s}-section`);
-                if (el) el.style.display = 'none';
-            });
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('units-section').style.display = 'none';
+            document.getElementById('bookings-section').style.display = 'none';
+            document.getElementById('invoices-section').style.display = 'none';
+            document.getElementById('settings-section').style.display = 'none';
             document.getElementById(`${section}-section`).style.display = 'block';
+            
             document.querySelectorAll('.nav-item').forEach(item => {
                 if (item.dataset.section === section) item.classList.add('active');
                 else item.classList.remove('active');
             });
+            
             if (section === 'units') loadUnits();
             if (section === 'bookings') loadAllBookings();
             if (section === 'invoices') loadInvoices();
@@ -356,30 +353,49 @@
             `;
         }
 
-        function showUnitModal(unit = null) {
-            document.getElementById('modal-title').textContent = unit ? 'Edit Unit' : 'Add Unit';
-            document.getElementById('unit-id').value = unit ? unit.id : '';
-            document.getElementById('unit-name').value = unit ? unit.unit_name : '';
-            document.getElementById('unit-usd').value = unit ? unit.rate_usd : '';
-            document.getElementById('unit-mvr').value = unit ? unit.rate_mvr : '';
-            document.getElementById('unit-guests').value = unit ? unit.max_guests : 2;
-            document.getElementById('unit-bedrooms').value = unit ? unit.bedrooms : 1;
-            document.getElementById('unit-bathrooms').value = unit ? unit.bathrooms : 1;
-            document.getElementById('unit-description').value = unit ? unit.description || '' : '';
-            document.getElementById('unit-image').value = unit ? unit.featured_image || '' : '';
-            document.getElementById('unit-gallery').value = unit && unit.gallery_images ? unit.gallery_images.join(', ') : '';
-            document.getElementById('unit-amenities').value = unit && unit.amenities ? unit.amenities.join(', ') : '';
-            document.getElementById('delete-btn').style.display = unit ? 'inline-block' : 'none';
+        function openUnitModal() {
+            document.getElementById('modal-title').textContent = 'Add Unit';
+            document.getElementById('unit-id').value = '';
+            document.getElementById('unit-name').value = '';
+            document.getElementById('unit-usd').value = '';
+            document.getElementById('unit-mvr').value = '';
+            document.getElementById('unit-guests').value = '2';
+            document.getElementById('unit-bedrooms').value = '1';
+            document.getElementById('unit-bathrooms').value = '1';
+            document.getElementById('unit-description').value = '';
+            document.getElementById('unit-image').value = '';
+            document.getElementById('unit-gallery').value = '';
+            document.getElementById('unit-amenities').value = '';
+            document.getElementById('delete-btn').style.display = 'none';
             document.getElementById('unit-modal').style.display = 'flex';
         }
 
         function editUnit(id) {
             const unit = allUnits.find(u => u.id === id);
-            if (unit) showUnitModal(unit);
+            if (!unit) return;
+            document.getElementById('modal-title').textContent = 'Edit Unit';
+            document.getElementById('unit-id').value = unit.id;
+            document.getElementById('unit-name').value = unit.unit_name || '';
+            document.getElementById('unit-usd').value = unit.rate_usd || '';
+            document.getElementById('unit-mvr').value = unit.rate_mvr || '';
+            document.getElementById('unit-guests').value = unit.max_guests || 2;
+            document.getElementById('unit-bedrooms').value = unit.bedrooms || 1;
+            document.getElementById('unit-bathrooms').value = unit.bathrooms || 1;
+            document.getElementById('unit-description').value = unit.description || '';
+            document.getElementById('unit-image').value = unit.featured_image || '';
+            document.getElementById('unit-gallery').value = (unit.gallery_images || []).join(', ');
+            document.getElementById('unit-amenities').value = (unit.amenities || []).join(', ');
+            document.getElementById('delete-btn').style.display = 'inline-block';
+            document.getElementById('unit-modal').style.display = 'flex';
+        }
+
+        function closeUnitModal() { 
+            document.getElementById('unit-modal').style.display = 'none'; 
         }
 
         async function saveUnit() {
             const id = document.getElementById('unit-id').value;
+            
             const unitData = {
                 unit_name: document.getElementById('unit-name').value,
                 rate_usd: parseFloat(document.getElementById('unit-usd').value) || 0,
@@ -394,39 +410,48 @@
             };
 
             if (!unitData.unit_name) {
-                showToast('Unit name required', 'error');
+                showToast('Unit name is required', 'error');
                 return;
             }
 
             try {
                 let url = `${API_BASE_URL}/admin/units`;
                 let method = 'POST';
+                
                 if (id) {
                     url = `${API_BASE_URL}/admin/units/${id}`;
                     method = 'PUT';
                 }
+
+                console.log('Saving unit:', { url, method, data: unitData });
 
                 const res = await fetch(url, {
                     method: method,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(unitData)
                 });
+                
                 const data = await res.json();
+                console.log('Response:', data);
+                
                 if (data.success) {
-                    showToast(id ? 'Unit updated' : 'Unit created', 'success');
+                    showToast(id ? 'Unit updated successfully' : 'Unit created successfully', 'success');
                     closeUnitModal();
                     loadUnits();
                 } else {
-                    showToast(data.error || 'Failed to save', 'error');
+                    showToast(data.error || 'Failed to save unit', 'error');
                 }
             } catch(e) {
-                showToast('Error saving unit', 'error');
+                console.error('Save error:', e);
+                showToast('Error saving unit: ' + e.message, 'error');
             }
         }
 
         async function deleteUnit() {
             const id = document.getElementById('unit-id').value;
-            if (!id || !confirm('Delete this unit permanently?')) return;
+            if (!id) return;
+            if (!confirm('Delete this unit permanently? This cannot be undone.')) return;
+            
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/units/${id}`, { method: 'DELETE' });
                 const data = await res.json();
@@ -437,10 +462,10 @@
                 } else {
                     showToast(data.error || 'Failed to delete', 'error');
                 }
-            } catch(e) { showToast('Error deleting', 'error'); }
+            } catch(e) {
+                showToast('Error deleting unit', 'error');
+            }
         }
-
-        function closeUnitModal() { document.getElementById('unit-modal').style.display = 'none'; }
 
         // ==================== DASHBOARD ====================
         async function loadDashboard() {
@@ -454,7 +479,7 @@
                     const cancelled = bookings.filter(b => b.booking_status === 'cancelled').length;
                     const revenue = bookings.filter(b => b.booking_status === 'confirmed').reduce((s,b) => s + parseFloat(b.total_amount), 0);
                     document.getElementById('stats-grid').innerHTML = `
-                        <div class="stat-card"><h3>Total Bookings</h3><div class="stat-number">${bookings.length}</div></div>
+                        <div class="stat-card"><h3>Total</h3><div class="stat-number">${bookings.length}</div></div>
                         <div class="stat-card"><h3>Pending</h3><div class="stat-number">${pending}</div></div>
                         <div class="stat-card"><h3>Confirmed</h3><div class="stat-number">${confirmed}</div></div>
                         <div class="stat-card"><h3>Cancelled</h3><div class="stat-number">${cancelled}</div></div>
@@ -491,7 +516,7 @@
                             <div>${b.currency === 'MVR' ? 'MVR' : '$'}${b.total_amount} • ${b.total_nights} nights</div>
                             <div><span class="badge badge-${b.booking_status}">${b.booking_status}</span></div>
                             <div style="margin-top:8px;">
-                                ${b.booking_status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="updateStatus(${b.id}, 'confirmed')">Confirm</button> <button class="btn btn-danger btn-sm" onclick="updateStatus(${b.id}, 'cancelled')">Cancel</button>` : ''}
+                                ${b.booking_status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="updateBookingStatus(${b.id}, 'confirmed')">Confirm</button> <button class="btn btn-danger btn-sm" onclick="updateBookingStatus(${b.id}, 'cancelled')">Cancel</button>` : ''}
                                 ${b.booking_status === 'cancelled' ? `<button class="delete-btn" onclick="deleteBooking(${b.id})">Delete</button>` : ''}
                             </div>
                         </div>
@@ -500,7 +525,7 @@
             } catch(e) { showToast('Failed to load bookings', 'error'); }
         }
 
-        async function updateStatus(id, status) {
+        async function updateBookingStatus(id, status) {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`, {
                     method: 'PATCH',
@@ -525,7 +550,7 @@
                 const res = await fetch(`${API_BASE_URL}/admin/invoices`);
                 const data = await res.json();
                 const container = document.getElementById('invoices-list');
-                if (container) container.innerHTML = data.invoices?.map(inv => `
+                container.innerHTML = data.invoices?.map(inv => `
                     <div style="padding:12px; border-bottom:1px solid #e9ecef">
                         <div><strong>${inv.invoice_number}</strong> <span class="badge badge-${inv.status}">${inv.status}</span></div>
                         <div>${inv.guest_name} • $${inv.total_amount}</div>
@@ -542,7 +567,10 @@
             showToast('Settings saved', 'success');
         }
 
-        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+        function escapeHtml(str) { 
+            if (!str) return ''; 
+            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); 
+        }
 
         // Initialize
         if (sessionStorage.getItem('adminLoggedIn') === 'true') {
