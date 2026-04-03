@@ -169,6 +169,55 @@
         }
         .toast.success { background: #28a745; }
         .toast.error { background: #dc3545; }
+        
+        /* Image upload styles */
+        .image-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        .image-upload-area:hover {
+            border-color: #006994;
+            background: #e8f4f8;
+        }
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .preview-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            position: relative;
+        }
+        .preview-img-container {
+            position: relative;
+            display: inline-block;
+        }
+        .remove-img {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -256,8 +305,31 @@
                     <div class="form-group"><label>Bathrooms</label><input type="number" id="unit-bathrooms" value="1"></div>
                 </div>
                 <div class="form-group"><label>Description</label><textarea id="unit-description" rows="3"></textarea></div>
-                <div class="form-group"><label>Featured Image URL</label><input type="text" id="unit-image" placeholder="https://..."></div>
-                <div class="form-group"><label>Gallery Images (comma separated)</label><input type="text" id="unit-gallery" placeholder="url1, url2"></div>
+                
+                <!-- Featured Image Upload -->
+                <div class="form-group">
+                    <label>Featured Image</label>
+                    <div class="image-upload-area" onclick="document.getElementById('featured-image-input').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #006994;"></i>
+                        <p>Click to upload featured image</p>
+                        <input type="file" id="featured-image-input" accept="image/*" style="display:none" onchange="uploadFeaturedImage(this)">
+                    </div>
+                    <div id="featured-image-preview" style="margin-top: 10px;"></div>
+                    <input type="hidden" id="unit-image">
+                </div>
+                
+                <!-- Gallery Images Upload -->
+                <div class="form-group">
+                    <label>Gallery Images</label>
+                    <div class="image-upload-area" onclick="document.getElementById('gallery-image-input').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #006994;"></i>
+                        <p>Click to upload gallery images (multiple)</p>
+                        <input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)">
+                    </div>
+                    <div id="gallery-images-preview" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;"></div>
+                    <input type="hidden" id="unit-gallery">
+                </div>
+                
                 <div class="form-group"><label>Amenities (comma separated)</label><input type="text" id="unit-amenities" placeholder="WiFi, AC, Kitchen"></div>
                 <div style="display:flex; gap:12px; margin-top:20px;">
                     <button class="btn btn-primary" onclick="saveUnit()">Save Unit</button>
@@ -274,6 +346,7 @@
         
         let allUnits = [];
         let allBookings = [];
+        let currentGalleryImages = [];
 
         function showToast(msg, type) {
             const t = document.createElement('div');
@@ -281,6 +354,82 @@
             t.textContent = msg;
             document.body.appendChild(t);
             setTimeout(() => t.remove(), 3000);
+        }
+
+        // Image upload functions
+        async function uploadFeaturedImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('unit-image').value = data.url;
+                    document.getElementById('featured-image-preview').innerHTML = `
+                        <div class="preview-img-container">
+                            <img src="${data.url}" class="preview-img">
+                            <div class="remove-img" onclick="removeFeaturedImage()">×</div>
+                        </div>
+                    `;
+                    showToast('Image uploaded', 'success');
+                } else {
+                    showToast('Upload failed', 'error');
+                }
+            } catch(e) {
+                showToast('Error uploading', 'error');
+            }
+        }
+
+        function removeFeaturedImage() {
+            document.getElementById('unit-image').value = '';
+            document.getElementById('featured-image-preview').innerHTML = '';
+        }
+
+        async function uploadGalleryImages(input) {
+            const files = Array.from(input.files);
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                try {
+                    const res = await fetch(`${API_BASE_URL}/admin/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        currentGalleryImages.push(data.url);
+                        displayGalleryPreviews();
+                        showToast('Image uploaded', 'success');
+                    }
+                } catch(e) {
+                    showToast('Upload failed', 'error');
+                }
+            }
+            input.value = '';
+        }
+
+        function displayGalleryPreviews() {
+            const container = document.getElementById('gallery-images-preview');
+            container.innerHTML = currentGalleryImages.map((url, idx) => `
+                <div class="preview-img-container">
+                    <img src="${url}" class="preview-img">
+                    <div class="remove-img" onclick="removeGalleryImage(${idx})">×</div>
+                </div>
+            `).join('');
+            document.getElementById('unit-gallery').value = currentGalleryImages.join(',');
+        }
+
+        function removeGalleryImage(idx) {
+            currentGalleryImages.splice(idx, 1);
+            displayGalleryPreviews();
         }
 
         function handleLogin() {
@@ -375,6 +524,9 @@
             document.getElementById('unit-gallery').value = '';
             document.getElementById('unit-amenities').value = '';
             document.getElementById('delete-btn').style.display = 'none';
+            document.getElementById('featured-image-preview').innerHTML = '';
+            currentGalleryImages = [];
+            displayGalleryPreviews();
             document.getElementById('unit-modal').style.display = 'flex';
         }
 
@@ -391,7 +543,16 @@
             document.getElementById('unit-bathrooms').value = unit.bathrooms || 1;
             document.getElementById('unit-description').value = unit.description || '';
             document.getElementById('unit-image').value = unit.featured_image || '';
-            document.getElementById('unit-gallery').value = (unit.gallery_images || []).join(', ');
+            if (unit.featured_image) {
+                document.getElementById('featured-image-preview').innerHTML = `
+                    <div class="preview-img-container">
+                        <img src="${unit.featured_image}" class="preview-img">
+                        <div class="remove-img" onclick="removeFeaturedImage()">×</div>
+                    </div>
+                `;
+            }
+            currentGalleryImages = unit.gallery_images || [];
+            displayGalleryPreviews();
             document.getElementById('unit-amenities').value = (unit.amenities || []).join(', ');
             document.getElementById('delete-btn').style.display = 'inline-block';
             document.getElementById('unit-modal').style.display = 'flex';
@@ -413,7 +574,7 @@
                 bathrooms: parseInt(document.getElementById('unit-bathrooms').value) || 1,
                 description: document.getElementById('unit-description').value,
                 featured_image: document.getElementById('unit-image').value,
-                gallery_images: document.getElementById('unit-gallery').value.split(',').map(s => s.trim()).filter(s => s),
+                gallery_images: currentGalleryImages,
                 amenities: document.getElementById('unit-amenities').value.split(',').map(s => s.trim()).filter(s => s)
             };
 
