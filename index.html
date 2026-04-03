@@ -682,36 +682,47 @@
         }
 
         function displayUnits(units) {
-            if (!units || units.length === 0) {
-                document.getElementById('units-grid').innerHTML = '<p>No units available.</p>';
-                return;
-            }
+    if (!units || units.length === 0) {
+        document.getElementById('units-grid').innerHTML = '<p>No units available.</p>';
+        return;
+    }
 
-            const container = document.getElementById('units-grid');
-            container.innerHTML = units.map(unit => `
-                <div class="unit-card">
-                    <div class="unit-image">
-                        <img src="${unit.featured_image || 'https://via.placeholder.com/400x300?text=HTM+Rentals'}" alt="${escapeHtml(unit.unit_name)}">
+    const container = document.getElementById('units-grid');
+    container.innerHTML = units.map(unit => {
+        // Parse gallery_images if it's a string
+        let galleryImages = unit.gallery_images;
+        if (typeof galleryImages === 'string') {
+            try {
+                galleryImages = JSON.parse(galleryImages);
+            } catch(e) {
+                galleryImages = [];
+            }
+        }
+        const featuredImage = unit.featured_image || (galleryImages && galleryImages.length > 0 ? galleryImages[0] : 'https://via.placeholder.com/400x300?text=HTM+Rentals');
+        
+        return `
+            <div class="unit-card">
+                <div class="unit-image">
+                    <img src="${featuredImage}" alt="${escapeHtml(unit.unit_name)}">
+                </div>
+                <div class="unit-info">
+                    <h3 class="unit-name">${escapeHtml(unit.unit_name)}</h3>
+                    <div class="unit-price">$${unit.rate_usd} <small>USD/night</small></div>
+                    <div class="unit-features">
+                        <span><i class="fas fa-user-friends"></i> ${unit.max_guests} guests</span>
+                        <span><i class="fas fa-bed"></i> ${unit.bedrooms} bed</span>
+                        <span><i class="fas fa-bath"></i> ${unit.bathrooms} bath</span>
                     </div>
-                    <div class="unit-info">
-                        <h3 class="unit-name">${escapeHtml(unit.unit_name)}</h3>
-                        <div class="unit-price">$${unit.rate_usd} <small>USD/night</small></div>
-                        <div class="unit-features">
-                            <span><i class="fas fa-user-friends"></i> ${unit.max_guests} guests</span>
-                            <span><i class="fas fa-bed"></i> ${unit.bedrooms} bed</span>
-                            <span><i class="fas fa-bath"></i> ${unit.bathrooms} bath</span>
-                            <span><i class="fas fa-wifi"></i> WiFi</span>
-                            <span><i class="fas fa-coffee"></i> Tea & Coffee</span>
-                        </div>
-                        <p class="unit-description">${unit.description || 'Comfortable apartment with essential amenities.'}</p>
-                        <div class="card-buttons">
-                            <a href="unit-details.html?id=${unit.id}&currency=USD" class="btn">Book Now</a>
-                            <a href="unit-details.html?id=${unit.id}&currency=MVR" class="btn btn-secondary">Local Package</a>
-                        </div>
+                    <p class="unit-description">${unit.description || 'Comfortable apartment with essential amenities.'}</p>
+                    <div class="card-buttons">
+                        <a href="unit-details.html?id=${unit.id}&currency=USD" class="btn">Book Now</a>
+                        <a href="unit-details.html?id=${unit.id}&currency=MVR" class="btn btn-secondary">Local Package</a>
                     </div>
                 </div>
-            `).join('');
-        }
+            </div>
+        `;
+    }).join('');
+}
 
         function escapeHtml(str) {
             if (!str) return '';
