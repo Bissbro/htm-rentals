@@ -134,6 +134,33 @@
             font-size: 14px;
         }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .image-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8f9fa;
+        }
+        .image-upload-area:hover { border-color: #006994; background: #e8f4f8; }
+        .image-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .preview-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #dee2e6; }
+        .preview-img-container { position: relative; display: inline-block; }
+        .remove-img {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -169,55 +196,6 @@
         }
         .toast.success { background: #28a745; }
         .toast.error { background: #dc3545; }
-        
-        /* Image upload styles */
-        .image-upload-area {
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: #f8f9fa;
-        }
-        .image-upload-area:hover {
-            border-color: #006994;
-            background: #e8f4f8;
-        }
-        .image-preview {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .preview-img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-            position: relative;
-        }
-        .preview-img-container {
-            position: relative;
-            display: inline-block;
-        }
-        .remove-img {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #dc3545;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -244,6 +222,8 @@
             <nav>
                 <div class="nav-item active" data-section="dashboard" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
                 <div class="nav-item" data-section="units" onclick="showSection('units')"><i class="fas fa-building"></i><span>Units</span></div>
+                <div class="nav-item" data-section="hero" onclick="showSection('hero')"><i class="fas fa-image"></i><span>Hero Images</span></div>
+                <div class="nav-item" data-section="experiences" onclick="showSection('experiences')"><i class="fas fa-umbrella-beach"></i><span>Experiences</span></div>
                 <div class="nav-item" data-section="bookings" onclick="showSection('bookings')"><i class="fas fa-calendar"></i><span>Bookings</span></div>
                 <div class="nav-item" data-section="invoices" onclick="showSection('invoices')"><i class="fas fa-file-invoice"></i><span>Invoices</span></div>
                 <div class="nav-item" data-section="settings" onclick="showSection('settings')"><i class="fas fa-cog"></i><span>Settings</span></div>
@@ -270,6 +250,22 @@
                     </div>
                 </div>
 
+                <!-- Hero Images -->
+                <div id="hero-section" style="display:none">
+                    <div class="card">
+                        <div class="card-header"><h2>Hero Slideshow Images</h2><button class="btn btn-primary btn-sm" onclick="openHeroModal()">+ Add Image</button></div>
+                        <div id="hero-list"></div>
+                    </div>
+                </div>
+
+                <!-- Experiences -->
+                <div id="experiences-section" style="display:none">
+                    <div class="card">
+                        <div class="card-header"><h2>Experiences</h2><button class="btn btn-primary btn-sm" onclick="openExperienceModal()">+ Add Experience</button></div>
+                        <div id="experiences-list"></div>
+                    </div>
+                </div>
+
                 <!-- Bookings -->
                 <div id="bookings-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>All Bookings</h2><input type="text" id="booking-search" placeholder="Search by name..." style="padding:8px; border:1px solid #dee2e6; border-radius:8px; width:200px;"></div><div id="all-bookings"></div></div>
@@ -291,49 +287,68 @@
     <!-- Unit Modal -->
     <div id="unit-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2 id="modal-title">Add Unit</h2><button onclick="closeUnitModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
+            <div class="modal-header"><h2 id="unit-modal-title">Add Unit</h2><button onclick="closeUnitModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
             <div class="modal-body">
                 <input type="hidden" id="unit-id">
-                <div class="form-group"><label>Unit Name *</label><input type="text" id="unit-name" placeholder="e.g., Malas Residence"></div>
+                <div class="form-group"><label>Unit Name *</label><input type="text" id="unit-name"></div>
                 <div class="form-row">
-                    <div class="form-group"><label>USD Rate</label><input type="number" id="unit-usd" step="0.01" placeholder="USD"></div>
-                    <div class="form-group"><label>MVR Rate</label><input type="number" id="unit-mvr" step="0.01" placeholder="MVR"></div>
+                    <div class="form-group"><label>USD Rate</label><input type="number" id="unit-usd" step="0.01"></div>
+                    <div class="form-group"><label>MVR Rate</label><input type="number" id="unit-mvr" step="0.01"></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label>Max Guests</label><input type="number" id="unit-guests" value="2"></div>
-                    <div class="form-group"><label>Bedrooms</label><input type="number" id="unit-bedrooms" value="1"></div>
-                    <div class="form-group"><label>Bathrooms</label><input type="number" id="unit-bathrooms" value="1"></div>
+                    <div class="form-group"><label>Beds</label><input type="number" id="unit-beds" value="1"></div>
                 </div>
                 <div class="form-group"><label>Description</label><textarea id="unit-description" rows="3"></textarea></div>
-                
-                <!-- Featured Image Upload -->
-                <div class="form-group">
-                    <label>Featured Image</label>
-                    <div class="image-upload-area" onclick="document.getElementById('featured-image-input').click()">
-                        <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #006994;"></i>
-                        <p>Click to upload featured image</p>
-                        <input type="file" id="featured-image-input" accept="image/*" style="display:none" onchange="uploadFeaturedImage(this)">
-                    </div>
-                    <div id="featured-image-preview" style="margin-top: 10px;"></div>
-                    <input type="hidden" id="unit-image">
-                </div>
-                
-                <!-- Gallery Images Upload -->
-                <div class="form-group">
-                    <label>Gallery Images</label>
-                    <div class="image-upload-area" onclick="document.getElementById('gallery-image-input').click()">
-                        <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #006994;"></i>
-                        <p>Click to upload gallery images (multiple)</p>
-                        <input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)">
-                    </div>
-                    <div id="gallery-images-preview" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;"></div>
-                    <input type="hidden" id="unit-gallery">
-                </div>
-                
+                <div class="form-group"><label>Featured Image URL</label><input type="text" id="unit-image" placeholder="https://..."></div>
+                <div class="form-group"><label>Gallery Images (comma separated)</label><input type="text" id="unit-gallery" placeholder="url1, url2"></div>
                 <div class="form-group"><label>Amenities (comma separated)</label><input type="text" id="unit-amenities" placeholder="WiFi, AC, Kitchen"></div>
+                <div class="form-group"><label>Airbnb URL</label><input type="text" id="unit-airbnb" placeholder="https://airbnb.com/..."></div>
+                <div class="form-group"><label>Agoda URL</label><input type="text" id="unit-agoda" placeholder="https://agoda.com/..."></div>
+                <div class="form-group"><label>Trip.com URL</label><input type="text" id="unit-trip" placeholder="https://trip.com/..."></div>
+                <div class="form-group"><label>Booking.com URL</label><input type="text" id="unit-booking" placeholder="https://booking.com/..."></div>
                 <div style="display:flex; gap:12px; margin-top:20px;">
                     <button class="btn btn-primary" onclick="saveUnit()">Save Unit</button>
-                    <button class="btn btn-danger" id="delete-btn" style="display:none" onclick="deleteUnit()">Delete</button>
+                    <button class="btn btn-danger" id="delete-unit-btn" style="display:none" onclick="deleteUnit()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Modal -->
+    <div id="hero-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Add Hero Image</h2><button onclick="closeHeroModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="hero-id">
+                <div class="form-group"><label>Image URL *</label><input type="text" id="hero-url" placeholder="https://..."></div>
+                <div class="form-group"><label>Title (optional)</label><input type="text" id="hero-title" placeholder="Welcome to HTM Rentals"></div>
+                <div class="form-group"><label>Subtitle (optional)</label><input type="text" id="hero-subtitle" placeholder="Your safe space"></div>
+                <div class="form-group"><label>Button Text (optional)</label><input type="text" id="hero-btn-text" placeholder="View Units"></div>
+                <div class="form-group"><label>Button Link (optional)</label><input type="text" id="hero-btn-link" placeholder="#units"></div>
+                <div class="form-group"><label>Sort Order</label><input type="number" id="hero-order" value="0"></div>
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button class="btn btn-primary" onclick="saveHeroImage()">Save</button>
+                    <button class="btn btn-danger" id="delete-hero-btn" style="display:none" onclick="deleteHeroImage()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Experience Modal -->
+    <div id="experience-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Add Experience</h2><button onclick="closeExperienceModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="exp-id">
+                <div class="form-group"><label>Title *</label><input type="text" id="exp-title" placeholder="Dolphin Cruise"></div>
+                <div class="form-group"><label>Description</label><textarea id="exp-description" rows="2" placeholder="Short description..."></textarea></div>
+                <div class="form-group"><label>Image 1 URL</label><input type="text" id="exp-image1" placeholder="https://..."></div>
+                <div class="form-group"><label>Image 2 URL</label><input type="text" id="exp-image2" placeholder="https://..."></div>
+                <div class="form-group"><label>Sort Order</label><input type="number" id="exp-order" value="0"></div>
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button class="btn btn-primary" onclick="saveExperience()">Save</button>
+                    <button class="btn btn-danger" id="delete-exp-btn" style="display:none" onclick="deleteExperience()">Delete</button>
                 </div>
             </div>
         </div>
@@ -346,7 +361,6 @@
         
         let allUnits = [];
         let allBookings = [];
-        let currentGalleryImages = [];
 
         function showToast(msg, type) {
             const t = document.createElement('div');
@@ -354,82 +368,6 @@
             t.textContent = msg;
             document.body.appendChild(t);
             setTimeout(() => t.remove(), 3000);
-        }
-
-        // Image upload functions
-        async function uploadFeaturedImage(input) {
-            const file = input.files[0];
-            if (!file) return;
-            
-            const formData = new FormData();
-            formData.append('image', file);
-            
-            try {
-                const res = await fetch(`${API_BASE_URL}/admin/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById('unit-image').value = data.url;
-                    document.getElementById('featured-image-preview').innerHTML = `
-                        <div class="preview-img-container">
-                            <img src="${data.url}" class="preview-img">
-                            <div class="remove-img" onclick="removeFeaturedImage()">×</div>
-                        </div>
-                    `;
-                    showToast('Image uploaded', 'success');
-                } else {
-                    showToast('Upload failed', 'error');
-                }
-            } catch(e) {
-                showToast('Error uploading', 'error');
-            }
-        }
-
-        function removeFeaturedImage() {
-            document.getElementById('unit-image').value = '';
-            document.getElementById('featured-image-preview').innerHTML = '';
-        }
-
-        async function uploadGalleryImages(input) {
-            const files = Array.from(input.files);
-            for (const file of files) {
-                const formData = new FormData();
-                formData.append('image', file);
-                
-                try {
-                    const res = await fetch(`${API_BASE_URL}/admin/upload`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        currentGalleryImages.push(data.url);
-                        displayGalleryPreviews();
-                        showToast('Image uploaded', 'success');
-                    }
-                } catch(e) {
-                    showToast('Upload failed', 'error');
-                }
-            }
-            input.value = '';
-        }
-
-        function displayGalleryPreviews() {
-            const container = document.getElementById('gallery-images-preview');
-            container.innerHTML = currentGalleryImages.map((url, idx) => `
-                <div class="preview-img-container">
-                    <img src="${url}" class="preview-img">
-                    <div class="remove-img" onclick="removeGalleryImage(${idx})">×</div>
-                </div>
-            `).join('');
-            document.getElementById('unit-gallery').value = currentGalleryImages.join(',');
-        }
-
-        function removeGalleryImage(idx) {
-            currentGalleryImages.splice(idx, 1);
-            displayGalleryPreviews();
         }
 
         function handleLogin() {
@@ -441,6 +379,8 @@
                 document.getElementById('admin-container').style.display = 'block';
                 loadDashboard();
                 loadUnits();
+                loadHeroImages();
+                loadExperiences();
                 loadAllBookings();
                 loadInvoices();
                 showSection('dashboard');
@@ -457,11 +397,11 @@
         }
 
         function showSection(section) {
-            document.getElementById('dashboard-section').style.display = 'none';
-            document.getElementById('units-section').style.display = 'none';
-            document.getElementById('bookings-section').style.display = 'none';
-            document.getElementById('invoices-section').style.display = 'none';
-            document.getElementById('settings-section').style.display = 'none';
+            const sections = ['dashboard', 'units', 'hero', 'experiences', 'bookings', 'invoices', 'settings'];
+            sections.forEach(s => {
+                const el = document.getElementById(`${s}-section`);
+                if (el) el.style.display = 'none';
+            });
             document.getElementById(`${section}-section`).style.display = 'block';
             
             document.querySelectorAll('.nav-item').forEach(item => {
@@ -470,6 +410,8 @@
             });
             
             if (section === 'units') loadUnits();
+            if (section === 'hero') loadHeroImages();
+            if (section === 'experiences') loadExperiences();
             if (section === 'bookings') loadAllBookings();
             if (section === 'invoices') loadInvoices();
             if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
@@ -491,146 +433,269 @@
             const container = document.getElementById('units-list');
             if (!allUnits.length) { container.innerHTML = '<p>No units. Click "Add Unit".</p>'; return; }
             container.innerHTML = `
-                <table class="data-table">
-                    <thead><tr><th>ID</th><th>Name</th><th>USD</th><th>MVR</th><th>Guests</th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody>
-                        ${allUnits.map(u => `
-                            <tr>
-                                <td>${u.id}</td>
-                                <td><strong>${escapeHtml(u.unit_name)}</strong></td>
-                                <td>$${u.rate_usd || '—'}</td>
-                                <td>MVR ${u.rate_mvr || '—'}</td>
-                                <td>${u.max_guests}</td>
-                                <td><span class="badge badge-${u.is_active ? 'confirmed' : 'cancelled'}">${u.is_active ? 'Active' : 'Inactive'}</span></td>
-                                <td><button class="btn btn-primary btn-sm" onclick="editUnit(${u.id})">Edit</button></td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+                <table class="data-table"><thead><tr><th>ID</th><th>Name</th><th>USD</th><th>MVR</th><th>Guests</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>${allUnits.map(u => `
+                    <tr><td>${u.id}</td><td><strong>${escapeHtml(u.unit_name)}</strong></td><td>$${u.rate_usd || '—'}</td><td>MVR ${u.rate_mvr || '—'}</td><td>${u.max_guests}</td>
+                    <td><span class="badge badge-${u.is_active ? 'confirmed' : 'cancelled'}">${u.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td><button class="btn btn-primary btn-sm" onclick="editUnit(${u.id})">Edit</button></td>
+                </tr>`).join('')}</tbody></table>
             `;
         }
 
         function openUnitModal() {
-            document.getElementById('modal-title').textContent = 'Add Unit';
+            document.getElementById('unit-modal-title').textContent = 'Add Unit';
             document.getElementById('unit-id').value = '';
             document.getElementById('unit-name').value = '';
             document.getElementById('unit-usd').value = '';
             document.getElementById('unit-mvr').value = '';
             document.getElementById('unit-guests').value = '2';
-            document.getElementById('unit-bedrooms').value = '1';
-            document.getElementById('unit-bathrooms').value = '1';
+            document.getElementById('unit-beds').value = '1';
             document.getElementById('unit-description').value = '';
             document.getElementById('unit-image').value = '';
             document.getElementById('unit-gallery').value = '';
             document.getElementById('unit-amenities').value = '';
-            document.getElementById('delete-btn').style.display = 'none';
-            document.getElementById('featured-image-preview').innerHTML = '';
-            currentGalleryImages = [];
-            displayGalleryPreviews();
+            document.getElementById('unit-airbnb').value = '';
+            document.getElementById('unit-agoda').value = '';
+            document.getElementById('unit-trip').value = '';
+            document.getElementById('unit-booking').value = '';
+            document.getElementById('delete-unit-btn').style.display = 'none';
             document.getElementById('unit-modal').style.display = 'flex';
         }
 
         function editUnit(id) {
             const unit = allUnits.find(u => u.id === id);
             if (!unit) return;
-            document.getElementById('modal-title').textContent = 'Edit Unit';
+            document.getElementById('unit-modal-title').textContent = 'Edit Unit';
             document.getElementById('unit-id').value = unit.id;
             document.getElementById('unit-name').value = unit.unit_name || '';
             document.getElementById('unit-usd').value = unit.rate_usd || '';
             document.getElementById('unit-mvr').value = unit.rate_mvr || '';
             document.getElementById('unit-guests').value = unit.max_guests || 2;
-            document.getElementById('unit-bedrooms').value = unit.bedrooms || 1;
-            document.getElementById('unit-bathrooms').value = unit.bathrooms || 1;
+            document.getElementById('unit-beds').value = unit.bedrooms || 1;
             document.getElementById('unit-description').value = unit.description || '';
             document.getElementById('unit-image').value = unit.featured_image || '';
-            if (unit.featured_image) {
-                document.getElementById('featured-image-preview').innerHTML = `
-                    <div class="preview-img-container">
-                        <img src="${unit.featured_image}" class="preview-img">
-                        <div class="remove-img" onclick="removeFeaturedImage()">×</div>
-                    </div>
-                `;
-            }
-            currentGalleryImages = unit.gallery_images || [];
-            displayGalleryPreviews();
+            document.getElementById('unit-gallery').value = (unit.gallery_images || []).join(', ');
             document.getElementById('unit-amenities').value = (unit.amenities || []).join(', ');
-            document.getElementById('delete-btn').style.display = 'inline-block';
+            document.getElementById('unit-airbnb').value = unit.airbnb_url || '';
+            document.getElementById('unit-agoda').value = unit.agoda_url || '';
+            document.getElementById('unit-trip').value = unit.trip_url || '';
+            document.getElementById('unit-booking').value = unit.booking_url || '';
+            document.getElementById('delete-unit-btn').style.display = 'inline-block';
             document.getElementById('unit-modal').style.display = 'flex';
         }
 
-        function closeUnitModal() { 
-            document.getElementById('unit-modal').style.display = 'none'; 
-        }
+        function closeUnitModal() { document.getElementById('unit-modal').style.display = 'none'; }
 
         async function saveUnit() {
             const id = document.getElementById('unit-id').value;
-            
             const unitData = {
                 unit_name: document.getElementById('unit-name').value,
                 rate_usd: parseFloat(document.getElementById('unit-usd').value) || 0,
                 rate_mvr: parseFloat(document.getElementById('unit-mvr').value) || 0,
                 max_guests: parseInt(document.getElementById('unit-guests').value) || 2,
-                bedrooms: parseInt(document.getElementById('unit-bedrooms').value) || 1,
-                bathrooms: parseInt(document.getElementById('unit-bathrooms').value) || 1,
+                bedrooms: parseInt(document.getElementById('unit-beds').value) || 1,
                 description: document.getElementById('unit-description').value,
                 featured_image: document.getElementById('unit-image').value,
-                gallery_images: currentGalleryImages,
-                amenities: document.getElementById('unit-amenities').value.split(',').map(s => s.trim()).filter(s => s)
+                gallery_images: document.getElementById('unit-gallery').value.split(',').map(s => s.trim()).filter(s => s),
+                amenities: document.getElementById('unit-amenities').value.split(',').map(s => s.trim()).filter(s => s),
+                airbnb_url: document.getElementById('unit-airbnb').value,
+                agoda_url: document.getElementById('unit-agoda').value,
+                trip_url: document.getElementById('unit-trip').value,
+                booking_url: document.getElementById('unit-booking').value
             };
-
-            if (!unitData.unit_name) {
-                showToast('Unit name is required', 'error');
-                return;
-            }
-
+            if (!unitData.unit_name) { showToast('Unit name required', 'error'); return; }
             try {
                 let url, method;
-                if (id) {
-                    url = `${API_BASE_URL}/admin/units/${id}`;
-                    method = 'PUT';
-                } else {
-                    url = `${API_BASE_URL}/admin/units`;
-                    method = 'POST';
-                }
-
-                const res = await fetch(url, {
-                    method: method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(unitData)
-                });
-                
+                if (id) { url = `${API_BASE_URL}/admin/units/${id}`; method = 'PUT'; }
+                else { url = `${API_BASE_URL}/admin/units`; method = 'POST'; }
+                const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(unitData) });
                 const data = await res.json();
-                
-                if (data.success) {
-                    showToast(id ? 'Unit updated' : 'Unit created', 'success');
-                    closeUnitModal();
-                    loadUnits();
-                } else {
-                    showToast(data.error || 'Failed to save', 'error');
-                }
-            } catch(e) {
-                showToast('Error saving unit: ' + e.message, 'error');
-            }
+                if (data.success) { showToast(id ? 'Unit updated' : 'Unit created', 'success'); closeUnitModal(); loadUnits(); }
+                else showToast(data.error || 'Failed to save', 'error');
+            } catch(e) { showToast('Error saving unit', 'error'); }
         }
 
         async function deleteUnit() {
             const id = document.getElementById('unit-id').value;
-            if (!id) return;
-            if (!confirm('Delete this unit permanently? This cannot be undone.')) return;
-            
+            if (!id || !confirm('Delete permanently?')) return;
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/units/${id}`, { method: 'DELETE' });
                 const data = await res.json();
-                if (data.success) {
-                    showToast('Unit deleted', 'success');
-                    closeUnitModal();
-                    loadUnits();
-                } else {
-                    showToast(data.error || 'Failed to delete', 'error');
+                if (data.success) { showToast('Unit deleted', 'success'); closeUnitModal(); loadUnits(); }
+                else showToast(data.error || 'Failed to delete', 'error');
+            } catch(e) { showToast('Error deleting', 'error'); }
+        }
+
+        // ==================== HERO IMAGES ====================
+        async function loadHeroImages() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/hero-images`);
+                const data = await res.json();
+                if (data.success) displayHeroImages(data.images);
+            } catch(e) { showToast('Failed to load hero images', 'error'); }
+        }
+
+        function displayHeroImages(images) {
+            const container = document.getElementById('hero-list');
+            if (!images.length) { container.innerHTML = '<p>No hero images. Click "Add Image".</p>'; return; }
+            container.innerHTML = `<table class="data-table"><thead><tr><th>Image</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
+                images.map(img => `<tr>
+                    <td><img src="${img.image_url}" style="width:60px; height:40px; object-fit:cover; border-radius:4px;"></td>
+                    <td>${escapeHtml(img.title || '—')}</td>
+                    <td>${img.sort_order}</td>
+                    <td><span class="badge badge-${img.is_active ? 'confirmed' : 'cancelled'}">${img.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td><button class="btn btn-primary btn-sm" onclick="editHeroImage(${img.id})">Edit</button></td>
+                </tr>`).join('')
+            }</tbody></table>`;
+        }
+
+        function openHeroModal() {
+            document.getElementById('hero-id').value = '';
+            document.getElementById('hero-url').value = '';
+            document.getElementById('hero-title').value = '';
+            document.getElementById('hero-subtitle').value = '';
+            document.getElementById('hero-btn-text').value = '';
+            document.getElementById('hero-btn-link').value = '';
+            document.getElementById('hero-order').value = '0';
+            document.getElementById('delete-hero-btn').style.display = 'none';
+            document.getElementById('hero-modal').style.display = 'flex';
+        }
+
+        function editHeroImage(id) {
+            fetch(`${API_BASE_URL}/admin/hero-images`).then(r=>r.json()).then(data=>{
+                const img = data.images.find(i=>i.id===id);
+                if(img){
+                    document.getElementById('hero-id').value = img.id;
+                    document.getElementById('hero-url').value = img.image_url || '';
+                    document.getElementById('hero-title').value = img.title || '';
+                    document.getElementById('hero-subtitle').value = img.subtitle || '';
+                    document.getElementById('hero-btn-text').value = img.button_text || '';
+                    document.getElementById('hero-btn-link').value = img.button_link || '';
+                    document.getElementById('hero-order').value = img.sort_order || 0;
+                    document.getElementById('delete-hero-btn').style.display = 'inline-block';
+                    document.getElementById('hero-modal').style.display = 'flex';
                 }
-            } catch(e) {
-                showToast('Error deleting unit', 'error');
-            }
+            });
+        }
+
+        function closeHeroModal() { document.getElementById('hero-modal').style.display = 'none'; }
+
+        async function saveHeroImage() {
+            const id = document.getElementById('hero-id').value;
+            const data = {
+                image_url: document.getElementById('hero-url').value,
+                title: document.getElementById('hero-title').value,
+                subtitle: document.getElementById('hero-subtitle').value,
+                button_text: document.getElementById('hero-btn-text').value,
+                button_link: document.getElementById('hero-btn-link').value,
+                sort_order: parseInt(document.getElementById('hero-order').value) || 0
+            };
+            if (!data.image_url) { showToast('Image URL required', 'error'); return; }
+            try {
+                let url = `${API_BASE_URL}/admin/hero-images`;
+                let method = 'POST';
+                if (id) { url += `/${id}`; method = 'PUT'; }
+                const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                const result = await res.json();
+                if (result.success) { showToast(id ? 'Hero image updated' : 'Hero image added', 'success'); closeHeroModal(); loadHeroImages(); }
+                else showToast(result.error || 'Failed', 'error');
+            } catch(e) { showToast('Error saving', 'error'); }
+        }
+
+        async function deleteHeroImage() {
+            const id = document.getElementById('hero-id').value;
+            if (!id || !confirm('Delete this hero image?')) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/hero-images/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) { showToast('Deleted', 'success'); closeHeroModal(); loadHeroImages(); }
+                else showToast('Failed to delete', 'error');
+            } catch(e) { showToast('Error deleting', 'error'); }
+        }
+
+        // ==================== EXPERIENCES ====================
+        async function loadExperiences() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/experiences`);
+                const data = await res.json();
+                if (data.success) displayExperiences(data.experiences);
+            } catch(e) { showToast('Failed to load experiences', 'error'); }
+        }
+
+        function displayExperiences(experiences) {
+            const container = document.getElementById('experiences-list');
+            if (!experiences.length) { container.innerHTML = '<p>No experiences. Click "Add Experience".</p>'; return; }
+            container.innerHTML = `<table class="data-table"><thead><tr><th>Title</th><th>Image 1</th><th>Image 2</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
+                experiences.map(exp => `<tr>
+                    <td><strong>${escapeHtml(exp.title)}</strong></td>
+                    <td>${exp.image1_url ? '<i class="fas fa-check-circle" style="color:#28a745"></i>' : '—'}</td>
+                    <td>${exp.image2_url ? '<i class="fas fa-check-circle" style="color:#28a745"></i>' : '—'}</td>
+                    <td>${exp.sort_order}</td>
+                    <td><span class="badge badge-${exp.is_active ? 'confirmed' : 'cancelled'}">${exp.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td><button class="btn btn-primary btn-sm" onclick="editExperience(${exp.id})">Edit</button></td>
+                </tr>`).join('')
+            }</tbody></table>`;
+        }
+
+        function openExperienceModal() {
+            document.getElementById('exp-id').value = '';
+            document.getElementById('exp-title').value = '';
+            document.getElementById('exp-description').value = '';
+            document.getElementById('exp-image1').value = '';
+            document.getElementById('exp-image2').value = '';
+            document.getElementById('exp-order').value = '0';
+            document.getElementById('delete-exp-btn').style.display = 'none';
+            document.getElementById('experience-modal').style.display = 'flex';
+        }
+
+        function editExperience(id) {
+            fetch(`${API_BASE_URL}/admin/experiences`).then(r=>r.json()).then(data=>{
+                const exp = data.experiences.find(e=>e.id===id);
+                if(exp){
+                    document.getElementById('exp-id').value = exp.id;
+                    document.getElementById('exp-title').value = exp.title || '';
+                    document.getElementById('exp-description').value = exp.description || '';
+                    document.getElementById('exp-image1').value = exp.image1_url || '';
+                    document.getElementById('exp-image2').value = exp.image2_url || '';
+                    document.getElementById('exp-order').value = exp.sort_order || 0;
+                    document.getElementById('delete-exp-btn').style.display = 'inline-block';
+                    document.getElementById('experience-modal').style.display = 'flex';
+                }
+            });
+        }
+
+        function closeExperienceModal() { document.getElementById('experience-modal').style.display = 'none'; }
+
+        async function saveExperience() {
+            const id = document.getElementById('exp-id').value;
+            const data = {
+                title: document.getElementById('exp-title').value,
+                description: document.getElementById('exp-description').value,
+                image1_url: document.getElementById('exp-image1').value,
+                image2_url: document.getElementById('exp-image2').value,
+                sort_order: parseInt(document.getElementById('exp-order').value) || 0
+            };
+            if (!data.title) { showToast('Title required', 'error'); return; }
+            try {
+                let url = `${API_BASE_URL}/admin/experiences`;
+                let method = 'POST';
+                if (id) { url += `/${id}`; method = 'PUT'; }
+                const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                const result = await res.json();
+                if (result.success) { showToast(id ? 'Experience updated' : 'Experience added', 'success'); closeExperienceModal(); loadExperiences(); }
+                else showToast(result.error || 'Failed', 'error');
+            } catch(e) { showToast('Error saving', 'error'); }
+        }
+
+        async function deleteExperience() {
+            const id = document.getElementById('exp-id').value;
+            if (!id || !confirm('Delete this experience?')) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/experiences/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) { showToast('Deleted', 'success'); closeExperienceModal(); loadExperiences(); }
+                else showToast('Failed to delete', 'error');
+            } catch(e) { showToast('Error deleting', 'error'); }
         }
 
         // ==================== DASHBOARD ====================
@@ -700,20 +765,13 @@
 
         function filterBookings(searchTerm) {
             if (!allBookings) return;
-            const filtered = allBookings.filter(b => 
-                b.guest_name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                (b.guest_phone && b.guest_phone.includes(searchTerm))
-            );
+            const filtered = allBookings.filter(b => b.guest_name.toLowerCase().includes(searchTerm.toLowerCase()) || (b.guest_phone && b.guest_phone.includes(searchTerm)));
             displayAllBookings(filtered);
         }
 
         async function updateBookingStatus(id, status) {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status })
-                });
+                const res = await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
                 if (res.ok) { showToast(`Booking ${status}`, 'success'); loadAllBookings(); loadDashboard(); }
             } catch(e) { showToast('Error', 'error'); }
         }
@@ -732,10 +790,7 @@
                 const res = await fetch(`${API_BASE_URL}/admin/invoices`);
                 const data = await res.json();
                 const container = document.getElementById('invoices-list');
-                if (!data.invoices || !data.invoices.length) {
-                    container.innerHTML = '<p>No invoices</p>';
-                    return;
-                }
+                if (!data.invoices || !data.invoices.length) { container.innerHTML = '<p>No invoices</p>'; return; }
                 container.innerHTML = data.invoices.map(inv => `
                     <div style="padding:12px; border-bottom:1px solid #e9ecef">
                         <div><strong>${inv.invoice_number}</strong> <span class="badge badge-${inv.status}">${inv.status}</span></div>
@@ -751,10 +806,7 @@
                 const res = await fetch(`${API_BASE_URL}/admin/invoices?limit=5`);
                 const data = await res.json();
                 const container = document.getElementById('recent-invoices');
-                if (!data.invoices || !data.invoices.length) {
-                    container.innerHTML = '<p>No recent invoices</p>';
-                    return;
-                }
+                if (!data.invoices || !data.invoices.length) { container.innerHTML = '<p>No recent invoices</p>'; return; }
                 container.innerHTML = data.invoices.map(inv => `
                     <div style="padding:12px; border-bottom:1px solid #e9ecef">
                         <div><strong>${inv.invoice_number}</strong> <span class="badge badge-${inv.status}">${inv.status}</span></div>
@@ -771,20 +823,17 @@
             showToast('Settings saved', 'success');
         }
 
-        function escapeHtml(str) { 
-            if (!str) return ''; 
-            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); 
-        }
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
-        // Event Listeners
         document.getElementById('booking-search')?.addEventListener('input', e => filterBookings(e.target.value));
 
-        // Initialize
         if (sessionStorage.getItem('adminLoggedIn') === 'true') {
             document.getElementById('login-wrapper').style.display = 'none';
             document.getElementById('admin-container').style.display = 'block';
             loadDashboard();
             loadUnits();
+            loadHeroImages();
+            loadExperiences();
             loadAllBookings();
             loadInvoices();
             showSection('dashboard');
