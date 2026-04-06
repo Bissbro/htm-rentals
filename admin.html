@@ -223,6 +223,7 @@
                 <div class="nav-item active" data-section="dashboard" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
                 <div class="nav-item" data-section="units" onclick="showSection('units')"><i class="fas fa-building"></i><span>Units</span></div>
                 <div class="nav-item" data-section="hero" onclick="showSection('hero')"><i class="fas fa-image"></i><span>Hero Images</span></div>
+                <div class="nav-item" data-section="promotion" onclick="showSection('promotion')"><i class="fas fa-images"></i><span>Promotion Gallery</span></div>
                 <div class="nav-item" data-section="experiences" onclick="showSection('experiences')"><i class="fas fa-umbrella-beach"></i><span>Experiences</span></div>
                 <div class="nav-item" data-section="bookings" onclick="showSection('bookings')"><i class="fas fa-calendar"></i><span>Bookings</span></div>
                 <div class="nav-item" data-section="invoices" onclick="showSection('invoices')"><i class="fas fa-file-invoice"></i><span>Invoices</span></div>
@@ -253,8 +254,16 @@
                 <!-- Hero Images -->
                 <div id="hero-section" style="display:none">
                     <div class="card">
-                        <div class="card-header"><h2>Hero Slideshow Images</h2><button class="btn btn-primary btn-sm" onclick="openHeroModal()">+ Add Image</button></div>
+                        <div class="card-header"><h2>Hero Slideshow Images & Videos</h2><button class="btn btn-primary btn-sm" onclick="openHeroModal()">+ Add Media</button></div>
                         <div id="hero-list"></div>
+                    </div>
+                </div>
+
+                <!-- Promotion Gallery -->
+                <div id="promotion-section" style="display:none">
+                    <div class="card">
+                        <div class="card-header"><h2>Promotion Gallery (Homepage Slideshow)</h2><button class="btn btn-primary btn-sm" onclick="openPromotionModal()">+ Add Image</button></div>
+                        <div id="promotion-list"></div>
                     </div>
                 </div>
 
@@ -300,17 +309,19 @@
                     <div class="form-group"><label>Beds</label><input type="number" id="unit-beds" value="1"></div>
                 </div>
                 <div class="form-group"><label>Description</label><textarea id="unit-description" rows="3"></textarea></div>
-                <div class="form-group"><label>Featured Image URL</label><input type="text" id="unit-image" placeholder="https://..."></div>
-                <div class="form-group"><label>Gallery Images (comma separated)</label><input type="text" id="unit-gallery" placeholder="url1, url2"></div>
+                
+                <!-- Featured Image Upload -->
+                <div class="form-group"><label>Featured Image</label><div class="image-upload-area" onclick="document.getElementById('featured-image-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload</p><input type="file" id="featured-image-input" accept="image/*" style="display:none" onchange="uploadFeaturedImage(this)"></div><div id="featured-image-preview"></div><input type="hidden" id="unit-image"></div>
+                
+                <!-- Gallery Images Upload -->
+                <div class="form-group"><label>Gallery Images</label><div class="image-upload-area" onclick="document.getElementById('gallery-image-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload (multiple)</p><input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)"></div><div id="gallery-images-preview" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div><input type="hidden" id="unit-gallery"></div>
+                
                 <div class="form-group"><label>Amenities (comma separated)</label><input type="text" id="unit-amenities" placeholder="WiFi, AC, Kitchen"></div>
                 <div class="form-group"><label>Airbnb URL</label><input type="text" id="unit-airbnb" placeholder="https://airbnb.com/..."></div>
                 <div class="form-group"><label>Agoda URL</label><input type="text" id="unit-agoda" placeholder="https://agoda.com/..."></div>
                 <div class="form-group"><label>Trip.com URL</label><input type="text" id="unit-trip" placeholder="https://trip.com/..."></div>
                 <div class="form-group"><label>Booking.com URL</label><input type="text" id="unit-booking" placeholder="https://booking.com/..."></div>
-                <div style="display:flex; gap:12px; margin-top:20px;">
-                    <button class="btn btn-primary" onclick="saveUnit()">Save Unit</button>
-                    <button class="btn btn-danger" id="delete-unit-btn" style="display:none" onclick="deleteUnit()">Delete</button>
-                </div>
+                <div style="display:flex; gap:12px; margin-top:20px;"><button class="btn btn-primary" onclick="saveUnit()">Save Unit</button><button class="btn btn-danger" id="delete-unit-btn" style="display:none" onclick="deleteUnit()">Delete</button></div>
             </div>
         </div>
     </div>
@@ -318,19 +329,33 @@
     <!-- Hero Modal -->
     <div id="hero-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2>Add Hero Image</h2><button onclick="closeHeroModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
+            <div class="modal-header"><h2>Add Hero Media</h2><button onclick="closeHeroModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
             <div class="modal-body">
                 <input type="hidden" id="hero-id">
-                <div class="form-group"><label>Image URL *</label><input type="text" id="hero-url" placeholder="https://..."></div>
-                <div class="form-group"><label>Title (optional)</label><input type="text" id="hero-title" placeholder="Welcome to HTM Rentals"></div>
-                <div class="form-group"><label>Subtitle (optional)</label><input type="text" id="hero-subtitle" placeholder="Your safe space"></div>
-                <div class="form-group"><label>Button Text (optional)</label><input type="text" id="hero-btn-text" placeholder="View Units"></div>
+                <div class="form-group"><label>Media Type</label><select id="hero-media-type" onchange="toggleHeroMediaType()"><option value="image">Image</option><option value="youtube">YouTube Video</option></select></div>
+                <div id="hero-image-upload"><div class="image-upload-area" onclick="document.getElementById('hero-image-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload image</p><input type="file" id="hero-image-input" accept="image/*" style="display:none" onchange="uploadHeroImage(this)"></div><div id="hero-image-preview"></div><input type="hidden" id="hero-url"></div>
+                <div id="hero-youtube-input" style="display:none;"><div class="form-group"><label>YouTube URL</label><input type="text" id="hero-youtube-url" placeholder="https://youtube.com/watch?v=..."></div></div>
+                <div class="form-group"><label>Title (optional)</label><input type="text" id="hero-title" placeholder="Your Safe Space"></div>
+                <div class="form-group"><label>Subtitle (optional)</label><input type="text" id="hero-subtitle" placeholder="Comfortable, secure apartments"></div>
+                <div class="form-group"><label>Button Text (optional)</label><input type="text" id="hero-btn-text" placeholder="Explore"></div>
                 <div class="form-group"><label>Button Link (optional)</label><input type="text" id="hero-btn-link" placeholder="#units"></div>
                 <div class="form-group"><label>Sort Order</label><input type="number" id="hero-order" value="0"></div>
-                <div style="display:flex; gap:12px; margin-top:20px;">
-                    <button class="btn btn-primary" onclick="saveHeroImage()">Save</button>
-                    <button class="btn btn-danger" id="delete-hero-btn" style="display:none" onclick="deleteHeroImage()">Delete</button>
-                </div>
+                <div style="display:flex; gap:12px; margin-top:20px;"><button class="btn btn-primary" onclick="saveHeroImage()">Save</button><button class="btn btn-danger" id="delete-hero-btn" style="display:none" onclick="deleteHeroImage()">Delete</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Promotion Modal -->
+    <div id="promotion-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Add Promotion Image</h2><button onclick="closePromotionModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="promo-id">
+                <div class="form-group"><label>Image</label><div class="image-upload-area" onclick="document.getElementById('promo-image-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload</p><input type="file" id="promo-image-input" accept="image/*" style="display:none" onchange="uploadPromoImage(this)"></div><div id="promo-image-preview"></div><input type="hidden" id="promo-url"></div>
+                <div class="form-group"><label>Link URL (optional)</label><input type="text" id="promo-link" placeholder="https://..."></div>
+                <div class="form-group"><label>Title (optional)</label><input type="text" id="promo-title" placeholder="Special Offer"></div>
+                <div class="form-group"><label>Sort Order</label><input type="number" id="promo-order" value="0"></div>
+                <div style="display:flex; gap:12px; margin-top:20px;"><button class="btn btn-primary" onclick="savePromotionImage()">Save</button><button class="btn btn-danger" id="delete-promo-btn" style="display:none" onclick="deletePromotionImage()">Delete</button></div>
             </div>
         </div>
     </div>
@@ -343,13 +368,10 @@
                 <input type="hidden" id="exp-id">
                 <div class="form-group"><label>Title *</label><input type="text" id="exp-title" placeholder="Dolphin Cruise"></div>
                 <div class="form-group"><label>Description</label><textarea id="exp-description" rows="2" placeholder="Short description..."></textarea></div>
-                <div class="form-group"><label>Image 1 URL</label><input type="text" id="exp-image1" placeholder="https://..."></div>
-                <div class="form-group"><label>Image 2 URL</label><input type="text" id="exp-image2" placeholder="https://..."></div>
+                <div class="form-group"><label>Image 1</label><div class="image-upload-area" onclick="document.getElementById('exp-image1-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload</p><input type="file" id="exp-image1-input" accept="image/*" style="display:none" onchange="uploadExpImage1(this)"></div><div id="exp-image1-preview"></div><input type="hidden" id="exp-image1-url"></div>
+                <div class="form-group"><label>Image 2</label><div class="image-upload-area" onclick="document.getElementById('exp-image2-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload</p><input type="file" id="exp-image2-input" accept="image/*" style="display:none" onchange="uploadExpImage2(this)"></div><div id="exp-image2-preview"></div><input type="hidden" id="exp-image2-url"></div>
                 <div class="form-group"><label>Sort Order</label><input type="number" id="exp-order" value="0"></div>
-                <div style="display:flex; gap:12px; margin-top:20px;">
-                    <button class="btn btn-primary" onclick="saveExperience()">Save</button>
-                    <button class="btn btn-danger" id="delete-exp-btn" style="display:none" onclick="deleteExperience()">Delete</button>
-                </div>
+                <div style="display:flex; gap:12px; margin-top:20px;"><button class="btn btn-primary" onclick="saveExperience()">Save</button><button class="btn btn-danger" id="delete-exp-btn" style="display:none" onclick="deleteExperience()">Delete</button></div>
             </div>
         </div>
     </div>
@@ -380,6 +402,7 @@
                 loadDashboard();
                 loadUnits();
                 loadHeroImages();
+                loadPromotionGallery();
                 loadExperiences();
                 loadAllBookings();
                 loadInvoices();
@@ -397,7 +420,7 @@
         }
 
         function showSection(section) {
-            const sections = ['dashboard', 'units', 'hero', 'experiences', 'bookings', 'invoices', 'settings'];
+            const sections = ['dashboard', 'units', 'hero', 'promotion', 'experiences', 'bookings', 'invoices', 'settings'];
             sections.forEach(s => {
                 const el = document.getElementById(`${s}-section`);
                 if (el) el.style.display = 'none';
@@ -411,35 +434,26 @@
             
             if (section === 'units') loadUnits();
             if (section === 'hero') loadHeroImages();
+            if (section === 'promotion') loadPromotionGallery();
             if (section === 'experiences') loadExperiences();
             if (section === 'bookings') loadAllBookings();
             if (section === 'invoices') loadInvoices();
             if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
         }
 
-        // ==================== UNITS ====================
+        // ==================== UNITS (existing code preserved) ====================
         async function loadUnits() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/units`);
                 const data = await res.json();
-                if (data.success) {
-                    allUnits = data.units;
-                    displayUnits();
-                }
+                if (data.success) { allUnits = data.units; displayUnits(); }
             } catch(e) { showToast('Failed to load units', 'error'); }
         }
 
         function displayUnits() {
             const container = document.getElementById('units-list');
             if (!allUnits.length) { container.innerHTML = '<p>No units. Click "Add Unit".</p>'; return; }
-            container.innerHTML = `
-                <table class="data-table"><thead><tr><th>ID</th><th>Name</th><th>USD</th><th>MVR</th><th>Guests</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody>${allUnits.map(u => `
-                    <tr><td>${u.id}</td><td><strong>${escapeHtml(u.unit_name)}</strong></td><td>$${u.rate_usd || '—'}</td><td>MVR ${u.rate_mvr || '—'}</td><td>${u.max_guests}</td>
-                    <td><span class="badge badge-${u.is_active ? 'confirmed' : 'cancelled'}">${u.is_active ? 'Active' : 'Inactive'}</span></td>
-                    <td><button class="btn btn-primary btn-sm" onclick="editUnit(${u.id})">Edit</button></td>
-                </tr>`).join('')}</tbody></table>
-            `;
+            container.innerHTML = `<table class="data-table"><thead><tr><th>ID</th><th>Name</th><th>USD</th><th>MVR</th><th>Guests</th><th>Status</th><th>Actions</th></tr></thead><tbody>${allUnits.map(u => `<tr><td>${u.id}</td><td><strong>${escapeHtml(u.unit_name)}</strong></td><td>$${u.rate_usd || '—'}</td><td>MVR ${u.rate_mvr || '—'}</td><td>${u.max_guests}</td><td><span class="badge badge-${u.is_active ? 'confirmed' : 'cancelled'}">${u.is_active ? 'Active' : 'Inactive'}</span></td><td><button class="btn btn-primary btn-sm" onclick="editUnit(${u.id})">Edit</button></td></tr>`).join('')}</tbody>`;
         }
 
         function openUnitModal() {
@@ -459,6 +473,9 @@
             document.getElementById('unit-trip').value = '';
             document.getElementById('unit-booking').value = '';
             document.getElementById('delete-unit-btn').style.display = 'none';
+            document.getElementById('featured-image-preview').innerHTML = '';
+            currentGalleryImages = [];
+            displayGalleryPreviews();
             document.getElementById('unit-modal').style.display = 'flex';
         }
 
@@ -474,7 +491,11 @@
             document.getElementById('unit-beds').value = unit.bedrooms || 1;
             document.getElementById('unit-description').value = unit.description || '';
             document.getElementById('unit-image').value = unit.featured_image || '';
-            document.getElementById('unit-gallery').value = (unit.gallery_images || []).join(', ');
+            if (unit.featured_image) {
+                document.getElementById('featured-image-preview').innerHTML = `<div class="preview-img-container"><img src="${unit.featured_image}" class="preview-img"><div class="remove-img" onclick="removeFeaturedImage()">×</div></div>`;
+            }
+            currentGalleryImages = unit.gallery_images || [];
+            displayGalleryPreviews();
             document.getElementById('unit-amenities').value = (unit.amenities || []).join(', ');
             document.getElementById('unit-airbnb').value = unit.airbnb_url || '';
             document.getElementById('unit-agoda').value = unit.agoda_url || '';
@@ -486,6 +507,43 @@
 
         function closeUnitModal() { document.getElementById('unit-modal').style.display = 'none'; }
 
+        let currentGalleryImages = [];
+        function displayGalleryPreviews() {
+            const container = document.getElementById('gallery-images-preview');
+            container.innerHTML = currentGalleryImages.map((url, idx) => `<div class="preview-img-container"><img src="${url}" class="preview-img"><div class="remove-img" onclick="removeGalleryImage(${idx})">×</div></div>`).join('');
+            document.getElementById('unit-gallery').value = currentGalleryImages.join(',');
+        }
+        function removeGalleryImage(idx) { currentGalleryImages.splice(idx, 1); displayGalleryPreviews(); }
+        function removeFeaturedImage() { document.getElementById('unit-image').value = ''; document.getElementById('featured-image-preview').innerHTML = ''; }
+
+        async function uploadFeaturedImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const formData = new FormData(); formData.append('image', file);
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('unit-image').value = data.url;
+                    document.getElementById('featured-image-preview').innerHTML = `<div class="preview-img-container"><img src="${data.url}" class="preview-img"><div class="remove-img" onclick="removeFeaturedImage()">×</div></div>`;
+                    showToast('Image uploaded', 'success');
+                } else showToast('Upload failed', 'error');
+            } catch(e) { showToast('Error uploading', 'error'); }
+        }
+
+        async function uploadGalleryImages(input) {
+            const files = Array.from(input.files);
+            for (const file of files) {
+                const formData = new FormData(); formData.append('image', file);
+                try {
+                    const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if (data.success) { currentGalleryImages.push(data.url); displayGalleryPreviews(); showToast('Image uploaded', 'success'); }
+                } catch(e) { showToast('Upload failed', 'error'); }
+            }
+            input.value = '';
+        }
+
         async function saveUnit() {
             const id = document.getElementById('unit-id').value;
             const unitData = {
@@ -496,7 +554,7 @@
                 bedrooms: parseInt(document.getElementById('unit-beds').value) || 1,
                 description: document.getElementById('unit-description').value,
                 featured_image: document.getElementById('unit-image').value,
-                gallery_images: document.getElementById('unit-gallery').value.split(',').map(s => s.trim()).filter(s => s),
+                gallery_images: currentGalleryImages,
                 amenities: document.getElementById('unit-amenities').value.split(',').map(s => s.trim()).filter(s => s),
                 airbnb_url: document.getElementById('unit-airbnb').value,
                 agoda_url: document.getElementById('unit-agoda').value,
@@ -537,27 +595,43 @@
 
         function displayHeroImages(images) {
             const container = document.getElementById('hero-list');
-            if (!images.length) { container.innerHTML = '<p>No hero images. Click "Add Image".</p>'; return; }
-            container.innerHTML = `<table class="data-table"><thead><tr><th>Image</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
+            if (!images.length) { container.innerHTML = '<p>No hero media. Click "Add Media".</p>'; return; }
+            container.innerHTML = `<table class="data-table"><thead><tr><th>Preview</th><th>Type</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
                 images.map(img => `<tr>
-                    <td><img src="${img.image_url}" style="width:60px; height:40px; object-fit:cover; border-radius:4px;"></td>
+                    <td>${img.media_type === 'youtube' ? '<i class="fab fa-youtube" style="font-size:24px; color:#ff0000;"></i>' : `<img src="${img.image_url}" style="width:60px; height:40px; object-fit:cover; border-radius:4px;">`}</td>
+                    <td>${img.media_type}</td>
                     <td>${escapeHtml(img.title || '—')}</td>
                     <td>${img.sort_order}</td>
                     <td><span class="badge badge-${img.is_active ? 'confirmed' : 'cancelled'}">${img.is_active ? 'Active' : 'Inactive'}</span></td>
                     <td><button class="btn btn-primary btn-sm" onclick="editHeroImage(${img.id})">Edit</button></td>
                 </tr>`).join('')
-            }</tbody></table>`;
+            }</tbody>`;
+        }
+
+        function toggleHeroMediaType() {
+            const type = document.getElementById('hero-media-type').value;
+            if (type === 'image') {
+                document.getElementById('hero-image-upload').style.display = 'block';
+                document.getElementById('hero-youtube-input').style.display = 'none';
+            } else {
+                document.getElementById('hero-image-upload').style.display = 'none';
+                document.getElementById('hero-youtube-input').style.display = 'block';
+            }
         }
 
         function openHeroModal() {
             document.getElementById('hero-id').value = '';
-            document.getElementById('hero-url').value = '';
+            document.getElementById('hero-media-type').value = 'image';
             document.getElementById('hero-title').value = '';
             document.getElementById('hero-subtitle').value = '';
             document.getElementById('hero-btn-text').value = '';
             document.getElementById('hero-btn-link').value = '';
             document.getElementById('hero-order').value = '0';
+            document.getElementById('hero-youtube-url').value = '';
+            document.getElementById('hero-image-preview').innerHTML = '';
+            document.getElementById('hero-url').value = '';
             document.getElementById('delete-hero-btn').style.display = 'none';
+            toggleHeroMediaType();
             document.getElementById('hero-modal').style.display = 'flex';
         }
 
@@ -566,49 +640,179 @@
                 const img = data.images.find(i=>i.id===id);
                 if(img){
                     document.getElementById('hero-id').value = img.id;
-                    document.getElementById('hero-url').value = img.image_url || '';
+                    document.getElementById('hero-media-type').value = img.media_type || 'image';
                     document.getElementById('hero-title').value = img.title || '';
                     document.getElementById('hero-subtitle').value = img.subtitle || '';
                     document.getElementById('hero-btn-text').value = img.button_text || '';
                     document.getElementById('hero-btn-link').value = img.button_link || '';
                     document.getElementById('hero-order').value = img.sort_order || 0;
+                    document.getElementById('hero-youtube-url').value = img.youtube_url || '';
+                    if (img.media_type === 'image' && img.image_url) {
+                        document.getElementById('hero-image-preview').innerHTML = `<div class="preview-img-container"><img src="${img.image_url}" class="preview-img"><div class="remove-img" onclick="removeHeroImagePreview()">×</div></div>`;
+                        document.getElementById('hero-url').value = img.image_url;
+                    }
+                    toggleHeroMediaType();
                     document.getElementById('delete-hero-btn').style.display = 'inline-block';
                     document.getElementById('hero-modal').style.display = 'flex';
                 }
             });
         }
 
+        function removeHeroImagePreview() { document.getElementById('hero-image-preview').innerHTML = ''; document.getElementById('hero-url').value = ''; }
+
+        async function uploadHeroImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const formData = new FormData(); formData.append('image', file);
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('hero-url').value = data.url;
+                    document.getElementById('hero-image-preview').innerHTML = `<div class="preview-img-container"><img src="${data.url}" class="preview-img"><div class="remove-img" onclick="removeHeroImagePreview()">×</div></div>`;
+                    showToast('Image uploaded', 'success');
+                } else showToast('Upload failed', 'error');
+            } catch(e) { showToast('Error uploading', 'error'); }
+        }
+
         function closeHeroModal() { document.getElementById('hero-modal').style.display = 'none'; }
 
         async function saveHeroImage() {
             const id = document.getElementById('hero-id').value;
+            const mediaType = document.getElementById('hero-media-type').value;
             const data = {
-                image_url: document.getElementById('hero-url').value,
+                media_type: mediaType,
+                image_url: mediaType === 'image' ? document.getElementById('hero-url').value : null,
+                youtube_url: mediaType === 'youtube' ? document.getElementById('hero-youtube-url').value : null,
                 title: document.getElementById('hero-title').value,
                 subtitle: document.getElementById('hero-subtitle').value,
                 button_text: document.getElementById('hero-btn-text').value,
                 button_link: document.getElementById('hero-btn-link').value,
                 sort_order: parseInt(document.getElementById('hero-order').value) || 0
             };
-            if (!data.image_url) { showToast('Image URL required', 'error'); return; }
+            if (mediaType === 'image' && !data.image_url) { showToast('Image required', 'error'); return; }
+            if (mediaType === 'youtube' && !data.youtube_url) { showToast('YouTube URL required', 'error'); return; }
             try {
                 let url = `${API_BASE_URL}/admin/hero-images`;
                 let method = 'POST';
                 if (id) { url += `/${id}`; method = 'PUT'; }
                 const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
                 const result = await res.json();
-                if (result.success) { showToast(id ? 'Hero image updated' : 'Hero image added', 'success'); closeHeroModal(); loadHeroImages(); }
+                if (result.success) { showToast(id ? 'Hero media updated' : 'Hero media added', 'success'); closeHeroModal(); loadHeroImages(); }
                 else showToast(result.error || 'Failed', 'error');
             } catch(e) { showToast('Error saving', 'error'); }
         }
 
         async function deleteHeroImage() {
             const id = document.getElementById('hero-id').value;
-            if (!id || !confirm('Delete this hero image?')) return;
+            if (!id || !confirm('Delete this hero media?')) return;
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/hero-images/${id}`, { method: 'DELETE' });
                 const data = await res.json();
                 if (data.success) { showToast('Deleted', 'success'); closeHeroModal(); loadHeroImages(); }
+                else showToast('Failed to delete', 'error');
+            } catch(e) { showToast('Error deleting', 'error'); }
+        }
+
+        // ==================== PROMOTION GALLERY ====================
+        async function loadPromotionGallery() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/promotion-gallery`);
+                const data = await res.json();
+                if (data.success) displayPromotionImages(data.images);
+            } catch(e) { showToast('Failed to load promotion gallery', 'error'); }
+        }
+
+        function displayPromotionImages(images) {
+            const container = document.getElementById('promotion-list');
+            if (!images.length) { container.innerHTML = '<p>No promotion images. Click "Add Image".</p>'; return; }
+            container.innerHTML = `<table class="data-table"><thead><tr><th>Image</th><th>Title</th><th>Link</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
+                images.map(img => `<tr>
+                    <td><img src="${img.image_url}" style="width:60px; height:40px; object-fit:cover; border-radius:4px;"></td>
+                    <td>${escapeHtml(img.title || '—')}</td>
+                    <td>${img.link_url ? 'Yes' : '—'}</td>
+                    <td>${img.sort_order}</td>
+                    <td><span class="badge badge-${img.is_active ? 'confirmed' : 'cancelled'}">${img.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td><button class="btn btn-primary btn-sm" onclick="editPromotionImage(${img.id})">Edit</button></td>
+                </tr>`).join('')
+            }</tbody>`;
+        }
+
+        function openPromotionModal() {
+            document.getElementById('promo-id').value = '';
+            document.getElementById('promo-link').value = '';
+            document.getElementById('promo-title').value = '';
+            document.getElementById('promo-order').value = '0';
+            document.getElementById('promo-image-preview').innerHTML = '';
+            document.getElementById('promo-url').value = '';
+            document.getElementById('delete-promo-btn').style.display = 'none';
+            document.getElementById('promotion-modal').style.display = 'flex';
+        }
+
+        function editPromotionImage(id) {
+            fetch(`${API_BASE_URL}/admin/promotion-gallery`).then(r=>r.json()).then(data=>{
+                const img = data.images.find(i=>i.id===id);
+                if(img){
+                    document.getElementById('promo-id').value = img.id;
+                    document.getElementById('promo-link').value = img.link_url || '';
+                    document.getElementById('promo-title').value = img.title || '';
+                    document.getElementById('promo-order').value = img.sort_order || 0;
+                    if (img.image_url) {
+                        document.getElementById('promo-image-preview').innerHTML = `<div class="preview-img-container"><img src="${img.image_url}" class="preview-img"><div class="remove-img" onclick="removePromoImagePreview()">×</div></div>`;
+                        document.getElementById('promo-url').value = img.image_url;
+                    }
+                    document.getElementById('delete-promo-btn').style.display = 'inline-block';
+                    document.getElementById('promotion-modal').style.display = 'flex';
+                }
+            });
+        }
+
+        function removePromoImagePreview() { document.getElementById('promo-image-preview').innerHTML = ''; document.getElementById('promo-url').value = ''; }
+
+        async function uploadPromoImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const formData = new FormData(); formData.append('image', file);
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('promo-url').value = data.url;
+                    document.getElementById('promo-image-preview').innerHTML = `<div class="preview-img-container"><img src="${data.url}" class="preview-img"><div class="remove-img" onclick="removePromoImagePreview()">×</div></div>`;
+                    showToast('Image uploaded', 'success');
+                } else showToast('Upload failed', 'error');
+            } catch(e) { showToast('Error uploading', 'error'); }
+        }
+
+        function closePromotionModal() { document.getElementById('promotion-modal').style.display = 'none'; }
+
+        async function savePromotionImage() {
+            const id = document.getElementById('promo-id').value;
+            const data = {
+                image_url: document.getElementById('promo-url').value,
+                link_url: document.getElementById('promo-link').value,
+                title: document.getElementById('promo-title').value,
+                sort_order: parseInt(document.getElementById('promo-order').value) || 0
+            };
+            if (!data.image_url) { showToast('Image required', 'error'); return; }
+            try {
+                let url = `${API_BASE_URL}/admin/promotion-gallery`;
+                let method = 'POST';
+                if (id) { url += `/${id}`; method = 'PUT'; }
+                const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                const result = await res.json();
+                if (result.success) { showToast(id ? 'Image updated' : 'Image added', 'success'); closePromotionModal(); loadPromotionGallery(); }
+                else showToast(result.error || 'Failed', 'error');
+            } catch(e) { showToast('Error saving', 'error'); }
+        }
+
+        async function deletePromotionImage() {
+            const id = document.getElementById('promo-id').value;
+            if (!id || !confirm('Delete this image?')) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/promotion-gallery/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) { showToast('Deleted', 'success'); closePromotionModal(); loadPromotionGallery(); }
                 else showToast('Failed to delete', 'error');
             } catch(e) { showToast('Error deleting', 'error'); }
         }
@@ -628,22 +832,26 @@
             container.innerHTML = `<table class="data-table"><thead><tr><th>Title</th><th>Image 1</th><th>Image 2</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
                 experiences.map(exp => `<tr>
                     <td><strong>${escapeHtml(exp.title)}</strong></td>
-                    <td>${exp.image1_url ? '<i class="fas fa-check-circle" style="color:#28a745"></i>' : '—'}</td>
+                    <td>${exp.image1_url ? '<i class="fas fa-check-circle" style="color:#28a745"></i>' : '—'}</div></div></td>
                     <td>${exp.image2_url ? '<i class="fas fa-check-circle" style="color:#28a745"></i>' : '—'}</td>
                     <td>${exp.sort_order}</td>
                     <td><span class="badge badge-${exp.is_active ? 'confirmed' : 'cancelled'}">${exp.is_active ? 'Active' : 'Inactive'}</span></td>
                     <td><button class="btn btn-primary btn-sm" onclick="editExperience(${exp.id})">Edit</button></td>
                 </tr>`).join('')
-            }</tbody></table>`;
+            }</tbody>`;
         }
 
+        let currentExpImage1 = '', currentExpImage2 = '';
         function openExperienceModal() {
             document.getElementById('exp-id').value = '';
             document.getElementById('exp-title').value = '';
             document.getElementById('exp-description').value = '';
-            document.getElementById('exp-image1').value = '';
-            document.getElementById('exp-image2').value = '';
             document.getElementById('exp-order').value = '0';
+            currentExpImage1 = ''; currentExpImage2 = '';
+            document.getElementById('exp-image1-preview').innerHTML = '';
+            document.getElementById('exp-image2-preview').innerHTML = '';
+            document.getElementById('exp-image1-url').value = '';
+            document.getElementById('exp-image2-url').value = '';
             document.getElementById('delete-exp-btn').style.display = 'none';
             document.getElementById('experience-modal').style.display = 'flex';
         }
@@ -655,13 +863,52 @@
                     document.getElementById('exp-id').value = exp.id;
                     document.getElementById('exp-title').value = exp.title || '';
                     document.getElementById('exp-description').value = exp.description || '';
-                    document.getElementById('exp-image1').value = exp.image1_url || '';
-                    document.getElementById('exp-image2').value = exp.image2_url || '';
                     document.getElementById('exp-order').value = exp.sort_order || 0;
+                    currentExpImage1 = exp.image1_url || '';
+                    currentExpImage2 = exp.image2_url || '';
+                    if (currentExpImage1) document.getElementById('exp-image1-preview').innerHTML = `<div class="preview-img-container"><img src="${currentExpImage1}" class="preview-img"><div class="remove-img" onclick="removeExpImage1()">×</div></div>`;
+                    if (currentExpImage2) document.getElementById('exp-image2-preview').innerHTML = `<div class="preview-img-container"><img src="${currentExpImage2}" class="preview-img"><div class="remove-img" onclick="removeExpImage2()">×</div></div>`;
+                    document.getElementById('exp-image1-url').value = currentExpImage1;
+                    document.getElementById('exp-image2-url').value = currentExpImage2;
                     document.getElementById('delete-exp-btn').style.display = 'inline-block';
                     document.getElementById('experience-modal').style.display = 'flex';
                 }
             });
+        }
+
+        function removeExpImage1() { currentExpImage1 = ''; document.getElementById('exp-image1-preview').innerHTML = ''; document.getElementById('exp-image1-url').value = ''; }
+        function removeExpImage2() { currentExpImage2 = ''; document.getElementById('exp-image2-preview').innerHTML = ''; document.getElementById('exp-image2-url').value = ''; }
+
+        async function uploadExpImage1(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const formData = new FormData(); formData.append('image', file);
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    currentExpImage1 = data.url;
+                    document.getElementById('exp-image1-preview').innerHTML = `<div class="preview-img-container"><img src="${data.url}" class="preview-img"><div class="remove-img" onclick="removeExpImage1()">×</div></div>`;
+                    document.getElementById('exp-image1-url').value = data.url;
+                    showToast('Image uploaded', 'success');
+                } else showToast('Upload failed', 'error');
+            } catch(e) { showToast('Error uploading', 'error'); }
+        }
+
+        async function uploadExpImage2(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const formData = new FormData(); formData.append('image', file);
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    currentExpImage2 = data.url;
+                    document.getElementById('exp-image2-preview').innerHTML = `<div class="preview-img-container"><img src="${data.url}" class="preview-img"><div class="remove-img" onclick="removeExpImage2()">×</div></div>`;
+                    document.getElementById('exp-image2-url').value = data.url;
+                    showToast('Image uploaded', 'success');
+                } else showToast('Upload failed', 'error');
+            } catch(e) { showToast('Error uploading', 'error'); }
         }
 
         function closeExperienceModal() { document.getElementById('experience-modal').style.display = 'none'; }
@@ -671,8 +918,8 @@
             const data = {
                 title: document.getElementById('exp-title').value,
                 description: document.getElementById('exp-description').value,
-                image1_url: document.getElementById('exp-image1').value,
-                image2_url: document.getElementById('exp-image2').value,
+                image1_url: document.getElementById('exp-image1-url').value,
+                image2_url: document.getElementById('exp-image2-url').value,
                 sort_order: parseInt(document.getElementById('exp-order').value) || 0
             };
             if (!data.title) { showToast('Title required', 'error'); return; }
@@ -698,7 +945,7 @@
             } catch(e) { showToast('Error deleting', 'error'); }
         }
 
-        // ==================== DASHBOARD ====================
+        // ==================== DASHBOARD & BOOKINGS (existing code preserved) ====================
         async function loadDashboard() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings`);
@@ -725,42 +972,21 @@
         function displayRecentBookings(bookings) {
             const container = document.getElementById('recent-bookings');
             if (!bookings.length) { container.innerHTML = '<p>No recent bookings</p>'; return; }
-            container.innerHTML = bookings.map(b => `
-                <div style="padding:12px; border-bottom:1px solid #e9ecef">
-                    <div><strong>${escapeHtml(b.guest_name)}</strong> <span class="badge badge-${b.booking_status}">${b.booking_status}</span></div>
-                    <div>${b.check_in_date?.split('T')[0]} → ${b.check_out_date?.split('T')[0]}</div>
-                    <div>${b.currency === 'MVR' ? 'MVR' : '$'}${b.total_amount} • ${b.total_nights} nights</div>
-                </div>
-            `).join('');
+            container.innerHTML = bookings.map(b => `<div style="padding:12px; border-bottom:1px solid #e9ecef"><div><strong>${escapeHtml(b.guest_name)}</strong> <span class="badge badge-${b.booking_status}">${b.booking_status}</span></div><div>${b.check_in_date?.split('T')[0]} → ${b.check_out_date?.split('T')[0]}</div><div>${b.currency === 'MVR' ? 'MVR' : '$'}${b.total_amount} • ${b.total_nights} nights</div></div>`).join('');
         }
 
-        // ==================== BOOKINGS ====================
         async function loadAllBookings() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings`);
                 const data = await res.json();
-                if (data.success) {
-                    allBookings = data.bookings;
-                    displayAllBookings(data.bookings);
-                }
+                if (data.success) { allBookings = data.bookings; displayAllBookings(data.bookings); }
             } catch(e) { showToast('Failed to load bookings', 'error'); }
         }
 
         function displayAllBookings(bookings) {
             const container = document.getElementById('all-bookings');
             if (!bookings.length) { container.innerHTML = '<p>No bookings</p>'; return; }
-            container.innerHTML = bookings.map(b => `
-                <div style="padding:12px; border-bottom:1px solid #e9ecef">
-                    <div><strong>${escapeHtml(b.guest_name)}</strong> (${b.guest_phone || ''})</div>
-                    <div>Unit: ${b.unit_name || '—'} | ${b.check_in_date?.split('T')[0]} → ${b.check_out_date?.split('T')[0]}</div>
-                    <div>${b.currency === 'MVR' ? 'MVR' : '$'}${b.total_amount} • ${b.total_nights} nights</div>
-                    <div><span class="badge badge-${b.booking_status}">${b.booking_status}</span></div>
-                    <div style="margin-top:8px;">
-                        ${b.booking_status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="updateBookingStatus(${b.id}, 'confirmed')">Confirm</button> <button class="btn btn-danger btn-sm" onclick="updateBookingStatus(${b.id}, 'cancelled')">Cancel</button>` : ''}
-                        ${b.booking_status === 'cancelled' ? `<button class="delete-btn" onclick="deleteBooking(${b.id})">Delete</button>` : ''}
-                    </div>
-                </div>
-            `).join('');
+            container.innerHTML = bookings.map(b => `<div style="padding:12px; border-bottom:1px solid #e9ecef"><div><strong>${escapeHtml(b.guest_name)}</strong> (${b.guest_phone || ''})</div><div>Unit: ${b.unit_name || '—'} | ${b.check_in_date?.split('T')[0]} → ${b.check_out_date?.split('T')[0]}</div><div>${b.currency === 'MVR' ? 'MVR' : '$'}${b.total_amount} • ${b.total_nights} nights</div><div><span class="badge badge-${b.booking_status}">${b.booking_status}</span></div><div style="margin-top:8px;">${b.booking_status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="updateBookingStatus(${b.id}, 'confirmed')">Confirm</button> <button class="btn btn-danger btn-sm" onclick="updateBookingStatus(${b.id}, 'cancelled')">Cancel</button>` : ''}${b.booking_status === 'cancelled' ? `<button class="delete-btn" onclick="deleteBooking(${b.id})">Delete</button>` : ''}</div></div>`).join('');
         }
 
         function filterBookings(searchTerm) {
@@ -784,20 +1010,13 @@
             } catch(e) { showToast('Error', 'error'); }
         }
 
-        // ==================== INVOICES ====================
         async function loadInvoices() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/invoices`);
                 const data = await res.json();
                 const container = document.getElementById('invoices-list');
                 if (!data.invoices || !data.invoices.length) { container.innerHTML = '<p>No invoices</p>'; return; }
-                container.innerHTML = data.invoices.map(inv => `
-                    <div style="padding:12px; border-bottom:1px solid #e9ecef">
-                        <div><strong>${inv.invoice_number}</strong> <span class="badge badge-${inv.status}">${inv.status}</span></div>
-                        <div>${inv.guest_name} • $${inv.total_amount}</div>
-                        <div>Issued: ${inv.issue_date?.split('T')[0]}</div>
-                    </div>
-                `).join('');
+                container.innerHTML = data.invoices.map(inv => `<div style="padding:12px; border-bottom:1px solid #e9ecef"><div><strong>${inv.invoice_number}</strong> <span class="badge badge-${inv.status}">${inv.status}</span></div><div>${inv.guest_name} • $${inv.total_amount}</div><div>Issued: ${inv.issue_date?.split('T')[0]}</div></div>`).join('');
             } catch(e) { console.error(e); }
         }
 
@@ -807,16 +1026,10 @@
                 const data = await res.json();
                 const container = document.getElementById('recent-invoices');
                 if (!data.invoices || !data.invoices.length) { container.innerHTML = '<p>No recent invoices</p>'; return; }
-                container.innerHTML = data.invoices.map(inv => `
-                    <div style="padding:12px; border-bottom:1px solid #e9ecef">
-                        <div><strong>${inv.invoice_number}</strong> <span class="badge badge-${inv.status}">${inv.status}</span></div>
-                        <div>${inv.guest_name} • $${inv.total_amount}</div>
-                    </div>
-                `).join('');
+                container.innerHTML = data.invoices.map(inv => `<div style="padding:12px; border-bottom:1px solid #e9ecef"><div><strong>${inv.invoice_number}</strong> <span class="badge badge-${inv.status}">${inv.status}</span></div><div>${inv.guest_name} • $${inv.total_amount}</div></div>`).join('');
             } catch(e) { console.error(e); }
         }
 
-        // ==================== SETTINGS ====================
         function saveSettings() {
             const rate = parseFloat(document.getElementById('exchange-rate').value);
             if (rate) localStorage.setItem('exchangeRate', rate);
@@ -833,6 +1046,7 @@
             loadDashboard();
             loadUnits();
             loadHeroImages();
+            loadPromotionGallery();
             loadExperiences();
             loadAllBookings();
             loadInvoices();
