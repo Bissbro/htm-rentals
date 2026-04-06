@@ -6,7 +6,7 @@
     <title>HTM Rentals | Your Safe Space</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -16,92 +16,79 @@
         }
 
         :root {
-            --ocean-blue: #006994;
-            --maldives-teal: #40B5AD;
-            --sand-beige: #F5E8C7;
-            --coral: #FF6B6B;
-            --deep-blue: #0A2463;
+            --navy: #0A2540;
+            --ocean: #006994;
+            --turquoise: #40B5AD;
             --white: #FFFFFF;
-            --dark-gray: #495057;
-            --medium-gray: #6C757D;
-            --light-gray: #F8F9FA;
-            --shadow: 0 4px 12px rgba(0, 105, 148, 0.1);
-            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
-            --radius: 12px;
+            --gray-light: #F8F9FA;
+            --gray: #6C757D;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --radius: 16px;
+            --radius-sm: 12px;
             --transition: all 0.3s ease;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             line-height: 1.6;
-            color: var(--dark-gray);
+            color: #1a1a1a;
             background-color: var(--white);
         }
 
-        h1, h2, h3 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
             margin-bottom: 1rem;
-            color: var(--deep-blue);
+            color: var(--navy);
         }
 
-        h1 { font-size: 2.5rem; }
-        h2 { font-size: 2rem; color: var(--ocean-blue); }
+        h1 { font-size: 3rem; letter-spacing: -0.02em; }
+        h2 { font-size: 2.2rem; letter-spacing: -0.01em; }
         h3 { font-size: 1.3rem; }
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
         section {
-            padding: 60px 0;
+            padding: 80px 0;
         }
 
         .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: var(--coral);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 32px;
+            background: var(--turquoise);
             color: white;
             text-decoration: none;
-            border-radius: var(--radius);
-            font-weight: 600;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
             border: none;
             cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.9rem;
-            text-align: center;
         }
 
         .btn:hover {
-            background-color: #ff5252;
+            background: #36a099;
             transform: translateY(-2px);
         }
 
-        .btn-secondary {
-            background-color: var(--maldives-teal);
-        }
-
-        .btn-secondary:hover {
-            background-color: #36a099;
-        }
-
         .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--ocean-blue);
-            color: var(--ocean-blue);
+            background: transparent;
+            border: 1.5px solid var(--ocean);
+            color: var(--ocean);
         }
 
         .btn-outline:hover {
-            background-color: var(--ocean-blue);
+            background: var(--ocean);
             color: white;
-        }
-
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 0.85rem;
         }
 
         /* Header */
@@ -109,19 +96,17 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.98);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
             z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0, 105, 148, 0.08);
-            padding: 12px 0;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
         }
 
         .logo {
@@ -132,45 +117,47 @@
         }
 
         .logo-img {
-            height: 35px;
+            height: 40px;
         }
 
         .logo-text {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--ocean-blue);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
         }
 
-        .logo-text span {
-            color: var(--coral);
+        .logo-text span:first-child {
+            color: var(--navy);
+        }
+
+        .logo-text span:last-child {
+            color: var(--turquoise);
         }
 
         .nav-links {
             display: flex;
             list-style: none;
-            gap: 20px;
-            flex-wrap: wrap;
+            gap: 32px;
         }
 
         .nav-links a {
             text-decoration: none;
-            color: var(--deep-blue);
+            color: var(--navy);
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             transition: var(--transition);
         }
 
         .nav-links a:hover {
-            color: var(--coral);
+            color: var(--turquoise);
         }
 
         /* Hero Slideshow */
         .hero {
-            margin-top: 70px;
+            margin-top: 80px;
             position: relative;
-            height: 80vh;
-            min-height: 500px;
+            height: 85vh;
+            min-height: 550px;
             overflow: hidden;
         }
 
@@ -196,40 +183,53 @@
             opacity: 1;
         }
 
+        .hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .hero-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(10, 37, 64, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            color: white;
         }
 
         .hero-content {
-            max-width: 800px;
+            max-width: 700px;
             padding: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 16px;
         }
 
         .hero-content h1 {
             color: white;
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 20px;
         }
 
         .hero-content p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            color: rgba(255,255,255,0.95);
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 32px;
+            font-size: 1.1rem;
         }
 
         .hero-dots {
             position: absolute;
-            bottom: 20px;
+            bottom: 24px;
             left: 0;
             right: 0;
             display: flex;
@@ -239,8 +239,8 @@
         }
 
         .hero-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: rgba(255,255,255,0.5);
             cursor: pointer;
@@ -250,7 +250,7 @@
         .hero-dot.active {
             background: white;
             width: 24px;
-            border-radius: 5px;
+            border-radius: 4px;
         }
 
         /* Trust Badges */
@@ -258,60 +258,58 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 20px;
-            margin: 30px 0;
+            gap: 32px;
+            margin: 40px 0 0;
         }
 
         .badge {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            background: var(--light-gray);
-            padding: 15px 25px;
-            border-radius: var(--radius);
-            min-width: 120px;
+            gap: 10px;
         }
 
         .badge i {
             font-size: 1.8rem;
-            color: var(--ocean-blue);
+            color: var(--turquoise);
         }
 
         .badge span {
             font-size: 0.85rem;
             font-weight: 500;
+            color: var(--navy);
         }
 
         /* About Section */
         .about-section {
-            background: var(--light-gray);
+            background: var(--gray-light);
             text-align: center;
         }
 
         .about-section p {
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
             font-size: 1.1rem;
             line-height: 1.8;
+            color: var(--gray);
         }
 
         /* Units Grid */
         .units-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-            margin-top: 30px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 48px;
         }
 
-        @media (min-width: 640px) {
+        @media (max-width: 1024px) {
             .units-grid { grid-template-columns: repeat(2, 1fr); }
-            h1 { font-size: 2.8rem; }
-            h2 { font-size: 2.2rem; }
         }
 
-        @media (min-width: 1024px) {
-            .units-grid { grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 768px) {
+            .units-grid { grid-template-columns: 1fr; }
+            section { padding: 60px 0; }
+            h2 { font-size: 1.8rem; }
         }
 
         .unit-card {
@@ -324,11 +322,11 @@
 
         .unit-card:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: var(--shadow-hover);
         }
 
         .unit-image {
-            height: 220px;
+            height: 240px;
             overflow: hidden;
         }
 
@@ -336,7 +334,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s;
+            transition: transform 0.5s;
         }
 
         .unit-card:hover .unit-image img {
@@ -344,7 +342,7 @@
         }
 
         .unit-info {
-            padding: 20px;
+            padding: 24px;
         }
 
         .unit-name {
@@ -354,250 +352,410 @@
 
         .unit-price {
             font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--ocean-blue);
-            margin: 10px 0;
+            font-weight: 600;
+            color: var(--ocean);
+            margin: 12px 0;
         }
 
         .unit-price small {
             font-size: 0.8rem;
             font-weight: normal;
-            color: var(--medium-gray);
+            color: var(--gray);
         }
 
         .unit-features {
             display: flex;
-            gap: 15px;
+            gap: 16px;
             margin: 12px 0;
             font-size: 0.85rem;
-            color: var(--medium-gray);
+            color: var(--gray);
         }
 
         .unit-features i {
-            color: var(--maldives-teal);
+            color: var(--turquoise);
             margin-right: 5px;
         }
 
         .unit-description {
             font-size: 0.85rem;
-            color: var(--medium-gray);
-            margin-bottom: 15px;
+            color: var(--gray);
+            margin-bottom: 20px;
             line-height: 1.5;
+        }
+
+        .unit-card .btn {
+            width: 100%;
+            background: var(--ocean);
+        }
+
+        .unit-card .btn:hover {
+            background: var(--navy);
         }
 
         /* Amenities Grid */
         .amenities-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
         }
 
         .amenity-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px;
-            background: var(--light-gray);
-            border-radius: var(--radius);
+            gap: 16px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .amenity-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
         }
 
         .amenity-item i {
-            font-size: 1.5rem;
-            color: var(--maldives-teal);
+            font-size: 1.8rem;
+            color: var(--turquoise);
         }
 
-        /* Gallery */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .gallery-item {
-            height: 220px;
-            border-radius: var(--radius);
-            overflow: hidden;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .amenity-item strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--navy);
         }
 
         /* Services Grid */
-        .services-grid, .experiences-grid {
+        .services-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-            margin-top: 30px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 48px;
         }
 
-        @media (min-width: 768px) {
-            .services-grid, .experiences-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
+        @media (max-width: 768px) {
+            .services-grid { grid-template-columns: 1fr; }
         }
 
-        .service-card, .experience-card {
+        .service-card {
+            text-align: center;
+            padding: 32px 24px;
             background: white;
             border-radius: var(--radius);
-            overflow: hidden;
             box-shadow: var(--shadow);
-            text-align: center;
-            padding: 25px;
+            transition: var(--transition);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
         }
 
         .service-card i {
             font-size: 2.5rem;
-            color: var(--ocean-blue);
-            margin-bottom: 15px;
+            color: var(--turquoise);
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            margin-bottom: 12px;
+        }
+
+        /* Promotion Gallery */
+        .promo-gallery {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border-radius: var(--radius);
+        }
+
+        .promo-slides {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .promo-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .promo-slide.active {
+            opacity: 1;
+        }
+
+        .promo-slide a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .promo-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .promo-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .promo-dot.active {
+            background: white;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Experiences Grid */
+        .experiences-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        @media (max-width: 1024px) {
+            .experiences-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 640px) {
+            .experiences-grid { grid-template-columns: 1fr; }
+        }
+
+        .experience-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .experience-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
         }
 
         .experience-images {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-bottom: 15px;
+            gap: 2px;
+            height: 160px;
         }
 
         .experience-images img {
             width: 100%;
-            height: 120px;
+            height: 100%;
             object-fit: cover;
-            border-radius: 8px;
+        }
+
+        .experience-card h3 {
+            padding: 20px 20px 8px;
+            font-size: 1.1rem;
+        }
+
+        .experience-card p {
+            padding: 0 20px 20px;
+            font-size: 0.85rem;
+            color: var(--gray);
         }
 
         /* Contact */
         .contact-options {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 30px;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-top: 48px;
         }
 
         .contact-card {
             background: white;
-            padding: 20px;
+            padding: 32px;
             border-radius: var(--radius);
             text-align: center;
+            min-width: 220px;
             box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
         }
 
         .contact-card i {
             font-size: 2rem;
-            color: var(--ocean-blue);
-            margin-bottom: 10px;
-        }
-
-        @media (min-width: 640px) {
-            .contact-options {
-                flex-direction: row;
-                justify-content: center;
-            }
-            .contact-card {
-                min-width: 200px;
-            }
+            color: var(--turquoise);
+            margin-bottom: 16px;
         }
 
         /* Footer */
         footer {
-            background-color: var(--deep-blue);
+            background: var(--navy);
             color: white;
-            padding: 40px 0 20px;
+            padding: 60px 0 30px;
             border-top-left-radius: 30px;
             border-top-right-radius: 30px;
         }
 
         .footer-content {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-            text-align: center;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 40px;
         }
 
-        @media (min-width: 768px) {
+        @media (max-width: 768px) {
             .footer-content {
-                grid-template-columns: repeat(3, 1fr);
-                text-align: left;
+                grid-template-columns: 1fr;
+                text-align: center;
             }
         }
 
         .footer-logo {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
-        @media (min-width: 768px) {
-            .footer-logo { justify-content: flex-start; }
+        @media (max-width: 768px) {
+            .footer-logo { justify-content: center; }
         }
+
+        .footer-logo img { height: 35px; }
+        .footer-logo span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .footer-logo span:first-child { color: white; }
+        .footer-logo span:last-child { color: var(--turquoise); }
 
         .footer-contact p {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
 
-        @media (min-width: 768px) {
-            .footer-contact p { justify-content: flex-start; }
+        @media (max-width: 768px) {
+            .footer-contact p { justify-content: center; }
+        }
+
+        .footer-links h4 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--turquoise);
         }
 
         .social-icons {
             display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 15px;
+            gap: 16px;
+            margin-top: 20px;
         }
 
-        @media (min-width: 768px) {
-            .social-icons { justify-content: flex-start; }
+        @media (max-width: 768px) {
+            .social-icons { justify-content: center; }
         }
 
         .social-icons a {
             background: rgba(255,255,255,0.1);
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            background: var(--turquoise);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
         }
 
         .whatsapp-float {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 24px;
+            right: 24px;
             background: #25D366;
             color: white;
-            width: 50px;
-            height: 50px;
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             text-decoration: none;
             z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: var(--transition);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .whatsapp-float:hover {
+            transform: scale(1.05);
         }
 
-        .fade-in {
-            animation: fadeIn 0.6s ease forwards;
+        @media (max-width: 768px) {
+            .header-container { flex-direction: column; gap: 12px; }
+            .nav-links { gap: 24px; }
+            .hero { height: 60vh; min-height: 450px; margin-top: 120px; }
+            .hero-content h1 { font-size: 2rem; }
+            .hero-subtitle { font-size: 0.7rem; letter-spacing: 3px; }
+            .trust-badges { gap: 20px; }
+            .badge i { font-size: 1.3rem; }
+            .badge span { font-size: 0.7rem; }
+            .about-section p { font-size: 1rem; }
         }
     </style>
 </head>
@@ -608,14 +766,13 @@
         <div class="container header-container">
             <a href="#" class="logo">
                 <img src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="HTM Rentals" class="logo-img">
-                <div class="logo-text">HTM<span>Rentals</span></div>
+                <div class="logo-text"><span>HTM</span><span>Rentals</span></div>
             </a>
             <nav>
                 <ul class="nav-links">
-                    <li><a href="#units"><i class="fas fa-building"></i> Units</a></li>
-                    <li><a href="#experiences"><i class="fas fa-umbrella-beach"></i> Experiences</a></li>
-                    <li><a href="#contact"><i class="fas fa-phone"></i> Contact</a></li>
-                    <li><a href="tel:9373113" class="btn btn-sm"><i class="fas fa-phone"></i> Call</a></li>
+                    <li><a href="#units">Units</a></li>
+                    <li><a href="#experiences">Experiences</a></li>
+                    <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
         </div>
@@ -627,9 +784,10 @@
             <div class="hero-slide active" style="background-image: url('https://i.ibb.co/j9m74BLN/IMG-20260206-WA0077.jpg');">
                 <div class="hero-overlay">
                     <div class="hero-content">
-                        <h1>Your Safe Space</h1>
+                        <div class="hero-subtitle">Your Safe Space</div>
+                        <h1>Welcome to HTM Rentals</h1>
                         <p>Comfortable, secure, and welcoming apartments designed for your peace of mind.</p>
-                        <a href="#units" class="btn">Explore Units</a>
+                        <a href="#units" class="btn">Explore</a>
                     </div>
                 </div>
             </div>
@@ -650,7 +808,7 @@
     <!-- About Section -->
     <section class="about-section">
         <div class="container">
-            <h2><i class="fas fa-heart"></i> Your Safe Space</h2>
+            <h2>Your Safe Space</h2>
             <p>HTM Rentals is dedicated to providing comfortable, secure, and welcoming spaces for every traveler. Whether you're visiting for business or leisure, our apartments offer the perfect blend of convenience, safety, and home-like comfort. We take pride in creating environments where you can relax, recharge, and feel truly at home.</p>
         </div>
     </section>
@@ -658,7 +816,7 @@
     <!-- Units Section -->
     <section id="units">
         <div class="container">
-            <h2><i class="fas fa-building"></i> Our Units</h2>
+            <h2>Our Units</h2>
             <p>Choose your perfect space</p>
             <div id="units-grid" class="units-grid">
                 <div class="loading">Loading units...</div>
@@ -667,9 +825,9 @@
     </section>
 
     <!-- Amenities Section -->
-    <section id="amenities" style="background-color: var(--light-gray);">
+    <section style="background: var(--gray-light);">
         <div class="container">
-            <h2><i class="fas fa-star"></i> What's Included</h2>
+            <h2>What's Included</h2>
             <p>All our units come with these essential amenities</p>
             <div class="amenities-grid">
                 <div class="amenity-item"><i class="fas fa-bed"></i><div><strong>Fresh Linens</strong><p>Quality bedding for all guests</p></div></div>
@@ -682,22 +840,10 @@
         </div>
     </section>
 
-    <!-- Gallery Section -->
-    <section id="gallery">
-        <div class="container">
-            <h2><i class="fas fa-images"></i> Gallery</h2>
-            <div class="gallery" id="gallery-container">
-                <div class="gallery-item"><img src="https://i.ibb.co/5g0GFrDR/IMG-20260206-WA0024.jpg" alt="Living Area"></div>
-                <div class="gallery-item"><img src="https://i.ibb.co/GQVzXYqk/IMG-20260206-WA0053.jpg" alt="Bedroom"></div>
-                <div class="gallery-item"><img src="https://i.ibb.co/FkVZLZLh/IMG-20260206-WA0029.jpg" alt="Kitchen"></div>
-            </div>
-        </div>
-    </section>
-
     <!-- Services Section -->
-    <section id="services" style="background-color: var(--light-gray);">
+    <section>
         <div class="container">
-            <h2><i class="fas fa-concierge-bell"></i> Our Services</h2>
+            <h2>Our Services</h2>
             <p>We help arrange trusted local services</p>
             <div class="services-grid">
                 <div class="service-card"><i class="fas fa-water"></i><h3>Water Sports</h3><p>Boat trips, snorkeling, dolphin cruises</p></div>
@@ -707,11 +853,25 @@
         </div>
     </section>
 
+    <!-- Promotion Gallery Slideshow -->
+    <section style="background: var(--gray-light);">
+        <div class="container">
+            <h2 style="text-align: center;">Inspiration</h2>
+            <p style="text-align: center; margin-bottom: 40px;">Discover the beauty of your surroundings</p>
+            <div class="promo-gallery" id="promo-gallery">
+                <div class="promo-slides" id="promo-slides">
+                    <div class="promo-slide active" style="background-image: url('https://via.placeholder.com/1920x1080?text=HTM+Rentals');"></div>
+                </div>
+                <div class="promo-dots" id="promo-dots"></div>
+            </div>
+        </div>
+    </section>
+
     <!-- Experiences Section -->
     <section id="experiences">
         <div class="container">
-            <h2 style="text-align: center;"><i class="fas fa-umbrella-beach"></i> Experiences</h2>
-            <p style="text-align: center; max-width: 600px; margin: 0 auto 30px;">Let us help you create unforgettable memories</p>
+            <h2 style="text-align: center;">Experiences</h2>
+            <p style="text-align: center;">Let us help you create unforgettable memories</p>
             <div id="experiences-grid" class="experiences-grid">
                 <div class="loading">Loading experiences...</div>
             </div>
@@ -719,14 +879,14 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" style="background-color: var(--light-gray);">
+    <section id="contact" style="background: var(--gray-light);">
         <div class="container">
-            <h2 style="text-align: center;"><i class="fas fa-phone"></i> Contact Us</h2>
+            <h2 style="text-align: center;">Contact Us</h2>
             <p style="text-align: center;">We respond quickly!</p>
             <div class="contact-options">
-                <div class="contact-card"><i class="fab fa-whatsapp"></i><h3>WhatsApp</h3><a href="https://wa.me/9609373113" class="btn btn-secondary btn-sm" target="_blank">Message Us</a></div>
-                <div class="contact-card"><i class="fas fa-phone"></i><h3>Phone</h3><a href="tel:9373113" class="btn btn-primary btn-sm">Call 9373113</a></div>
-                <div class="contact-card"><i class="fas fa-envelope"></i><h3>Email</h3><a href="mailto:htmrentalss@gmail.com" class="btn btn-outline btn-sm">Email Us</a></div>
+                <div class="contact-card"><i class="fab fa-whatsapp"></i><h3>WhatsApp</h3><a href="https://wa.me/9609373113" class="btn" target="_blank" style="background: #25D366;">Message Us</a></div>
+                <div class="contact-card"><i class="fas fa-phone"></i><h3>Phone</h3><a href="tel:9373113" class="btn btn-outline">Call 9373113</a></div>
+                <div class="contact-card"><i class="fas fa-envelope"></i><h3>Email</h3><a href="mailto:htmrentalss@gmail.com" class="btn btn-outline">Email Us</a></div>
             </div>
         </div>
     </section>
@@ -736,14 +896,36 @@
         <div class="container">
             <div class="footer-content">
                 <div>
-                    <div class="footer-logo"><img src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="HTM Rentals" style="height:35px;"><span style="font-size:1.2rem; font-weight:700;">HTM Rentals</span></div>
+                    <div class="footer-logo">
+                        <img src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="HTM Rentals">
+                        <span>HTM</span><span>Rentals</span>
+                    </div>
                     <p>Your safe space, wherever you go.</p>
-                    <p>+960 9373113 | htmrentalss@gmail.com</p>
+                    <div class="footer-contact" style="margin-top: 16px;">
+                        <p><i class="fas fa-phone"></i> +960 9373113</p>
+                        <p><i class="fas fa-envelope"></i> htmrentalss@gmail.com</p>
+                    </div>
                 </div>
-                <div><h4>Quick Links</h4><ul style="list-style:none;"><li><a href="#units" style="color:rgba(255,255,255,0.8); text-decoration:none;">Units</a></li><li><a href="#experiences" style="color:rgba(255,255,255,0.8); text-decoration:none;">Experiences</a></li><li><a href="#contact" style="color:rgba(255,255,255,0.8); text-decoration:none;">Contact</a></li></ul></div>
-                <div><h4>Follow Us</h4><div class="social-icons"><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-tiktok"></i></a></div></div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#units">Units</a></li>
+                        <li><a href="#experiences">Experiences</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
             </div>
-            <div class="copyright"><p>&copy; 2026 HTM Rentals. All rights reserved.</p></div>
+            <div class="copyright">
+                <p>&copy; 2026 HTM Rentals. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
@@ -769,45 +951,102 @@
             dotsContainer.innerHTML = '';
             
             images.forEach((img, idx) => {
-                const slide = document.createElement('div');
-                slide.className = `hero-slide ${idx === 0 ? 'active' : ''}`;
-                slide.style.backgroundImage = `url(${img.image_url})`;
-                slide.innerHTML = `<div class="hero-overlay"><div class="hero-content"><h1>${img.title || 'Your Safe Space'}</h1><p>${img.subtitle || 'Comfortable, secure, and welcoming apartments'}</p>${img.button_text ? `<a href="${img.button_link || '#units'}" class="btn">${img.button_text}</a>` : ''}</div></div>`;
-                container.appendChild(slide);
+                let slideHtml = '';
+                if (img.media_type === 'youtube' && img.embed_url) {
+                    slideHtml = `<div class="hero-slide ${idx === 0 ? 'active' : ''}">
+                        <iframe class="hero-video" src="${img.embed_url}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%;"></iframe>
+                        <div class="hero-overlay"><div class="hero-content"><div class="hero-subtitle">${img.title || 'Your Safe Space'}</div><h1>${img.subtitle || 'Welcome to HTM Rentals'}</h1><p>${img.button_text ? '' : 'Comfortable, secure, and welcoming apartments.'}</p>${img.button_text ? `<a href="${img.button_link || '#units'}" class="btn">${img.button_text}</a>` : ''}</div></div>
+                    </div>`;
+                } else {
+                    slideHtml = `<div class="hero-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${img.image_url}');">
+                        <div class="hero-overlay"><div class="hero-content"><div class="hero-subtitle">${img.title || 'Your Safe Space'}</div><h1>${img.subtitle || 'Welcome to HTM Rentals'}</h1><p>${img.button_text ? '' : 'Comfortable, secure, and welcoming apartments.'}</p>${img.button_text ? `<a href="${img.button_link || '#units'}" class="btn">${img.button_text}</a>` : ''}</div></div>
+                    </div>`;
+                }
+                container.insertAdjacentHTML('beforeend', slideHtml);
                 
                 const dot = document.createElement('div');
                 dot.className = `hero-dot ${idx === 0 ? 'active' : ''}`;
-                dot.onclick = () => goToSlide(idx);
+                dot.onclick = () => goToHeroSlide(idx);
                 dotsContainer.appendChild(dot);
             });
             
             let currentIndex = 0;
             let interval;
             
-            function goToSlide(index) {
+            function goToHeroSlide(index) {
                 const slides = document.querySelectorAll('.hero-slide');
                 const dots = document.querySelectorAll('.hero-dot');
-                slides.forEach((slide, i) => {
-                    slide.classList.toggle('active', i === index);
-                });
-                dots.forEach((dot, i) => {
-                    dot.classList.toggle('active', i === index);
-                });
+                slides.forEach((slide, i) => { slide.classList.toggle('active', i === index); });
+                dots.forEach((dot, i) => { dot.classList.toggle('active', i === index); });
                 currentIndex = index;
                 resetInterval();
             }
             
-            function nextSlide() {
+            function nextHeroSlide() {
                 const next = (currentIndex + 1) % images.length;
-                goToSlide(next);
+                goToHeroSlide(next);
             }
             
             function resetInterval() {
                 if (interval) clearInterval(interval);
-                interval = setInterval(nextSlide, 5000);
+                interval = setInterval(nextHeroSlide, 6000);
             }
             
-            window.goToSlide = goToSlide;
+            window.goToHeroSlide = goToHeroSlide;
+            resetInterval();
+        }
+
+        // ==================== PROMOTION GALLERY ====================
+        async function loadPromotionGallery() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/promotion-gallery`);
+                const data = await res.json();
+                if (data.success && data.images.length) {
+                    displayPromotionSlideshow(data.images);
+                }
+            } catch(e) { console.error('Error loading promotion gallery:', e); }
+        }
+
+        function displayPromotionSlideshow(images) {
+            const container = document.getElementById('promo-slides');
+            const dotsContainer = document.getElementById('promo-dots');
+            
+            container.innerHTML = '';
+            dotsContainer.innerHTML = '';
+            
+            images.forEach((img, idx) => {
+                const slideHtml = `<div class="promo-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${img.image_url}');">${img.link_url ? `<a href="${img.link_url}" target="_blank"></a>` : ''}</div>`;
+                container.insertAdjacentHTML('beforeend', slideHtml);
+                
+                const dot = document.createElement('div');
+                dot.className = `promo-dot ${idx === 0 ? 'active' : ''}`;
+                dot.onclick = () => goToPromoSlide(idx);
+                dotsContainer.appendChild(dot);
+            });
+            
+            let currentIndex = 0;
+            let interval;
+            
+            function goToPromoSlide(index) {
+                const slides = document.querySelectorAll('.promo-slide');
+                const dots = document.querySelectorAll('.promo-dot');
+                slides.forEach((slide, i) => { slide.classList.toggle('active', i === index); });
+                dots.forEach((dot, i) => { dot.classList.toggle('active', i === index); });
+                currentIndex = index;
+                resetInterval();
+            }
+            
+            function nextPromoSlide() {
+                const next = (currentIndex + 1) % images.length;
+                goToPromoSlide(next);
+            }
+            
+            function resetInterval() {
+                if (interval) clearInterval(interval);
+                interval = setInterval(nextPromoSlide, 5000);
+            }
+            
+            window.goToPromoSlide = goToPromoSlide;
             resetInterval();
         }
 
@@ -837,13 +1076,13 @@
                         <div class="unit-image"><img src="${featuredImage}" alt="${escapeHtml(unit.unit_name)}"></div>
                         <div class="unit-info">
                             <h3 class="unit-name">${escapeHtml(unit.unit_name)}</h3>
-                            <div class="unit-price">$${unit.rate_usd} <small>USD/night</small></div>
+                            <div class="unit-price">$${unit.rate_usd} <small>/night</small></div>
                             <div class="unit-features">
                                 <span><i class="fas fa-user-friends"></i> ${unit.max_guests} guests</span>
                                 <span><i class="fas fa-bed"></i> ${unit.bedrooms} bed(s)</span>
                             </div>
                             <p class="unit-description">${unit.description || 'Comfortable apartment with essential amenities.'}</p>
-                            <a href="unit-details.html?id=${unit.id}&currency=USD" class="btn btn-secondary" style="width:100%;">More Information</a>
+                            <a href="unit-details.html?id=${unit.id}&currency=USD" class="btn">More Information</a>
                         </div>
                     </div>
                 `;
@@ -890,6 +1129,7 @@
         });
 
         loadHeroImages();
+        loadPromotionGallery();
         loadUnits();
         loadExperiences();
     </script>
