@@ -20,7 +20,7 @@
         }
         .login-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 40px;
             width: 100%;
             max-width: 400px;
@@ -36,15 +36,16 @@
         .btn {
             padding: 12px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
         .btn-primary { background: #006994; color: white; }
-        .btn-primary:hover { background: #005077; }
+        .btn-primary:hover { background: #005077; transform: translateY(-2px); }
         .btn-success { background: #28a745; color: white; }
         .btn-danger { background: #dc3545; color: white; }
-        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 20px; }
         
         .admin-container { display: none; min-height: 100vh; }
         .sidebar {
@@ -66,9 +67,10 @@
             gap: 12px;
             padding: 12px 20px;
             margin: 4px 12px;
-            border-radius: 8px;
+            border-radius: 12px;
             color: #495057;
             cursor: pointer;
+            transition: all 0.3s;
         }
         .nav-item:hover { background: #f8f9fa; }
         .nav-item.active { background: #006994; color: white; }
@@ -85,10 +87,10 @@
         .content-area { padding: 24px; }
         .card {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
         }
         .card-header {
             display: flex;
@@ -107,8 +109,9 @@
         .stat-card {
             background: white;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 16px;
             border-left: 3px solid #006994;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
         }
         .stat-number { font-size: 28px; font-weight: 700; color: #006994; }
         .data-table { width: 100%; border-collapse: collapse; }
@@ -130,17 +133,18 @@
             width: 100%;
             padding: 10px 12px;
             border: 1px solid #dee2e6;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 14px;
         }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .image-upload-area {
             border: 2px dashed #dee2e6;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 20px;
             text-align: center;
             cursor: pointer;
             background: #f8f9fa;
+            transition: all 0.3s;
         }
         .image-upload-area:hover { border-color: #006994; background: #e8f4f8; }
         .image-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
@@ -176,7 +180,7 @@
         }
         .modal-content {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             max-width: 600px;
             width: 100%;
             max-height: 90vh;
@@ -191,7 +195,7 @@
             padding: 12px 20px;
             background: #343a40;
             color: white;
-            border-radius: 8px;
+            border-radius: 40px;
             z-index: 1000;
         }
         .toast.success { background: #28a745; }
@@ -236,56 +240,36 @@
                 <button class="btn btn-sm" style="background:#006994; color:white;" onclick="handleLogout()">Logout</button>
             </header>
             <div class="content-area" id="content-area">
-                <!-- Dashboard -->
                 <div id="dashboard-section">
                     <div class="stats-grid" id="stats-grid"></div>
                     <div class="card"><div class="card-header"><h2>Recent Bookings</h2></div><div id="recent-bookings"></div></div>
                     <div class="card"><div class="card-header"><h2>Recent Invoices</h2></div><div id="recent-invoices"></div></div>
                 </div>
 
-                <!-- Units -->
                 <div id="units-section" style="display:none">
-                    <div class="card">
-                        <div class="card-header"><h2>Property Units</h2><button class="btn btn-primary btn-sm" onclick="openUnitModal()">+ Add Unit</button></div>
-                        <div id="units-list"></div>
-                    </div>
+                    <div class="card"><div class="card-header"><h2>Property Units</h2><button class="btn btn-primary btn-sm" onclick="openUnitModal()">+ Add Unit</button></div><div id="units-list"></div></div>
                 </div>
 
-                <!-- Hero Images -->
                 <div id="hero-section" style="display:none">
-                    <div class="card">
-                        <div class="card-header"><h2>Hero Slideshow Images & Videos</h2><button class="btn btn-primary btn-sm" onclick="openHeroModal()">+ Add Media</button></div>
-                        <div id="hero-list"></div>
-                    </div>
+                    <div class="card"><div class="card-header"><h2>Hero Slideshow Images</h2><button class="btn btn-primary btn-sm" onclick="openHeroModal()">+ Add Image</button></div><div id="hero-list"></div></div>
                 </div>
 
-                <!-- Promotion Gallery -->
                 <div id="promotion-section" style="display:none">
-                    <div class="card">
-                        <div class="card-header"><h2>Promotion Gallery (Homepage Slideshow)</h2><button class="btn btn-primary btn-sm" onclick="openPromotionModal()">+ Add Image</button></div>
-                        <div id="promotion-list"></div>
-                    </div>
+                    <div class="card"><div class="card-header"><h2>Promotion Gallery</h2><button class="btn btn-primary btn-sm" onclick="openPromotionModal()">+ Add Image</button></div><div id="promotion-list"></div></div>
                 </div>
 
-                <!-- Experiences -->
                 <div id="experiences-section" style="display:none">
-                    <div class="card">
-                        <div class="card-header"><h2>Experiences</h2><button class="btn btn-primary btn-sm" onclick="openExperienceModal()">+ Add Experience</button></div>
-                        <div id="experiences-list"></div>
-                    </div>
+                    <div class="card"><div class="card-header"><h2>Experiences</h2><button class="btn btn-primary btn-sm" onclick="openExperienceModal()">+ Add Experience</button></div><div id="experiences-list"></div></div>
                 </div>
 
-                <!-- Bookings -->
                 <div id="bookings-section" style="display:none">
-                    <div class="card"><div class="card-header"><h2>All Bookings</h2><input type="text" id="booking-search" placeholder="Search by name..." style="padding:8px; border:1px solid #dee2e6; border-radius:8px; width:200px;"></div><div id="all-bookings"></div></div>
+                    <div class="card"><div class="card-header"><h2>All Bookings</h2><input type="text" id="booking-search" placeholder="Search by name..." style="padding:8px; border:1px solid #dee2e6; border-radius:12px; width:200px;"></div><div id="all-bookings"></div></div>
                 </div>
 
-                <!-- Invoices -->
                 <div id="invoices-section" style="display:none">
                     <div class="card"><h2>Invoices</h2><div id="invoices-list"></div></div>
                 </div>
 
-                <!-- Settings -->
                 <div id="settings-section" style="display:none">
                     <div class="card"><h2>Settings</h2><div class="form-group"><label>Exchange Rate (USD to MVR)</label><input type="number" id="exchange-rate" value="15.42" step="0.01"></div><button class="btn btn-primary" onclick="saveSettings()">Save</button></div>
                 </div>
@@ -309,13 +293,8 @@
                     <div class="form-group"><label>Beds</label><input type="number" id="unit-beds" value="1"></div>
                 </div>
                 <div class="form-group"><label>Description</label><textarea id="unit-description" rows="3"></textarea></div>
-                
-                <!-- Featured Image Upload -->
-                <div class="form-group"><label>Featured Image</label><div class="image-upload-area" onclick="document.getElementById('featured-image-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload</p><input type="file" id="featured-image-input" accept="image/*" style="display:none" onchange="uploadFeaturedImage(this)"></div><div id="featured-image-preview"></div><input type="hidden" id="unit-image"></div>
-                
-                <!-- Gallery Images Upload -->
-                <div class="form-group"><label>Gallery Images</label><div class="image-upload-area" onclick="document.getElementById('gallery-image-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload (multiple)</p><input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)"></div><div id="gallery-images-preview" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div><input type="hidden" id="unit-gallery"></div>
-                
+                <div class="form-group"><label>Featured Image</label><div class="image-upload-area" onclick="document.getElementById('featured-image-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload</p><input type="file" id="featured-image-input" accept="image/*" style="display:none" onchange="uploadFeaturedImage(this)"></div><div id="featured-image-preview"></div><input type="hidden" id="unit-image"></div>
+                <div class="form-group"><label>Gallery Images</label><div class="image-upload-area" onclick="document.getElementById('gallery-image-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload (multiple)</p><input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)"></div><div id="gallery-images-preview" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div><input type="hidden" id="unit-gallery"></div>
                 <div class="form-group"><label>Amenities (comma separated)</label><input type="text" id="unit-amenities" placeholder="WiFi, AC, Kitchen"></div>
                 <div class="form-group"><label>Airbnb URL</label><input type="text" id="unit-airbnb" placeholder="https://airbnb.com/..."></div>
                 <div class="form-group"><label>Agoda URL</label><input type="text" id="unit-agoda" placeholder="https://agoda.com/..."></div>
@@ -329,18 +308,16 @@
     <!-- Hero Modal -->
     <div id="hero-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2>Add Hero Media</h2><button onclick="closeHeroModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
+            <div class="modal-header"><h2>Add Hero Image</h2><button onclick="closeHeroModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
             <div class="modal-body">
                 <input type="hidden" id="hero-id">
-                <div class="form-group"><label>Media Type</label><select id="hero-media-type" onchange="toggleHeroMediaType()"><option value="image">Image</option><option value="youtube">YouTube Video</option></select></div>
-                <div id="hero-image-upload"><div class="image-upload-area" onclick="document.getElementById('hero-image-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload image</p><input type="file" id="hero-image-input" accept="image/*" style="display:none" onchange="uploadHeroImage(this)"></div><div id="hero-image-preview"></div><input type="hidden" id="hero-url"></div>
-                <div id="hero-youtube-input" style="display:none;"><div class="form-group"><label>YouTube URL</label><input type="text" id="hero-youtube-url" placeholder="https://youtube.com/watch?v=..."></div></div>
-                <div class="form-group"><label>Title (optional)</label><input type="text" id="hero-title" placeholder="Your Safe Space"></div>
-                <div class="form-group"><label>Subtitle (optional)</label><input type="text" id="hero-subtitle" placeholder="Comfortable, secure apartments"></div>
-                <div class="form-group"><label>Button Text (optional)</label><input type="text" id="hero-btn-text" placeholder="Explore"></div>
-                <div class="form-group"><label>Button Link (optional)</label><input type="text" id="hero-btn-link" placeholder="#units"></div>
+                <div class="form-group"><label>Image</label><div class="image-upload-area" onclick="document.getElementById('hero-image-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload</p><input type="file" id="hero-image-input" accept="image/*" style="display:none" onchange="uploadHeroImage(this)"></div><div id="hero-image-preview"></div><input type="hidden" id="hero-url"></div>
+                <div class="form-group"><label>Title</label><input type="text" id="hero-title" placeholder="Your Safe Space"></div>
+                <div class="form-group"><label>Subtitle</label><input type="text" id="hero-subtitle" placeholder="Welcome to HTM Rentals"></div>
+                <div class="form-group"><label>Button Text</label><input type="text" id="hero-btn-text" placeholder="Explore"></div>
+                <div class="form-group"><label>Button Link</label><input type="text" id="hero-btn-link" placeholder="#units"></div>
                 <div class="form-group"><label>Sort Order</label><input type="number" id="hero-order" value="0"></div>
-                <div style="display:flex; gap:12px; margin-top:20px;"><button class="btn btn-primary" onclick="saveHeroImage()">Save</button><button class="btn btn-danger" id="delete-hero-btn" style="display:none" onclick="deleteHeroImage()">Delete</button></div>
+                <div style="display:flex; gap:12px;"><button class="btn btn-primary" onclick="saveHeroImage()">Save</button><button class="btn btn-danger" id="delete-hero-btn" style="display:none" onclick="deleteHeroImage()">Delete</button></div>
             </div>
         </div>
     </div>
@@ -351,11 +328,11 @@
             <div class="modal-header"><h2>Add Promotion Image</h2><button onclick="closePromotionModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
             <div class="modal-body">
                 <input type="hidden" id="promo-id">
-                <div class="form-group"><label>Image</label><div class="image-upload-area" onclick="document.getElementById('promo-image-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload</p><input type="file" id="promo-image-input" accept="image/*" style="display:none" onchange="uploadPromoImage(this)"></div><div id="promo-image-preview"></div><input type="hidden" id="promo-url"></div>
+                <div class="form-group"><label>Image</label><div class="image-upload-area" onclick="document.getElementById('promo-image-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload</p><input type="file" id="promo-image-input" accept="image/*" style="display:none" onchange="uploadPromoImage(this)"></div><div id="promo-image-preview"></div><input type="hidden" id="promo-url"></div>
                 <div class="form-group"><label>Link URL (optional)</label><input type="text" id="promo-link" placeholder="https://..."></div>
-                <div class="form-group"><label>Title (optional)</label><input type="text" id="promo-title" placeholder="Special Offer"></div>
+                <div class="form-group"><label>Title</label><input type="text" id="promo-title" placeholder="Special Offer"></div>
                 <div class="form-group"><label>Sort Order</label><input type="number" id="promo-order" value="0"></div>
-                <div style="display:flex; gap:12px; margin-top:20px;"><button class="btn btn-primary" onclick="savePromotionImage()">Save</button><button class="btn btn-danger" id="delete-promo-btn" style="display:none" onclick="deletePromotionImage()">Delete</button></div>
+                <div style="display:flex; gap:12px;"><button class="btn btn-primary" onclick="savePromotionImage()">Save</button><button class="btn btn-danger" id="delete-promo-btn" style="display:none" onclick="deletePromotionImage()">Delete</button></div>
             </div>
         </div>
     </div>
@@ -367,11 +344,11 @@
             <div class="modal-body">
                 <input type="hidden" id="exp-id">
                 <div class="form-group"><label>Title *</label><input type="text" id="exp-title" placeholder="Dolphin Cruise"></div>
-                <div class="form-group"><label>Description</label><textarea id="exp-description" rows="2" placeholder="Short description..."></textarea></div>
-                <div class="form-group"><label>Image 1</label><div class="image-upload-area" onclick="document.getElementById('exp-image1-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload</p><input type="file" id="exp-image1-input" accept="image/*" style="display:none" onchange="uploadExpImage1(this)"></div><div id="exp-image1-preview"></div><input type="hidden" id="exp-image1-url"></div>
-                <div class="form-group"><label>Image 2</label><div class="image-upload-area" onclick="document.getElementById('exp-image2-input').click()"><i class="fas fa-cloud-upload-alt" style="font-size:24px; color:#006994;"></i><p>Click to upload</p><input type="file" id="exp-image2-input" accept="image/*" style="display:none" onchange="uploadExpImage2(this)"></div><div id="exp-image2-preview"></div><input type="hidden" id="exp-image2-url"></div>
+                <div class="form-group"><label>Description</label><textarea id="exp-description" rows="2"></textarea></div>
+                <div class="form-group"><label>Image 1</label><div class="image-upload-area" onclick="document.getElementById('exp-image1-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload</p><input type="file" id="exp-image1-input" accept="image/*" style="display:none" onchange="uploadExpImage1(this)"></div><div id="exp-image1-preview"></div><input type="hidden" id="exp-image1-url"></div>
+                <div class="form-group"><label>Image 2</label><div class="image-upload-area" onclick="document.getElementById('exp-image2-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload</p><input type="file" id="exp-image2-input" accept="image/*" style="display:none" onchange="uploadExpImage2(this)"></div><div id="exp-image2-preview"></div><input type="hidden" id="exp-image2-url"></div>
                 <div class="form-group"><label>Sort Order</label><input type="number" id="exp-order" value="0"></div>
-                <div style="display:flex; gap:12px; margin-top:20px;"><button class="btn btn-primary" onclick="saveExperience()">Save</button><button class="btn btn-danger" id="delete-exp-btn" style="display:none" onclick="deleteExperience()">Delete</button></div>
+                <div style="display:flex; gap:12px;"><button class="btn btn-primary" onclick="saveExperience()">Save</button><button class="btn btn-danger" id="delete-exp-btn" style="display:none" onclick="deleteExperience()">Delete</button></div>
             </div>
         </div>
     </div>
@@ -441,7 +418,7 @@
             if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
         }
 
-        // ==================== UNITS (existing code preserved) ====================
+        // ==================== UNITS ====================
         async function loadUnits() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/units`);
@@ -595,11 +572,10 @@
 
         function displayHeroImages(images) {
             const container = document.getElementById('hero-list');
-            if (!images.length) { container.innerHTML = '<p>No hero media. Click "Add Media".</p>'; return; }
-            container.innerHTML = `<table class="data-table"><thead><tr><th>Preview</th><th>Type</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
+            if (!images.length) { container.innerHTML = '<p>No hero images. Click "Add Image".</p>'; return; }
+            container.innerHTML = `<table class="data-table"><thead><tr><th>Image</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
                 images.map(img => `<tr>
-                    <td>${img.media_type === 'youtube' ? '<i class="fab fa-youtube" style="font-size:24px; color:#ff0000;"></i>' : `<img src="${img.image_url}" style="width:60px; height:40px; object-fit:cover; border-radius:4px;">`}</td>
-                    <td>${img.media_type}</td>
+                    <td><img src="${img.image_url}" style="width:60px; height:40px; object-fit:cover; border-radius:4px;"></td>
                     <td>${escapeHtml(img.title || '—')}</td>
                     <td>${img.sort_order}</td>
                     <td><span class="badge badge-${img.is_active ? 'confirmed' : 'cancelled'}">${img.is_active ? 'Active' : 'Inactive'}</span></td>
@@ -608,30 +584,16 @@
             }</tbody>`;
         }
 
-        function toggleHeroMediaType() {
-            const type = document.getElementById('hero-media-type').value;
-            if (type === 'image') {
-                document.getElementById('hero-image-upload').style.display = 'block';
-                document.getElementById('hero-youtube-input').style.display = 'none';
-            } else {
-                document.getElementById('hero-image-upload').style.display = 'none';
-                document.getElementById('hero-youtube-input').style.display = 'block';
-            }
-        }
-
         function openHeroModal() {
             document.getElementById('hero-id').value = '';
-            document.getElementById('hero-media-type').value = 'image';
             document.getElementById('hero-title').value = '';
             document.getElementById('hero-subtitle').value = '';
             document.getElementById('hero-btn-text').value = '';
             document.getElementById('hero-btn-link').value = '';
             document.getElementById('hero-order').value = '0';
-            document.getElementById('hero-youtube-url').value = '';
             document.getElementById('hero-image-preview').innerHTML = '';
             document.getElementById('hero-url').value = '';
             document.getElementById('delete-hero-btn').style.display = 'none';
-            toggleHeroMediaType();
             document.getElementById('hero-modal').style.display = 'flex';
         }
 
@@ -640,18 +602,15 @@
                 const img = data.images.find(i=>i.id===id);
                 if(img){
                     document.getElementById('hero-id').value = img.id;
-                    document.getElementById('hero-media-type').value = img.media_type || 'image';
                     document.getElementById('hero-title').value = img.title || '';
                     document.getElementById('hero-subtitle').value = img.subtitle || '';
                     document.getElementById('hero-btn-text').value = img.button_text || '';
                     document.getElementById('hero-btn-link').value = img.button_link || '';
                     document.getElementById('hero-order').value = img.sort_order || 0;
-                    document.getElementById('hero-youtube-url').value = img.youtube_url || '';
-                    if (img.media_type === 'image' && img.image_url) {
+                    if (img.image_url) {
                         document.getElementById('hero-image-preview').innerHTML = `<div class="preview-img-container"><img src="${img.image_url}" class="preview-img"><div class="remove-img" onclick="removeHeroImagePreview()">×</div></div>`;
                         document.getElementById('hero-url').value = img.image_url;
                     }
-                    toggleHeroMediaType();
                     document.getElementById('delete-hero-btn').style.display = 'inline-block';
                     document.getElementById('hero-modal').style.display = 'flex';
                 }
@@ -679,33 +638,29 @@
 
         async function saveHeroImage() {
             const id = document.getElementById('hero-id').value;
-            const mediaType = document.getElementById('hero-media-type').value;
             const data = {
-                media_type: mediaType,
-                image_url: mediaType === 'image' ? document.getElementById('hero-url').value : null,
-                youtube_url: mediaType === 'youtube' ? document.getElementById('hero-youtube-url').value : null,
+                image_url: document.getElementById('hero-url').value,
                 title: document.getElementById('hero-title').value,
                 subtitle: document.getElementById('hero-subtitle').value,
                 button_text: document.getElementById('hero-btn-text').value,
                 button_link: document.getElementById('hero-btn-link').value,
                 sort_order: parseInt(document.getElementById('hero-order').value) || 0
             };
-            if (mediaType === 'image' && !data.image_url) { showToast('Image required', 'error'); return; }
-            if (mediaType === 'youtube' && !data.youtube_url) { showToast('YouTube URL required', 'error'); return; }
+            if (!data.image_url) { showToast('Image required', 'error'); return; }
             try {
                 let url = `${API_BASE_URL}/admin/hero-images`;
                 let method = 'POST';
                 if (id) { url += `/${id}`; method = 'PUT'; }
                 const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
                 const result = await res.json();
-                if (result.success) { showToast(id ? 'Hero media updated' : 'Hero media added', 'success'); closeHeroModal(); loadHeroImages(); }
+                if (result.success) { showToast(id ? 'Hero image updated' : 'Hero image added', 'success'); closeHeroModal(); loadHeroImages(); }
                 else showToast(result.error || 'Failed', 'error');
             } catch(e) { showToast('Error saving', 'error'); }
         }
 
         async function deleteHeroImage() {
             const id = document.getElementById('hero-id').value;
-            if (!id || !confirm('Delete this hero media?')) return;
+            if (!id || !confirm('Delete this hero image?')) return;
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/hero-images/${id}`, { method: 'DELETE' });
                 const data = await res.json();
@@ -945,7 +900,7 @@
             } catch(e) { showToast('Error deleting', 'error'); }
         }
 
-        // ==================== DASHBOARD & BOOKINGS (existing code preserved) ====================
+        // ==================== DASHBOARD & BOOKINGS ====================
         async function loadDashboard() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings`);
