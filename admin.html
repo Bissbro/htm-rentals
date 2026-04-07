@@ -3,34 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>HTM Rentals | Admin Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>HTM Rentals | Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f8f9fa; }
+        body { font-family: 'Inter', sans-serif; background: #F8F9FA; }
+        
+        :root {
+            --navy: #0A2540;
+            --ocean: #006994;
+            --turquoise: #40B5AD;
+            --radius: 16px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.05);
+        }
         
         .login-wrapper {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #006994, #005077);
+            background: linear-gradient(135deg, var(--ocean), var(--navy));
             padding: 20px;
         }
         .login-card {
             background: white;
-            border-radius: 16px;
+            border-radius: var(--radius);
             padding: 40px;
             width: 100%;
             max-width: 400px;
         }
-        .login-card h1 { color: #006994; margin-bottom: 8px; }
+        .login-card h1 { color: var(--navy); font-family: 'Playfair Display', serif; margin-bottom: 8px; }
         .login-card input {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 16px;
         }
         .btn {
@@ -41,8 +49,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .btn-primary { background: #006994; color: white; }
-        .btn-primary:hover { background: #005077; transform: translateY(-2px); }
+        .btn-primary { background: var(--ocean); color: white; }
+        .btn-primary:hover { background: var(--navy); transform: translateY(-2px); }
         .btn-success { background: #28a745; color: white; }
         .btn-danger { background: #dc3545; color: white; }
         .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 20px; }
@@ -61,6 +69,7 @@
             transition: transform 0.3s;
         }
         .sidebar-header { padding: 20px; border-bottom: 1px solid #e9ecef; }
+        .sidebar-header h2 { font-family: 'Playfair Display', serif; color: var(--navy); }
         .nav-item {
             display: flex;
             align-items: center;
@@ -73,7 +82,7 @@
             transition: all 0.3s;
         }
         .nav-item:hover { background: #f8f9fa; }
-        .nav-item.active { background: #006994; color: white; }
+        .nav-item.active { background: var(--ocean); color: white; }
         .main-content { margin-left: 260px; min-height: 100vh; }
         .top-header {
             background: white;
@@ -87,10 +96,10 @@
         .content-area { padding: 24px; }
         .card {
             background: white;
-            border-radius: 16px;
+            border-radius: var(--radius);
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow);
         }
         .card-header {
             display: flex;
@@ -109,11 +118,11 @@
         .stat-card {
             background: white;
             padding: 20px;
-            border-radius: 16px;
-            border-left: 3px solid #006994;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--turquoise);
+            box-shadow: var(--shadow);
         }
-        .stat-number { font-size: 28px; font-weight: 700; color: #006994; }
+        .stat-number { font-size: 28px; font-weight: 700; color: var(--ocean); }
         .data-table { width: 100%; border-collapse: collapse; }
         .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
         .badge {
@@ -146,7 +155,7 @@
             background: #f8f9fa;
             transition: all 0.3s;
         }
-        .image-upload-area:hover { border-color: #006994; background: #e8f4f8; }
+        .image-upload-area:hover { border-color: var(--ocean); background: #e8f4f8; }
         .image-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
         .preview-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #dee2e6; }
         .preview-img-container { position: relative; display: inline-block; }
@@ -180,7 +189,7 @@
         }
         .modal-content {
             background: white;
-            border-radius: 16px;
+            border-radius: var(--radius);
             max-width: 600px;
             width: 100%;
             max-height: 90vh;
@@ -237,7 +246,7 @@
 
         <div class="main-content">
             <header class="top-header">
-                <button class="btn btn-sm" style="background:#006994; color:white;" onclick="handleLogout()">Logout</button>
+                <button class="btn btn-sm" style="background:var(--ocean); color:white;" onclick="handleLogout()">Logout</button>
             </header>
             <div class="content-area" id="content-area">
                 <div id="dashboard-section">
@@ -293,8 +302,11 @@
                     <div class="form-group"><label>Beds</label><input type="number" id="unit-beds" value="1"></div>
                 </div>
                 <div class="form-group"><label>Description</label><textarea id="unit-description" rows="3"></textarea></div>
+                
                 <div class="form-group"><label>Featured Image</label><div class="image-upload-area" onclick="document.getElementById('featured-image-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload</p><input type="file" id="featured-image-input" accept="image/*" style="display:none" onchange="uploadFeaturedImage(this)"></div><div id="featured-image-preview"></div><input type="hidden" id="unit-image"></div>
+                
                 <div class="form-group"><label>Gallery Images</label><div class="image-upload-area" onclick="document.getElementById('gallery-image-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload (multiple)</p><input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)"></div><div id="gallery-images-preview" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div><input type="hidden" id="unit-gallery"></div>
+                
                 <div class="form-group"><label>Amenities (comma separated)</label><input type="text" id="unit-amenities" placeholder="WiFi, AC, Kitchen"></div>
                 <div class="form-group"><label>Airbnb URL</label><input type="text" id="unit-airbnb" placeholder="https://airbnb.com/..."></div>
                 <div class="form-group"><label>Agoda URL</label><input type="text" id="unit-agoda" placeholder="https://agoda.com/..."></div>
