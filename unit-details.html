@@ -13,6 +13,15 @@
         body { font-family: 'Inter', sans-serif; background: #F8F9FA; padding: 20px; }
         .container { max-width: 1280px; margin: 0 auto; }
         
+        :root {
+            --navy: #0A2540;
+            --ocean: #006994;
+            --turquoise: #40B5AD;
+            --radius: 16px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.05);
+            --shadow-hover: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
         .header {
             display: flex;
             justify-content: space-between;
@@ -28,33 +37,24 @@
             text-decoration: none;
         }
         .logo img { height: 40px; }
-        .logo span {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-        .logo span:first-child { color: #0A2540; }
-        .logo span:last-child { color: #40B5AD; }
-        .back-link {
-            color: #006994;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .back-link:hover { color: #40B5AD; }
+        .logo-text { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; }
+        .logo-text span:first-child { color: var(--navy); }
+        .logo-text span:last-child { color: var(--turquoise); }
+        .back-link { color: var(--ocean); text-decoration: none; font-weight: 500; transition: var(--transition); }
+        .back-link:hover { color: var(--turquoise); }
         
         .card {
             background: white;
-            border-radius: 16px;
+            border-radius: var(--radius);
             padding: 28px;
             margin-bottom: 24px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow);
         }
         .unit-name {
             font-family: 'Playfair Display', serif;
             font-size: 28px;
             font-weight: 500;
-            color: #0A2540;
+            color: var(--navy);
             margin-bottom: 12px;
         }
         .starting-from {
@@ -66,55 +66,31 @@
         }
         .prices {
             display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-            margin: 16px 0 20px;
-        }
-        .price-item {
-            display: flex;
             align-items: baseline;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
+            margin: 8px 0 16px;
         }
-        .price-amount {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #006994;
-        }
-        .price-nightly {
-            font-size: 0.75rem;
-            color: #6C757D;
-        }
-        .price-sep {
-            font-size: 1.2rem;
-            color: #6C757D;
-            margin: 0 4px;
-        }
+        .price-amount { font-size: 1.5rem; font-weight: 600; color: var(--ocean); }
+        .price-nightly { font-size: 0.75rem; color: #6C757D; }
+        .price-sep { font-size: 1rem; color: #6C757D; }
         .features {
             display: flex;
             flex-wrap: wrap;
             gap: 24px;
-            margin: 20px 0;
-            padding: 20px 0;
-            border-top: 1px solid #E9ECEF;
-            border-bottom: 1px solid #E9ECEF;
+            margin: 16px 0;
+            padding-top: 16px;
+            border-top: 1px solid #e9ecef;
         }
-        .features span {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #495057;
-        }
-        .features i { color: #40B5AD; }
+        .features span { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #495057; }
+        .features i { color: var(--turquoise); }
         
-        /* Gallery - 4:3 Swipeable */
         .gallery-container { margin-bottom: 24px; }
         .gallery-main {
             width: 100%;
             aspect-ratio: 4 / 3;
             overflow: hidden;
-            border-radius: 16px;
+            border-radius: var(--radius);
             position: relative;
             touch-action: pan-y pinch-zoom;
             cursor: grab;
@@ -141,13 +117,8 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        .gallery-dot.active {
-            width: 24px;
-            border-radius: 4px;
-            background: #006994;
-        }
+        .gallery-dot.active { width: 24px; border-radius: 4px; background: var(--ocean); }
         
-        /* External Booking Buttons */
         .external-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -166,7 +137,7 @@
             justify-content: center;
             gap: 8px;
             font-size: 14px;
-            transition: all 0.3s;
+            transition: var(--transition);
             text-align: center;
         }
         .ext-btn:hover { transform: translateY(-2px); opacity: 0.9; }
@@ -178,7 +149,7 @@
         .local-btn {
             width: 100%;
             padding: 14px;
-            background: #40B5AD;
+            background: var(--turquoise);
             color: white;
             border: none;
             border-radius: 40px;
@@ -186,7 +157,7 @@
             font-size: 16px;
             cursor: pointer;
             margin-bottom: 20px;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
         .local-btn:hover { background: #36a099; transform: translateY(-2px); }
         
@@ -202,7 +173,7 @@
             font-size: 14px;
             transition: all 0.3s;
         }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: #40B5AD; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--turquoise); }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .price-breakdown {
             background: #F8F9FA;
@@ -210,26 +181,21 @@
             border-radius: 16px;
             margin: 20px 0;
         }
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #E9ECEF;
-        }
+        .price-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #E9ECEF; }
         .price-row.total { border-bottom: none; font-weight: 700; font-size: 16px; padding-top: 12px; }
         .submit-btn {
             width: 100%;
             padding: 14px;
-            background: #006994;
+            background: var(--ocean);
             color: white;
             border: none;
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
             font-size: 16px;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
-        .submit-btn:hover { background: #0A2540; transform: translateY(-2px); }
+        .submit-btn:hover { background: var(--navy); transform: translateY(-2px); }
         .message { padding: 14px; border-radius: 12px; margin-bottom: 20px; display: none; }
         .message.success { background: #D4EDDA; color: #155724; display: block; }
         .message.error { background: #F8D7DA; color: #721C24; display: block; }
@@ -244,7 +210,7 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        .calendar-nav button:hover { background: #40B5AD; color: white; }
+        .calendar-nav button:hover { background: var(--turquoise); color: white; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
         .calendar-weekday { font-weight: 600; padding: 10px 0; font-size: 12px; color: #6C757D; }
         .calendar-day {
@@ -254,9 +220,9 @@
             font-size: 14px;
             transition: all 0.2s;
         }
-        .calendar-day:hover:not(.booked):not(.empty) { background: #40B5AD; color: white; }
+        .calendar-day:hover:not(.booked):not(.empty) { background: var(--turquoise); color: white; }
         .calendar-day.booked { background: #FFEBEE; color: #DC3545; text-decoration: line-through; cursor: not-allowed; }
-        .calendar-day.selected { background: #006994; color: white; }
+        .calendar-day.selected { background: var(--ocean); color: white; }
         .calendar-day.today { border: 2px solid #FF6B6B; }
         .calendar-day.empty { cursor: default; background: transparent; }
         .legend {
@@ -281,12 +247,12 @@
             body { padding: 16px; }
             .card { padding: 20px; }
             .unit-name { font-size: 24px; }
-            .prices { gap: 16px; }
             .price-amount { font-size: 1.2rem; }
             .price-nightly { font-size: 0.7rem; }
             .external-buttons { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .form-row { grid-template-columns: 1fr; }
             .calendar-day { padding: 8px 3px; font-size: 12px; }
+            .prices { flex-direction: column; align-items: flex-start; gap: 4px; }
         }
     </style>
 </head>
@@ -295,7 +261,7 @@
         <div class="header">
             <a href="index.html" class="logo">
                 <img src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="HTM Rentals">
-                <span>HTM<span>Rentals</span></span>
+                <div class="logo-text"><span>HTM</span><span>Rentals</span></div>
             </a>
             <a href="index.html" class="back-link">← Back to Units</a>
         </div>
@@ -514,13 +480,13 @@
                     <h1 class="unit-name">${escapeHtml(unit.unit_name)}</h1>
                     <div class="starting-from">Starting from</div>
                     <div class="prices">
-                        <div class="price-item"><span class="price-amount">$${unit.rate_usd}</span> <span class="price-nightly">nightly</span></div>
-                        <span class="price-sep">·</span>
-                        <div class="price-item"><span class="price-amount">MVR ${unit.rate_mvr}</span> <span class="price-nightly">nightly</span></div>
+                        <span class="price-amount">$${unit.rate_usd}</span> <span class="price-nightly">nightly</span>
+                        <span class="price-sep">|</span>
+                        <span class="price-amount">MVR ${unit.rate_mvr}</span> <span class="price-nightly">nightly</span>
                     </div>
                     <div class="features"><span><i class="fas fa-user-friends"></i> ${unit.max_guests} guests</span><span><i class="fas fa-bed"></i> ${unit.bedrooms} bed(s)</span></div>
                     <p>${unit.description || 'Comfortable apartment with all essential amenities for a relaxing stay.'}</p>
-                    <div style="margin: 20px 0; display: flex; flex-wrap: wrap; gap: 8px;">${amenitiesList.map(a => `<span style="background:#F8F9FA; padding:6px 14px; border-radius:30px; font-size:13px;"><i class="fas fa-check-circle" style="color:#40B5AD; margin-right:6px;"></i> ${escapeHtml(a)}</span>`).join('')}</div>
+                    <div style="margin: 20px 0; display: flex; flex-wrap: wrap; gap: 8px;">${amenitiesList.map(a => `<span style="background:#F8F9FA; padding:6px 14px; border-radius:30px; font-size:13px;"><i class="fas fa-check-circle" style="color:var(--turquoise); margin-right:6px;"></i> ${escapeHtml(a)}</span>`).join('')}</div>
                 </div>
                 <div class="card">
                     <h3>Book Your Stay</h3>
@@ -530,7 +496,7 @@
                         <h4>Local Booking Form</h4>
                         <div class="calendar-header"><h4 id="calendar-month-year">${monthNames[currentMonth]} ${currentYear}</h4><div class="calendar-nav"><button id="prev-month"><i class="fas fa-chevron-left"></i></button><button id="next-month"><i class="fas fa-chevron-right"></i></button></div></div>
                         <div id="calendar-grid" class="calendar-grid"></div>
-                        <div class="legend"><div><span class="legend-color" style="background:white; border:2px solid #40B5AD;"></span> Available</div><div><span class="legend-color" style="background:#FFEBEE;"></span> Booked</div><div><span class="legend-color" style="background:#006994;"></span> Selected</div></div>
+                        <div class="legend"><div><span class="legend-color" style="background:white; border:2px solid var(--turquoise);"></span> Available</div><div><span class="legend-color" style="background:#FFEBEE;"></span> Booked</div><div><span class="legend-color" style="background:var(--ocean);"></span> Selected</div></div>
                         <form id="booking-form" style="margin-top: 24px;">
                             <div class="form-row"><div class="form-group"><label>Check-in</label><input type="text" id="check-in" readonly placeholder="Select date" required></div><div class="form-group"><label>Check-out</label><input type="text" id="check-out" readonly placeholder="Select date" required></div></div>
                             <div class="form-group"><label>Number of Guests</label><select id="guests" required><option value="">Select</option><option value="1">1 Guest</option><option value="2">2 Guests</option><option value="3">3 Guests</option><option value="4">4 Guests</option></select></div>
