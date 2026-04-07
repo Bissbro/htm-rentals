@@ -799,7 +799,7 @@
             container.innerHTML = `<table class="data-table"><thead><tr><th>Title</th><th>Image 1</th><th>Image 2</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
                 experiences.map(exp => `<tr>
                     <td><strong>${escapeHtml(exp.title)}</strong></td>
-                    <td>${exp.image1_url ? '<i class="fas fa-check-circle" style="color:#28a745"></i>' : '—'}</div></div></td>
+                    <td>${exp.image1_url ? '<i class="fas fa-check-circle" style="color:#28a745"></i>' : '—'} </div></div></td>
                     <td>${exp.image2_url ? '<i class="fas fa-check-circle" style="color:#28a745"></i>' : '—'}</td>
                     <td>${exp.sort_order}</td>
                     <td><span class="badge badge-${exp.is_active ? 'confirmed' : 'cancelled'}">${exp.is_active ? 'Active' : 'Inactive'}</span></td>
