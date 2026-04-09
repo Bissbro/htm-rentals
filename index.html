@@ -123,7 +123,7 @@
         .about-section { background: var(--gray-light); text-align: center; }
         .about-section p { max-width: 700px; margin: 0 auto; font-size: 1.1rem; line-height: 1.8; color: var(--gray); }
 
-        /* UNITS GRID - ALWAYS 2 COLUMNS ON ALL DEVICES (desktop, tablet, mobile) */
+        /* UNITS GRID - 2 columns on ALL devices (no stacking on mobile) */
         .units-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -175,7 +175,14 @@
         .promo-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s; }
         .promo-dot.active { background: white; width: 24px; border-radius: 4px; }
 
-        .experiences-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 48px; }
+        /* Experiences grid - 4 columns on desktop, 2 on mobile */
+        .experiences-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            margin-top: 48px;
+        }
+
         .experience-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); }
         .experience-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
         .experience-images { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; height: 140px; }
@@ -226,7 +233,7 @@
         }
         .whatsapp-float:hover { transform: scale(1.05); }
 
-        /* Mobile adjustments - layout preserved, only small spacing tweaks */
+        /* Mobile: ONLY adjust font sizes and spacing, NEVER change layout columns */
         @media (max-width: 768px) {
             .container { padding: 0 16px; }
             section { padding: 50px 0; }
@@ -239,19 +246,20 @@
             .starting-from { font-size: 0.6rem; }
             .unit-features { gap: 8px; font-size: 0.7rem; }
             .unit-card .btn { padding: 8px; font-size: 0.75rem; }
-            .services-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .services-grid { gap: 16px; }
             .service-card { padding: 20px 16px; }
             .service-card i { font-size: 1.8rem; }
             .service-card h3 { font-size: 0.9rem; }
+            .experiences-grid { gap: 16px; }
             .experience-card h3 { font-size: 0.85rem; }
             .experience-card p { font-size: 0.7rem; }
             .contact-card { padding: 20px; min-width: 140px; }
             .contact-card i { font-size: 1.5rem; }
         }
 
-        @media (max-width: 480px) {
-            .services-grid { grid-template-columns: 1fr; }
-            .experiences-grid { grid-template-columns: 1fr; }
+        /* Small phones: experiences grid becomes 2 columns (from 4) */
+        @media (max-width: 640px) {
+            .experiences-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
