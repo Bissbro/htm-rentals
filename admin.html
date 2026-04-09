@@ -90,8 +90,15 @@
             height: 64px;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: space-between;
             border-bottom: 1px solid #e9ecef;
+        }
+        .session-timer {
+            font-size: 12px;
+            color: var(--gray);
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 20px;
         }
         .content-area { padding: 24px; }
         .card {
@@ -135,6 +142,9 @@
         .badge-pending { background: #fff3cd; color: #856404; }
         .badge-confirmed { background: #d4edda; color: #155724; }
         .badge-cancelled { background: #f8d7da; color: #721c24; }
+        .badge-draft { background: #e2e3e5; color: #383d41; }
+        .badge-paid { background: #d4edda; color: #155724; }
+        .badge-sent { background: #cce5ff; color: #004085; }
         .delete-btn { background: none; border: none; color: #dc3545; cursor: pointer; }
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; }
@@ -209,11 +219,21 @@
         }
         .toast.success { background: #28a745; }
         .toast.error { background: #dc3545; }
+        
+        /* Invoice specific */
+        .invoice-items-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .invoice-items-table th, .invoice-items-table td { padding: 10px; text-align: left; border-bottom: 1px solid #e9ecef; }
+        .invoice-summary { background: #f8f9fa; padding: 15px; border-radius: 12px; margin-top: 15px; }
+        .summary-row { display: flex; justify-content: space-between; padding: 8px 0; }
+        .summary-row.total { font-weight: 700; font-size: 1.1rem; border-top: 2px solid #dee2e6; margin-top: 8px; padding-top: 12px; }
+        .payment-item { background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
             .main-content { margin-left: 0; }
             .form-row { grid-template-columns: 1fr; }
+            .data-table { display: block; overflow-x: auto; }
         }
     </style>
 </head>
@@ -222,8 +242,8 @@
         <div class="login-card">
             <h1>HTM Rentals</h1>
             <p>Administrator Access</p>
-            <input type="text" id="login-username" placeholder="Username" value="bissbro">
-            <input type="password" id="login-password" placeholder="Password" value="admin123">
+            <input type="text" id="login-username" placeholder="Username">
+            <input type="password" id="login-password" placeholder="Password">
             <button class="btn btn-primary" style="width:100%" onclick="handleLogin()">Login</button>
             <div id="login-error" style="color:#dc3545; margin-top:12px; display:none;"></div>
         </div>
@@ -240,45 +260,66 @@
                 <div class="nav-item" data-section="experiences" onclick="showSection('experiences')"><i class="fas fa-umbrella-beach"></i><span>Experiences</span></div>
                 <div class="nav-item" data-section="bookings" onclick="showSection('bookings')"><i class="fas fa-calendar"></i><span>Bookings</span></div>
                 <div class="nav-item" data-section="invoices" onclick="showSection('invoices')"><i class="fas fa-file-invoice"></i><span>Invoices</span></div>
+                <div class="nav-item" data-section="minibar" onclick="showSection('minibar')"><i class="fas fa-box"></i><span>Minibar</span></div>
+                <div class="nav-item" data-section="block-dates" onclick="showSection('block-dates')"><i class="fas fa-ban"></i><span>Block Dates</span></div>
                 <div class="nav-item" data-section="settings" onclick="showSection('settings')"><i class="fas fa-cog"></i><span>Settings</span></div>
             </nav>
         </aside>
 
         <div class="main-content">
             <header class="top-header">
+                <div class="session-timer" id="session-timer">Session expires in: 59:59</div>
                 <button class="btn btn-sm" style="background:var(--ocean); color:white;" onclick="handleLogout()">Logout</button>
             </header>
             <div class="content-area" id="content-area">
+                <!-- Dashboard -->
                 <div id="dashboard-section">
                     <div class="stats-grid" id="stats-grid"></div>
-                    <div class="card"><div class="card-header"><h2>Recent Bookings</h2></div><div id="recent-bookings"></div></div>
-                    <div class="card"><div class="card-header"><h2>Recent Invoices</h2></div><div id="recent-invoices"></div></div>
+                    <div class="card"><div class="card-header"><h2>Recent Bookings</h2><button class="btn btn-primary btn-sm" onclick="showSection('bookings')">View All</button></div><div id="recent-bookings"></div></div>
+                    <div class="card"><div class="card-header"><h2>Recent Invoices</h2><button class="btn btn-primary btn-sm" onclick="showSection('invoices')">View All</button></div><div id="recent-invoices"></div></div>
                 </div>
 
+                <!-- Units -->
                 <div id="units-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>Property Units</h2><button class="btn btn-primary btn-sm" onclick="openUnitModal()">+ Add Unit</button></div><div id="units-list"></div></div>
                 </div>
 
+                <!-- Hero Images -->
                 <div id="hero-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>Hero Slideshow Images</h2><button class="btn btn-primary btn-sm" onclick="openHeroModal()">+ Add Image</button></div><div id="hero-list"></div></div>
                 </div>
 
+                <!-- Promotion Gallery -->
                 <div id="promotion-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>Promotion Gallery</h2><button class="btn btn-primary btn-sm" onclick="openPromotionModal()">+ Add Image</button></div><div id="promotion-list"></div></div>
                 </div>
 
+                <!-- Experiences -->
                 <div id="experiences-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>Experiences</h2><button class="btn btn-primary btn-sm" onclick="openExperienceModal()">+ Add Experience</button></div><div id="experiences-list"></div></div>
                 </div>
 
+                <!-- Bookings -->
                 <div id="bookings-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>All Bookings</h2><input type="text" id="booking-search" placeholder="Search by name..." style="padding:8px; border:1px solid #dee2e6; border-radius:12px; width:200px;"></div><div id="all-bookings"></div></div>
                 </div>
 
+                <!-- Invoices -->
                 <div id="invoices-section" style="display:none">
-                    <div class="card"><h2>Invoices</h2><div id="invoices-list"></div></div>
+                    <div class="card"><div class="card-header"><h2>All Invoices</h2><div style="display: flex; gap: 12px;"><select id="invoice-status-filter" onchange="loadInvoices()" style="padding:8px; border-radius:12px; border:1px solid #dee2e6;"><option value="">All Status</option><option value="draft">Draft</option><option value="sent">Sent</option><option value="paid">Paid</option><option value="partially_paid">Partially Paid</option></select><button class="btn btn-primary btn-sm" onclick="openStandaloneInvoiceModal()">New Invoice</button></div></div><div id="invoices-list"></div></div>
                 </div>
 
+                <!-- Minibar -->
+                <div id="minibar-section" style="display:none">
+                    <div class="card"><div class="card-header"><h2>Minibar Catalog</h2><select id="minibar-unit-select" onchange="loadMinibar()" style="padding:8px; border-radius:12px; border:1px solid #dee2e6;"></select><button class="btn btn-primary btn-sm" onclick="openMinibarModal()">+ Add Item</button></div><div id="minibar-list"></div></div>
+                </div>
+
+                <!-- Block Dates -->
+                <div id="block-dates-section" style="display:none">
+                    <div class="card"><h2>Block Dates</h2><div class="form-row"><div class="form-group"><label>Select Unit</label><select id="block-unit-select"></select></div></div><div class="form-row"><div class="form-group"><label>Single Date</label><input type="date" id="block-single-date"><input type="text" id="block-single-reason" placeholder="Reason"><button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="blockSingleDate()">Block This Date</button></div><div class="form-group"><label>Date Range</label><input type="date" id="block-range-start"><input type="date" id="block-range-end"><input type="text" id="block-range-reason" placeholder="Reason"><button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="blockDateRange()">Block Range</button></div></div><h3 style="margin-top:24px;">Currently Blocked Dates</h3><div id="blocked-dates-list"></div></div>
+                </div>
+
+                <!-- Settings -->
                 <div id="settings-section" style="display:none">
                     <div class="card"><h2>Settings</h2><div class="form-group"><label>Exchange Rate (USD to MVR)</label><input type="number" id="exchange-rate" value="15.42" step="0.01"></div><button class="btn btn-primary" onclick="saveSettings()">Save</button></div>
                 </div>
@@ -302,11 +343,8 @@
                     <div class="form-group"><label>Beds</label><input type="number" id="unit-beds" value="1"></div>
                 </div>
                 <div class="form-group"><label>Description</label><textarea id="unit-description" rows="3"></textarea></div>
-                
                 <div class="form-group"><label>Featured Image</label><div class="image-upload-area" onclick="document.getElementById('featured-image-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload</p><input type="file" id="featured-image-input" accept="image/*" style="display:none" onchange="uploadFeaturedImage(this)"></div><div id="featured-image-preview"></div><input type="hidden" id="unit-image"></div>
-                
                 <div class="form-group"><label>Gallery Images</label><div class="image-upload-area" onclick="document.getElementById('gallery-image-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload (multiple)</p><input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)"></div><div id="gallery-images-preview" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div><input type="hidden" id="unit-gallery"></div>
-                
                 <div class="form-group"><label>Amenities (comma separated)</label><input type="text" id="unit-amenities" placeholder="WiFi, AC, Kitchen"></div>
                 <div class="form-group"><label>Airbnb URL</label><input type="text" id="unit-airbnb" placeholder="https://airbnb.com/..."></div>
                 <div class="form-group"><label>Agoda URL</label><input type="text" id="unit-agoda" placeholder="https://agoda.com/..."></div>
@@ -365,6 +403,38 @@
         </div>
     </div>
 
+    <!-- Standalone Invoice Modal -->
+    <div id="standalone-invoice-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Create Invoice</h2><button onclick="closeStandaloneInvoiceModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label>Customer Name *</label><input type="text" id="invoice-customer-name"></div>
+                <div class="form-group"><label>Customer Email</label><input type="email" id="invoice-customer-email"></div>
+                <div class="form-group"><label>Customer Phone</label><input type="tel" id="invoice-customer-phone"></div>
+                <h3>Items</h3>
+                <div id="invoice-items-container"></div>
+                <button class="btn btn-sm" style="margin:10px 0;" onclick="addInvoiceItem()">+ Add Item</button>
+                <div class="form-group"><label>Tax Rate (%)</label><input type="number" id="invoice-tax-rate" value="0" step="0.1"></div>
+                <div class="invoice-summary"><div class="summary-row"><span>Subtotal</span><span id="invoice-subtotal">$0.00</span></div><div class="summary-row"><span>Tax</span><span id="invoice-tax-amount">$0.00</span></div><div class="summary-row total"><span>Total</span><span id="invoice-total">$0.00</span></div></div>
+                <button class="btn btn-primary" onclick="createStandaloneInvoice()">Create Invoice</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice View Modal -->
+    <div id="invoice-view-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Invoice Details</h2><button onclick="closeInvoiceViewModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
+            <div class="modal-body" id="invoice-view-content"></div>
+            <div class="modal-footer" style="padding:20px; border-top:1px solid #e9ecef; display:flex; justify-content:flex-end; gap:12px;">
+                <button class="btn btn-sm btn-primary" onclick="printInvoice()">Print</button>
+                <button class="btn btn-sm btn-success" onclick="recordPayment()">Record Payment</button>
+                <button class="btn btn-sm btn-warning" onclick="updateInvoiceStatus()">Update Status</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteInvoice()">Delete</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         const ADMIN_USERNAME = 'bissbro';
@@ -372,6 +442,10 @@
         
         let allUnits = [];
         let allBookings = [];
+        let currentInvoiceData = null;
+        let currentInvoiceItems = [];
+        let sessionTimer = null;
+        let sessionTimeout = 60 * 60; // 1 hour in seconds
 
         function showToast(msg, type) {
             const t = document.createElement('div');
@@ -381,13 +455,34 @@
             setTimeout(() => t.remove(), 3000);
         }
 
+        // Session management
+        function startSessionTimer() {
+            let timeLeft = sessionTimeout;
+            const timerElement = document.getElementById('session-timer');
+            if (sessionTimer) clearInterval(sessionTimer);
+            sessionTimer = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(sessionTimer);
+                    handleLogout();
+                    showToast('Session expired. Please login again.', 'error');
+                } else {
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    timerElement.textContent = `Session expires in: ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+                }
+            }, 1000);
+        }
+
         function handleLogin() {
             const u = document.getElementById('login-username').value;
             const p = document.getElementById('login-password').value;
             if (u === ADMIN_USERNAME && p === ADMIN_PASSWORD) {
                 sessionStorage.setItem('adminLoggedIn', 'true');
+                sessionStorage.setItem('loginTime', Date.now().toString());
                 document.getElementById('login-wrapper').style.display = 'none';
                 document.getElementById('admin-container').style.display = 'block';
+                startSessionTimer();
                 loadDashboard();
                 loadUnits();
                 loadHeroImages();
@@ -395,6 +490,8 @@
                 loadExperiences();
                 loadAllBookings();
                 loadInvoices();
+                loadMinibarUnits();
+                loadBlockUnits();
                 showSection('dashboard');
             } else {
                 document.getElementById('login-error').style.display = 'block';
@@ -403,13 +500,17 @@
         }
 
         function handleLogout() {
+            if (sessionTimer) clearInterval(sessionTimer);
             sessionStorage.removeItem('adminLoggedIn');
+            sessionStorage.removeItem('loginTime');
             document.getElementById('login-wrapper').style.display = 'flex';
             document.getElementById('admin-container').style.display = 'none';
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
         }
 
         function showSection(section) {
-            const sections = ['dashboard', 'units', 'hero', 'promotion', 'experiences', 'bookings', 'invoices', 'settings'];
+            const sections = ['dashboard', 'units', 'hero', 'promotion', 'experiences', 'bookings', 'invoices', 'minibar', 'block-dates', 'settings'];
             sections.forEach(s => {
                 const el = document.getElementById(`${s}-section`);
                 if (el) el.style.display = 'none';
@@ -427,10 +528,12 @@
             if (section === 'experiences') loadExperiences();
             if (section === 'bookings') loadAllBookings();
             if (section === 'invoices') loadInvoices();
+            if (section === 'minibar') loadMinibar();
+            if (section === 'block-dates') loadBlockedDates();
             if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
         }
 
-        // ==================== UNITS ====================
+        // ==================== UNITS (Preserved) ====================
         async function loadUnits() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/units`);
@@ -573,7 +676,7 @@
             } catch(e) { showToast('Error deleting', 'error'); }
         }
 
-        // ==================== HERO IMAGES ====================
+        // ==================== HERO IMAGES (Preserved) ====================
         async function loadHeroImages() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/hero-images`);
@@ -592,7 +695,7 @@
                     <td>${img.sort_order}</td>
                     <td><span class="badge badge-${img.is_active ? 'confirmed' : 'cancelled'}">${img.is_active ? 'Active' : 'Inactive'}</span></td>
                     <td><button class="btn btn-primary btn-sm" onclick="editHeroImage(${img.id})">Edit</button></td>
-                </tr>`).join('')
+                </td>`).join('')
             }</tbody>`;
         }
 
@@ -681,7 +784,7 @@
             } catch(e) { showToast('Error deleting', 'error'); }
         }
 
-        // ==================== PROMOTION GALLERY ====================
+        // ==================== PROMOTION GALLERY (Preserved) ====================
         async function loadPromotionGallery() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/promotion-gallery`);
@@ -693,7 +796,7 @@
         function displayPromotionImages(images) {
             const container = document.getElementById('promotion-list');
             if (!images.length) { container.innerHTML = '<p>No promotion images. Click "Add Image".</p>'; return; }
-            container.innerHTML = `<table class="data-table"><thead><tr><th>Image</th><th>Title</th><th>Link</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
+            container.innerHTML = `<table class="data-table"><thead><tr><th>Image</th><th>Title</th><th>Link</th><th>Order</th><th>Status</th><th>Actions</th><tr></thead><tbody>${
                 images.map(img => `<tr>
                     <td><img src="${img.image_url}" style="width:60px; height:40px; object-fit:cover; border-radius:4px;"></td>
                     <td>${escapeHtml(img.title || '—')}</td>
@@ -784,7 +887,7 @@
             } catch(e) { showToast('Error deleting', 'error'); }
         }
 
-        // ==================== EXPERIENCES ====================
+        // ==================== EXPERIENCES (Preserved) ====================
         async function loadExperiences() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/experiences`);
@@ -912,7 +1015,7 @@
             } catch(e) { showToast('Error deleting', 'error'); }
         }
 
-        // ==================== DASHBOARD & BOOKINGS ====================
+        // ==================== DASHBOARD ====================
         async function loadDashboard() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings`);
@@ -942,6 +1045,17 @@
             container.innerHTML = bookings.map(b => `<div style="padding:12px; border-bottom:1px solid #e9ecef"><div><strong>${escapeHtml(b.guest_name)}</strong> <span class="badge badge-${b.booking_status}">${b.booking_status}</span></div><div>${b.check_in_date?.split('T')[0]} → ${b.check_out_date?.split('T')[0]}</div><div>${b.currency === 'MVR' ? 'MVR' : '$'}${b.total_amount} • ${b.total_nights} nights</div></div>`).join('');
         }
 
+        async function loadRecentInvoices() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/invoices?limit=5`);
+                const data = await res.json();
+                const container = document.getElementById('recent-invoices');
+                if (!data.invoices || !data.invoices.length) { container.innerHTML = '<p>No recent invoices</p>'; return; }
+                container.innerHTML = data.invoices.map(inv => `<div style="padding:12px; border-bottom:1px solid #e9ecef"><div><strong>${inv.invoice_number}</strong> <span class="badge badge-${inv.status}">${inv.status}</span></div><div>${inv.guest_name} • $${inv.total_amount}</div></div>`).join('');
+            } catch(e) { console.error(e); }
+        }
+
+        // ==================== BOOKINGS ====================
         async function loadAllBookings() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings`);
@@ -977,26 +1091,305 @@
             } catch(e) { showToast('Error', 'error'); }
         }
 
+        // ==================== INVOICES ====================
         async function loadInvoices() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/invoices`);
                 const data = await res.json();
                 const container = document.getElementById('invoices-list');
                 if (!data.invoices || !data.invoices.length) { container.innerHTML = '<p>No invoices</p>'; return; }
-                container.innerHTML = data.invoices.map(inv => `<div style="padding:12px; border-bottom:1px solid #e9ecef"><div><strong>${inv.invoice_number}</strong> <span class="badge badge-${inv.status}">${inv.status}</span></div><div>${inv.guest_name} • $${inv.total_amount}</div><div>Issued: ${inv.issue_date?.split('T')[0]}</div></div>`).join('');
+                container.innerHTML = data.invoices.map(inv => `<div style="padding:12px; border-bottom:1px solid #e9ecef; cursor:pointer" onclick="viewInvoice(${inv.id})"><div style="display:flex; justify-content:space-between"><strong>${inv.invoice_number}</strong><span class="badge badge-${inv.status}">${inv.status}</span></div><div>${inv.guest_name} • $${inv.total_amount}</div><div>Issued: ${inv.issue_date?.split('T')[0]}</div></div>`).join('');
             } catch(e) { console.error(e); }
         }
 
-        async function loadRecentInvoices() {
+        async function viewInvoice(id) {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/invoices?limit=5`);
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/${id}`);
                 const data = await res.json();
-                const container = document.getElementById('recent-invoices');
-                if (!data.invoices || !data.invoices.length) { container.innerHTML = '<p>No recent invoices</p>'; return; }
-                container.innerHTML = data.invoices.map(inv => `<div style="padding:12px; border-bottom:1px solid #e9ecef"><div><strong>${inv.invoice_number}</strong> <span class="badge badge-${inv.status}">${inv.status}</span></div><div>${inv.guest_name} • $${inv.total_amount}</div></div>`).join('');
+                if (data.success) {
+                    currentInvoiceData = data;
+                    displayInvoiceModal(data.invoice, data.items, data.payments);
+                } else showToast('Failed to load invoice', 'error');
+            } catch(e) { showToast('Error loading invoice', 'error'); }
+        }
+
+        function displayInvoiceModal(invoice, items, payments) {
+            const itemsHtml = items.map(item => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #e9ecef;"><span>${escapeHtml(item.description)}</span><span>${item.quantity} × $${item.unit_price} = $${item.amount}</span></div>`).join('');
+            const paymentsHtml = payments.map(p => `<div class="payment-item"><span>$${p.amount}</span><span>${p.payment_method}</span><span>${p.payment_date}</span></div>`).join('');
+            const balance = invoice.total_amount - (invoice.amount_paid || 0);
+            document.getElementById('invoice-view-content').innerHTML = `
+                <div><strong>Invoice:</strong> ${invoice.invoice_number}</div>
+                <div><strong>Customer:</strong> ${escapeHtml(invoice.guest_name)}</div>
+                <div><strong>Status:</strong> <span class="badge badge-${invoice.status}">${invoice.status}</span></div>
+                <div><strong>Date:</strong> ${invoice.issue_date?.split('T')[0]}</div>
+                <div><strong>Due Date:</strong> ${invoice.due_date?.split('T')[0]}</div>
+                <h3 style="margin:15px 0 10px;">Items</h3>
+                ${itemsHtml}
+                <div class="invoice-summary">
+                    <div class="summary-row"><span>Subtotal</span><span>$${invoice.subtotal}</span></div>
+                    <div class="summary-row"><span>Tax (${invoice.tax_rate}%)</span><span>$${invoice.tax_amount}</span></div>
+                    <div class="summary-row total"><span>Total</span><span>$${invoice.total_amount}</span></div>
+                    <div class="summary-row"><span>Paid</span><span>$${invoice.amount_paid || 0}</span></div>
+                    <div class="summary-row"><span>Balance Due</span><span>$${balance}</span></div>
+                </div>
+                ${payments.length ? `<h3 style="margin:15px 0 10px;">Payments</h3>${paymentsHtml}` : ''}
+                <input type="hidden" id="current-invoice-id" value="${invoice.id}">
+            `;
+            document.getElementById('invoice-view-modal').style.display = 'flex';
+        }
+
+        function closeInvoiceViewModal() { document.getElementById('invoice-view-modal').style.display = 'none'; currentInvoiceData = null; }
+
+        async function recordPayment() {
+            const invoiceId = document.getElementById('current-invoice-id')?.value;
+            if (!invoiceId) return;
+            const amount = prompt('Enter payment amount:');
+            if (!amount) return;
+            const method = prompt('Payment method (cash/bank_transfer/card/crypto):');
+            if (!['cash','bank_transfer','card','crypto'].includes(method)) { showToast('Invalid method', 'error'); return; }
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}/payments`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: parseFloat(amount), payment_method: method, payment_date: new Date().toISOString().split('T')[0] })
+                });
+                const data = await res.json();
+                if (data.success) { showToast('Payment recorded', 'success'); closeInvoiceViewModal(); loadInvoices(); loadDashboard(); }
+                else showToast('Failed', 'error');
+            } catch(e) { showToast('Error', 'error'); }
+        }
+
+        async function updateInvoiceStatus() {
+            const invoiceId = document.getElementById('current-invoice-id')?.value;
+            if (!invoiceId) return;
+            const status = prompt('Enter status (draft/sent/paid/partially_paid/overdue/cancelled):');
+            if (!status) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}/status`, {
+                    method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                const data = await res.json();
+                if (data.success) { showToast('Status updated', 'success'); closeInvoiceViewModal(); loadInvoices(); loadDashboard(); }
+                else showToast('Failed', 'error');
+            } catch(e) { showToast('Error', 'error'); }
+        }
+
+        async function deleteInvoice() {
+            const invoiceId = document.getElementById('current-invoice-id')?.value;
+            if (!invoiceId || !confirm('Delete this invoice?')) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) { showToast('Invoice deleted', 'success'); closeInvoiceViewModal(); loadInvoices(); loadDashboard(); }
+                else showToast('Failed', 'error');
+            } catch(e) { showToast('Error', 'error'); }
+        }
+
+        function printInvoice() { window.print(); }
+
+        // Standalone Invoice
+        function openStandaloneInvoiceModal() {
+            currentInvoiceItems = [];
+            document.getElementById('invoice-customer-name').value = '';
+            document.getElementById('invoice-customer-email').value = '';
+            document.getElementById('invoice-customer-phone').value = '';
+            document.getElementById('invoice-tax-rate').value = '0';
+            renderInvoiceItems();
+            updateInvoiceTotals();
+            document.getElementById('standalone-invoice-modal').style.display = 'flex';
+        }
+
+        function closeStandaloneInvoiceModal() { document.getElementById('standalone-invoice-modal').style.display = 'none'; }
+
+        function addInvoiceItem() {
+            const id = Date.now();
+            const html = `<div id="item-${id}" style="margin-bottom:10px; padding:10px; background:#f8f9fa; border-radius:8px;"><div class="form-row"><input type="text" class="item-desc" placeholder="Description" style="flex:2;"><input type="number" class="item-qty" placeholder="Qty" value="1" style="width:80px;"><input type="number" class="item-price" placeholder="Price" step="0.01" style="width:100px;"><button class="delete-btn" onclick="removeInvoiceItem(${id})">✗</button></div></div>`;
+            document.getElementById('invoice-items-container').insertAdjacentHTML('beforeend', html);
+            attachItemListeners(id);
+            updateInvoiceTotals();
+        }
+
+        function attachItemListeners(id) {
+            const container = document.getElementById(`item-${id}`);
+            if (container) {
+                container.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('input', updateInvoiceTotals);
+                });
+            }
+        }
+
+        function removeInvoiceItem(id) { document.getElementById(`item-${id}`).remove(); updateInvoiceTotals(); }
+
+        function renderInvoiceItems() {
+            document.getElementById('invoice-items-container').innerHTML = '';
+            currentInvoiceItems.forEach(item => {
+                const html = `<div id="item-${item.id}" style="margin-bottom:10px; padding:10px; background:#f8f9fa; border-radius:8px;"><div class="form-row"><input type="text" class="item-desc" placeholder="Description" value="${escapeHtml(item.description)}" style="flex:2;"><input type="number" class="item-qty" placeholder="Qty" value="${item.quantity}" style="width:80px;"><input type="number" class="item-price" placeholder="Price" step="0.01" value="${item.unit_price}" style="width:100px;"><button class="delete-btn" onclick="removeInvoiceItem(${item.id})">✗</button></div></div>`;
+                document.getElementById('invoice-items-container').insertAdjacentHTML('beforeend', html);
+                attachItemListeners(item.id);
+            });
+        }
+
+        function updateInvoiceTotals() {
+            let subtotal = 0;
+            document.querySelectorAll('#invoice-items-container [class*="item-"]').forEach(container => {
+                const qty = parseFloat(container.querySelector('.item-qty')?.value) || 0;
+                const price = parseFloat(container.querySelector('.item-price')?.value) || 0;
+                subtotal += qty * price;
+            });
+            const taxRate = parseFloat(document.getElementById('invoice-tax-rate').value) || 0;
+            const tax = subtotal * taxRate / 100;
+            const total = subtotal + tax;
+            document.getElementById('invoice-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('invoice-tax-amount').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('invoice-total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        async function createStandaloneInvoice() {
+            const customerName = document.getElementById('invoice-customer-name').value;
+            if (!customerName) { showToast('Customer name required', 'error'); return; }
+            const items = [];
+            document.querySelectorAll('#invoice-items-container [class*="item-"]').forEach(container => {
+                const desc = container.querySelector('.item-desc')?.value;
+                const qty = parseFloat(container.querySelector('.item-qty')?.value);
+                const price = parseFloat(container.querySelector('.item-price')?.value);
+                if (desc && qty > 0 && price > 0) items.push({ description: desc, quantity: qty, unit_price: price });
+            });
+            if (!items.length) { showToast('Add at least one item', 'error'); return; }
+            const subtotal = items.reduce((s,i) => s + (i.quantity * i.unit_price), 0);
+            const taxRate = parseFloat(document.getElementById('invoice-tax-rate').value) || 0;
+            const data = {
+                guest_name: customerName,
+                guest_email: document.getElementById('invoice-customer-email').value,
+                guest_phone: document.getElementById('invoice-customer-phone').value,
+                items: items,
+                tax_rate: taxRate,
+                subtotal: subtotal,
+                tax_amount: subtotal * taxRate / 100,
+                total_amount: subtotal + (subtotal * taxRate / 100)
+            };
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/standalone`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.success) { showToast('Invoice created', 'success'); closeStandaloneInvoiceModal(); loadInvoices(); }
+                else showToast(result.error || 'Failed', 'error');
+            } catch(e) { showToast('Error', 'error'); }
+        }
+
+        // ==================== MINIBAR ====================
+        async function loadMinibarUnits() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/units`);
+                const data = await res.json();
+                if (data.success) {
+                    const select = document.getElementById('minibar-unit-select');
+                    select.innerHTML = '<option value="">Select Unit</option>' + data.units.map(u => `<option value="${u.id}">${escapeHtml(u.unit_name)}</option>`).join('');
+                }
             } catch(e) { console.error(e); }
         }
 
+        async function loadMinibar() {
+            const unitId = document.getElementById('minibar-unit-select').value;
+            if (!unitId) { document.getElementById('minibar-list').innerHTML = '<p>Select a unit first</p>'; return; }
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/units/${unitId}/minibar`);
+                const data = await res.json();
+                if (data.success && data.items.length) {
+                    document.getElementById('minibar-list').innerHTML = `<table class="data-table"><thead><tr><th>Item</th><th>USD</th><th>MVR</th><th>Stock</th><th>Actions</th></tr></thead><tbody>${data.items.map(i => `<tr><td>${escapeHtml(i.item_name)}</td><td>$${i.selling_price_usd}</td><td>MVR ${i.selling_price_mvr}</td><td>${i.stock_quantity}</td><td><button class="delete-btn" onclick="deleteMinibarItem(${i.id})">Delete</button></td></tr>`).join('')}</tbody>`;
+                } else { document.getElementById('minibar-list').innerHTML = '<p>No minibar items</p>'; }
+            } catch(e) { showToast('Failed to load minibar', 'error'); }
+        }
+
+        function openMinibarModal() {
+            document.getElementById('minibar-item-name').value = '';
+            document.getElementById('minibar-price-usd').value = '';
+            document.getElementById('minibar-price-mvr').value = '';
+            document.getElementById('minibar-stock').value = '0';
+            document.getElementById('minibar-modal').style.display = 'flex';
+        }
+
+        function closeMinibarModal() { document.getElementById('minibar-modal').style.display = 'none'; }
+
+        async function saveMinibarItem() {
+            const unitId = document.getElementById('minibar-unit-select').value;
+            if (!unitId) { showToast('Select a unit first', 'error'); return; }
+            const data = {
+                item_name: document.getElementById('minibar-item-name').value,
+                selling_price_usd: parseFloat(document.getElementById('minibar-price-usd').value) || 0,
+                selling_price_mvr: parseFloat(document.getElementById('minibar-price-mvr').value) || 0,
+                stock_quantity: parseInt(document.getElementById('minibar-stock').value) || 0
+            };
+            if (!data.item_name) { showToast('Item name required', 'error'); return; }
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/units/${unitId}/minibar`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.success) { showToast('Item added', 'success'); closeMinibarModal(); loadMinibar(); }
+                else showToast('Failed', 'error');
+            } catch(e) { showToast('Error', 'error'); }
+        }
+
+        async function deleteMinibarItem(id) {
+            if (!confirm('Delete this item?')) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/minibar/${id}`, { method: 'DELETE' });
+                if (res.ok) { showToast('Deleted', 'success'); loadMinibar(); }
+            } catch(e) { showToast('Error', 'error'); }
+        }
+
+        // ==================== BLOCK DATES ====================
+        async function loadBlockUnits() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/units`);
+                const data = await res.json();
+                if (data.success) {
+                    const select = document.getElementById('block-unit-select');
+                    select.innerHTML = '<option value="">All Units</option>' + data.units.map(u => `<option value="${u.id}">${escapeHtml(u.unit_name)}</option>`).join('');
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function loadBlockedDates() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/bookings/availability`);
+                const data = await res.json();
+                const container = document.getElementById('blocked-dates-list');
+                if (container) container.innerHTML = (data.blocked_dates || []).length ? data.blocked_dates.map(b => `<div class="blocked-item"><div><strong>${b.start_date === b.end_date ? b.start_date : `${b.start_date} to ${b.end_date}`}</strong><div>${b.reason || ''}</div></div><button class="delete-btn" onclick="unblockDate(${b.id})">Unblock</button></div>`).join('') : '<p>No blocked dates</p>';
+            } catch(e) { console.error(e); }
+        }
+
+        async function blockSingleDate() {
+            const date = document.getElementById('block-single-date').value;
+            if (!date) { showToast('Select date', 'error'); return; }
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/block-dates`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ start_date: date, end_date: date, reason: document.getElementById('block-single-reason').value || 'Blocked' }) });
+                if (res.ok) { showToast('Date blocked', 'success'); loadBlockedDates(); document.getElementById('block-single-date').value = ''; document.getElementById('block-single-reason').value = ''; }
+                else showToast('Failed', 'error');
+            } catch(e) { showToast('Error', 'error'); }
+        }
+
+        async function blockDateRange() {
+            const start = document.getElementById('block-range-start').value, end = document.getElementById('block-range-end').value;
+            if (!start || !end) { showToast('Select dates', 'error'); return; }
+            if (new Date(start) > new Date(end)) { showToast('Start before end', 'error'); return; }
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/block-dates`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ start_date: start, end_date: end, reason: document.getElementById('block-range-reason').value || 'Blocked' }) });
+                if (res.ok) { showToast('Range blocked', 'success'); loadBlockedDates(); document.getElementById('block-range-start').value = ''; document.getElementById('block-range-end').value = ''; document.getElementById('block-range-reason').value = ''; }
+                else showToast('Failed', 'error');
+            } catch(e) { showToast('Error', 'error'); }
+        }
+
+        async function unblockDate(id) {
+            if (!confirm('Unblock this date?')) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, { method: 'DELETE' });
+                if (res.ok) { showToast('Unblocked', 'success'); loadBlockedDates(); }
+            } catch(e) { showToast('Error', 'error'); }
+        }
+
+        // ==================== SETTINGS ====================
         function saveSettings() {
             const rate = parseFloat(document.getElementById('exchange-rate').value);
             if (rate) localStorage.setItem('exchangeRate', rate);
@@ -1008,16 +1401,28 @@
         document.getElementById('booking-search')?.addEventListener('input', e => filterBookings(e.target.value));
 
         if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-            document.getElementById('login-wrapper').style.display = 'none';
-            document.getElementById('admin-container').style.display = 'block';
-            loadDashboard();
-            loadUnits();
-            loadHeroImages();
-            loadPromotionGallery();
-            loadExperiences();
-            loadAllBookings();
-            loadInvoices();
-            showSection('dashboard');
+            const loginTime = parseInt(sessionStorage.getItem('loginTime'));
+            const elapsed = (Date.now() - loginTime) / 1000;
+            if (elapsed > sessionTimeout) {
+                sessionStorage.removeItem('adminLoggedIn');
+                document.getElementById('login-wrapper').style.display = 'flex';
+                document.getElementById('admin-container').style.display = 'none';
+            } else {
+                sessionTimeout = sessionTimeout - elapsed;
+                document.getElementById('login-wrapper').style.display = 'none';
+                document.getElementById('admin-container').style.display = 'block';
+                startSessionTimer();
+                loadDashboard();
+                loadUnits();
+                loadHeroImages();
+                loadPromotionGallery();
+                loadExperiences();
+                loadAllBookings();
+                loadInvoices();
+                loadMinibarUnits();
+                loadBlockUnits();
+                showSection('dashboard');
+            }
         }
     </script>
 </body>
