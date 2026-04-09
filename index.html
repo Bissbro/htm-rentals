@@ -15,7 +15,6 @@
             box-sizing: border-box;
         }
 
-        /* Force everything to fit within screen width - NO HORIZONTAL SCROLL */
         html, body {
             overflow-x: hidden;
             width: 100%;
@@ -37,22 +36,10 @@
             box-sizing: border-box;
         }
 
-        /* Prevent any element from overflowing */
         img, picture, video, canvas, svg {
             max-width: 100%;
             height: auto;
             display: block;
-        }
-
-        .units-grid, .services-grid, .experiences-grid, .amenities-grid {
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .unit-card, .service-card, .experience-card, .amenity-item {
-            width: 100%;
-            box-sizing: border-box;
-            overflow: hidden;
         }
 
         :root {
@@ -94,7 +81,6 @@
         .btn-outline { background: transparent; border: 1.5px solid var(--ocean); color: var(--ocean); }
         .btn-outline:hover { background: var(--ocean); color: white; }
 
-        /* ========== HEADER - Centered on mobile ========== */
         header {
             position: fixed;
             top: 0;
@@ -115,7 +101,6 @@
         .nav-links a { text-decoration: none; color: var(--navy); font-weight: 500; font-size: 0.85rem; transition: var(--transition); }
         .nav-links a:hover { color: var(--turquoise); }
 
-        /* Mobile: center header */
         @media (max-width: 768px) {
             .header-container {
                 flex-direction: column;
@@ -126,7 +111,6 @@
             }
         }
 
-        /* ========== HERO SECTION ========== */
         .hero { margin-top: 80px; position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; }
         .hero-slides { position: relative; width: 100%; height: 100%; }
         .hero-slide {
@@ -138,7 +122,7 @@
             opacity: 0;
             transition: opacity 1.5s ease-in-out;
             background-size: cover;
-            background-position: top center; /* Better cropping - shows more of the image */
+            background-position: top center;
             background-repeat: no-repeat;
         }
         .hero-slide.active { opacity: 1; }
@@ -161,17 +145,13 @@
             text-transform: uppercase; 
             color: rgba(255,255,255,0.8); 
             margin-bottom: 12px;
-            display: block; /* Ensure it's visible on mobile */
+            display: block;
         }
         .hero-content h1 { color: white; font-size: 2rem; margin-bottom: 16px; }
         .hero-content p { color: rgba(255,255,255,0.9); margin-bottom: 24px; font-size: 0.95rem; }
         
-        /* Hero dots - REMOVED */
-        .hero-dots {
-            display: none;
-        }
+        .hero-dots { display: none; }
 
-        /* Tablet and up hero adjustments */
         @media (min-width: 768px) {
             .hero-content h1 { font-size: 3rem; }
             .hero-subtitle { font-size: 0.85rem; letter-spacing: 4px; }
@@ -185,7 +165,6 @@
         .about-section { background: var(--gray-light); text-align: center; }
         .about-section p { max-width: 700px; margin: 0 auto; font-size: 1rem; line-height: 1.7; color: var(--gray); }
 
-        /* UNITS GRID - 2 columns on ALL devices */
         .units-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -223,13 +202,12 @@
         .amenity-item strong { display: block; margin-bottom: 4px; font-size: 0.85rem; color: var(--navy); }
         .amenity-item p { font-size: 0.7rem; color: var(--gray); }
 
-        /* SERVICES SECTION - descriptions removed */
         .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
         .service-card { text-align: center; padding: 20px 12px; background: white; border-radius: var(--radius); box-shadow: var(--shadow); transition: var(--transition); }
         .service-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
         .service-card i { font-size: 1.8rem; color: var(--turquoise); margin-bottom: 12px; }
         .service-card h3 { font-size: 0.9rem; margin-bottom: 0; }
-        .service-card p { display: none; } /* Descriptions removed */
+        .service-card p { display: none; }
 
         .promo-gallery { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius); position: relative; }
         .promo-slides { position: relative; width: 100%; height: 100%; }
@@ -253,24 +231,41 @@
         .experience-card h3 { padding: 12px 12px 6px; font-size: 0.85rem; }
         .experience-card p { padding: 0 12px 12px; font-size: 0.7rem; color: var(--gray); }
 
-        /* CONTACT CARDS - smaller and compact */
-        .contact-options { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 32px; }
+        .contact-options { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
         .contact-card { 
             background: white; 
-            padding: 16px 20px; 
+            padding: 12px 16px; 
             border-radius: var(--radius); 
             text-align: center; 
-            min-width: 120px; 
+            min-width: 100px; 
             box-shadow: var(--shadow); 
             transition: var(--transition); 
         }
         .contact-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
-        .contact-card i { font-size: 1.2rem; color: var(--turquoise); margin-bottom: 8px; }
-        .contact-card h3 { font-size: 0.85rem; margin-bottom: 6px; }
-        .contact-card .btn { padding: 6px 12px; font-size: 0.7rem; }
+        .contact-card i { font-size: 1rem; color: var(--turquoise); margin-bottom: 6px; }
+        .contact-card h3 { font-size: 0.75rem; margin-bottom: 4px; }
+        .contact-card .btn { padding: 5px 10px; font-size: 0.65rem; }
 
         footer { background: var(--navy); color: white; padding: 40px 0 20px; border-top-left-radius: 30px; border-top-right-radius: 30px; }
         .footer-content { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 30px; }
+        
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 25px;
+                text-align: center;
+            }
+            .footer-logo {
+                justify-content: center;
+            }
+            .footer-contact p {
+                justify-content: center;
+            }
+            .social-icons {
+                justify-content: center;
+            }
+        }
+        
         .footer-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
         .footer-logo img { height: 30px; }
         .footer-logo span { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; }
@@ -307,7 +302,6 @@
         }
         .whatsapp-float:hover { transform: scale(1.05); }
 
-        /* Tablet and up adjustments */
         @media (min-width: 768px) {
             .container { padding: 0 24px; }
             section { padding: 80px 0; }
@@ -324,12 +318,11 @@
             .service-card h3 { font-size: 1rem; }
             .experiences-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
             .experience-images { height: 130px; }
-            .contact-card { padding: 20px 24px; min-width: 140px; }
-            .contact-card i { font-size: 1.5rem; }
-            .contact-card h3 { font-size: 1rem; }
+            .contact-card { padding: 16px 20px; min-width: 120px; }
+            .contact-card i { font-size: 1.2rem; }
+            .contact-card h3 { font-size: 0.85rem; }
         }
 
-        /* Desktop */
         @media (min-width: 1024px) {
             .units-grid { gap: 32px; }
             .unit-image { height: 220px; }
@@ -437,9 +430,9 @@
             <h2 style="text-align: center;">Contact Us</h2>
             <p style="text-align: center;">We respond quickly!</p>
             <div class="contact-options">
-                <div class="contact-card"><i class="fab fa-whatsapp"></i><h3>WhatsApp</h3><a href="https://wa.me/9609373113" class="btn" target="_blank" style="background: #25D366;">Message Us</a></div>
-                <div class="contact-card"><i class="fas fa-phone"></i><h3>Phone</h3><a href="tel:9373113" class="btn btn-outline">Call 9373113</a></div>
-                <div class="contact-card"><i class="fas fa-envelope"></i><h3>Email</h3><a href="mailto:htmrentalss@gmail.com" class="btn btn-outline">Email Us</a></div>
+                <div class="contact-card"><i class="fab fa-whatsapp"></i><h3>WhatsApp</h3><a href="https://wa.me/9609373113" class="btn" target="_blank" style="background: #25D366;">Message</a></div>
+                <div class="contact-card"><i class="fas fa-phone"></i><h3>Phone</h3><a href="tel:9373113" class="btn btn-outline">Call</a></div>
+                <div class="contact-card"><i class="fas fa-envelope"></i><h3>Email</h3><a href="mailto:htmrentalss@gmail.com" class="btn btn-outline">Email</a></div>
             </div>
         </div>
     </section>
@@ -452,8 +445,22 @@
                     <p>Your safe space, wherever you go.</p>
                     <div class="footer-contact" style="margin-top: 12px;"><p><i class="fas fa-phone"></i> +960 9373113</p><p><i class="fas fa-envelope"></i> htmrentalss@gmail.com</p></div>
                 </div>
-                <div class="footer-links"><h4>Quick Links</h4><ul><li><a href="#units">Units</a></li><li><a href="#experiences">Experiences</a></li><li><a href="#contact">Contact</a></li></ul></div>
-                <div class="footer-links"><h4>Follow Us</h4><div class="social-icons"><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-tiktok"></i></a></div></div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#units">Units</a></li>
+                        <li><a href="#experiences">Experiences</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="https://facebook.com/htmrentalss" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://instagram.com/htmrentals" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://tiktok.com/@htmrentals" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
             </div>
             <div class="copyright"><p>&copy; 2026 HTM Rentals. All rights reserved.</p></div>
         </div>
@@ -476,15 +483,13 @@
 
         function displayHeroSlideshow(images) {
             const container = document.getElementById('hero-slides');
-            const dotsContainer = document.getElementById('hero-dots');
-            container.innerHTML = ''; dotsContainer.innerHTML = '';
+            container.innerHTML = '';
             images.forEach((img, idx) => {
                 const slide = document.createElement('div');
                 slide.className = `hero-slide ${idx === 0 ? 'active' : ''}`;
                 slide.style.backgroundImage = `url(${img.image_url})`;
                 slide.innerHTML = `<div class="hero-overlay"><div class="hero-content"><div class="hero-subtitle">${img.title || 'Your Safe Space'}</div><h1>${img.subtitle || 'Welcome to HTM Rentals'}</h1>${img.button_text ? `<a href="${img.button_link || '#units'}" class="btn">${img.button_text}</a>` : '<a href="#units" class="btn">Explore</a>'}</div></div>`;
                 container.appendChild(slide);
-                // Dots are disabled (CSS display: none)
             });
             let currentIndex = 0, interval;
             function goToHeroSlide(index) {
