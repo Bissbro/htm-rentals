@@ -12,7 +12,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #F8F9FA; padding: 20px; }
         .container { max-width: 1280px; margin: 0 auto; }
-        
+
         :root {
             --navy: #0A2540;
             --ocean: #006994;
@@ -21,7 +21,7 @@
             --shadow: 0 8px 30px rgba(0,0,0,0.05);
             --shadow-hover: 0 20px 40px rgba(0,0,0,0.1);
         }
-        
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -40,9 +40,9 @@
         .logo-text { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; }
         .logo-text span:first-child { color: var(--navy); }
         .logo-text span:last-child { color: var(--turquoise); }
-        .back-link { color: var(--ocean); text-decoration: none; font-weight: 500; transition: var(--transition); }
+        .back-link { color: var(--ocean); text-decoration: none; font-weight: 500; transition: all 0.3s ease; }
         .back-link:hover { color: var(--turquoise); }
-        
+
         .card {
             background: white;
             border-radius: var(--radius);
@@ -84,7 +84,7 @@
         }
         .features span { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #495057; }
         .features i { color: var(--turquoise); }
-        
+
         .gallery-container { margin-bottom: 24px; }
         .gallery-main {
             width: 100%;
@@ -118,7 +118,7 @@
             transition: all 0.3s;
         }
         .gallery-dot.active { width: 24px; border-radius: 4px; background: var(--ocean); }
-        
+
         .external-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -137,7 +137,7 @@
             justify-content: center;
             gap: 8px;
             font-size: 14px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             text-align: center;
         }
         .ext-btn:hover { transform: translateY(-2px); opacity: 0.9; }
@@ -145,7 +145,7 @@
         .ext-btn.agoda { background: #1E5D86; color: white; }
         .ext-btn.trip { background: #2680EB; color: white; }
         .ext-btn.booking { background: #003580; color: white; }
-        
+
         .local-btn {
             width: 100%;
             padding: 14px;
@@ -157,10 +157,10 @@
             font-size: 16px;
             cursor: pointer;
             margin-bottom: 20px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
         .local-btn:hover { background: #36a099; transform: translateY(-2px); }
-        
+
         .booking-form-container { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #E9ECEF; }
         .booking-form-container.show { display: block; }
         .form-group { margin-bottom: 20px; }
@@ -193,13 +193,13 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 16px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
         .submit-btn:hover { background: var(--navy); transform: translateY(-2px); }
         .message { padding: 14px; border-radius: 12px; margin-bottom: 20px; display: none; }
         .message.success { background: #D4EDDA; color: #155724; display: block; }
         .message.error { background: #F8D7DA; color: #721C24; display: block; }
-        
+
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .calendar-nav button {
             background: #F8F9FA;
@@ -240,9 +240,9 @@
             display: inline-block;
             margin-right: 6px;
         }
-        
+
         .loading { text-align: center; padding: 60px; color: #6C757D; }
-        
+
         @media (max-width: 768px) {
             body { padding: 16px; }
             .card { padding: 20px; }
@@ -281,7 +281,7 @@
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        
+
         let galleryImages = [];
         let currentImageIndex = 0;
         let slideInterval = null;
@@ -345,6 +345,7 @@
         function startAutoSlide() { if (slideInterval) clearInterval(slideInterval); if (galleryImages.length > 1) slideInterval = setInterval(nextImage, 5000); }
         function resetAutoSlide() { if (slideInterval) clearInterval(slideInterval); if (galleryImages.length > 1) slideInterval = setInterval(nextImage, 5000); }
 
+        // FIXED: Changed <= to < so check-out date is NOT marked as booked
         async function fetchAvailability() {
             if (!unit) return;
             try {
@@ -355,7 +356,10 @@
                     data.bookings.forEach(booking => {
                         const start = new Date(booking.check_in_date);
                         const end = new Date(booking.check_out_date);
-                        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) bookedDates.push(d.toISOString().split('T')[0]);
+                        // FIX: Using < instead of <= to exclude check-out date
+                        for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+                            bookedDates.push(d.toISOString().split('T')[0]);
+                        }
                     });
                     if (unit.blocked_dates) unit.blocked_dates.forEach(date => bookedDates.push(date));
                 }
@@ -473,7 +477,7 @@
             if (unit.agoda_url) externalButtonsHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">Agoda</a>`;
             if (unit.trip_url) externalButtonsHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">Trip.com</a>`;
             if (unit.booking_url) externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">Booking.com</a>`;
-            
+
             document.getElementById('content').innerHTML = `
                 <div class="card">
                     <div class="gallery-container"><div class="gallery-main" id="gallery-main"><img id="gallery-main-img" src="${galleryImages[0] || 'https://via.placeholder.com/800x600?text=HTM+Rentals'}" alt="${unit.unit_name}"></div>${galleryImages.length > 1 ? `<div class="gallery-dots" id="gallery-dots">${galleryDotsHtml}</div>` : ''}</div>
