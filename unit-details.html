@@ -345,7 +345,7 @@
         function startAutoSlide() { if (slideInterval) clearInterval(slideInterval); if (galleryImages.length > 1) slideInterval = setInterval(nextImage, 5000); }
         function resetAutoSlide() { if (slideInterval) clearInterval(slideInterval); if (galleryImages.length > 1) slideInterval = setInterval(nextImage, 5000); }
 
-        // FIXED: Changed <= to < so check-out date is NOT marked as booked
+        // Fetch only CONFIRMED bookings (pending does NOT block dates)
         async function fetchAvailability() {
             if (!unit) return;
             try {
@@ -353,10 +353,11 @@
                 const data = await res.json();
                 if (data.success) {
                     bookedDates = [];
+                    // Only confirmed bookings block dates
                     data.bookings.forEach(booking => {
                         const start = new Date(booking.check_in_date);
                         const end = new Date(booking.check_out_date);
-                        // FIX: Using < instead of <= to exclude check-out date
+                        // Exclude check-out date
                         for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
                             bookedDates.push(d.toISOString().split('T')[0]);
                         }
@@ -391,35 +392,72 @@
             if (monthYear) monthYear.textContent = `${monthNames[month]} ${year}`;
         }
 
+        // Updated selectDate function - allows resetting check-in by clicking earlier date
         function selectDate(dateStr, isBooked) {
-            if (isBooked) { showMessage('This date is not available', 'error'); return; }
+            if (isBooked) {
+                showMessage('This date is not available', 'error');
+                return;
+            }
+            
+            // If no check-in selected, or both are selected (start over)
             if (!selectedCheckIn || (selectedCheckIn && selectedCheckOut)) {
                 selectedCheckIn = dateStr;
                 selectedCheckOut = null;
                 document.getElementById('check-in').value = formatDate(dateStr);
                 document.getElementById('check-out').value = '';
                 document.getElementById('price-breakdown').style.display = 'none';
-            } else if (selectedCheckIn && !selectedCheckOut) {
+            } 
+            else if (selectedCheckIn && !selectedCheckOut) {
                 const checkInDate = new Date(selectedCheckIn);
-                const checkOutDate = new Date(dateStr);
-                if (checkOutDate <= checkInDate) { showMessage('Check-out must be after check-in', 'error'); return; }
+                const clickedDate = new Date(dateStr);
+                
+                // If clicked date is BEFORE check-in date, reset check-in to this new date
+                if (clickedDate < checkInDate) {
+                    selectedCheckIn = dateStr;
+                    selectedCheckOut = null;
+                    document.getElementById('check-in').value = formatDate(dateStr);
+                    document.getElementById('check-out').value = '';
+                    document.getElementById('price-breakdown').style.display = 'none';
+                    generateCalendar(currentMonth, currentYear);
+                    return;
+                }
+                
+                // Allow same-day checkout (1 night stay)
+                if (clickedDate < checkInDate) {
+                    showMessage('Check-out must be on or after check-in', 'error');
+                    return;
+                }
+                
+                // Check if any dates in between are booked
                 let hasBooked = false;
                 let cur = new Date(checkInDate);
                 cur.setDate(cur.getDate() + 1);
-                while (cur < checkOutDate) {
-                    if (bookedDates.includes(cur.toISOString().split('T')[0])) { hasBooked = true; break; }
+                while (cur < clickedDate) {
+                    if (bookedDates.includes(cur.toISOString().split('T')[0])) {
+                        hasBooked = true;
+                        break;
+                    }
                     cur.setDate(cur.getDate() + 1);
                 }
-                if (hasBooked) { showMessage('Some dates in between are booked', 'error'); return; }
+                
+                if (hasBooked) {
+                    showMessage('Some dates in between are booked', 'error');
+                    return;
+                }
+                
                 selectedCheckOut = dateStr;
                 document.getElementById('check-out').value = formatDate(dateStr);
-                const nights = Math.ceil((checkOutDate - checkInDate) / (1000*60*60*24));
+                
+                // Calculate nights (minimum 1)
+                const nights = Math.max(1, Math.ceil((clickedDate - checkInDate) / (1000 * 60 * 60 * 24)));
                 const total = nights * parseFloat(unit.rate_mvr);
+                
                 document.getElementById('night-count').textContent = nights;
                 document.getElementById('subtotal').textContent = `MVR ${total}`;
                 document.getElementById('total').textContent = `MVR ${total}`;
                 document.getElementById('price-breakdown').style.display = 'block';
             }
+            
             generateCalendar(currentMonth, currentYear);
         }
 
@@ -427,44 +465,98 @@
         function showMessage(msg, type) { const el = document.getElementById('form-message'); if (!el) return; el.textContent = msg; el.className = `message ${type}`; setTimeout(() => el.style.display = 'none', 5000); }
         function toggleBookingForm() { const form = document.getElementById('booking-form-container'); form.classList.toggle('show'); if (form.classList.contains('show')) document.getElementById('booking-form').scrollIntoView({ behavior: 'smooth' }); }
 
+        // UPDATED: Submit booking directly to database, then open WhatsApp as background notification
         async function submitBooking(e) {
             e.preventDefault();
-            if (!selectedCheckIn || !selectedCheckOut) { showMessage('Please select check-in and check-out dates', 'error'); return; }
+            
+            if (!selectedCheckIn || !selectedCheckOut) {
+                showMessage('Please select check-in and check-out dates', 'error');
+                return;
+            }
+            
             const guests = document.getElementById('guests').value;
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
-            if (!guests || !name || !phone) { showMessage('Please fill all required fields', 'error'); return; }
+            
+            if (!guests || !name || !phone) {
+                showMessage('Please fill all required fields', 'error');
+                return;
+            }
+            
             const submitBtn = e.target.querySelector('.submit-btn');
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             submitBtn.disabled = true;
+            
             try {
+                // Calculate nights (minimum 1)
+                const checkInDate = new Date(selectedCheckIn);
+                const checkOutDate = new Date(selectedCheckOut);
+                const nights = Math.max(1, Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)));
+                const total = nights * parseFloat(unit.rate_mvr);
+                
+                // Save booking to database (status = 'pending')
                 const res = await fetch(`${API_BASE_URL}/bookings/create`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        unit_id: unit.id, guest_name: name, guest_email: '', guest_phone: phone,
-                        check_in_date: selectedCheckIn, check_out_date: selectedCheckOut,
-                        number_of_guests: parseInt(guests), special_requests: '', currency: 'MVR'
+                        unit_id: unit.id,
+                        guest_name: name,
+                        guest_email: '',
+                        guest_phone: phone,
+                        check_in_date: selectedCheckIn,
+                        check_out_date: selectedCheckOut,
+                        number_of_guests: parseInt(guests),
+                        special_requests: '',
+                        currency: 'MVR'
                     })
                 });
+                
                 const data = await res.json();
+                
                 if (data.success) {
-                    const nights = Math.ceil((new Date(selectedCheckOut) - new Date(selectedCheckIn)) / (1000*60*60*24));
-                    const total = nights * parseFloat(unit.rate_mvr);
-                    const msg = `*Local Booking Request - HTM Rentals*%0A%0A` +
-                        `*Unit:* ${unit.unit_name}%0A*Guest:* ${name}%0A*Phone:* ${phone}%0A` +
-                        `*Check-in:* ${formatDate(selectedCheckIn)}%0A*Check-out:* ${formatDate(selectedCheckOut)}%0A` +
-                        `*Nights:* ${nights}%0A*Guests:* ${guests}%0A*Total:* MVR ${total}%0A%0APlease confirm this booking.`;
-                    window.open(`https://wa.me/9609373113?text=${msg}`, '_blank');
+                    // Show success message
                     showMessage('Booking request sent! We will contact you shortly.', 'success');
-                    selectedCheckIn = null; selectedCheckOut = null;
-                    document.getElementById('check-in').value = ''; document.getElementById('check-out').value = '';
+                    
+                    // Send WhatsApp notification to admin (background - user doesn't need to click)
+                    const msg = `*New Local Booking Request - HTM Rentals*%0A%0A` +
+                        `*Booking ID:* ${data.booking_id}%0A` +
+                        `*Unit:* ${unit.unit_name}%0A` +
+                        `*Guest:* ${name}%0A` +
+                        `*Phone:* ${phone}%0A` +
+                        `*Check-in:* ${formatDate(selectedCheckIn)}%0A` +
+                        `*Check-out:* ${formatDate(selectedCheckOut)}%0A` +
+                        `*Nights:* ${nights}%0A` +
+                        `*Guests:* ${guests}%0A` +
+                        `*Total:* MVR ${total}%0A%0A` +
+                        `Please confirm this booking in the admin panel.`;
+                    
+                    // Open WhatsApp in background (new tab)
+                    window.open(`https://wa.me/9609373113?text=${msg}`, '_blank');
+                    
+                    // Clear the form
+                    selectedCheckIn = null;
+                    selectedCheckOut = null;
+                    document.getElementById('check-in').value = '';
+                    document.getElementById('check-out').value = '';
                     document.getElementById('price-breakdown').style.display = 'none';
-                    document.getElementById('guests').value = ''; document.getElementById('name').value = ''; document.getElementById('phone').value = '';
+                    document.getElementById('guests').value = '';
+                    document.getElementById('name').value = '';
+                    document.getElementById('phone').value = '';
+                    
+                    // Refresh calendar to show newly booked dates (but they won't be blocked until confirmed)
                     generateCalendar(currentMonth, currentYear);
-                } else { showMessage(data.error || 'Booking failed', 'error'); }
-            } catch(e) { showMessage('Network error. Please try again.', 'error'); }
-            finally { submitBtn.innerHTML = originalText; submitBtn.disabled = false; }
+                    
+                } else {
+                    showMessage(data.error || 'Booking failed', 'error');
+                }
+            } catch(error) {
+                console.error('Booking error:', error);
+                showMessage('Network error. Please try again.', 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
         }
 
         function renderUnitDetails() {
