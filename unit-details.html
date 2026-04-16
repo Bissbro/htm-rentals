@@ -172,6 +172,8 @@
             border-radius: 12px;
             font-size: 14px;
             transition: all 0.3s;
+            cursor: pointer;
+            background: white;
         }
         .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--turquoise); }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -200,7 +202,20 @@
         .message.success { background: #D4EDDA; color: #155724; display: block; }
         .message.error { background: #F8D7DA; color: #721C24; display: block; }
 
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        /* Time hint styles */
+        .time-hint {
+            font-size: 0.7rem;
+            color: #6C757D;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
         .calendar-nav button {
             background: #F8F9FA;
             border: none;
@@ -241,6 +256,54 @@
             margin-right: 6px;
         }
 
+        /* Date picker modal */
+        .date-picker-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .date-picker-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .date-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .date-picker-title {
+            font-weight: 600;
+            color: var(--navy);
+        }
+        .date-picker-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .date-picker-calendar {
+            width: 100%;
+        }
+        .date-picker-calendar .calendar-grid {
+            gap: 4px;
+        }
+        .date-picker-calendar .calendar-day {
+            padding: 8px 3px;
+            font-size: 13px;
+        }
+
         .loading { text-align: center; padding: 60px; color: #6C757D; }
 
         @media (max-width: 768px) {
@@ -268,6 +331,17 @@
         <div id="content"><div class="loading">Loading unit details...</div></div>
     </div>
 
+    <!-- Date Picker Modal -->
+    <div id="date-picker-modal" class="date-picker-modal">
+        <div class="date-picker-content">
+            <div class="date-picker-header">
+                <span class="date-picker-title" id="date-picker-title">Select Date</span>
+                <button class="date-picker-close" onclick="closeDatePicker()">&times;</button>
+            </div>
+            <div id="date-picker-calendar" class="date-picker-calendar"></div>
+        </div>
+    </div>
+
     <script>
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         const urlParams = new URLSearchParams(window.location.search);
@@ -286,6 +360,8 @@
         let currentImageIndex = 0;
         let slideInterval = null;
         let touchStartX = 0;
+        
+        let activePicker = null; // 'checkin' or 'checkout'
 
         async function loadUnit() {
             if (!unitId) { document.getElementById('content').innerHTML = '<div class="card"><p>No unit selected. <a href="index.html">Go back</a></p></div>'; return; }
@@ -345,7 +421,6 @@
         function startAutoSlide() { if (slideInterval) clearInterval(slideInterval); if (galleryImages.length > 1) slideInterval = setInterval(nextImage, 5000); }
         function resetAutoSlide() { if (slideInterval) clearInterval(slideInterval); if (galleryImages.length > 1) slideInterval = setInterval(nextImage, 5000); }
 
-        // Fetch only CONFIRMED bookings (pending does NOT block dates)
         async function fetchAvailability() {
             if (!unit) return;
             try {
@@ -353,11 +428,9 @@
                 const data = await res.json();
                 if (data.success) {
                     bookedDates = [];
-                    // Only confirmed bookings block dates
                     data.bookings.forEach(booking => {
                         const start = new Date(booking.check_in_date);
                         const end = new Date(booking.check_out_date);
-                        // Exclude check-out date
                         for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
                             bookedDates.push(d.toISOString().split('T')[0]);
                         }
@@ -367,7 +440,7 @@
             } catch(e) { console.error(e); }
         }
 
-        function generateCalendar(month, year) {
+        function generateCalendar(month, year, targetContainer = 'calendar-grid') {
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             let html = '';
@@ -384,56 +457,53 @@
                 if (isBooked) classes += ' booked';
                 if (isToday) classes += ' today';
                 if (isSelected) classes += ' selected';
-                html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isBooked})">${d}</div>`;
+                html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDateFromPicker('${dateStr}', ${isBooked})">${d}</div>`;
             }
-            const grid = document.getElementById('calendar-grid');
+            const grid = document.getElementById(targetContainer);
             if (grid) grid.innerHTML = html;
-            const monthYear = document.getElementById('calendar-month-year');
-            if (monthYear) monthYear.textContent = `${monthNames[month]} ${year}`;
+            if (targetContainer === 'calendar-grid') {
+                const monthYear = document.getElementById('calendar-month-year');
+                if (monthYear) monthYear.textContent = `${monthNames[month]} ${year}`;
+            }
         }
 
-        // Updated selectDate function - allows resetting check-in by clicking earlier date
-        function selectDate(dateStr, isBooked) {
-            if (isBooked) {
+        function selectDateFromPicker(dateStr, isBooked) {
+            if (isBooked && activePicker !== 'checkout') {
                 showMessage('This date is not available', 'error');
                 return;
             }
             
-            // If no check-in selected, or both are selected (start over)
-            if (!selectedCheckIn || (selectedCheckIn && selectedCheckOut)) {
+            if (activePicker === 'checkin') {
                 selectedCheckIn = dateStr;
-                selectedCheckOut = null;
                 document.getElementById('check-in').value = formatDate(dateStr);
                 document.getElementById('check-out').value = '';
+                selectedCheckOut = null;
                 document.getElementById('price-breakdown').style.display = 'none';
+                closeDatePicker();
+                generateCalendar(currentMonth, currentYear);
             } 
-            else if (selectedCheckIn && !selectedCheckOut) {
+            else if (activePicker === 'checkout') {
+                if (!selectedCheckIn) {
+                    showMessage('Please select check-in date first', 'error');
+                    closeDatePicker();
+                    return;
+                }
+                
                 const checkInDate = new Date(selectedCheckIn);
-                const clickedDate = new Date(dateStr);
+                const checkOutDate = new Date(dateStr);
                 
-                // If clicked date is BEFORE check-in date, reset check-in to this new date
-                if (clickedDate < checkInDate) {
-                    selectedCheckIn = dateStr;
-                    selectedCheckOut = null;
-                    document.getElementById('check-in').value = formatDate(dateStr);
-                    document.getElementById('check-out').value = '';
-                    document.getElementById('price-breakdown').style.display = 'none';
-                    generateCalendar(currentMonth, currentYear);
-                    return;
-                }
-                
-                // Allow same-day checkout (1 night stay)
-                if (clickedDate < checkInDate) {
+                if (checkOutDate < checkInDate) {
                     showMessage('Check-out must be on or after check-in', 'error');
+                    closeDatePicker();
                     return;
                 }
                 
-                // Check if any dates in between are booked
+                // Check if all nights between check-in and check-out are available
                 let hasBooked = false;
                 let cur = new Date(checkInDate);
-                cur.setDate(cur.getDate() + 1);
-                while (cur < clickedDate) {
-                    if (bookedDates.includes(cur.toISOString().split('T')[0])) {
+                while (cur < checkOutDate) {
+                    const dateToCheck = cur.toISOString().split('T')[0];
+                    if (bookedDates.includes(dateToCheck)) {
                         hasBooked = true;
                         break;
                     }
@@ -441,31 +511,44 @@
                 }
                 
                 if (hasBooked) {
-                    showMessage('Some dates in between are booked', 'error');
+                    showMessage('One or more nights between your selected dates are already booked', 'error');
+                    closeDatePicker();
                     return;
                 }
                 
                 selectedCheckOut = dateStr;
                 document.getElementById('check-out').value = formatDate(dateStr);
                 
-                // Calculate nights (minimum 1)
-                const nights = Math.max(1, Math.ceil((clickedDate - checkInDate) / (1000 * 60 * 60 * 24)));
+                const nights = Math.max(1, Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)));
                 const total = nights * parseFloat(unit.rate_mvr);
                 
                 document.getElementById('night-count').textContent = nights;
                 document.getElementById('subtotal').textContent = `MVR ${total}`;
                 document.getElementById('total').textContent = `MVR ${total}`;
                 document.getElementById('price-breakdown').style.display = 'block';
+                
+                closeDatePicker();
+                generateCalendar(currentMonth, currentYear);
             }
-            
-            generateCalendar(currentMonth, currentYear);
+        }
+
+        function openDatePicker(type) {
+            activePicker = type;
+            const title = type === 'checkin' ? 'Select Check-in Date' : 'Select Check-out Date';
+            document.getElementById('date-picker-title').textContent = title;
+            generateCalendar(currentMonth, currentYear, 'date-picker-calendar');
+            document.getElementById('date-picker-modal').style.display = 'flex';
+        }
+
+        function closeDatePicker() {
+            document.getElementById('date-picker-modal').style.display = 'none';
+            activePicker = null;
         }
 
         function formatDate(dateStr) { const d = new Date(dateStr); return d.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }); }
         function showMessage(msg, type) { const el = document.getElementById('form-message'); if (!el) return; el.textContent = msg; el.className = `message ${type}`; setTimeout(() => el.style.display = 'none', 5000); }
         function toggleBookingForm() { const form = document.getElementById('booking-form-container'); form.classList.toggle('show'); if (form.classList.contains('show')) document.getElementById('booking-form').scrollIntoView({ behavior: 'smooth' }); }
 
-        // UPDATED: Submit booking directly to database, then open WhatsApp as background notification
         async function submitBooking(e) {
             e.preventDefault();
             
@@ -489,13 +572,11 @@
             submitBtn.disabled = true;
             
             try {
-                // Calculate nights (minimum 1)
                 const checkInDate = new Date(selectedCheckIn);
                 const checkOutDate = new Date(selectedCheckOut);
                 const nights = Math.max(1, Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)));
                 const total = nights * parseFloat(unit.rate_mvr);
                 
-                // Save booking to database (status = 'pending')
                 const res = await fetch(`${API_BASE_URL}/bookings/create`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -515,26 +596,22 @@
                 const data = await res.json();
                 
                 if (data.success) {
-                    // Show success message
                     showMessage('Booking request sent! We will contact you shortly.', 'success');
                     
-                    // Send WhatsApp notification to admin (background - user doesn't need to click)
                     const msg = `*New Local Booking Request - HTM Rentals*%0A%0A` +
                         `*Booking ID:* ${data.booking_id}%0A` +
                         `*Unit:* ${unit.unit_name}%0A` +
                         `*Guest:* ${name}%0A` +
                         `*Phone:* ${phone}%0A` +
-                        `*Check-in:* ${formatDate(selectedCheckIn)}%0A` +
-                        `*Check-out:* ${formatDate(selectedCheckOut)}%0A` +
+                        `*Check-in:* ${formatDate(selectedCheckIn)} (14:00)%0A` +
+                        `*Check-out:* ${formatDate(selectedCheckOut)} (12:00)%0A` +
                         `*Nights:* ${nights}%0A` +
                         `*Guests:* ${guests}%0A` +
                         `*Total:* MVR ${total}%0A%0A` +
                         `Please confirm this booking in the admin panel.`;
                     
-                    // Open WhatsApp in background (new tab)
                     window.open(`https://wa.me/9609373113?text=${msg}`, '_blank');
                     
-                    // Clear the form
                     selectedCheckIn = null;
                     selectedCheckOut = null;
                     document.getElementById('check-in').value = '';
@@ -544,7 +621,6 @@
                     document.getElementById('name').value = '';
                     document.getElementById('phone').value = '';
                     
-                    // Refresh calendar to show newly booked dates (but they won't be blocked until confirmed)
                     generateCalendar(currentMonth, currentYear);
                     
                 } else {
@@ -594,7 +670,16 @@
                         <div id="calendar-grid" class="calendar-grid"></div>
                         <div class="legend"><div><span class="legend-color" style="background:white; border:2px solid var(--turquoise);"></span> Available</div><div><span class="legend-color" style="background:#FFEBEE;"></span> Booked</div><div><span class="legend-color" style="background:var(--ocean);"></span> Selected</div></div>
                         <form id="booking-form" style="margin-top: 24px;">
-                            <div class="form-row"><div class="form-group"><label>Check-in</label><input type="text" id="check-in" readonly placeholder="Select date" required></div><div class="form-group"><label>Check-out</label><input type="text" id="check-out" readonly placeholder="Select date" required></div></div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Check-in <span style="color:var(--ocean);">(14:00 / 2 PM)</span></label>
+                                    <input type="text" id="check-in" readonly placeholder="Select date" onclick="openDatePicker('checkin')" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Check-out <span style="color:var(--ocean);">(12:00 / 12 PM)</span></label>
+                                    <input type="text" id="check-out" readonly placeholder="Select date" onclick="openDatePicker('checkout')" required>
+                                </div>
+                            </div>
                             <div class="form-group"><label>Number of Guests</label><select id="guests" required><option value="">Select</option><option value="1">1 Guest</option><option value="2">2 Guests</option><option value="3">3 Guests</option><option value="4">4 Guests</option></select></div>
                             <div class="form-group"><label>Full Name</label><input type="text" id="name" placeholder="Full name" required></div>
                             <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" placeholder="Phone number" required></div>
@@ -611,6 +696,15 @@
         }
 
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('date-picker-modal');
+            if (event.target === modal) {
+                closeDatePicker();
+            }
+        }
+        
         loadUnit();
     </script>
 </body>
