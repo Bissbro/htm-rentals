@@ -21,7 +21,6 @@
             color: #222222;
         }
 
-        /* YOUR COLOR PALETTE */
         :root {
             --navy: #0A2540;
             --ocean: #006994;
@@ -42,7 +41,6 @@
             padding: 0 24px;
         }
 
-        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
@@ -90,7 +88,6 @@
             color: var(--turquoise);
         }
 
-        /* TWO COLUMN LAYOUT (Airbnb style) */
         .unit-layout {
             display: grid;
             grid-template-columns: 1fr 380px;
@@ -109,74 +106,107 @@
             }
         }
 
-        /* GALLERY - Modern grid layout */
+        /* GALLERY - Fullscreen slider style */
         .gallery-container {
+            position: relative;
             margin-bottom: 24px;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 8px;
             border-radius: var(--radius-lg);
             overflow: hidden;
         }
 
-        .gallery-main-img {
+        .gallery-slider {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+        }
+
+        .gallery-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-slide.active {
+            opacity: 1;
+        }
+
+        .gallery-slide img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            cursor: pointer;
-            aspect-ratio: 1 / 1;
         }
 
-        .gallery-side {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .gallery-side-img {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        .gallery-more {
-            position: relative;
-        }
-
-        .gallery-more-overlay {
+        .gallery-nav {
             position: absolute;
-            bottom: 12px;
-            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--navy);
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .gallery-nav:hover {
+            background: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .gallery-nav.prev {
+            left: 16px;
+        }
+
+        .gallery-nav.next {
+            right: 16px;
+        }
+
+        .gallery-counter {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
             background: rgba(0,0,0,0.7);
             color: white;
             padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
+            border-radius: 20px;
+            font-size: 13px;
             font-weight: 500;
+            z-index: 10;
         }
 
-        /* For mobile - simple slider */
-        @media (max-width: 640px) {
-            .gallery-grid {
-                display: flex;
-                overflow-x: auto;
-                scroll-snap-type: x mandatory;
-                gap: 0;
-            }
-            .gallery-grid > * {
-                min-width: 100%;
-                scroll-snap-align: start;
-            }
-            .gallery-side {
-                display: none;
-            }
+        .gallery-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
         }
 
-        /* Unit Title Section */
+        .gallery-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gray-border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .gallery-dot.active {
+            width: 20px;
+            border-radius: 4px;
+            background: var(--ocean);
+        }
+
         .unit-title h1 {
             font-family: 'Playfair Display', serif;
             font-size: 1.75rem;
@@ -185,56 +215,6 @@
             margin-bottom: 8px;
         }
 
-        .unit-meta {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--gray-border);
-            margin-bottom: 24px;
-        }
-
-        .rating {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .rating i {
-            color: var(--turquoise);
-            font-size: 14px;
-        }
-
-        .rating span {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .reviews {
-            color: var(--gray-text);
-            text-decoration: underline;
-        }
-
-        .host-badge {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .host-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--turquoise);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-        }
-
-        /* Features row */
         .features-row {
             display: flex;
             gap: 24px;
@@ -266,14 +246,12 @@
             font-weight: 600;
         }
 
-        /* Description */
         .description {
             margin-bottom: 32px;
             line-height: 1.6;
             color: #444;
         }
 
-        /* Amenities Grid */
         .amenities-section {
             margin-bottom: 32px;
         }
@@ -308,7 +286,6 @@
             font-size: 14px;
         }
 
-        /* External Booking Buttons */
         .external-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -345,7 +322,6 @@
         .ext-btn.trip { background: #2680EB; color: white; }
         .ext-btn.booking { background: #003580; color: white; }
 
-        /* BOOKING CARD (Sticky) */
         .booking-card {
             background: white;
             border-radius: var(--radius-lg);
@@ -374,7 +350,6 @@
             color: var(--gray-text);
         }
 
-        /* Calendar (always visible) */
         .calendar-section {
             margin: 20px 0;
         }
@@ -467,7 +442,6 @@
             margin-right: 6px;
         }
 
-        /* Date Inputs */
         .date-inputs {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -506,7 +480,6 @@
             outline: none;
         }
 
-        /* Form */
         .form-group {
             margin-bottom: 16px;
         }
@@ -575,25 +548,6 @@
             transform: translateY(-2px);
         }
 
-        .local-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--ocean);
-            color: white;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 16px 0;
-            transition: all 0.3s ease;
-        }
-
-        .local-btn:hover {
-            background: var(--navy);
-            transform: translateY(-2px);
-        }
-
         .message {
             padding: 14px;
             border-radius: var(--radius-md);
@@ -645,6 +599,11 @@
                 flex: auto;
                 min-width: calc(50% - 6px);
             }
+            .gallery-nav {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -676,6 +635,7 @@
 
         let galleryImages = [];
         let currentImageIndex = 0;
+        let slideInterval = null;
 
         async function loadUnit() {
             if (!unitId) {
@@ -695,7 +655,6 @@
                     }
                     unit.blocked_dates = data.blocked_dates || [];
                     
-                    // Build gallery array
                     galleryImages = [];
                     if (unit.featured_image) galleryImages.push(unit.featured_image);
                     if (unit.gallery_images && unit.gallery_images.length) galleryImages.push(...unit.gallery_images);
@@ -703,11 +662,87 @@
                     await fetchAvailability();
                     renderUnitDetails();
                     generateCalendar(currentMonth, currentYear);
+                    setupGallery();
                 } else {
                     document.getElementById('content').innerHTML = '<div class="card"><p>Unit not found. <a href="index.html">Go back</a></p></div>';
                 }
             } catch(e) {
                 document.getElementById('content').innerHTML = '<div class="card"><p>Failed to load unit. <a href="index.html">Go back</a></p></div>';
+            }
+        }
+
+        function setupGallery() {
+            if (galleryImages.length <= 1) return;
+            
+            // Auto-slide
+            startAutoSlide();
+            
+            // Touch/swipe for mobile
+            const slider = document.getElementById('gallery-slider');
+            if (slider) {
+                let touchStartX = 0;
+                slider.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+                slider.addEventListener('touchend', (e) => {
+                    const endX = e.changedTouches[0].clientX;
+                    const diff = touchStartX - endX;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) nextImage();
+                        else prevImage();
+                        resetAutoSlide();
+                    }
+                });
+            }
+        }
+
+        function updateGalleryImage() {
+            const slides = document.querySelectorAll('.gallery-slide');
+            slides.forEach((slide, idx) => {
+                slide.classList.toggle('active', idx === currentImageIndex);
+            });
+            
+            const dots = document.querySelectorAll('.gallery-dot');
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === currentImageIndex);
+            });
+            
+            const counter = document.querySelector('.gallery-counter');
+            if (counter) {
+                counter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+            }
+            
+            resetAutoSlide();
+        }
+
+        function nextImage() {
+            if (galleryImages.length) {
+                currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+                updateGalleryImage();
+            }
+        }
+
+        function prevImage() {
+            if (galleryImages.length) {
+                currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+                updateGalleryImage();
+            }
+        }
+
+        function goToImage(index) {
+            currentImageIndex = index;
+            updateGalleryImage();
+        }
+
+        function startAutoSlide() {
+            if (slideInterval) clearInterval(slideInterval);
+            if (galleryImages.length > 1) {
+                slideInterval = setInterval(nextImage, 5000);
+            }
+        }
+
+        function resetAutoSlide() {
+            if (slideInterval) clearInterval(slideInterval);
+            if (galleryImages.length > 1) {
+                slideInterval = setInterval(nextImage, 5000);
             }
         }
 
@@ -788,7 +823,6 @@
                     return;
                 }
                 
-                // Check availability for all nights (excluding check-out)
                 let hasBookedNight = false;
                 let cur = new Date(checkInDate);
                 while (cur < checkOutDate) {
@@ -935,59 +969,47 @@
             const defaultAmenities = ['Free WiFi', 'Smart TV', 'Air Conditioning', 'Kitchen', 'Tea & Coffee', 'Hot Water'];
             const amenitiesList = (unit.amenities && unit.amenities.length) ? unit.amenities : defaultAmenities;
             
-            // Build gallery HTML (grid layout for desktop, simple for mobile)
-            let galleryHtml = '';
-            if (galleryImages.length === 1) {
-                galleryHtml = `<div class="gallery-grid"><img src="${galleryImages[0]}" class="gallery-main-img" onclick="openLightbox(0)"></div>`;
-            } else if (galleryImages.length === 2) {
-                galleryHtml = `<div class="gallery-grid">
-                    <img src="${galleryImages[0]}" class="gallery-main-img" onclick="openLightbox(0)">
-                    <img src="${galleryImages[1]}" class="gallery-main-img" onclick="openLightbox(1)">
-                </div>`;
-            } else if (galleryImages.length >= 3) {
-                galleryHtml = `<div class="gallery-grid">
-                    <img src="${galleryImages[0]}" class="gallery-main-img" onclick="openLightbox(0)">
-                    <div class="gallery-side">
-                        <img src="${galleryImages[1]}" class="gallery-side-img" onclick="openLightbox(1)">
-                        <div class="gallery-more">
-                            <img src="${galleryImages[2]}" class="gallery-side-img" onclick="openLightbox(2)">
-                            ${galleryImages.length > 3 ? `<div class="gallery-more-overlay">+${galleryImages.length - 3} more</div>` : ''}
-                        </div>
+            // Build gallery slides
+            let slidesHtml = '';
+            let dotsHtml = '';
+            if (galleryImages.length) {
+                slidesHtml = galleryImages.map((img, idx) => `
+                    <div class="gallery-slide ${idx === 0 ? 'active' : ''}">
+                        <img src="${img}" alt="${unit.unit_name} - Image ${idx+1}">
                     </div>
-                </div>`;
+                `).join('');
+                
+                dotsHtml = galleryImages.map((_, idx) => `
+                    <div class="gallery-dot ${idx === 0 ? 'active' : ''}" onclick="goToImage(${idx})"></div>
+                `).join('');
+            } else {
+                slidesHtml = `<div class="gallery-slide active"><img src="https://via.placeholder.com/800x600?text=HTM+Rentals" alt="Placeholder"></div>`;
             }
             
             // External buttons
             let externalButtonsHtml = '';
-            if (unit.airbnb_url) externalButtonsHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb"></i> Airbnb</a>`;
-            if (unit.agoda_url) externalButtonsHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">Agoda</a>`;
-            if (unit.trip_url) externalButtonsHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">Trip.com</a>`;
-            if (unit.booking_url) externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">Booking.com</a>`;
-            
-            // Rating display (mock - can be made dynamic later)
-            const rating = '4.84';
-            const reviewCount = '128';
+            if (unit.airbnb_url && unit.airbnb_url !== '') externalButtonsHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb"></i> Airbnb</a>`;
+            if (unit.agoda_url && unit.agoda_url !== '') externalButtonsHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">Agoda</a>`;
+            if (unit.trip_url && unit.trip_url !== '') externalButtonsHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">Trip.com</a>`;
+            if (unit.booking_url && unit.booking_url !== '') externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">Booking.com</a>`;
             
             document.getElementById('content').innerHTML = `
                 <div class="unit-layout">
-                    <!-- LEFT COLUMN - Content -->
                     <div>
-                        <div class="gallery-container">${galleryHtml || '<div class="gallery-grid"><img src="https://via.placeholder.com/800x600?text=HTM+Rentals" class="gallery-main-img"></div>'}</div>
+                        <div class="gallery-container">
+                            <div class="gallery-slider" id="gallery-slider">
+                                ${slidesHtml}
+                                ${galleryImages.length > 1 ? `
+                                    <button class="gallery-nav prev" onclick="prevImage()"><i class="fas fa-chevron-left"></i></button>
+                                    <button class="gallery-nav next" onclick="nextImage()"><i class="fas fa-chevron-right"></i></button>
+                                    <div class="gallery-counter">1 / ${galleryImages.length}</div>
+                                ` : ''}
+                            </div>
+                            ${galleryImages.length > 1 ? `<div class="gallery-dots" id="gallery-dots">${dotsHtml}</div>` : ''}
+                        </div>
                         
                         <div class="unit-title">
                             <h1>${escapeHtml(unit.unit_name)}</h1>
-                        </div>
-                        
-                        <div class="unit-meta">
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <span>${rating}</span>
-                                <span class="reviews">(${reviewCount} reviews)</span>
-                            </div>
-                            <div class="host-badge">
-                                <div class="host-avatar"><i class="fas fa-home"></i></div>
-                                <span>Superhost · HTM Rentals</span>
-                            </div>
                         </div>
                         
                         <div class="features-row">
@@ -1019,7 +1041,6 @@
                         ${externalButtonsHtml ? `<div class="external-buttons">${externalButtonsHtml}</div>` : ''}
                     </div>
                     
-                    <!-- RIGHT COLUMN - Booking Card (Sticky) -->
                     <div>
                         <div class="booking-card">
                             <div class="price-display">
@@ -1102,7 +1123,6 @@
                 </div>
             `;
             
-            // Attach event listeners
             document.getElementById('prev-month')?.addEventListener('click', () => {
                 currentMonth--;
                 if (currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -1114,18 +1134,17 @@
                 generateCalendar(currentMonth, currentYear);
             });
             document.getElementById('booking-form')?.addEventListener('submit', submitBooking);
+            
+            // Make functions global for onclick
+            window.nextImage = nextImage;
+            window.prevImage = prevImage;
+            window.goToImage = goToImage;
         }
 
         function escapeHtml(str) {
             if (!str) return '';
             return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
         }
-        
-        // Simple lightbox function
-        window.openLightbox = function(index) {
-            // Can be expanded later for full lightbox
-            window.open(galleryImages[index], '_blank');
-        };
         
         loadUnit();
     </script>
