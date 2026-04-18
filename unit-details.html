@@ -106,7 +106,7 @@
             }
         }
 
-        /* GALLERY - Fullscreen slider style */
+        /* GALLERY */
         .gallery-container {
             position: relative;
             margin-bottom: 24px;
@@ -217,11 +217,11 @@
 
         .features-row {
             display: flex;
+            flex-wrap: wrap;
             gap: 24px;
             padding: 16px 0;
             border-bottom: 1px solid var(--gray-border);
             margin-bottom: 24px;
-            flex-wrap: wrap;
         }
 
         .feature {
@@ -244,6 +244,12 @@
             display: block;
             color: var(--navy);
             font-weight: 600;
+        }
+
+        .capacity-detail {
+            font-size: 12px;
+            color: var(--gray-text);
+            margin-top: 2px;
         }
 
         .description {
@@ -336,13 +342,19 @@
             display: flex;
             align-items: baseline;
             gap: 4px;
+            flex-wrap: wrap;
             margin-bottom: 16px;
         }
 
-        .price-amount {
+        .price-mvr {
             font-size: 1.75rem;
             font-weight: 600;
             color: var(--navy);
+        }
+
+        .price-usd {
+            font-size: 1rem;
+            color: var(--gray-text);
         }
 
         .price-nightly {
@@ -480,6 +492,13 @@
             outline: none;
         }
 
+        .guest-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
         .form-group {
             margin-bottom: 16px;
         }
@@ -604,6 +623,9 @@
                 height: 32px;
                 font-size: 14px;
             }
+            .guest-fields {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -655,6 +677,11 @@
                     }
                     unit.blocked_dates = data.blocked_dates || [];
                     
+                    // Set defaults for new fields if not present
+                    unit.max_adults = unit.max_adults || unit.max_guests || 2;
+                    unit.max_children = unit.max_children || 0;
+                    unit.bathrooms = unit.bathrooms || 1;
+                    
                     galleryImages = [];
                     if (unit.featured_image) galleryImages.push(unit.featured_image);
                     if (unit.gallery_images && unit.gallery_images.length) galleryImages.push(...unit.gallery_images);
@@ -667,6 +694,7 @@
                     document.getElementById('content').innerHTML = '<div class="card"><p>Unit not found. <a href="index.html">Go back</a></p></div>';
                 }
             } catch(e) {
+                console.error('Load error:', e);
                 document.getElementById('content').innerHTML = '<div class="card"><p>Failed to load unit. <a href="index.html">Go back</a></p></div>';
             }
         }
@@ -674,10 +702,8 @@
         function setupGallery() {
             if (galleryImages.length <= 1) return;
             
-            // Auto-slide
             startAutoSlide();
             
-            // Touch/swipe for mobile
             const slider = document.getElementById('gallery-slider');
             if (slider) {
                 let touchStartX = 0;
@@ -843,11 +869,11 @@
                 document.getElementById('check-out').value = formatDate(dateStr);
                 
                 const nights = Math.max(1, Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)));
-                const total = nights * parseFloat(unit.rate_mvr);
+                const totalMvr = nights * parseFloat(unit.rate_mvr);
                 
                 document.getElementById('night-count').textContent = nights;
-                document.getElementById('subtotal').textContent = `MVR ${total.toFixed(2)}`;
-                document.getElementById('total').textContent = `MVR ${total.toFixed(2)}`;
+                document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
+                document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                 document.getElementById('price-breakdown').style.display = 'block';
                 generateCalendar(currentMonth, currentYear);
                 return;
@@ -880,6 +906,26 @@
             }, 5000);
         }
 
+        function validateGuests(adults, children) {
+            const maxAdults = unit.max_adults || unit.max_guests;
+            const maxChildren = unit.max_children || 0;
+            const maxCapacity = unit.max_guests;
+            
+            if (adults > maxAdults) {
+                showMessage(`Maximum ${maxAdults} adult(s) allowed`, 'error');
+                return false;
+            }
+            if (children > maxChildren) {
+                showMessage(`Maximum ${maxChildren} child(ren) allowed`, 'error');
+                return false;
+            }
+            if (adults + children > maxCapacity) {
+                showMessage(`Total guests cannot exceed ${maxCapacity} (${adults} adults + ${children} children)`, 'error');
+                return false;
+            }
+            return true;
+        }
+
         async function submitBooking(e) {
             e.preventDefault();
             
@@ -888,11 +934,14 @@
                 return;
             }
             
-            const guests = document.getElementById('guests').value;
+            const adults = parseInt(document.getElementById('adults').value) || 1;
+            const children = parseInt(document.getElementById('children').value) || 0;
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
             
-            if (!guests || !name || !phone) {
+            if (!validateGuests(adults, children)) return;
+            
+            if (!name || !phone) {
                 showMessage('Please fill all required fields', 'error');
                 return;
             }
@@ -918,7 +967,9 @@
                         guest_phone: phone,
                         check_in_date: selectedCheckIn,
                         check_out_date: selectedCheckOut,
-                        number_of_guests: parseInt(guests),
+                        number_of_guests: adults + children,
+                        number_of_adults: adults,
+                        number_of_children: children,
                         special_requests: '',
                         currency: 'MVR'
                     })
@@ -937,7 +988,7 @@
                         `*Check-in:* ${formatDate(selectedCheckIn)} (14:00)%0A` +
                         `*Check-out:* ${formatDate(selectedCheckOut)} (12:00)%0A` +
                         `*Nights:* ${nights}%0A` +
-                        `*Guests:* ${guests}%0A` +
+                        `*Guests:* ${adults} adults, ${children} children%0A` +
                         `*Total:* MVR ${total.toFixed(2)}%0A%0A` +
                         `Please confirm this booking in the admin panel.`;
                     
@@ -948,7 +999,8 @@
                     document.getElementById('check-in').value = '';
                     document.getElementById('check-out').value = '';
                     document.getElementById('price-breakdown').style.display = 'none';
-                    document.getElementById('guests').value = '';
+                    document.getElementById('adults').value = '1';
+                    document.getElementById('children').value = '0';
                     document.getElementById('name').value = '';
                     document.getElementById('phone').value = '';
                     
@@ -986,12 +1038,38 @@
                 slidesHtml = `<div class="gallery-slide active"><img src="https://via.placeholder.com/800x600?text=HTM+Rentals" alt="Placeholder"></div>`;
             }
             
-            // External buttons
+            // External buttons - only show if URL exists and is not empty
             let externalButtonsHtml = '';
-            if (unit.airbnb_url && unit.airbnb_url !== '') externalButtonsHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb"></i> Airbnb</a>`;
-            if (unit.agoda_url && unit.agoda_url !== '') externalButtonsHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">Agoda</a>`;
-            if (unit.trip_url && unit.trip_url !== '') externalButtonsHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">Trip.com</a>`;
-            if (unit.booking_url && unit.booking_url !== '') externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">Booking.com</a>`;
+            if (unit.airbnb_url && unit.airbnb_url.trim() !== '') {
+                externalButtonsHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb"></i> Airbnb</a>`;
+            }
+            if (unit.agoda_url && unit.agoda_url.trim() !== '') {
+                externalButtonsHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">Agoda</a>`;
+            }
+            if (unit.trip_url && unit.trip_url.trim() !== '') {
+                externalButtonsHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">Trip.com</a>`;
+            }
+            if (unit.booking_url && unit.booking_url.trim() !== '') {
+                externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">Booking.com</a>`;
+            }
+            
+            // Calculate USD price (assuming exchange rate, or use unit.rate_usd if available)
+            const usdRate = unit.rate_usd || (unit.rate_mvr / 15.42).toFixed(2);
+            
+            // Generate guest options
+            const maxAdults = unit.max_adults || unit.max_guests;
+            const maxChildren = unit.max_children || 0;
+            const maxTotal = unit.max_guests;
+            
+            let adultOptions = '';
+            for (let i = 1; i <= Math.min(maxAdults, maxTotal); i++) {
+                adultOptions += `<option value="${i}">${i} adult${i > 1 ? 's' : ''}</option>`;
+            }
+            
+            let childOptions = '<option value="0">0 children</option>';
+            for (let i = 1; i <= maxChildren; i++) {
+                childOptions += `<option value="${i}">${i} child${i > 1 ? 'ren' : ''}</option>`;
+            }
             
             document.getElementById('content').innerHTML = `
                 <div class="unit-layout">
@@ -1015,15 +1093,18 @@
                         <div class="features-row">
                             <div class="feature">
                                 <i class="fas fa-user-friends"></i>
-                                <div class="feature-text"><strong>${unit.max_guests} guests</strong> Maximum capacity</div>
+                                <div class="feature-text">
+                                    <strong>${unit.max_guests} guests maximum</strong>
+                                    <div class="capacity-detail">${unit.max_adults || unit.max_guests} adults max · ${unit.max_children || 0} children max</div>
+                                </div>
                             </div>
                             <div class="feature">
                                 <i class="fas fa-bed"></i>
-                                <div class="feature-text"><strong>${unit.bedrooms} bedroom</strong> ${unit.bedrooms} bed</div>
+                                <div class="feature-text"><strong>${unit.bedrooms} bedroom${unit.bedrooms !== 1 ? 's' : ''}</strong> ${unit.bedrooms} bed${unit.bedrooms !== 1 ? 's' : ''}</div>
                             </div>
                             <div class="feature">
                                 <i class="fas fa-bath"></i>
-                                <div class="feature-text"><strong>1 bathroom</strong> Private</div>
+                                <div class="feature-text"><strong>${unit.bathrooms} bathroom${unit.bathrooms !== 1 ? 's' : ''}</strong> Private</div>
                             </div>
                         </div>
                         
@@ -1044,8 +1125,9 @@
                     <div>
                         <div class="booking-card">
                             <div class="price-display">
-                                <span class="price-amount">MVR ${unit.rate_mvr}</span>
+                                <span class="price-mvr">MVR ${unit.rate_mvr}</span>
                                 <span class="price-nightly">/ night</span>
+                                <span class="price-usd">($${usdRate} USD)</span>
                             </div>
                             
                             <div class="calendar-section">
@@ -1076,15 +1158,19 @@
                             </div>
                             
                             <form id="booking-form">
-                                <div class="form-group">
-                                    <label>Guests</label>
-                                    <select id="guests" required>
-                                        <option value="">Select</option>
-                                        <option value="1">1 guest</option>
-                                        <option value="2">2 guests</option>
-                                        <option value="3">3 guests</option>
-                                        <option value="4">4 guests</option>
-                                    </select>
+                                <div class="guest-fields">
+                                    <div class="form-group">
+                                        <label>Adults</label>
+                                        <select id="adults" required>
+                                            ${adultOptions}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Children</label>
+                                        <select id="children">
+                                            ${childOptions}
+                                        </select>
+                                    </div>
                                 </div>
                                 
                                 <div class="form-group">
@@ -1100,11 +1186,11 @@
                                 <div id="price-breakdown" class="price-breakdown" style="display:none;">
                                     <div class="price-row">
                                         <span>MVR ${unit.rate_mvr} × <span id="night-count">0</span> nights</span>
-                                        <span id="subtotal">MVR 0</span>
+                                        <span id="subtotal-mvr">MVR 0</span>
                                     </div>
                                     <div class="price-row total">
                                         <span>Total (MVR)</span>
-                                        <span id="total">MVR 0</span>
+                                        <span id="total-mvr">MVR 0</span>
                                     </div>
                                 </div>
                                 
