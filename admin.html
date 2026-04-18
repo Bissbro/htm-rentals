@@ -70,22 +70,15 @@
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--gray-300); border-radius: var(--radius); font-size: 14px; }
+        .form-group small { display: block; color: var(--gray-600); font-size: 11px; margin-top: 4px; }
         .image-upload-area { border: 2px dashed var(--gray-300); border-radius: var(--radius); padding: 20px; text-align: center; cursor: pointer; background: var(--gray-100); transition: all 0.2s; }
         .image-upload-area:hover { border-color: var(--primary); background: #e8f4f8; }
         .image-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
         .preview-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--gray-300); }
         .preview-img-container { position: relative; display: inline-block; }
         .remove-img { position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .invoice-builder { display: grid; grid-template-columns: 320px 1fr; gap: 24px; }
-        .item-selector { background: var(--gray-100); border-radius: var(--radius); padding: 20px; }
-        .item-category { margin-bottom: 24px; }
-        .item-category h4 { font-size: 0.85rem; margin-bottom: 12px; font-weight: 600; }
-        .qty-input { width: 80px; padding: 8px; border: 1px solid var(--gray-300); border-radius: var(--radius); }
-        .invoice-summary { background: var(--gray-100); padding: 20px; border-radius: var(--radius); margin-top: 20px; }
-        .summary-row { display: flex; justify-content: space-between; padding: 8px 0; }
-        .summary-row.total { font-weight: 700; border-top: 2px solid var(--gray-300); margin-top: 8px; padding-top: 12px; }
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: white; border-radius: var(--radius); max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: white; border-radius: var(--radius); max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; }
         .modal-header { padding: 20px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
         .modal-body { padding: 20px; }
         .modal-footer { padding: 20px; border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end; gap: 12px; }
@@ -94,7 +87,6 @@
             .sidebar.open { transform: translateX(0); }
             .main-content { margin-left: 0; }
             .menu-toggle { display: block; }
-            .invoice-builder { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
             .form-row { grid-template-columns: 1fr; }
         }
@@ -180,19 +172,26 @@
                     <div class="card"><div class="card-header"><h2>All Invoices</h2><div style="display: flex; gap: 12px;"><select id="invoice-status-filter" onchange="loadInvoices()" style="padding: 8px; border-radius: var(--radius); border: 1px solid var(--gray-300);"><option value="">All Status</option><option value="draft">Draft</option><option value="sent">Sent</option><option value="paid">Paid</option></select><button class="btn btn-primary btn-sm" onclick="showSection('new-invoice')">New Invoice</button></div></div><div id="invoices-list"></div></div>
                 </div>
 
-                <!-- New Invoice (Standalone) -->
+                <!-- New Invoice -->
                 <div id="new-invoice-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>Create Invoice</h2><button class="btn btn-sm" style="background: var(--gray-200);" onclick="resetInvoice()">Reset</button></div>
                         <div><h3 style="margin-bottom: 16px;">Customer Information</h3><div class="form-row"><div class="form-group"><label>Full Name *</label><input type="text" id="invoice-customer-name"></div><div class="form-group"><label>Email</label><input type="email" id="invoice-customer-email"></div><div class="form-group"><label>Phone</label><input type="tel" id="invoice-customer-phone"></div></div></div>
-                        <div class="invoice-builder">
-                            <div class="item-selector">
-                                <h3 style="margin-bottom: 20px;">Add Items</h3>
-                                <div class="item-category"><h4>Room Stay</h4><select id="room-select"><option value="">Select nights</option><option value="1">1 night - $90</option><option value="2">2 nights - $180</option><option value="3">3 nights - $270</option></select><button class="btn btn-primary btn-sm" style="width: 100%; margin-top: 8px;" onclick="addRoomItem()">Add Room Charge</button></div>
-                                <div class="item-category"><h4>Minibar</h4><select id="minibar-select"><option value="">Select item</option></select><div class="add-item-row" style="margin-top: 8px;"><input type="number" id="minibar-qty" placeholder="Qty" value="1" class="qty-input"><button class="btn btn-primary btn-sm" onclick="addMinibarItem()">Add</button></div></div>
-                                <div class="item-category"><h4>Custom Item</h4><input type="text" id="custom-desc" placeholder="Description" style="width: 100%; margin-bottom: 8px;"><div class="add-item-row"><input type="number" id="custom-price" placeholder="Price" step="0.01" style="flex:1;"><input type="number" id="custom-qty" placeholder="Qty" value="1" class="qty-input"><button class="btn btn-primary btn-sm" onclick="addCustomItem()">Add</button></div></div>
+                        <div class="form-row" style="align-items: flex-start;">
+                            <div style="flex: 1;">
+                                <h3 style="margin-bottom: 16px;">Add Items</h3>
+                                <div class="form-group"><label>Room Nights</label><select id="room-select"><option value="">Select nights</option><option value="1">1 night - $90</option><option value="2">2 nights - $180</option><option value="3">3 nights - $270</option></select><button class="btn btn-primary btn-sm" style="margin-top: 8px;" onclick="addRoomItem()">Add Room Charge</button></div>
+                                <div class="form-group"><label>Minibar</label><select id="minibar-select"><option value="">Select item</option></select><div style="display: flex; gap: 8px; margin-top: 8px;"><input type="number" id="minibar-qty" placeholder="Qty" value="1" style="width: 80px;"><button class="btn btn-primary btn-sm" onclick="addMinibarItem()">Add</button></div></div>
+                                <div class="form-group"><label>Custom Item</label><input type="text" id="custom-desc" placeholder="Description"><div style="display: flex; gap: 8px; margin-top: 8px;"><input type="number" id="custom-price" placeholder="Price" step="0.01" style="flex:1;"><input type="number" id="custom-qty" placeholder="Qty" value="1" style="width: 80px;"><button class="btn btn-primary btn-sm" onclick="addCustomItem()">Add</button></div></div>
                             </div>
-                            <div><h3 style="margin-bottom: 16px;">Invoice Items</h3><div class="invoice-items"><table style="width:100%"><thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th><th></th> </thead><tbody id="invoice-items-body"> <td colspan="5" style="text-align:center; padding:40px;">No items added</td> </tbody> </table></div>
-                                <div class="invoice-summary"><div class="summary-row"><span>Subtotal</span><span id="invoice-subtotal">$0.00</span></div><div class="form-group" style="margin:12px 0;"><label>Tax Rate (%)</label><input type="number" id="invoice-tax-rate" value="0" step="0.1" style="width:100px;"></div><div class="summary-row"><span>Tax</span><span id="invoice-tax-amount">$0.00</span></div><div class="summary-row total"><span>Total</span><span id="invoice-total">$0.00</span></div></div>
+                            <div style="flex: 2;">
+                                <h3 style="margin-bottom: 16px;">Invoice Items</h3>
+                                <div id="invoice-items-container"></div>
+                                <div class="invoice-summary" style="background: var(--gray-100); padding: 16px; border-radius: var(--radius); margin-top: 16px;">
+                                    <div class="summary-row" style="display: flex; justify-content: space-between; padding: 8px 0;"><span>Subtotal</span><span id="invoice-subtotal">$0.00</span></div>
+                                    <div class="form-group" style="margin:12px 0;"><label>Tax Rate (%)</label><input type="number" id="invoice-tax-rate" value="0" step="0.1" style="width:100px;" oninput="updateInvoiceTotals()"></div>
+                                    <div class="summary-row" style="display: flex; justify-content: space-between; padding: 8px 0;"><span>Tax</span><span id="invoice-tax-amount">$0.00</span></div>
+                                    <div class="summary-row total" style="display: flex; justify-content: space-between; padding: 8px 0; font-weight: 700; border-top: 2px solid var(--gray-300); margin-top: 8px; padding-top: 12px;"><span>Total</span><span id="invoice-total">$0.00</span></div>
+                                </div>
                                 <div style="display:flex; gap:12px; margin-top:20px;"><button class="btn btn-primary" style="flex:1;" onclick="createStandaloneInvoice()">Create Invoice</button><button class="btn btn-success" style="flex:1;" onclick="previewStandaloneInvoice()">Preview</button></div>
                             </div>
                         </div>
@@ -220,27 +219,117 @@
     <!-- Unit Modal -->
     <div id="unit-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2 id="unit-modal-title">Add Unit</h2><button onclick="closeUnitModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
+            <div class="modal-header">
+                <h2 id="unit-modal-title">Add Unit</h2>
+                <button onclick="closeUnitModal()" style="background:none; border:none; font-size:24px;">&times;</button>
+            </div>
             <div class="modal-body">
                 <input type="hidden" id="unit-id">
-                <div class="form-group"><label>Unit Name *</label><input type="text" id="unit-name"></div>
+                
+                <div class="form-group">
+                    <label>Unit Name *</label>
+                    <input type="text" id="unit-name" placeholder="e.g., Ocean View Apartment">
+                </div>
+                
                 <div class="form-row">
-                    <div class="form-group"><label>USD Rate</label><input type="number" id="unit-usd" step="0.01"></div>
-                    <div class="form-group"><label>MVR Rate</label><input type="number" id="unit-mvr" step="0.01"></div>
+                    <div class="form-group">
+                        <label>USD Rate (per night)</label>
+                        <input type="number" id="unit-usd" step="0.01" placeholder="90">
+                    </div>
+                    <div class="form-group">
+                        <label>MVR Rate (per night)</label>
+                        <input type="number" id="unit-mvr" step="0.01" placeholder="1380">
+                    </div>
+                </div>
+                
+                <h4 style="margin: 16px 0 12px;">Guest Capacity</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Max Total Guests</label>
+                        <input type="number" id="unit-guests" value="4" placeholder="Total capacity">
+                        <small>Maximum humans allowed</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Max Adults</label>
+                        <input type="number" id="unit-max-adults" value="4" placeholder="Max adults">
+                        <small>Maximum adults (18+)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Max Children</label>
+                        <input type="number" id="unit-max-children" value="2" placeholder="Max children">
+                        <small>Maximum children (under 18)</small>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Bedrooms</label>
+                        <input type="number" id="unit-beds" value="1" placeholder="Number of bedrooms">
+                    </div>
+                    <div class="form-group">
+                        <label>Bathrooms</label>
+                        <input type="number" id="unit-bathrooms" step="0.5" value="1" placeholder="1.0">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="unit-description" rows="3" placeholder="Describe the unit..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Featured Image</label>
+                    <div class="image-upload-area" onclick="document.getElementById('featured-image-input').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload</p>
+                        <input type="file" id="featured-image-input" accept="image/*" style="display:none" onchange="uploadFeaturedImage(this)">
+                    </div>
+                    <div id="featured-image-preview"></div>
+                    <input type="hidden" id="unit-image">
+                </div>
+                
+                <div class="form-group">
+                    <label>Gallery Images</label>
+                    <div class="image-upload-area" onclick="document.getElementById('gallery-image-input').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload (multiple)</p>
+                        <input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)">
+                    </div>
+                    <div id="gallery-images-preview" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div>
+                    <input type="hidden" id="unit-gallery">
+                </div>
+                
+                <div class="form-group">
+                    <label>Amenities (comma separated)</label>
+                    <input type="text" id="unit-amenities" placeholder="WiFi, AC, Kitchen, Smart TV, Hot Water">
+                </div>
+                
+                <h4 style="margin: 16px 0 12px;">External Booking Links</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Airbnb URL</label>
+                        <input type="text" id="unit-airbnb" placeholder="https://airbnb.com/rooms/...">
+                    </div>
+                    <div class="form-group">
+                        <label>Agoda URL</label>
+                        <input type="text" id="unit-agoda" placeholder="https://agoda.com/...">
+                    </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>Max Guests</label><input type="number" id="unit-guests" value="2"></div>
-                    <div class="form-group"><label>Beds</label><input type="number" id="unit-beds" value="1"></div>
+                    <div class="form-group">
+                        <label>Trip.com URL</label>
+                        <input type="text" id="unit-trip" placeholder="https://trip.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>Booking.com URL</label>
+                        <input type="text" id="unit-booking" placeholder="https://booking.com/...">
+                    </div>
                 </div>
-                <div class="form-group"><label>Description</label><textarea id="unit-description" rows="3"></textarea></div>
-                <div class="form-group"><label>Featured Image</label><div class="image-upload-area" onclick="document.getElementById('featured-image-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload</p><input type="file" id="featured-image-input" accept="image/*" style="display:none" onchange="uploadFeaturedImage(this)"></div><div id="featured-image-preview"></div><input type="hidden" id="unit-image"></div>
-                <div class="form-group"><label>Gallery Images</label><div class="image-upload-area" onclick="document.getElementById('gallery-image-input').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload (multiple)</p><input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)"></div><div id="gallery-images-preview" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div><input type="hidden" id="unit-gallery"></div>
-                <div class="form-group"><label>Amenities (comma separated)</label><input type="text" id="unit-amenities" placeholder="WiFi, AC, Kitchen"></div>
-                <div class="form-group"><label>Airbnb URL</label><input type="text" id="unit-airbnb" placeholder="https://airbnb.com/..."></div>
-                <div class="form-group"><label>Agoda URL</label><input type="text" id="unit-agoda" placeholder="https://agoda.com/..."></div>
-                <div class="form-group"><label>Trip.com URL</label><input type="text" id="unit-trip" placeholder="https://trip.com/..."></div>
-                <div class="form-group"><label>Booking.com URL</label><input type="text" id="unit-booking" placeholder="https://booking.com/..."></div>
-                <div style="display:flex; gap:12px; margin-top:20px;"><button class="btn btn-primary" onclick="saveUnit()">Save Unit</button><button class="btn btn-danger" id="delete-unit-btn" style="display:none" onclick="deleteUnit()">Delete</button></div>
+                
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button class="btn btn-primary" onclick="saveUnit()">Save Unit</button>
+                    <button class="btn btn-danger" id="delete-unit-btn" style="display:none" onclick="deleteUnit()">Delete</button>
+                </div>
             </div>
         </div>
     </div>
@@ -293,7 +382,7 @@
         </div>
     </div>
 
-    <!-- Invoice Modal (View Details) -->
+    <!-- Invoice View Modal -->
     <div id="invoice-view-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2>Invoice Details</h2><button onclick="closeInvoiceViewModal()" style="background:none; border:none; font-size:24px;">&times;</button></div>
@@ -312,40 +401,33 @@
         const ADMIN_USERNAME = 'bissbro';
         const ADMIN_PASSWORD = 'admin123';
         
-        // Global state
         let currentCurrency = 'USD';
         let exchangeRate = 15.42;
         let allUnits = [];
         let allBookingsCache = [];
-        let currentInvoiceItems = [];
-        let currentInvoiceData = null;
-        let currentGalleryImages = []; // for unit gallery
-        let currentExpImage1 = '', currentExpImage2 = '';
-        
-        // Helper functions
-        function parseAmount(amount) { return parseFloat(amount) || 0; }
-        function formatCurrency(amount) {
-            const num = parseAmount(amount);
-            if (currentCurrency === 'USD') return `$${num.toFixed(2)}`;
-            return `MVR ${(num * exchangeRate).toFixed(2)}`;
-        }
+        let currentGalleryImages = [];
+        let invoiceItems = [];
+        let minibarItems = [
+            { name: 'Water Bottle (500ml)', price_usd: 2, price_mvr: 30 },
+            { name: 'Soft Drink (Can)', price_usd: 3, price_mvr: 45 },
+            { name: 'Juice', price_usd: 4, price_mvr: 60 },
+            { name: 'Beer (Local)', price_usd: 5, price_mvr: 75 },
+            { name: 'Beer (Imported)', price_usd: 7, price_mvr: 105 },
+            { name: 'Wine (Glass)', price_usd: 8, price_mvr: 120 },
+            { name: 'Chocolate Bar', price_usd: 3, price_mvr: 45 },
+            { name: 'Chips', price_usd: 2.5, price_mvr: 38 }
+        ];
+
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-        function showToast(msg, type) {
-            const t = document.createElement('div');
-            t.className = `toast ${type}`;
-            t.textContent = msg;
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 3000);
-        }
+        function showToast(msg, type) { const t = document.createElement('div'); t.className = `toast ${type}`; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
+        function formatCurrency(amount) { const num = parseFloat(amount) || 0; if (currentCurrency === 'USD') return `$${num.toFixed(2)}`; return `MVR ${(num * exchangeRate).toFixed(2)}`; }
         
-        // Currency & settings
         function setCurrency(currency) {
             currentCurrency = currency;
             document.querySelectorAll('.currency-option').forEach(opt => {
                 if (opt.dataset.currency === currency) opt.classList.add('active');
                 else opt.classList.remove('active');
             });
-            // Refresh visible data
             const active = document.querySelector('.nav-item.active')?.dataset.section;
             if (active === 'dashboard') loadDashboard();
             else if (active === 'bookings') loadAllBookings();
@@ -353,9 +435,10 @@
             else if (active === 'minibar') renderMinibarCatalog();
             else if (active === 'units') loadUnits();
         }
+        
         function loadSettings() { const saved = localStorage.getItem('exchangeRate'); if (saved) exchangeRate = parseFloat(saved); document.getElementById('exchange-rate-setting').value = exchangeRate; }
         function updateSettings() { const newRate = parseFloat(document.getElementById('exchange-rate-setting').value); if (!isNaN(newRate) && newRate > 0) { exchangeRate = newRate; localStorage.setItem('exchangeRate', exchangeRate); showToast('Settings saved','success'); setCurrency(currentCurrency); } }
-        
+
         // ==================== UNITS MANAGEMENT ====================
         async function loadUnits() {
             try {
@@ -364,30 +447,37 @@
                 if (data.success) { allUnits = data.units; displayUnits(); }
             } catch(e) { showToast('Failed to load units', 'error'); }
         }
+        
         function displayUnits() {
             const container = document.getElementById('units-list');
             if (!allUnits.length) { container.innerHTML = '<p>No units. Click "Add Unit".</p>'; return; }
-            container.innerHTML = `<table class="data-table"><thead><tr><th>ID</th><th>Name</th><th>USD</th><th>MVR</th><th>Guests</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
+            container.innerHTML = `<table class="data-table"><thead><tr><th>ID</th><th>Name</th><th>USD</th><th>MVR</th><th>Guests</th><th>Adults/Children</th><th>Beds/Baths</th><th>Actions</th></tr></thead><tbody>${
                 allUnits.map(u => `<tr>
-                    <td>${u.id}</td><td><strong>${escapeHtml(u.unit_name)}</strong></td>
-                    <td>$${u.rate_usd || '—'}</td><td>MVR ${u.rate_mvr || '—'}</td>
+                    <td>${u.id}</td>
+                    <td><strong>${escapeHtml(u.unit_name)}</strong></td>
+                    <td>$${u.rate_usd || '—'}</td>
+                    <td>MVR ${u.rate_mvr || '—'}</td>
                     <td>${u.max_guests}</td>
-                    <td><span class="badge badge-${u.is_active ? 'confirmed' : 'cancelled'}">${u.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td>${u.max_adults || u.max_guests} / ${u.max_children || 0}</td>
+                    <td>${u.bedrooms} / ${u.bathrooms || 1}</td>
                     <td><button class="btn btn-primary btn-sm" onclick="editUnit(${u.id})">Edit</button></td>
                 </tr>`).join('')
             }</tbody></table>`;
         }
+        
         function openUnitModal() {
             document.getElementById('unit-modal-title').textContent = 'Add Unit';
             document.getElementById('unit-id').value = '';
             document.getElementById('unit-name').value = '';
             document.getElementById('unit-usd').value = '';
             document.getElementById('unit-mvr').value = '';
-            document.getElementById('unit-guests').value = '2';
+            document.getElementById('unit-guests').value = '4';
+            document.getElementById('unit-max-adults').value = '4';
+            document.getElementById('unit-max-children').value = '2';
             document.getElementById('unit-beds').value = '1';
+            document.getElementById('unit-bathrooms').value = '1';
             document.getElementById('unit-description').value = '';
             document.getElementById('unit-image').value = '';
-            document.getElementById('unit-gallery').value = '';
             document.getElementById('unit-amenities').value = '';
             document.getElementById('unit-airbnb').value = '';
             document.getElementById('unit-agoda').value = '';
@@ -399,6 +489,7 @@
             displayGalleryPreviews();
             document.getElementById('unit-modal').style.display = 'flex';
         }
+        
         function editUnit(id) {
             const unit = allUnits.find(u => u.id === id);
             if (!unit) return;
@@ -407,31 +498,38 @@
             document.getElementById('unit-name').value = unit.unit_name || '';
             document.getElementById('unit-usd').value = unit.rate_usd || '';
             document.getElementById('unit-mvr').value = unit.rate_mvr || '';
-            document.getElementById('unit-guests').value = unit.max_guests || 2;
+            document.getElementById('unit-guests').value = unit.max_guests || 4;
+            document.getElementById('unit-max-adults').value = unit.max_adults || unit.max_guests || 4;
+            document.getElementById('unit-max-children').value = unit.max_children || 0;
             document.getElementById('unit-beds').value = unit.bedrooms || 1;
+            document.getElementById('unit-bathrooms').value = unit.bathrooms || 1;
             document.getElementById('unit-description').value = unit.description || '';
             document.getElementById('unit-image').value = unit.featured_image || '';
-            if (unit.featured_image) {
-                document.getElementById('featured-image-preview').innerHTML = `<div class="preview-img-container"><img src="${unit.featured_image}" class="preview-img"><div class="remove-img" onclick="removeFeaturedImage()">×</div></div>`;
-            }
-            currentGalleryImages = unit.gallery_images || [];
-            displayGalleryPreviews();
             document.getElementById('unit-amenities').value = (unit.amenities || []).join(', ');
             document.getElementById('unit-airbnb').value = unit.airbnb_url || '';
             document.getElementById('unit-agoda').value = unit.agoda_url || '';
             document.getElementById('unit-trip').value = unit.trip_url || '';
             document.getElementById('unit-booking').value = unit.booking_url || '';
+            if (unit.featured_image) {
+                document.getElementById('featured-image-preview').innerHTML = `<div class="preview-img-container"><img src="${unit.featured_image}" class="preview-img"><div class="remove-img" onclick="removeFeaturedImage()">×</div></div>`;
+            }
+            currentGalleryImages = unit.gallery_images || [];
+            displayGalleryPreviews();
             document.getElementById('delete-unit-btn').style.display = 'inline-block';
             document.getElementById('unit-modal').style.display = 'flex';
         }
+        
         function closeUnitModal() { document.getElementById('unit-modal').style.display = 'none'; }
+        
         function displayGalleryPreviews() {
             const container = document.getElementById('gallery-images-preview');
             container.innerHTML = currentGalleryImages.map((url, idx) => `<div class="preview-img-container"><img src="${url}" class="preview-img"><div class="remove-img" onclick="removeGalleryImage(${idx})">×</div></div>`).join('');
             document.getElementById('unit-gallery').value = currentGalleryImages.join(',');
         }
+        
         function removeGalleryImage(idx) { currentGalleryImages.splice(idx, 1); displayGalleryPreviews(); }
         function removeFeaturedImage() { document.getElementById('unit-image').value = ''; document.getElementById('featured-image-preview').innerHTML = ''; }
+        
         async function uploadFeaturedImage(input) {
             const file = input.files[0];
             if (!file) return;
@@ -446,6 +544,7 @@
                 } else showToast('Upload failed', 'error');
             } catch(e) { showToast('Error uploading', 'error'); }
         }
+        
         async function uploadGalleryImages(input) {
             const files = Array.from(input.files);
             for (const file of files) {
@@ -458,24 +557,35 @@
             }
             input.value = '';
         }
+        
         async function saveUnit() {
             const id = document.getElementById('unit-id').value;
+            const maxGuests = parseInt(document.getElementById('unit-guests').value) || 2;
+            const maxAdults = parseInt(document.getElementById('unit-max-adults').value) || maxGuests;
+            const maxChildren = parseInt(document.getElementById('unit-max-children').value) || 0;
+            
             const unitData = {
                 unit_name: document.getElementById('unit-name').value,
                 rate_usd: parseFloat(document.getElementById('unit-usd').value) || 0,
                 rate_mvr: parseFloat(document.getElementById('unit-mvr').value) || 0,
-                max_guests: parseInt(document.getElementById('unit-guests').value) || 2,
+                max_guests: maxGuests,
+                max_adults: maxAdults,
+                max_children: maxChildren,
                 bedrooms: parseInt(document.getElementById('unit-beds').value) || 1,
+                bathrooms: parseFloat(document.getElementById('unit-bathrooms').value) || 1,
                 description: document.getElementById('unit-description').value,
                 featured_image: document.getElementById('unit-image').value,
                 gallery_images: currentGalleryImages,
                 amenities: document.getElementById('unit-amenities').value.split(',').map(s => s.trim()).filter(s => s),
-                airbnb_url: document.getElementById('unit-airbnb').value,
-                agoda_url: document.getElementById('unit-agoda').value,
-                trip_url: document.getElementById('unit-trip').value,
-                booking_url: document.getElementById('unit-booking').value
+                airbnb_url: document.getElementById('unit-airbnb').value.trim() || null,
+                agoda_url: document.getElementById('unit-agoda').value.trim() || null,
+                trip_url: document.getElementById('unit-trip').value.trim() || null,
+                booking_url: document.getElementById('unit-booking').value.trim() || null
             };
+            
             if (!unitData.unit_name) { showToast('Unit name required', 'error'); return; }
+            if (maxAdults > maxGuests) { showToast('Max adults cannot exceed max total guests', 'error'); return; }
+            
             try {
                 let url, method;
                 if (id) { url = `${API_BASE_URL}/admin/units/${id}`; method = 'PUT'; }
@@ -486,6 +596,7 @@
                 else showToast(data.error || 'Failed to save', 'error');
             } catch(e) { showToast('Error saving unit', 'error'); }
         }
+        
         async function deleteUnit() {
             const id = document.getElementById('unit-id').value;
             if (!id || !confirm('Delete permanently?')) return;
@@ -496,7 +607,7 @@
                 else showToast(data.error || 'Failed to delete', 'error');
             } catch(e) { showToast('Error deleting', 'error'); }
         }
-        
+
         // ==================== HERO IMAGES ====================
         async function loadHeroImages() {
             try {
@@ -505,19 +616,20 @@
                 if (data.success) displayHeroImages(data.images);
             } catch(e) { showToast('Failed to load hero images', 'error'); }
         }
+        
         function displayHeroImages(images) {
             const container = document.getElementById('hero-list');
             if (!images.length) { container.innerHTML = '<p>No hero images. Click "Add Image".</p>'; return; }
-            container.innerHTML = `<table class="data-table"><thead><tr><th>Image</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
+            container.innerHTML = `<table class="data-table"><thead><tr><th>Image</th><th>Title</th><th>Order</th><th>Actions</th></tr></thead><tbody>${
                 images.map(img => `<tr>
                     <td><img src="${img.image_url}" style="width:60px; height:40px; object-fit:cover; border-radius:4px;"></td>
                     <td>${escapeHtml(img.title || '—')}</td>
                     <td>${img.sort_order}</td>
-                    <td><span class="badge badge-${img.is_active ? 'confirmed' : 'cancelled'}">${img.is_active ? 'Active' : 'Inactive'}</span></td>
                     <td><button class="btn btn-primary btn-sm" onclick="editHeroImage(${img.id})">Edit</button></td>
                 </tr>`).join('')
             }</tbody></table>`;
         }
+        
         function openHeroModal() {
             document.getElementById('hero-id').value = '';
             document.getElementById('hero-title').value = '';
@@ -530,6 +642,7 @@
             document.getElementById('delete-hero-btn').style.display = 'none';
             document.getElementById('hero-modal').style.display = 'flex';
         }
+        
         function editHeroImage(id) {
             fetch(`${API_BASE_URL}/admin/hero-images`).then(r=>r.json()).then(data=>{
                 const img = data.images.find(i=>i.id===id);
@@ -549,7 +662,9 @@
                 }
             });
         }
+        
         function removeHeroImagePreview() { document.getElementById('hero-image-preview').innerHTML = ''; document.getElementById('hero-url').value = ''; }
+        
         async function uploadHeroImage(input) {
             const file = input.files[0];
             if (!file) return;
@@ -564,7 +679,9 @@
                 } else showToast('Upload failed', 'error');
             } catch(e) { showToast('Error uploading', 'error'); }
         }
+        
         function closeHeroModal() { document.getElementById('hero-modal').style.display = 'none'; }
+        
         async function saveHeroImage() {
             const id = document.getElementById('hero-id').value;
             const data = {
@@ -586,6 +703,7 @@
                 else showToast(result.error || 'Failed', 'error');
             } catch(e) { showToast('Error saving', 'error'); }
         }
+        
         async function deleteHeroImage() {
             const id = document.getElementById('hero-id').value;
             if (!id || !confirm('Delete this hero image?')) return;
@@ -596,7 +714,7 @@
                 else showToast('Failed to delete', 'error');
             } catch(e) { showToast('Error deleting', 'error'); }
         }
-        
+
         // ==================== PROMOTION GALLERY ====================
         async function loadPromotionGallery() {
             try {
@@ -605,20 +723,20 @@
                 if (data.success) displayPromotionImages(data.images);
             } catch(e) { showToast('Failed to load promotion gallery', 'error'); }
         }
+        
         function displayPromotionImages(images) {
             const container = document.getElementById('promotion-list');
             if (!images.length) { container.innerHTML = '<p>No promotion images. Click "Add Image".</p>'; return; }
-            container.innerHTML = `<table class="data-table"><thead><tr><th>Image</th><th>Title</th><th>Link</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
+            container.innerHTML = `<table class="data-table"><thead><tr><th>Image</th><th>Title</th><th>Order</th><th>Actions</th></tr></thead><tbody>${
                 images.map(img => `<tr>
                     <td><img src="${img.image_url}" style="width:60px; height:40px; object-fit:cover; border-radius:4px;"></td>
                     <td>${escapeHtml(img.title || '—')}</td>
-                    <td>${img.link_url ? 'Yes' : '—'}</td>
                     <td>${img.sort_order}</td>
-                    <td><span class="badge badge-${img.is_active ? 'confirmed' : 'cancelled'}">${img.is_active ? 'Active' : 'Inactive'}</span></td>
                     <td><button class="btn btn-primary btn-sm" onclick="editPromotionImage(${img.id})">Edit</button></td>
                 </tr>`).join('')
             }</tbody></table>`;
         }
+        
         function openPromotionModal() {
             document.getElementById('promo-id').value = '';
             document.getElementById('promo-link').value = '';
@@ -629,6 +747,7 @@
             document.getElementById('delete-promo-btn').style.display = 'none';
             document.getElementById('promotion-modal').style.display = 'flex';
         }
+        
         function editPromotionImage(id) {
             fetch(`${API_BASE_URL}/admin/promotion-gallery`).then(r=>r.json()).then(data=>{
                 const img = data.images.find(i=>i.id===id);
@@ -646,7 +765,9 @@
                 }
             });
         }
+        
         function removePromoImagePreview() { document.getElementById('promo-image-preview').innerHTML = ''; document.getElementById('promo-url').value = ''; }
+        
         async function uploadPromoImage(input) {
             const file = input.files[0];
             if (!file) return;
@@ -661,7 +782,9 @@
                 } else showToast('Upload failed', 'error');
             } catch(e) { showToast('Error uploading', 'error'); }
         }
+        
         function closePromotionModal() { document.getElementById('promotion-modal').style.display = 'none'; }
+        
         async function savePromotionImage() {
             const id = document.getElementById('promo-id').value;
             const data = {
@@ -681,6 +804,7 @@
                 else showToast(result.error || 'Failed', 'error');
             } catch(e) { showToast('Error saving', 'error'); }
         }
+        
         async function deletePromotionImage() {
             const id = document.getElementById('promo-id').value;
             if (!id || !confirm('Delete this image?')) return;
@@ -691,7 +815,7 @@
                 else showToast('Failed to delete', 'error');
             } catch(e) { showToast('Error deleting', 'error'); }
         }
-        
+
         // ==================== EXPERIENCES ====================
         async function loadExperiences() {
             try {
@@ -700,26 +824,25 @@
                 if (data.success) displayExperiences(data.experiences);
             } catch(e) { showToast('Failed to load experiences', 'error'); }
         }
+        
         function displayExperiences(experiences) {
             const container = document.getElementById('experiences-list');
             if (!experiences.length) { container.innerHTML = '<p>No experiences. Click "Add Experience".</p>'; return; }
-            container.innerHTML = `<table class="data-table"><thead><tr><th>Title</th><th>Image 1</th><th>Image 2</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
+            container.innerHTML = `<table class="data-table"><thead><tr><th>Title</th><th>Images</th><th>Order</th><th>Actions</th></tr></thead><tbody>${
                 experiences.map(exp => `<tr>
                     <td><strong>${escapeHtml(exp.title)}</strong></td>
-                    <td>${exp.image1_url ? '<i class="fas fa-check-circle" style="color:#28a745"></i>' : '—'}</td>
-                    <td>${exp.image2_url ? '<i class="fas fa-check-circle" style="color:#28a745"></i>' : '—'}</td>
+                    <td>${exp.image1_url ? '✓' : '—'} / ${exp.image2_url ? '✓' : '—'}</td>
                     <td>${exp.sort_order}</td>
-                    <td><span class="badge badge-${exp.is_active ? 'confirmed' : 'cancelled'}">${exp.is_active ? 'Active' : 'Inactive'}</span></td>
                     <td><button class="btn btn-primary btn-sm" onclick="editExperience(${exp.id})">Edit</button></td>
                 </tr>`).join('')
             }</tbody></table>`;
         }
+        
         function openExperienceModal() {
             document.getElementById('exp-id').value = '';
             document.getElementById('exp-title').value = '';
             document.getElementById('exp-description').value = '';
             document.getElementById('exp-order').value = '0';
-            currentExpImage1 = ''; currentExpImage2 = '';
             document.getElementById('exp-image1-preview').innerHTML = '';
             document.getElementById('exp-image2-preview').innerHTML = '';
             document.getElementById('exp-image1-url').value = '';
@@ -727,6 +850,7 @@
             document.getElementById('delete-exp-btn').style.display = 'none';
             document.getElementById('experience-modal').style.display = 'flex';
         }
+        
         function editExperience(id) {
             fetch(`${API_BASE_URL}/admin/experiences`).then(r=>r.json()).then(data=>{
                 const exp = data.experiences.find(e=>e.id===id);
@@ -735,19 +859,23 @@
                     document.getElementById('exp-title').value = exp.title || '';
                     document.getElementById('exp-description').value = exp.description || '';
                     document.getElementById('exp-order').value = exp.sort_order || 0;
-                    currentExpImage1 = exp.image1_url || '';
-                    currentExpImage2 = exp.image2_url || '';
-                    if (currentExpImage1) document.getElementById('exp-image1-preview').innerHTML = `<div class="preview-img-container"><img src="${currentExpImage1}" class="preview-img"><div class="remove-img" onclick="removeExpImage1()">×</div></div>`;
-                    if (currentExpImage2) document.getElementById('exp-image2-preview').innerHTML = `<div class="preview-img-container"><img src="${currentExpImage2}" class="preview-img"><div class="remove-img" onclick="removeExpImage2()">×</div></div>`;
-                    document.getElementById('exp-image1-url').value = currentExpImage1;
-                    document.getElementById('exp-image2-url').value = currentExpImage2;
+                    if (exp.image1_url) {
+                        document.getElementById('exp-image1-preview').innerHTML = `<div class="preview-img-container"><img src="${exp.image1_url}" class="preview-img"><div class="remove-img" onclick="removeExpImage1()">×</div></div>`;
+                        document.getElementById('exp-image1-url').value = exp.image1_url;
+                    }
+                    if (exp.image2_url) {
+                        document.getElementById('exp-image2-preview').innerHTML = `<div class="preview-img-container"><img src="${exp.image2_url}" class="preview-img"><div class="remove-img" onclick="removeExpImage2()">×</div></div>`;
+                        document.getElementById('exp-image2-url').value = exp.image2_url;
+                    }
                     document.getElementById('delete-exp-btn').style.display = 'inline-block';
                     document.getElementById('experience-modal').style.display = 'flex';
                 }
             });
         }
-        function removeExpImage1() { currentExpImage1 = ''; document.getElementById('exp-image1-preview').innerHTML = ''; document.getElementById('exp-image1-url').value = ''; }
-        function removeExpImage2() { currentExpImage2 = ''; document.getElementById('exp-image2-preview').innerHTML = ''; document.getElementById('exp-image2-url').value = ''; }
+        
+        function removeExpImage1() { document.getElementById('exp-image1-preview').innerHTML = ''; document.getElementById('exp-image1-url').value = ''; }
+        function removeExpImage2() { document.getElementById('exp-image2-preview').innerHTML = ''; document.getElementById('exp-image2-url').value = ''; }
+        
         async function uploadExpImage1(input) {
             const file = input.files[0];
             if (!file) return;
@@ -756,13 +884,13 @@
                 const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.success) {
-                    currentExpImage1 = data.url;
-                    document.getElementById('exp-image1-preview').innerHTML = `<div class="preview-img-container"><img src="${data.url}" class="preview-img"><div class="remove-img" onclick="removeExpImage1()">×</div></div>`;
                     document.getElementById('exp-image1-url').value = data.url;
+                    document.getElementById('exp-image1-preview').innerHTML = `<div class="preview-img-container"><img src="${data.url}" class="preview-img"><div class="remove-img" onclick="removeExpImage1()">×</div></div>`;
                     showToast('Image uploaded', 'success');
                 } else showToast('Upload failed', 'error');
             } catch(e) { showToast('Error uploading', 'error'); }
         }
+        
         async function uploadExpImage2(input) {
             const file = input.files[0];
             if (!file) return;
@@ -771,14 +899,15 @@
                 const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.success) {
-                    currentExpImage2 = data.url;
-                    document.getElementById('exp-image2-preview').innerHTML = `<div class="preview-img-container"><img src="${data.url}" class="preview-img"><div class="remove-img" onclick="removeExpImage2()">×</div></div>`;
                     document.getElementById('exp-image2-url').value = data.url;
+                    document.getElementById('exp-image2-preview').innerHTML = `<div class="preview-img-container"><img src="${data.url}" class="preview-img"><div class="remove-img" onclick="removeExpImage2()">×</div></div>`;
                     showToast('Image uploaded', 'success');
                 } else showToast('Upload failed', 'error');
             } catch(e) { showToast('Error uploading', 'error'); }
         }
+        
         function closeExperienceModal() { document.getElementById('experience-modal').style.display = 'none'; }
+        
         async function saveExperience() {
             const id = document.getElementById('exp-id').value;
             const data = {
@@ -799,6 +928,7 @@
                 else showToast(result.error || 'Failed', 'error');
             } catch(e) { showToast('Error saving', 'error'); }
         }
+        
         async function deleteExperience() {
             const id = document.getElementById('exp-id').value;
             if (!id || !confirm('Delete this experience?')) return;
@@ -809,7 +939,7 @@
                 else showToast('Failed to delete', 'error');
             } catch(e) { showToast('Error deleting', 'error'); }
         }
-        
+
         // ==================== DASHBOARD & BOOKINGS ====================
         async function loadDashboard() {
             try {
@@ -821,7 +951,7 @@
                     const pending = bookings.filter(b => b.booking_status === 'pending').length;
                     const confirmed = bookings.filter(b => b.booking_status === 'confirmed').length;
                     const cancelled = bookings.filter(b => b.booking_status === 'cancelled').length;
-                    const revenue = bookings.filter(b => b.booking_status === 'confirmed').reduce((s,b) => s + parseAmount(b.total_amount), 0);
+                    const revenue = bookings.filter(b => b.booking_status === 'confirmed').reduce((s,b) => s + (parseFloat(b.total_amount) || 0), 0);
                     document.getElementById('stats-grid').innerHTML = `
                         <div class="stat-card"><h3>Total</h3><div class="stat-number">${bookings.length}</div></div>
                         <div class="stat-card"><h3>Pending</h3><div class="stat-number">${pending}</div></div>
@@ -830,15 +960,17 @@
                         <div class="stat-card"><h3>Revenue</h3><div class="stat-number">${formatCurrency(revenue)}</div></div>
                     `;
                     displayRecentBookings(bookings.slice(0,5));
-                    loadRecentInvoices();
+                    loadInvoices();
                 }
             } catch(e) { console.error(e); showToast('Failed to load dashboard','error'); }
         }
+        
         function displayRecentBookings(bookings) {
             const container = document.getElementById('recent-bookings');
             if (!bookings.length) { container.innerHTML = '<p>No recent bookings</p>'; return; }
             container.innerHTML = bookings.map(b => `<div style="padding:12px; border-bottom:1px solid #e9ecef"><div><strong>${escapeHtml(b.guest_name)}</strong> <span class="badge badge-${b.booking_status}">${b.booking_status}</span></div><div>${b.check_in_date?.split('T')[0]} → ${b.check_out_date?.split('T')[0]}</div><div>${b.currency === 'MVR' ? 'MVR' : '$'}${b.total_amount} • ${b.total_nights} nights</div></div>`).join('');
         }
+        
         async function loadAllBookings() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings`);
@@ -849,61 +981,65 @@
                 }
             } catch(e) { showToast('Failed to load bookings','error'); }
         }
+        
         function displayBookingsTable(bookings) {
             const container = document.getElementById('all-bookings');
             if (!container) return;
             if (!bookings.length) { container.innerHTML = '<p style="text-align:center; padding:40px;">No bookings</p>'; return; }
-            container.innerHTML = `<table class="data-table"><thead><tr><th>Guest</th><th>Check In</th><th>Check Out</th><th>Nights</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
+            container.innerHTML = `<table class="data-table"><thead><tr><th>Guest</th><th>Check In</th><th>Check Out</th><th>Nights</th><th>Guests</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody>${
                 bookings.map(b => {
-                    const amount = parseAmount(b.total_amount);
+                    const amount = parseFloat(b.total_amount) || 0;
                     return `<tr>
                         <td><strong>${escapeHtml(b.guest_name)}</strong><br><small>${b.guest_phone || ''}</small></td>
                         <td>${b.check_in_date?.split('T')[0] || ''}</td>
                         <td>${b.check_out_date?.split('T')[0] || ''}</td>
                         <td>${b.total_nights}</td>
+                        <td>${b.number_of_guests || '?'}</td>
                         <td>${formatCurrency(amount)}</td>
                         <td><span class="badge badge-${b.booking_status}">${b.booking_status}</span></td>
                         <td class="action-buttons">
                             ${b.booking_status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="confirmBooking(${b.id})">Confirm</button><button class="delete-btn" onclick="cancelBooking(${b.id})">Cancel</button>` : 
                             b.booking_status === 'cancelled' ? `<button class="delete-btn" onclick="deleteBooking(${b.id})">Delete</button>` : 
                             `<button class="delete-btn" onclick="cancelBooking(${b.id})">Cancel</button>`}
-                        </td>
+                         </td>
                     </tr>`;
                 }).join('')
             }</tbody></table>`;
         }
+        
         function filterBookings(term) {
             if (!allBookingsCache) return;
             const filtered = allBookingsCache.filter(b => b.guest_name.toLowerCase().includes(term.toLowerCase()) || (b.guest_phone && b.guest_phone.includes(term)));
             displayBookingsTable(filtered);
         }
+        
         async function confirmBooking(id) { if(!confirm('Confirm booking?')) return; try { const r=await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'confirmed'})}); if(r.ok){ showToast('Confirmed','success'); loadAllBookings(); loadDashboard(); } } catch(e){ showToast('Error','error'); } }
         async function cancelBooking(id) { if(!confirm('Cancel booking?')) return; try { const r=await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'cancelled'})}); if(r.ok){ showToast('Cancelled','success'); loadAllBookings(); loadDashboard(); } } catch(e){ showToast('Error','error'); } }
         async function deleteBooking(id) { if(!confirm('Permanently delete?')) return; try { const r=await fetch(`${API_BASE_URL}/admin/bookings/${id}`,{method:'DELETE'}); if(r.ok){ showToast('Deleted','success'); loadAllBookings(); loadDashboard(); } } catch(e){ showToast('Error','error'); } }
-        
+
         // ==================== INVOICES ====================
         async function loadInvoices() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/invoices`);
                 const data = await res.json();
                 const container = document.getElementById('invoices-list');
-                if (!data.invoices || !data.invoices.length) { container.innerHTML = '<p>No invoices</p>'; return; }
-                container.innerHTML = data.invoices.map(inv => `
+                if (!data.invoices || !data.invoices.length) { if(container) container.innerHTML = '<p>No invoices</p>'; return; }
+                if(container) container.innerHTML = data.invoices.map(inv => `
                     <div style="padding:12px; border-bottom:1px solid #e9ecef; cursor:pointer" onclick="viewInvoice(${inv.id})">
                         <div style="display:flex; justify-content:space-between"><strong>${inv.invoice_number}</strong><span class="badge badge-${inv.status}">${inv.status}</span></div>
-                        <div>${escapeHtml(inv.guest_name)} • ${formatCurrency(parseAmount(inv.total_amount))}</div>
-                        <div style="font-size:0.85rem">Issued: ${inv.issue_date?.split('T')[0]}</div>
+                        <div>${escapeHtml(inv.guest_name)} • ${formatCurrency(parseFloat(inv.total_amount))}</div>
                     </div>
                 `).join('');
                 const recent = document.getElementById('recent-invoices');
-                if(recent) recent.innerHTML = data.invoices.slice(0,5).map(inv => `
+                if(recent && data.invoices) recent.innerHTML = data.invoices.slice(0,5).map(inv => `
                     <div style="padding:12px; border-bottom:1px solid #e9ecef; cursor:pointer" onclick="viewInvoice(${inv.id})">
                         <div style="display:flex; justify-content:space-between"><strong>${inv.invoice_number}</strong><span class="badge badge-${inv.status}">${inv.status}</span></div>
-                        <div>${escapeHtml(inv.guest_name)} • ${formatCurrency(parseAmount(inv.total_amount))}</div>
+                        <div>${escapeHtml(inv.guest_name)} • ${formatCurrency(parseFloat(inv.total_amount))}</div>
                     </div>
                 `).join('');
             } catch(e) { console.error(e); }
         }
+        
         async function viewInvoice(invoiceId) {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`);
@@ -914,31 +1050,33 @@
                 } else showToast('Failed to load invoice', 'error');
             } catch(e) { showToast('Error loading invoice', 'error'); }
         }
+        
         function displayInvoiceDetails(invoice, items, payments) {
             const itemsHtml = items.map(item => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #e9ecef;"><span>${escapeHtml(item.description)}</span><span>${item.quantity} × ${formatCurrency(item.unit_price)} = ${formatCurrency(item.amount)}</span></div>`).join('');
-            const paymentsHtml = payments.map(p => `<div class="payment-item"><span>${formatCurrency(p.amount)}</span><span>${p.payment_method}</span><span>${p.payment_date}</span></div>`).join('');
+            const paymentsHtml = payments.map(p => `<div style="display:flex; justify-content:space-between; padding:4px 0;"><span>${formatCurrency(p.amount)}</span><span>${p.payment_method}</span><span>${p.payment_date}</span></div>`).join('');
             const balance = invoice.total_amount - (invoice.amount_paid || 0);
             document.getElementById('invoice-view-content').innerHTML = `
                 <div><strong>Invoice:</strong> ${invoice.invoice_number}</div>
                 <div><strong>Customer:</strong> ${escapeHtml(invoice.guest_name)}</div>
                 <div><strong>Status:</strong> <span class="badge badge-${invoice.status}">${invoice.status}</span></div>
                 <div><strong>Date:</strong> ${invoice.issue_date?.split('T')[0]}</div>
-                <div><strong>Due Date:</strong> ${invoice.due_date?.split('T')[0]}</div>
                 <h3 style="margin:15px 0 10px;">Items</h3>
                 ${itemsHtml}
-                <div class="invoice-summary">
-                    <div class="summary-row"><span>Subtotal</span><span>${formatCurrency(invoice.subtotal)}</span></div>
-                    <div class="summary-row"><span>Tax (${invoice.tax_rate}%)</span><span>${formatCurrency(invoice.tax_amount)}</span></div>
-                    <div class="summary-row total"><span>Total</span><span>${formatCurrency(invoice.total_amount)}</span></div>
-                    <div class="summary-row"><span>Paid</span><span>${formatCurrency(invoice.amount_paid || 0)}</span></div>
-                    <div class="summary-row"><span>Balance Due</span><span>${formatCurrency(balance)}</span></div>
+                <div style="background: var(--gray-100); padding: 16px; border-radius: var(--radius); margin-top: 16px;">
+                    <div style="display:flex; justify-content:space-between; padding: 8px 0;"><span>Subtotal</span><span>${formatCurrency(invoice.subtotal)}</span></div>
+                    <div style="display:flex; justify-content:space-between; padding: 8px 0;"><span>Tax (${invoice.tax_rate}%)</span><span>${formatCurrency(invoice.tax_amount)}</span></div>
+                    <div style="display:flex; justify-content:space-between; padding: 8px 0; font-weight:700; border-top:1px solid var(--gray-300); margin-top:8px; padding-top:12px;"><span>Total</span><span>${formatCurrency(invoice.total_amount)}</span></div>
+                    <div style="display:flex; justify-content:space-between; padding: 8px 0;"><span>Paid</span><span>${formatCurrency(invoice.amount_paid || 0)}</span></div>
+                    <div style="display:flex; justify-content:space-between; padding: 8px 0;"><span>Balance Due</span><span>${formatCurrency(balance)}</span></div>
                 </div>
                 ${payments.length ? `<h3 style="margin:15px 0 10px;">Payments</h3>${paymentsHtml}` : ''}
                 <input type="hidden" id="current-invoice-id" value="${invoice.id}">
             `;
             document.getElementById('invoice-view-modal').style.display = 'flex';
         }
+        
         function closeInvoiceViewModal() { document.getElementById('invoice-view-modal').style.display = 'none'; currentInvoiceData = null; }
+        
         async function recordPayment() {
             const invoiceId = document.getElementById('current-invoice-id')?.value;
             if (!invoiceId) return;
@@ -956,6 +1094,7 @@
                 else showToast('Failed', 'error');
             } catch(e) { showToast('Error', 'error'); }
         }
+        
         async function updateInvoiceStatus() {
             const invoiceId = document.getElementById('current-invoice-id')?.value;
             if (!invoiceId) return;
@@ -971,6 +1110,7 @@
                 else showToast('Failed', 'error');
             } catch(e) { showToast('Error', 'error'); }
         }
+        
         async function deleteInvoice() {
             const invoiceId = document.getElementById('current-invoice-id')?.value;
             if (!invoiceId || !confirm('Delete this invoice?')) return;
@@ -981,40 +1121,28 @@
                 else showToast('Failed', 'error');
             } catch(e) { showToast('Error', 'error'); }
         }
-        function printInvoice() { window.print(); }
         
-        // ==================== STANDALONE INVOICE BUILDER ====================
-        function addInvoiceItem() {
-            const id = Date.now();
-            const html = `<div id="item-${id}" style="margin-bottom:10px; padding:10px; background:#f8f9fa; border-radius:8px;"><div class="form-row"><input type="text" class="item-desc" placeholder="Description" style="flex:2;"><input type="number" class="item-qty" placeholder="Qty" value="1" style="width:80px;"><input type="number" class="item-price" placeholder="Price" step="0.01" style="width:100px;"><button class="delete-btn" onclick="removeInvoiceItem(${id})">✗</button></div></div>`;
-            document.getElementById('invoice-items-container').insertAdjacentHTML('beforeend', html);
-            attachItemListeners(id);
-            updateInvoiceTotals();
-        }
-        function attachItemListeners(id) {
-            const container = document.getElementById(`item-${id}`);
-            if (container) {
-                container.querySelectorAll('input').forEach(input => input.addEventListener('input', updateInvoiceTotals));
-            }
-        }
-        function removeInvoiceItem(id) { document.getElementById(`item-${id}`).remove(); updateInvoiceTotals(); }
+        function printInvoice() { window.print(); }
+
+        // ==================== INVOICE BUILDER ====================
         function renderInvoiceItems() {
             const container = document.getElementById('invoice-items-container');
             if(!container) return;
-            container.innerHTML = '';
-            currentInvoiceItems.forEach(item => {
-                const html = `<div id="item-${item.id}" style="margin-bottom:10px; padding:10px; background:#f8f9fa; border-radius:8px;"><div class="form-row"><input type="text" class="item-desc" placeholder="Description" value="${escapeHtml(item.description)}" style="flex:2;"><input type="number" class="item-qty" placeholder="Qty" value="${item.quantity}" style="width:80px;"><input type="number" class="item-price" placeholder="Price" step="0.01" value="${item.unit_price}" style="width:100px;"><button class="delete-btn" onclick="removeInvoiceItem(${item.id})">✗</button></div></div>`;
-                container.insertAdjacentHTML('beforeend', html);
-                attachItemListeners(item.id);
-            });
+            if(!invoiceItems.length) { container.innerHTML = '<p style="text-align:center; padding:20px;">No items added</p>'; return; }
+            container.innerHTML = invoiceItems.map(item => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--gray-100); border-radius:var(--radius); margin-bottom:8px;">
+                    <div style="flex:2;"><strong>${escapeHtml(item.description)}</strong></div>
+                    <div style="width:60px; text-align:center;">${item.quantity}</div>
+                    <div style="width:100px; text-align:right;">${formatCurrency(item.unit_price)}</div>
+                    <div style="width:100px; text-align:right;">${formatCurrency(item.amount)}</div>
+                    <button class="delete-btn" onclick="removeInvoiceItem(${item.id})" style="margin-left:8px;">✗</button>
+                </div>
+            `).join('');
+            updateInvoiceTotals();
         }
+        
         function updateInvoiceTotals() {
-            let subtotal = 0;
-            document.querySelectorAll('#invoice-items-container [class*="item-"]').forEach(container => {
-                const qty = parseFloat(container.querySelector('.item-qty')?.value) || 0;
-                const price = parseFloat(container.querySelector('.item-price')?.value) || 0;
-                subtotal += qty * price;
-            });
+            const subtotal = invoiceItems.reduce((sum, item) => sum + item.amount, 0);
             const taxRate = parseFloat(document.getElementById('invoice-tax-rate').value) || 0;
             const tax = subtotal * taxRate / 100;
             const total = subtotal + tax;
@@ -1022,58 +1150,54 @@
             document.getElementById('invoice-tax-amount').textContent = formatCurrency(tax);
             document.getElementById('invoice-total').textContent = formatCurrency(total);
         }
-        function resetInvoice() {
-            currentInvoiceItems = [];
-            document.getElementById('invoice-customer-name').value = '';
-            document.getElementById('invoice-customer-email').value = '';
-            document.getElementById('invoice-customer-phone').value = '';
-            document.getElementById('invoice-tax-rate').value = '0';
+        
+        function removeInvoiceItem(id) { invoiceItems = invoiceItems.filter(item => item.id !== id); renderInvoiceItems(); }
+        
+        function addInvoiceItem(description, quantity, unitPrice) {
+            invoiceItems.push({ id: Date.now(), description, quantity, unit_price: unitPrice, amount: quantity * unitPrice });
             renderInvoiceItems();
-            updateInvoiceTotals();
         }
+        
+        function resetInvoice() { invoiceItems = []; document.getElementById('invoice-customer-name').value = ''; document.getElementById('invoice-customer-email').value = ''; document.getElementById('invoice-customer-phone').value = ''; document.getElementById('invoice-tax-rate').value = '0'; renderInvoiceItems(); }
+        
         function addRoomItem() {
             const nights = parseInt(document.getElementById('room-select').value);
             if(!nights) { showToast('Select nights','error'); return; }
-            const rate = 90;
-            addInvoiceItem({ id: Date.now(), description: `Room Rent - ${nights} night(s)`, quantity: nights, unit_price: rate, amount: nights * rate });
+            addInvoiceItem(`Room Rent - ${nights} night(s)`, nights, 90);
             document.getElementById('room-select').value = '';
         }
+        
         function addMinibarItem() {
             const idx = document.getElementById('minibar-select').value;
             if(!idx) { showToast('Select item','error'); return; }
             const item = minibarItems[parseInt(idx)];
             const price = currentCurrency === 'USD' ? item.price_usd : item.price_mvr / exchangeRate;
             const qty = parseInt(document.getElementById('minibar-qty').value) || 1;
-            addInvoiceItem({ id: Date.now(), description: item.name, quantity: qty, unit_price: price, amount: qty * price });
+            addInvoiceItem(item.name, qty, price);
             document.getElementById('minibar-select').value = ''; document.getElementById('minibar-qty').value = '1';
         }
+        
         function addCustomItem() {
             const desc = document.getElementById('custom-desc').value;
             if(!desc) { showToast('Enter description','error'); return; }
             const price = parseFloat(document.getElementById('custom-price').value);
             if(isNaN(price) || price <= 0) { showToast('Valid price required','error'); return; }
             const qty = parseInt(document.getElementById('custom-qty').value) || 1;
-            addInvoiceItem({ id: Date.now(), description: desc, quantity: qty, unit_price: price, amount: qty * price });
+            addInvoiceItem(desc, qty, price);
             document.getElementById('custom-desc').value = ''; document.getElementById('custom-price').value = ''; document.getElementById('custom-qty').value = '1';
         }
+        
         async function createStandaloneInvoice() {
             const name = document.getElementById('invoice-customer-name').value;
             if(!name) { showToast('Customer name required','error'); return; }
-            const items = [];
-            document.querySelectorAll('#invoice-items-container [class*="item-"]').forEach(container => {
-                const desc = container.querySelector('.item-desc')?.value;
-                const qty = parseFloat(container.querySelector('.item-qty')?.value);
-                const price = parseFloat(container.querySelector('.item-price')?.value);
-                if(desc && qty>0 && price>0) items.push({ description: desc, quantity: qty, unit_price: price });
-            });
-            if(!items.length) { showToast('Add at least one item','error'); return; }
-            const subtotal = items.reduce((s,i) => s + (i.quantity * i.unit_price),0);
+            if(!invoiceItems.length) { showToast('Add at least one item','error'); return; }
+            const subtotal = invoiceItems.reduce((s,i) => s + i.amount, 0);
             const taxRate = parseFloat(document.getElementById('invoice-tax-rate').value) || 0;
             const data = {
                 guest_name: name,
                 guest_email: document.getElementById('invoice-customer-email').value,
                 guest_phone: document.getElementById('invoice-customer-phone').value,
-                items: items,
+                items: invoiceItems.map(i => ({ description: i.description, quantity: i.quantity, unit_price: i.unit_price })),
                 tax_rate: taxRate,
                 subtotal: subtotal,
                 tax_amount: subtotal * taxRate / 100,
@@ -1088,35 +1212,33 @@
                 else showToast(result.error || 'Failed','error');
             } catch(e) { showToast('Network error','error'); }
         }
+        
         function previewStandaloneInvoice() {
             const name = document.getElementById('invoice-customer-name').value || 'Guest';
-            const subtotal = currentInvoiceItems.reduce((s,i) => s + i.amount,0);
+            const subtotal = invoiceItems.reduce((s,i) => s + i.amount, 0);
             const taxRate = parseFloat(document.getElementById('invoice-tax-rate').value) || 0;
             const tax = subtotal * taxRate / 100;
             const total = subtotal + tax;
-            const previewHtml = `<div style="font-family:'Inter'"><div style="text-align:center; margin-bottom:30px"><h1 style="color:#006994">HTM Rentals</h1><p>Malas Residence, Hulhumale' Phase 2<br>+960 9373113 | htmrentalss@gmail.com</p></div><div><p><strong>Bill To:</strong> ${escapeHtml(name)}<br><strong>Date:</strong> ${new Date().toLocaleDateString()}</p></div><table style="width:100%; border-collapse:collapse"><thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th></tr></thead><tbody>${currentInvoiceItems.map(i => `<tr><td>${escapeHtml(i.description)}</td><td>${i.quantity}</td><td>${formatCurrency(i.unit_price)}</td><td>${formatCurrency(i.amount)}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="3"><strong>Subtotal</strong></td><td>${formatCurrency(subtotal)}</td></tr>${taxRate>0?`<tr><td colspan="3"><strong>Tax (${taxRate}%)</strong></td><td>${formatCurrency(tax)}</td></tr>`:''}<tr><td colspan="3"><strong>Total</strong></td><td><strong>${formatCurrency(total)}</strong></td></tr></tfoot></table><div style="text-align:center; margin-top:40px"><p>Thank you for choosing HTM Rentals</p></div></div>`;
+            const previewHtml = `<div style="font-family:'Inter'"><div style="text-align:center; margin-bottom:30px"><h1 style="color:#006994">HTM Rentals</h1><p>Malas Residence, Hulhumale' Phase 2<br>+960 9373113 | htmrentalss@gmail.com</p></div><div><p><strong>Bill To:</strong> ${escapeHtml(name)}<br><strong>Date:</strong> ${new Date().toLocaleDateString()}</p></div><table style="width:100%; border-collapse:collapse"><thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th></tr></thead><tbody>${invoiceItems.map(i => `<tr><td>${escapeHtml(i.description)}</td><td>${i.quantity}</td><td>${formatCurrency(i.unit_price)}</td><td>${formatCurrency(i.amount)}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="3"><strong>Subtotal</strong></td><td>${formatCurrency(subtotal)}</td></tr>${taxRate>0?`<tr><td colspan="3"><strong>Tax (${taxRate}%)</strong></td><td>${formatCurrency(tax)}</td></tr>`:''}<tr><td colspan="3"><strong>Total</strong></td><td><strong>${formatCurrency(total)}</strong></td></tr></tfoot></table><div style="text-align:center; margin-top:40px"><p>Thank you for choosing HTM Rentals</p></div></div>`;
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.style.display = 'flex';
             modal.innerHTML = `<div class="modal-content" style="max-width:600px;"><div class="modal-header"><h2>Invoice Preview</h2><button onclick="this.closest('.modal').remove()" style="background:none; border:none; font-size:24px;">&times;</button></div><div class="modal-body">${previewHtml}</div><div class="modal-footer"><button class="btn btn-primary" onclick="window.print()">Print</button><button class="btn btn-success" onclick="alert('Use Save as PDF')">Download PDF</button></div></div>`;
             document.body.appendChild(modal);
         }
-        
-        // ==================== MINIBAR CATALOG ====================
-        let minibarItems = [
-            { name: 'Water Bottle (500ml)', price_usd: 2, price_mvr: 30 },
-            { name: 'Soft Drink (Can)', price_usd: 3, price_mvr: 45 },
-            { name: 'Juice', price_usd: 4, price_mvr: 60 },
-            { name: 'Beer (Local)', price_usd: 5, price_mvr: 75 },
-            { name: 'Beer (Imported)', price_usd: 7, price_mvr: 105 },
-            { name: 'Wine (Glass)', price_usd: 8, price_mvr: 120 },
-            { name: 'Chocolate Bar', price_usd: 3, price_mvr: 45 },
-            { name: 'Chips', price_usd: 2.5, price_mvr: 38 }
-        ];
+
+        // ==================== MINIBAR ====================
         function renderMinibarCatalog() {
             const c = document.getElementById('minibar-catalog-list');
-            if(c) c.innerHTML = `<table class="data-table"><thead><tr><th>Item</th><th>USD</th><th>MVR</th><th></th></tr></thead><tbody>${minibarItems.map((i,idx) => `<tr><td>${escapeHtml(i.name)}</td><td>$${i.price_usd.toFixed(2)}</td><td>MVR ${i.price_mvr.toFixed(2)}</td><td><button class="delete-btn" onclick="deleteMinibarItem(${idx})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody></table>`;
+            if(c) {
+                const select = document.getElementById('minibar-select');
+                if(select) {
+                    select.innerHTML = '<option value="">Select item</option>' + minibarItems.map((i,idx) => `<option value="${idx}">${i.name} - ${currentCurrency === 'USD' ? `$${i.price_usd}` : `MVR ${i.price_mvr}`}</option>`).join('');
+                }
+                c.innerHTML = `<table class="data-table"><thead><tr><th>Item</th><th>USD</th><th>MVR</th><th></th></tr></thead><tbody>${minibarItems.map((i,idx) => `<tr><td>${escapeHtml(i.name)}</td><td>$${i.price_usd.toFixed(2)}</td><td>MVR ${i.price_mvr.toFixed(2)}</td><td><button class="delete-btn" onclick="deleteMinibarItem(${idx})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody></table>`;
+            }
         }
+        
         function addMinibarCatalogItem() {
             const name = prompt('Item name:'); if(!name) return;
             const usd = parseFloat(prompt('USD price:')); if(isNaN(usd)) return;
@@ -1125,8 +1247,9 @@
             renderMinibarCatalog();
             showToast('Item added','success');
         }
-        function deleteMinibarItem(idx) { if(confirm('Delete?')) { minibarItems.splice(idx,1); renderMinibarCatalog(); showToast('Deleted','success'); } }
         
+        function deleteMinibarItem(idx) { if(confirm('Delete?')) { minibarItems.splice(idx,1); renderMinibarCatalog(); showToast('Deleted','success'); } }
+
         // ==================== BLOCK DATES ====================
         async function loadBlockedDates() {
             try {
@@ -1136,6 +1259,7 @@
                 if(container) container.innerHTML = (data.blocked_dates||[]).length ? data.blocked_dates.map(b => `<div class="blocked-item"><div><strong>${b.start_date === b.end_date ? b.start_date : `${b.start_date} to ${b.end_date}`}</strong><div style="font-size:0.85rem">${b.reason||''}</div></div><button class="delete-btn" onclick="unblockDate(${b.id})">Unblock</button></div>`).join('') : '<p>No blocked dates</p>';
             } catch(e){ console.error(e); }
         }
+        
         async function blockSingleDate() {
             const date = document.getElementById('block-single-date').value;
             if(!date) { showToast('Select date','error'); return; }
@@ -1145,6 +1269,7 @@
                 else showToast('Failed','error');
             } catch(e){ showToast('Error','error'); }
         }
+        
         async function blockDateRange() {
             const start = document.getElementById('block-range-start').value, end = document.getElementById('block-range-end').value;
             if(!start||!end) { showToast('Select dates','error'); return; }
@@ -1155,6 +1280,7 @@
                 else showToast('Failed','error');
             } catch(e){ showToast('Error','error'); }
         }
+        
         async function unblockDate(id) {
             if(!confirm('Unblock this date?')) return;
             try {
@@ -1162,8 +1288,8 @@
                 if(res.ok) { showToast('Unblocked','success'); loadBlockedDates(); }
             } catch(e){ showToast('Error','error'); }
         }
-        
-        // ==================== NAVIGATION & INIT ====================
+
+        // ==================== NAVIGATION ====================
         function showSection(section) {
             const sections = ['dashboard','units','hero','promotion','experiences','bookings','invoices','new-invoice','minibar','block-dates','settings'];
             sections.forEach(s => { const el = document.getElementById(`${s}-section`); if(el) el.style.display = 'none'; });
@@ -1194,6 +1320,7 @@
                 loadSettings(); setCurrency('USD'); showSection('dashboard');
             } else { const err = document.getElementById('login-error'); err.textContent = 'Invalid credentials'; err.style.display = 'block'; setTimeout(()=>err.style.display='none',3000); }
         }
+        
         function handleLogout() { sessionStorage.removeItem('adminLoggedIn'); document.getElementById('login-wrapper').style.display = 'flex'; document.getElementById('admin-container').style.display = 'none'; }
         
         document.getElementById('menu-toggle')?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
