@@ -81,6 +81,7 @@
             color: var(--ocean);
             text-decoration: none;
             font-weight: 500;
+            font-size: 1.2rem;
             transition: all 0.3s ease;
         }
 
@@ -255,7 +256,9 @@
         .description {
             margin-bottom: 32px;
             line-height: 1.6;
-            color: #444;
+            color: #4a4a4a;
+            font-size: 16px;
+            font-weight: 400;
         }
 
         .amenities-section {
@@ -265,6 +268,7 @@
         .amenities-section h3 {
             font-family: 'Playfair Display', serif;
             font-size: 1.2rem;
+            font-weight: 500;
             color: var(--navy);
             margin-bottom: 16px;
         }
@@ -290,6 +294,8 @@
 
         .amenity span {
             font-size: 14px;
+            font-weight: 400;
+            color: #333;
         }
 
         .external-buttons {
@@ -636,7 +642,7 @@
                 <img src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="HTM Rentals">
                 <div class="logo-text"><span>HTM</span><span>Rentals</span></div>
             </a>
-            <a href="index.html" class="back-link">← Back to Units</a>
+            <a href="index.html" class="back-link">←</a>
         </div>
         <div id="content"><div class="loading">Loading unit details...</div></div>
     </div>
@@ -681,6 +687,7 @@
                     unit.max_adults = unit.max_adults || unit.max_guests || 2;
                     unit.max_children = unit.max_children || 0;
                     unit.bathrooms = unit.bathrooms || 1;
+                    unit.beds = unit.beds || unit.bedrooms || 1;
                     
                     galleryImages = [];
                     if (unit.featured_image) galleryImages.push(unit.featured_image);
@@ -1053,7 +1060,7 @@
                 externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">Booking.com</a>`;
             }
             
-            // Calculate USD price (assuming exchange rate, or use unit.rate_usd if available)
+            // Calculate USD price
             const usdRate = unit.rate_usd || (unit.rate_mvr / 15.42).toFixed(2);
             
             // Generate guest options
@@ -1100,11 +1107,23 @@
                             </div>
                             <div class="feature">
                                 <i class="fas fa-bed"></i>
-                                <div class="feature-text"><strong>${unit.bedrooms} bedroom${unit.bedrooms !== 1 ? 's' : ''}</strong> ${unit.bedrooms} bed${unit.bedrooms !== 1 ? 's' : ''}</div>
+                                <div class="feature-text">
+                                    <strong>${unit.bedrooms} bedroom${unit.bedrooms !== 1 ? 's' : ''}</strong>
+                                    <div class="capacity-detail">private</div>
+                                </div>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-bed"></i>
+                                <div class="feature-text">
+                                    <strong>${unit.beds} bed${unit.beds !== 1 ? 's' : ''}</strong>
+                                </div>
                             </div>
                             <div class="feature">
                                 <i class="fas fa-bath"></i>
-                                <div class="feature-text"><strong>${unit.bathrooms} bathroom${unit.bathrooms !== 1 ? 's' : ''}</strong> Private</div>
+                                <div class="feature-text">
+                                    <strong>${unit.bathrooms} bathroom${unit.bathrooms !== 1 ? 's' : ''}</strong>
+                                    <div class="capacity-detail">private</div>
+                                </div>
                             </div>
                         </div>
                         
