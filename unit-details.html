@@ -38,62 +38,90 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 16px;
         }
 
+        /* Header - No logo, just toggle left and back arrow right */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid var(--gray-border);
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 16px;
+            padding: 16px 0;
+            margin-bottom: 16px;
         }
 
-        .logo {
+        /* Toggle Styles */
+        .currency-toggle {
+            display: flex;
+            gap: 16px;
+            background: transparent;
+        }
+
+        .toggle-option {
             display: flex;
             align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .logo img {
-            height: 40px;
-        }
-
-        .logo-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
-        .logo-text span:first-child {
-            color: var(--navy);
-        }
-
-        .logo-text span:last-child {
-            color: var(--turquoise);
-        }
-
-        .back-link {
-            color: var(--ocean);
-            text-decoration: none;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            padding: 8px 0;
+            font-size: 14px;
             font-weight: 500;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .back-link:hover {
+        .toggle-option svg {
+            width: 20px;
+            height: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-option.local-active {
             color: var(--turquoise);
+        }
+
+        .toggle-option.local-active svg path {
+            fill: var(--turquoise);
+            stroke: var(--navy);
+        }
+
+        .toggle-option.foreign-active {
+            color: var(--turquoise);
+        }
+
+        .toggle-option.foreign-active svg path {
+            fill: var(--turquoise);
+            stroke: var(--navy);
+        }
+
+        .toggle-option:not(.local-active):not(.foreign-active) {
+            color: var(--gray-text);
+        }
+
+        .toggle-option:not(.local-active):not(.foreign-active) svg path {
+            fill: none;
+            stroke: var(--gray-text);
+        }
+
+        /* Back Arrow */
+        .back-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            padding: 8px;
+        }
+
+        .back-arrow svg {
+            width: 28px;
+            height: 28px;
         }
 
         .unit-layout {
             display: grid;
             grid-template-columns: 1fr 380px;
             gap: 48px;
-            margin-top: 24px;
+            margin-top: 8px;
         }
 
         @media (max-width: 900px) {
@@ -637,13 +665,33 @@
 </head>
 <body>
     <div class="container">
+        <!-- Header: Toggle left, Back arrow right -->
         <div class="header">
-            <a href="index.html" class="logo">
-                <img src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="HTM Rentals">
-                <div class="logo-text"><span>HTM</span><span>Rentals</span></div>
+            <div class="currency-toggle">
+                <button id="toggle-local" class="toggle-option local-active" onclick="setMode('local')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 20L22 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M12 4L5 14L12 11L19 14L12 4Z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+                        <path d="M12 11V20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Local</span>
+                </button>
+                <button id="toggle-foreign" class="toggle-option" onclick="setMode('foreign')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 16L14 12L21 8L21 16Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                        <path d="M14 12L3 12L5 9H8L10 12H14Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                        <path d="M14 12L12 15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Foreign</span>
+                </button>
+            </div>
+            <a href="index.html" class="back-arrow">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="#006994" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
             </a>
-            <a href="index.html" class="back-link">←</a>
         </div>
+
         <div id="content"><div class="loading">Loading unit details...</div></div>
     </div>
 
@@ -665,6 +713,8 @@
         let currentImageIndex = 0;
         let slideInterval = null;
 
+        let currentMode = 'local';
+
         async function loadUnit() {
             if (!unitId) {
                 document.getElementById('content').innerHTML = '<div class="card"><p>No unit selected. <a href="index.html">Go back</a></p></div>';
@@ -683,11 +733,11 @@
                     }
                     unit.blocked_dates = data.blocked_dates || [];
                     
-                    // Set defaults for new fields if not present
                     unit.max_adults = unit.max_adults || unit.max_guests || 2;
                     unit.max_children = unit.max_children || 0;
                     unit.bathrooms = unit.bathrooms || 1;
                     unit.beds = unit.beds || unit.bedrooms || 1;
+                    unit.bed_types = unit.bed_types || '';
                     
                     galleryImages = [];
                     if (unit.featured_image) galleryImages.push(unit.featured_image);
@@ -1024,11 +1074,56 @@
             }
         }
 
+        function setMode(mode) {
+            currentMode = mode;
+            
+            const localBtn = document.getElementById('toggle-local');
+            const foreignBtn = document.getElementById('toggle-foreign');
+            
+            if (mode === 'local') {
+                localBtn.classList.add('local-active');
+                localBtn.classList.remove('foreign-active');
+                foreignBtn.classList.remove('foreign-active');
+                foreignBtn.classList.remove('local-active');
+                // Update SVG fills
+                const localSvg = localBtn.querySelector('svg');
+                const foreignSvg = foreignBtn.querySelector('svg');
+                localSvg.querySelectorAll('path').forEach(p => {
+                    if (p.getAttribute('fill') !== 'none') {
+                        p.setAttribute('fill', '#40B5AD');
+                    }
+                    p.setAttribute('stroke', '#0A2540');
+                });
+                foreignSvg.querySelectorAll('path').forEach(p => {
+                    p.setAttribute('fill', 'none');
+                    p.setAttribute('stroke', '#6C757D');
+                });
+            } else {
+                foreignBtn.classList.add('foreign-active');
+                foreignBtn.classList.remove('local-active');
+                localBtn.classList.remove('foreign-active');
+                localBtn.classList.remove('local-active');
+                const localSvg = localBtn.querySelector('svg');
+                const foreignSvg = foreignBtn.querySelector('svg');
+                localSvg.querySelectorAll('path').forEach(p => {
+                    p.setAttribute('fill', 'none');
+                    p.setAttribute('stroke', '#6C757D');
+                });
+                foreignSvg.querySelectorAll('path').forEach(p => {
+                    if (p.getAttribute('fill') !== 'none') {
+                        p.setAttribute('fill', '#40B5AD');
+                    }
+                    p.setAttribute('stroke', '#0A2540');
+                });
+            }
+            
+            renderUnitDetails();
+        }
+
         function renderUnitDetails() {
             const defaultAmenities = ['Free WiFi', 'Smart TV', 'Air Conditioning', 'Kitchen', 'Tea & Coffee', 'Hot Water'];
             const amenitiesList = (unit.amenities && unit.amenities.length) ? unit.amenities : defaultAmenities;
             
-            // Build gallery slides
             let slidesHtml = '';
             let dotsHtml = '';
             if (galleryImages.length) {
@@ -1045,7 +1140,6 @@
                 slidesHtml = `<div class="gallery-slide active"><img src="https://via.placeholder.com/800x600?text=HTM+Rentals" alt="Placeholder"></div>`;
             }
             
-            // External buttons - only show if URL exists and is not empty
             let externalButtonsHtml = '';
             if (unit.airbnb_url && unit.airbnb_url.trim() !== '') {
                 externalButtonsHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb"></i> Airbnb</a>`;
@@ -1060,10 +1154,10 @@
                 externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">Booking.com</a>`;
             }
             
-            // Calculate USD price
+            const foreignInquiryHtml = `<button class="ext-btn" style="background:var(--ocean); color:white;" onclick="window.open('https://wa.me/9609373113?text=I%27m%20interested%20in%20direct%20booking%20for%20${encodeURIComponent(unit.unit_name)}%20with%20crypto/cash', '_blank')"><i class="fab fa-whatsapp"></i> Direct Inquiry (Crypto/Cash)</button>`;
+            
             const usdRate = unit.rate_usd || (unit.rate_mvr / 15.42).toFixed(2);
             
-            // Generate guest options
             const maxAdults = unit.max_adults || unit.max_guests;
             const maxChildren = unit.max_children || 0;
             const maxTotal = unit.max_guests;
@@ -1116,6 +1210,7 @@
                                 <i class="fas fa-bed"></i>
                                 <div class="feature-text">
                                     <strong>${unit.beds} bed${unit.beds !== 1 ? 's' : ''}</strong>
+                                    ${unit.bed_types ? `<div class="capacity-detail">${escapeHtml(unit.bed_types)}</div>` : ''}
                                 </div>
                             </div>
                             <div class="feature">
@@ -1138,15 +1233,19 @@
                             </div>
                         </div>
                         
-                        ${externalButtonsHtml ? `<div class="external-buttons">${externalButtonsHtml}</div>` : ''}
+                        <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};">
+                            <div class="external-buttons">
+                                ${externalButtonsHtml || '<p style="color: var(--gray-text);">No external booking links available. Please contact us directly.</p>'}
+                                ${foreignInquiryHtml}
+                            </div>
+                        </div>
                     </div>
                     
                     <div>
                         <div class="booking-card">
                             <div class="price-display">
-                                <span class="price-mvr">MVR ${unit.rate_mvr}</span>
+                                <span id="price-display" class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span>
                                 <span class="price-nightly">/ night</span>
-                                <span class="price-usd">($${usdRate} USD)</span>
                             </div>
                             
                             <div class="calendar-section">
@@ -1176,53 +1275,60 @@
                                 </div>
                             </div>
                             
-                            <form id="booking-form">
-                                <div class="guest-fields">
+                            <div id="local-booking-form" style="display: ${currentMode === 'local' ? 'block' : 'none'};">
+                                <form id="booking-form">
+                                    <div class="guest-fields">
+                                        <div class="form-group">
+                                            <label>Adults</label>
+                                            <select id="adults" required>
+                                                ${adultOptions}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Children</label>
+                                            <select id="children">
+                                                ${childOptions}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
                                     <div class="form-group">
-                                        <label>Adults</label>
-                                        <select id="adults" required>
-                                            ${adultOptions}
-                                        </select>
+                                        <label>Full name</label>
+                                        <input type="text" id="name" placeholder="Your full name" required>
                                     </div>
+                                    
                                     <div class="form-group">
-                                        <label>Children</label>
-                                        <select id="children">
-                                            ${childOptions}
-                                        </select>
+                                        <label>Phone number</label>
+                                        <input type="tel" id="phone" placeholder="WhatsApp / Mobile number" required>
                                     </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>Full name</label>
-                                    <input type="text" id="name" placeholder="Your full name" required>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>Phone number</label>
-                                    <input type="tel" id="phone" placeholder="WhatsApp / Mobile number" required>
-                                </div>
-                                
-                                <div id="price-breakdown" class="price-breakdown" style="display:none;">
-                                    <div class="price-row">
-                                        <span>MVR ${unit.rate_mvr} × <span id="night-count">0</span> nights</span>
-                                        <span id="subtotal-mvr">MVR 0</span>
+                                    
+                                    <div id="price-breakdown" class="price-breakdown" style="display:none;">
+                                        <div class="price-row">
+                                            <span>MVR ${unit.rate_mvr} × <span id="night-count">0</span> nights</span>
+                                            <span id="subtotal-mvr">MVR 0</span>
+                                        </div>
+                                        <div class="price-row total">
+                                            <span>Total (MVR)</span>
+                                            <span id="total-mvr">MVR 0</span>
+                                        </div>
                                     </div>
-                                    <div class="price-row total">
-                                        <span>Total (MVR)</span>
-                                        <span id="total-mvr">MVR 0</span>
-                                    </div>
-                                </div>
-                                
-                                <div id="form-message" class="message"></div>
-                                
-                                <button type="submit" class="submit-btn">Request to book</button>
-                            </form>
+                                    
+                                    <div id="form-message" class="message"></div>
+                                    
+                                    <button type="submit" class="submit-btn">Request to book</button>
+                                </form>
+                                <hr>
+                                <p style="font-size: 12px; color: var(--gray-text); text-align: center; margin-top: 12px;">
+                                    <i class="fas fa-lock"></i> You won't be charged yet
+                                </p>
+                            </div>
                             
-                            <hr>
-                            
-                            <p style="font-size: 12px; color: var(--gray-text); text-align: center; margin-top: 12px;">
-                                <i class="fas fa-lock"></i> You won't be charged yet
-                            </p>
+                            <div id="foreign-message" style="display: ${currentMode === 'foreign' ? 'block' : 'none'}; text-align: center; padding: 20px;">
+                                <p style="color: var(--gray-text); margin-bottom: 16px;">For foreign guests, please book through our partner platforms or contact us directly for crypto/cash payments.</p>
+                                <p style="font-size: 12px; color: var(--gray-text);">
+                                    <i class="fab fa-bitcoin"></i> We accept USDT, BTC, and major cryptocurrencies
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1240,7 +1346,6 @@
             });
             document.getElementById('booking-form')?.addEventListener('submit', submitBooking);
             
-            // Make functions global for onclick
             window.nextImage = nextImage;
             window.prevImage = prevImage;
             window.goToImage = goToImage;
