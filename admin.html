@@ -253,22 +253,16 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Bedrooms</label>
-                        <input type="number" id="unit-bedrooms" value="1" placeholder="Number of bedrooms">
+                        <input type="number" id="unit-beds" value="1" placeholder="Number of bedrooms">
                     </div>
                     <div class="form-group">
                         <label>Beds</label>
-                        <input type="number" id="unit-beds" value="1" placeholder="Number of beds">
+                        <input type="number" id="unit-beds-count" value="1" placeholder="Number of beds">
                     </div>
                     <div class="form-group">
                         <label>Bathrooms</label>
                         <input type="number" id="unit-bathrooms" step="0.5" value="1" placeholder="1.0">
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Bed Types (e.g., 1 double bed • 1 single bed)</label>
-                    <input type="text" id="unit-bed-types" placeholder="1 double bed • 1 single bed">
-                    <small>Optional - displayed under bed count</small>
                 </div>
                 
                 <div class="form-group">
@@ -475,10 +469,9 @@
             document.getElementById('unit-guests').value = '4';
             document.getElementById('unit-max-adults').value = '4';
             document.getElementById('unit-max-children').value = '2';
-            document.getElementById('unit-bedrooms').value = '1';
             document.getElementById('unit-beds').value = '1';
+            document.getElementById('unit-beds-count').value = '1';
             document.getElementById('unit-bathrooms').value = '1';
-            document.getElementById('unit-bed-types').value = '';
             document.getElementById('unit-description').value = '';
             document.getElementById('unit-image').value = '';
             document.getElementById('unit-amenities').value = '';
@@ -504,10 +497,9 @@
             document.getElementById('unit-guests').value = unit.max_guests || 4;
             document.getElementById('unit-max-adults').value = unit.max_adults || unit.max_guests || 4;
             document.getElementById('unit-max-children').value = unit.max_children || 0;
-            document.getElementById('unit-bedrooms').value = unit.bedrooms || 1;
-            document.getElementById('unit-beds').value = unit.beds || unit.bedrooms || 1;
+            document.getElementById('unit-beds').value = unit.bedrooms || 1;
+            document.getElementById('unit-beds-count').value = unit.beds || unit.bedrooms || 1;
             document.getElementById('unit-bathrooms').value = unit.bathrooms || 1;
-            document.getElementById('unit-bed-types').value = unit.bed_types || '';
             document.getElementById('unit-description').value = unit.description || '';
             document.getElementById('unit-image').value = unit.featured_image || '';
             document.getElementById('unit-amenities').value = (unit.amenities || []).join(', ');
@@ -584,10 +576,9 @@
                 max_guests: maxGuests,
                 max_adults: maxAdults,
                 max_children: maxChildren,
-                bedrooms: parseInt(document.getElementById('unit-bedrooms').value) || 1,
-                beds: parseInt(document.getElementById('unit-beds').value) || 1,
+                bedrooms: parseInt(document.getElementById('unit-beds').value) || 1,
+                beds: parseInt(document.getElementById('unit-beds-count').value) || 1,
                 bathrooms: parseFloat(document.getElementById('unit-bathrooms').value) || 1,
-                bed_types: document.getElementById('unit-bed-types').value || null,
                 description: document.getElementById('unit-description').value,
                 featured_image: document.getElementById('unit-image').value,
                 gallery_images: currentGalleryImages,
