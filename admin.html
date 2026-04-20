@@ -135,44 +135,36 @@
             </header>
 
             <div class="content-area">
-                <!-- Dashboard -->
                 <div id="dashboard-section">
                     <div class="stats-grid" id="stats-grid"></div>
                     <div class="card"><div class="card-header"><h2>Recent Bookings</h2><button class="btn btn-primary btn-sm" onclick="showSection('bookings')">View All</button></div><div id="recent-bookings"></div></div>
                     <div class="card"><div class="card-header"><h2>Recent Invoices</h2><button class="btn btn-primary btn-sm" onclick="showSection('invoices')">View All</button></div><div id="recent-invoices"></div></div>
                 </div>
 
-                <!-- Units -->
                 <div id="units-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>Property Units</h2><button class="btn btn-primary btn-sm" onclick="openUnitModal()">+ Add Unit</button></div><div id="units-list"></div></div>
                 </div>
 
-                <!-- Hero Images -->
                 <div id="hero-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>Hero Slideshow Images</h2><button class="btn btn-primary btn-sm" onclick="openHeroModal()">+ Add Image</button></div><div id="hero-list"></div></div>
                 </div>
 
-                <!-- Promotion Gallery -->
                 <div id="promotion-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>Promotion Gallery</h2><button class="btn btn-primary btn-sm" onclick="openPromotionModal()">+ Add Image</button></div><div id="promotion-list"></div></div>
                 </div>
 
-                <!-- Experiences -->
                 <div id="experiences-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>Experiences</h2><button class="btn btn-primary btn-sm" onclick="openExperienceModal()">+ Add Experience</button></div><div id="experiences-list"></div></div>
                 </div>
 
-                <!-- Bookings -->
                 <div id="bookings-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>All Bookings</h2><input type="text" id="booking-search" placeholder="Search by name or phone..." style="padding: 8px 12px; border: 1px solid var(--gray-300); border-radius: var(--radius); width: 250px;"></div><div id="all-bookings"></div></div>
                 </div>
 
-                <!-- Invoices -->
                 <div id="invoices-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>All Invoices</h2><div style="display: flex; gap: 12px;"><select id="invoice-status-filter" onchange="loadInvoices()" style="padding: 8px; border-radius: var(--radius); border: 1px solid var(--gray-300);"><option value="">All Status</option><option value="draft">Draft</option><option value="sent">Sent</option><option value="paid">Paid</option></select><button class="btn btn-primary btn-sm" onclick="showSection('new-invoice')">New Invoice</button></div></div><div id="invoices-list"></div></div>
                 </div>
 
-                <!-- New Invoice -->
                 <div id="new-invoice-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>Create Invoice</h2><button class="btn btn-sm" style="background: var(--gray-200);" onclick="resetInvoice()">Reset</button></div>
                         <div><h3 style="margin-bottom: 16px;">Customer Information</h3><div class="form-row"><div class="form-group"><label>Full Name *</label><input type="text" id="invoice-customer-name"></div><div class="form-group"><label>Email</label><input type="email" id="invoice-customer-email"></div><div class="form-group"><label>Phone</label><input type="tel" id="invoice-customer-phone"></div></div></div>
@@ -198,17 +190,14 @@
                     </div>
                 </div>
 
-                <!-- Minibar Catalog -->
                 <div id="minibar-section" style="display:none">
                     <div class="card"><div class="card-header"><h2>Minibar Catalog</h2><button class="btn btn-primary btn-sm" onclick="addMinibarCatalogItem()">Add Item</button></div><div id="minibar-catalog-list"></div></div>
                 </div>
 
-                <!-- Block Dates -->
                 <div id="block-dates-section" style="display:none">
                     <div class="card"><h2>Block Dates</h2><div class="form-row"><div class="form-group"><label>Single Date</label><input type="date" id="block-single-date"><input type="text" id="block-single-reason" placeholder="Reason" style="margin-top:8px;"><button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="blockSingleDate()">Block This Date</button></div><div class="form-group"><label>Date Range</label><input type="date" id="block-range-start"><input type="date" id="block-range-end" style="margin-top:8px;"><input type="text" id="block-range-reason" placeholder="Reason" style="margin-top:8px;"><button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="blockDateRange()">Block Range</button></div></div><h3 style="margin-top:32px;">Currently Blocked Dates</h3><div id="blocked-dates-list"></div></div>
                 </div>
 
-                <!-- Settings -->
                 <div id="settings-section" style="display:none">
                     <div class="card"><h2>Settings</h2><div class="form-group"><label>USD to MVR Exchange Rate</label><input type="number" id="exchange-rate-setting" value="15.42" step="0.01"></div><button class="btn btn-primary" onclick="updateSettings()">Save Settings</button></div>
                 </div>
@@ -264,12 +253,22 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Bedrooms</label>
-                        <input type="number" id="unit-beds" value="1" placeholder="Number of bedrooms">
+                        <input type="number" id="unit-bedrooms" value="1" placeholder="Number of bedrooms">
+                    </div>
+                    <div class="form-group">
+                        <label>Beds</label>
+                        <input type="number" id="unit-beds" value="1" placeholder="Number of beds">
                     </div>
                     <div class="form-group">
                         <label>Bathrooms</label>
                         <input type="number" id="unit-bathrooms" step="0.5" value="1" placeholder="1.0">
                     </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Bed Types (e.g., 1 double bed • 1 single bed)</label>
+                    <input type="text" id="unit-bed-types" placeholder="1 double bed • 1 single bed">
+                    <small>Optional - displayed under bed count</small>
                 </div>
                 
                 <div class="form-group">
@@ -442,7 +441,9 @@
         // ==================== UNITS MANAGEMENT ====================
         async function loadUnits() {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/units`);
+                const res = await fetch(`${API_BASE_URL}/admin/units`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if (data.success) { allUnits = data.units; displayUnits(); }
             } catch(e) { showToast('Failed to load units', 'error'); }
@@ -459,7 +460,7 @@
                     <td>MVR ${u.rate_mvr || '—'}</td>
                     <td>${u.max_guests}</td>
                     <td>${u.max_adults || u.max_guests} / ${u.max_children || 0}</td>
-                    <td>${u.bedrooms} / ${u.bathrooms || 1}</td>
+                    <td>${u.beds || u.bedrooms} / ${u.bathrooms || 1}</td>
                     <td><button class="btn btn-primary btn-sm" onclick="editUnit(${u.id})">Edit</button></td>
                 </tr>`).join('')
             }</tbody></table>`;
@@ -474,8 +475,10 @@
             document.getElementById('unit-guests').value = '4';
             document.getElementById('unit-max-adults').value = '4';
             document.getElementById('unit-max-children').value = '2';
+            document.getElementById('unit-bedrooms').value = '1';
             document.getElementById('unit-beds').value = '1';
             document.getElementById('unit-bathrooms').value = '1';
+            document.getElementById('unit-bed-types').value = '';
             document.getElementById('unit-description').value = '';
             document.getElementById('unit-image').value = '';
             document.getElementById('unit-amenities').value = '';
@@ -501,8 +504,10 @@
             document.getElementById('unit-guests').value = unit.max_guests || 4;
             document.getElementById('unit-max-adults').value = unit.max_adults || unit.max_guests || 4;
             document.getElementById('unit-max-children').value = unit.max_children || 0;
-            document.getElementById('unit-beds').value = unit.bedrooms || 1;
+            document.getElementById('unit-bedrooms').value = unit.bedrooms || 1;
+            document.getElementById('unit-beds').value = unit.beds || unit.bedrooms || 1;
             document.getElementById('unit-bathrooms').value = unit.bathrooms || 1;
+            document.getElementById('unit-bed-types').value = unit.bed_types || '';
             document.getElementById('unit-description').value = unit.description || '';
             document.getElementById('unit-image').value = unit.featured_image || '';
             document.getElementById('unit-amenities').value = (unit.amenities || []).join(', ');
@@ -535,7 +540,11 @@
             if (!file) return;
             const formData = new FormData(); formData.append('image', file);
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, { 
+                    method: 'POST', 
+                    headers: { 'Authorization': 'Bearer admin-secret-token' },
+                    body: formData 
+                });
                 const data = await res.json();
                 if (data.success) {
                     document.getElementById('unit-image').value = data.url;
@@ -550,7 +559,11 @@
             for (const file of files) {
                 const formData = new FormData(); formData.append('image', file);
                 try {
-                    const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                    const res = await fetch(`${API_BASE_URL}/admin/upload`, { 
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer admin-secret-token' },
+                        body: formData 
+                    });
                     const data = await res.json();
                     if (data.success) { currentGalleryImages.push(data.url); displayGalleryPreviews(); showToast('Image uploaded', 'success'); }
                 } catch(e) { showToast('Upload failed', 'error'); }
@@ -571,8 +584,10 @@
                 max_guests: maxGuests,
                 max_adults: maxAdults,
                 max_children: maxChildren,
-                bedrooms: parseInt(document.getElementById('unit-beds').value) || 1,
+                bedrooms: parseInt(document.getElementById('unit-bedrooms').value) || 1,
+                beds: parseInt(document.getElementById('unit-beds').value) || 1,
                 bathrooms: parseFloat(document.getElementById('unit-bathrooms').value) || 1,
+                bed_types: document.getElementById('unit-bed-types').value || null,
                 description: document.getElementById('unit-description').value,
                 featured_image: document.getElementById('unit-image').value,
                 gallery_images: currentGalleryImages,
@@ -590,7 +605,14 @@
                 let url, method;
                 if (id) { url = `${API_BASE_URL}/admin/units/${id}`; method = 'PUT'; }
                 else { url = `${API_BASE_URL}/admin/units`; method = 'POST'; }
-                const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(unitData) });
+                const res = await fetch(url, { 
+                    method, 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-secret-token'
+                    }, 
+                    body: JSON.stringify(unitData) 
+                });
                 const data = await res.json();
                 if (data.success) { showToast(id ? 'Unit updated' : 'Unit created', 'success'); closeUnitModal(); loadUnits(); }
                 else showToast(data.error || 'Failed to save', 'error');
@@ -601,7 +623,10 @@
             const id = document.getElementById('unit-id').value;
             if (!id || !confirm('Delete permanently?')) return;
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/units/${id}`, { method: 'DELETE' });
+                const res = await fetch(`${API_BASE_URL}/admin/units/${id}`, { 
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if (data.success) { showToast('Unit deleted', 'success'); closeUnitModal(); loadUnits(); }
                 else showToast(data.error || 'Failed to delete', 'error');
@@ -611,7 +636,9 @@
         // ==================== HERO IMAGES ====================
         async function loadHeroImages() {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/hero-images`);
+                const res = await fetch(`${API_BASE_URL}/admin/hero-images`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if (data.success) displayHeroImages(data.images);
             } catch(e) { showToast('Failed to load hero images', 'error'); }
@@ -644,7 +671,9 @@
         }
         
         function editHeroImage(id) {
-            fetch(`${API_BASE_URL}/admin/hero-images`).then(r=>r.json()).then(data=>{
+            fetch(`${API_BASE_URL}/admin/hero-images`, {
+                headers: { 'Authorization': 'Bearer admin-secret-token' }
+            }).then(r=>r.json()).then(data=>{
                 const img = data.images.find(i=>i.id===id);
                 if(img){
                     document.getElementById('hero-id').value = img.id;
@@ -670,7 +699,11 @@
             if (!file) return;
             const formData = new FormData(); formData.append('image', file);
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, { 
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' },
+                    body: formData 
+                });
                 const data = await res.json();
                 if (data.success) {
                     document.getElementById('hero-url').value = data.url;
@@ -697,7 +730,14 @@
                 let url = `${API_BASE_URL}/admin/hero-images`;
                 let method = 'POST';
                 if (id) { url += `/${id}`; method = 'PUT'; }
-                const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                const res = await fetch(url, { 
+                    method, 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-secret-token'
+                    }, 
+                    body: JSON.stringify(data) 
+                });
                 const result = await res.json();
                 if (result.success) { showToast(id ? 'Hero image updated' : 'Hero image added', 'success'); closeHeroModal(); loadHeroImages(); }
                 else showToast(result.error || 'Failed', 'error');
@@ -708,7 +748,10 @@
             const id = document.getElementById('hero-id').value;
             if (!id || !confirm('Delete this hero image?')) return;
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/hero-images/${id}`, { method: 'DELETE' });
+                const res = await fetch(`${API_BASE_URL}/admin/hero-images/${id}`, { 
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if (data.success) { showToast('Deleted', 'success'); closeHeroModal(); loadHeroImages(); }
                 else showToast('Failed to delete', 'error');
@@ -718,7 +761,9 @@
         // ==================== PROMOTION GALLERY ====================
         async function loadPromotionGallery() {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/promotion-gallery`);
+                const res = await fetch(`${API_BASE_URL}/admin/promotion-gallery`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if (data.success) displayPromotionImages(data.images);
             } catch(e) { showToast('Failed to load promotion gallery', 'error'); }
@@ -749,7 +794,9 @@
         }
         
         function editPromotionImage(id) {
-            fetch(`${API_BASE_URL}/admin/promotion-gallery`).then(r=>r.json()).then(data=>{
+            fetch(`${API_BASE_URL}/admin/promotion-gallery`, {
+                headers: { 'Authorization': 'Bearer admin-secret-token' }
+            }).then(r=>r.json()).then(data=>{
                 const img = data.images.find(i=>i.id===id);
                 if(img){
                     document.getElementById('promo-id').value = img.id;
@@ -773,7 +820,11 @@
             if (!file) return;
             const formData = new FormData(); formData.append('image', file);
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, { 
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' },
+                    body: formData 
+                });
                 const data = await res.json();
                 if (data.success) {
                     document.getElementById('promo-url').value = data.url;
@@ -798,7 +849,14 @@
                 let url = `${API_BASE_URL}/admin/promotion-gallery`;
                 let method = 'POST';
                 if (id) { url += `/${id}`; method = 'PUT'; }
-                const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                const res = await fetch(url, { 
+                    method, 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-secret-token'
+                    }, 
+                    body: JSON.stringify(data) 
+                });
                 const result = await res.json();
                 if (result.success) { showToast(id ? 'Image updated' : 'Image added', 'success'); closePromotionModal(); loadPromotionGallery(); }
                 else showToast(result.error || 'Failed', 'error');
@@ -809,7 +867,10 @@
             const id = document.getElementById('promo-id').value;
             if (!id || !confirm('Delete this image?')) return;
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/promotion-gallery/${id}`, { method: 'DELETE' });
+                const res = await fetch(`${API_BASE_URL}/admin/promotion-gallery/${id}`, { 
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if (data.success) { showToast('Deleted', 'success'); closePromotionModal(); loadPromotionGallery(); }
                 else showToast('Failed to delete', 'error');
@@ -819,7 +880,9 @@
         // ==================== EXPERIENCES ====================
         async function loadExperiences() {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/experiences`);
+                const res = await fetch(`${API_BASE_URL}/admin/experiences`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if (data.success) displayExperiences(data.experiences);
             } catch(e) { showToast('Failed to load experiences', 'error'); }
@@ -852,7 +915,9 @@
         }
         
         function editExperience(id) {
-            fetch(`${API_BASE_URL}/admin/experiences`).then(r=>r.json()).then(data=>{
+            fetch(`${API_BASE_URL}/admin/experiences`, {
+                headers: { 'Authorization': 'Bearer admin-secret-token' }
+            }).then(r=>r.json()).then(data=>{
                 const exp = data.experiences.find(e=>e.id===id);
                 if(exp){
                     document.getElementById('exp-id').value = exp.id;
@@ -881,7 +946,11 @@
             if (!file) return;
             const formData = new FormData(); formData.append('image', file);
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, { 
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' },
+                    body: formData 
+                });
                 const data = await res.json();
                 if (data.success) {
                     document.getElementById('exp-image1-url').value = data.url;
@@ -896,7 +965,11 @@
             if (!file) return;
             const formData = new FormData(); formData.append('image', file);
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', body: formData });
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, { 
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' },
+                    body: formData 
+                });
                 const data = await res.json();
                 if (data.success) {
                     document.getElementById('exp-image2-url').value = data.url;
@@ -922,7 +995,14 @@
                 let url = `${API_BASE_URL}/admin/experiences`;
                 let method = 'POST';
                 if (id) { url += `/${id}`; method = 'PUT'; }
-                const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                const res = await fetch(url, { 
+                    method, 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-secret-token'
+                    }, 
+                    body: JSON.stringify(data) 
+                });
                 const result = await res.json();
                 if (result.success) { showToast(id ? 'Experience updated' : 'Experience added', 'success'); closeExperienceModal(); loadExperiences(); }
                 else showToast(result.error || 'Failed', 'error');
@@ -933,7 +1013,10 @@
             const id = document.getElementById('exp-id').value;
             if (!id || !confirm('Delete this experience?')) return;
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/experiences/${id}`, { method: 'DELETE' });
+                const res = await fetch(`${API_BASE_URL}/admin/experiences/${id}`, { 
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if (data.success) { showToast('Deleted', 'success'); closeExperienceModal(); loadExperiences(); }
                 else showToast('Failed to delete', 'error');
@@ -943,7 +1026,9 @@
         // ==================== DASHBOARD & BOOKINGS ====================
         async function loadDashboard() {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/bookings`);
+                const res = await fetch(`${API_BASE_URL}/admin/bookings`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if (data.success) {
                     const bookings = data.bookings;
@@ -973,7 +1058,9 @@
         
         async function loadAllBookings() {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/bookings`);
+                const res = await fetch(`${API_BASE_URL}/admin/bookings`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if (data.success) {
                     allBookingsCache = data.bookings;
@@ -1013,14 +1100,16 @@
             displayBookingsTable(filtered);
         }
         
-        async function confirmBooking(id) { if(!confirm('Confirm booking?')) return; try { const r=await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'confirmed'})}); if(r.ok){ showToast('Confirmed','success'); loadAllBookings(); loadDashboard(); } } catch(e){ showToast('Error','error'); } }
-        async function cancelBooking(id) { if(!confirm('Cancel booking?')) return; try { const r=await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'cancelled'})}); if(r.ok){ showToast('Cancelled','success'); loadAllBookings(); loadDashboard(); } } catch(e){ showToast('Error','error'); } }
-        async function deleteBooking(id) { if(!confirm('Permanently delete?')) return; try { const r=await fetch(`${API_BASE_URL}/admin/bookings/${id}`,{method:'DELETE'}); if(r.ok){ showToast('Deleted','success'); loadAllBookings(); loadDashboard(); } } catch(e){ showToast('Error','error'); } }
+        async function confirmBooking(id) { if(!confirm('Confirm booking?')) return; try { const r=await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer admin-secret-token'},body:JSON.stringify({status:'confirmed'})}); if(r.ok){ showToast('Confirmed','success'); loadAllBookings(); loadDashboard(); } } catch(e){ showToast('Error','error'); } }
+        async function cancelBooking(id) { if(!confirm('Cancel booking?')) return; try { const r=await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer admin-secret-token'},body:JSON.stringify({status:'cancelled'})}); if(r.ok){ showToast('Cancelled','success'); loadAllBookings(); loadDashboard(); } } catch(e){ showToast('Error','error'); } }
+        async function deleteBooking(id) { if(!confirm('Permanently delete?')) return; try { const r=await fetch(`${API_BASE_URL}/admin/bookings/${id}`,{method:'DELETE',headers:{'Authorization':'Bearer admin-secret-token'}}); if(r.ok){ showToast('Deleted','success'); loadAllBookings(); loadDashboard(); } } catch(e){ showToast('Error','error'); } }
 
         // ==================== INVOICES ====================
         async function loadInvoices() {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/invoices`);
+                const res = await fetch(`${API_BASE_URL}/admin/invoices`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 const container = document.getElementById('invoices-list');
                 if (!data.invoices || !data.invoices.length) { if(container) container.innerHTML = '<p>No invoices</p>'; return; }
@@ -1042,7 +1131,9 @@
         
         async function viewInvoice(invoiceId) {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`);
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if(data.success) {
                     currentInvoiceData = data;
@@ -1086,7 +1177,11 @@
             if (!['cash','bank_transfer','card','crypto'].includes(method)) { showToast('Invalid method', 'error'); return; }
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}/payments`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-secret-token'
+                    },
                     body: JSON.stringify({ amount: parseFloat(amount), payment_method: method, payment_date: new Date().toISOString().split('T')[0] })
                 });
                 const data = await res.json();
@@ -1102,7 +1197,11 @@
             if (!status) return;
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}/status`, {
-                    method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+                    method: 'PATCH', 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-secret-token'
+                    },
                     body: JSON.stringify({ status })
                 });
                 const data = await res.json();
@@ -1115,7 +1214,10 @@
             const invoiceId = document.getElementById('current-invoice-id')?.value;
             if (!invoiceId || !confirm('Delete this invoice?')) return;
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`, { method: 'DELETE' });
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`, { 
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
                 const data = await res.json();
                 if (data.success) { showToast('Invoice deleted', 'success'); closeInvoiceViewModal(); loadInvoices(); loadDashboard(); }
                 else showToast('Failed', 'error');
@@ -1205,7 +1307,12 @@
             };
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/invoices/standalone`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+                    method: 'POST', 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-secret-token'
+                    }, 
+                    body: JSON.stringify(data)
                 });
                 const result = await res.json();
                 if(result.success) { showToast('Invoice created','success'); resetInvoice(); loadInvoices(); showSection('invoices'); }
@@ -1235,7 +1342,7 @@
                 if(select) {
                     select.innerHTML = '<option value="">Select item</option>' + minibarItems.map((i,idx) => `<option value="${idx}">${i.name} - ${currentCurrency === 'USD' ? `$${i.price_usd}` : `MVR ${i.price_mvr}`}</option>`).join('');
                 }
-                c.innerHTML = `<table class="data-table"><thead><tr><th>Item</th><th>USD</th><th>MVR</th><th></th></tr></thead><tbody>${minibarItems.map((i,idx) => `<tr><td>${escapeHtml(i.name)}</td><td>$${i.price_usd.toFixed(2)}</td><td>MVR ${i.price_mvr.toFixed(2)}</td><td><button class="delete-btn" onclick="deleteMinibarItem(${idx})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody></table>`;
+                c.innerHTML = `<table class="data-table"><thead><tr><th>Item</th><th>USD</th><th>MVR</th><th></th></tr></thead><tbody>${minibarItems.map((i,idx) => `<tr><td>${escapeHtml(i.name)}</td><td>$${i.price_usd.toFixed(2)}</td><td>MVR ${i.price_mvr.toFixed(2)}</td><td><button class="delete-btn" onclick="deleteMinibarItem(${idx})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody>}</table>`;
             }
         }
         
@@ -1264,7 +1371,14 @@
             const date = document.getElementById('block-single-date').value;
             if(!date) { showToast('Select date','error'); return; }
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/block-dates`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({start_date:date,end_date:date,reason:document.getElementById('block-single-reason').value||'Blocked'})});
+                const res = await fetch(`${API_BASE_URL}/admin/block-dates`,{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json',
+                        'Authorization':'Bearer admin-secret-token'
+                    },
+                    body:JSON.stringify({start_date:date,end_date:date,reason:document.getElementById('block-single-reason').value||'Blocked'})
+                });
                 if(res.ok) { showToast('Date blocked','success'); loadBlockedDates(); document.getElementById('block-single-date').value=''; document.getElementById('block-single-reason').value=''; }
                 else showToast('Failed','error');
             } catch(e){ showToast('Error','error'); }
@@ -1275,7 +1389,14 @@
             if(!start||!end) { showToast('Select dates','error'); return; }
             if(new Date(start)>new Date(end)) { showToast('Start before end','error'); return; }
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/block-dates`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({start_date:start,end_date:end,reason:document.getElementById('block-range-reason').value||'Blocked'})});
+                const res = await fetch(`${API_BASE_URL}/admin/block-dates`,{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json',
+                        'Authorization':'Bearer admin-secret-token'
+                    },
+                    body:JSON.stringify({start_date:start,end_date:end,reason:document.getElementById('block-range-reason').value||'Blocked'})
+                });
                 if(res.ok) { showToast('Range blocked','success'); loadBlockedDates(); document.getElementById('block-range-start').value=''; document.getElementById('block-range-end').value=''; document.getElementById('block-range-reason').value=''; }
                 else showToast('Failed','error');
             } catch(e){ showToast('Error','error'); }
@@ -1284,7 +1405,10 @@
         async function unblockDate(id) {
             if(!confirm('Unblock this date?')) return;
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`,{method:'DELETE'});
+                const res = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`,{
+                    method:'DELETE',
+                    headers:{ 'Authorization':'Bearer admin-secret-token' }
+                });
                 if(res.ok) { showToast('Unblocked','success'); loadBlockedDates(); }
             } catch(e){ showToast('Error','error'); }
         }
