@@ -41,19 +41,24 @@
             padding: 0 16px;
         }
 
-        /* Header - No logo, just toggle left and back arrow right */
+        /* Header - Sticky */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 0;
+            padding: 12px 0;
             margin-bottom: 16px;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 100;
+            border-bottom: 1px solid var(--gray-border);
         }
 
-        /* Toggle Styles */
+        /* Toggle */
         .currency-toggle {
             display: flex;
-            gap: 16px;
+            gap: 8px;
             background: transparent;
         }
 
@@ -63,11 +68,12 @@
             gap: 6px;
             background: transparent;
             border: none;
-            padding: 8px 0;
+            padding: 8px 16px;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
+            border-radius: 40px;
         }
 
         .toggle-option svg {
@@ -76,24 +82,26 @@
             transition: all 0.2s ease;
         }
 
-        .toggle-option.local-active {
-            color: var(--turquoise);
+        /* Hover glass effect */
+        .toggle-option:hover {
+            background: rgba(64, 181, 173, 0.15);
+            backdrop-filter: blur(4px);
         }
 
-        .toggle-option.local-active svg path {
-            fill: var(--turquoise);
-            stroke: var(--navy);
-        }
-
+        /* Active state - solid turquoise */
+        .toggle-option.local-active,
         .toggle-option.foreign-active {
-            color: var(--turquoise);
+            background: var(--turquoise);
+            color: white;
         }
 
+        .toggle-option.local-active svg path,
         .toggle-option.foreign-active svg path {
-            fill: var(--turquoise);
-            stroke: var(--navy);
+            fill: white;
+            stroke: white;
         }
 
+        /* Inactive state */
         .toggle-option:not(.local-active):not(.foreign-active) {
             color: var(--gray-text);
         }
@@ -110,6 +118,13 @@
             justify-content: center;
             text-decoration: none;
             padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .back-arrow:hover {
+            background: rgba(0, 105, 148, 0.1);
+            backdrop-filter: blur(4px);
         }
 
         .back-arrow svg {
@@ -117,6 +132,7 @@
             height: 28px;
         }
 
+        /* Layout */
         .unit-layout {
             display: grid;
             grid-template-columns: 1fr 380px;
@@ -135,7 +151,7 @@
             }
         }
 
-        /* GALLERY */
+        /* Gallery */
         .gallery-container {
             position: relative;
             margin-bottom: 24px;
@@ -173,7 +189,7 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255,255,255,0.9);
+            background: rgba(255, 255, 255, 0.9);
             border: none;
             width: 40px;
             height: 40px;
@@ -205,7 +221,7 @@
             position: absolute;
             bottom: 16px;
             right: 16px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             color: white;
             padding: 6px 12px;
             border-radius: 20px;
@@ -236,6 +252,7 @@
             background: var(--ocean);
         }
 
+        /* Typography */
         .unit-title h1 {
             font-family: 'Playfair Display', serif;
             font-size: 1.75rem;
@@ -281,16 +298,37 @@
             margin-top: 2px;
         }
 
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
         .description {
-            margin-bottom: 32px;
             line-height: 1.6;
             color: #4a4a4a;
             font-size: 16px;
             font-weight: 400;
         }
 
-        .amenities-section {
-            margin-bottom: 32px;
+        .description.collapsed {
+            max-height: 100px;
+            overflow: hidden;
+        }
+
+        .show-more-btn {
+            background: none;
+            border: none;
+            color: var(--ocean);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 12px;
+            padding: 0;
         }
 
         .amenities-section h3 {
@@ -305,6 +343,11 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
+        }
+
+        .amenities-grid.collapsed {
+            max-height: 200px;
+            overflow: hidden;
         }
 
         .amenity {
@@ -326,6 +369,18 @@
             color: #333;
         }
 
+        .show-all-btn {
+            background: none;
+            border: none;
+            color: var(--ocean);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 12px;
+            padding: 0;
+        }
+
+        /* External Buttons */
         .external-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -362,6 +417,7 @@
         .ext-btn.trip { background: #2680EB; color: white; }
         .ext-btn.booking { background: #003580; color: white; }
 
+        /* Booking Card */
         .booking-card {
             background: white;
             border-radius: var(--radius-lg);
@@ -369,7 +425,7 @@
             box-shadow: var(--shadow-md);
             border: 1px solid var(--gray-border);
             position: sticky;
-            top: 24px;
+            top: 80px;
         }
 
         .price-display {
@@ -396,6 +452,7 @@
             color: var(--gray-text);
         }
 
+        /* Calendar */
         .calendar-section {
             margin: 20px 0;
         }
@@ -444,7 +501,7 @@
             transition: all 0.2s;
         }
 
-        .calendar-day:hover:not(.booked):not(.empty) {
+        .calendar-day.available:hover {
             background: var(--turquoise);
             color: white;
         }
@@ -488,44 +545,26 @@
             margin-right: 6px;
         }
 
-        .date-inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 16px 0;
-        }
-
-        .date-field {
-            border: 1px solid var(--gray-border);
+        /* Selected Dates Display */
+        .selected-dates {
+            background: var(--gray-light);
             border-radius: var(--radius-md);
             padding: 12px;
-            background: var(--gray-light);
+            margin: 16px 0;
+            text-align: center;
         }
 
-        .date-field label {
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--gray-text);
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .date-field input {
-            background: transparent;
-            border: none;
+        .selected-dates p {
             font-size: 14px;
-            font-weight: 500;
-            width: 100%;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
+            color: var(--navy);
         }
 
-        .date-field input:focus {
-            outline: none;
+        .selected-dates .nights {
+            font-weight: 700;
+            color: var(--turquoise);
         }
 
+        /* Form */
         .guest-fields {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -660,27 +699,30 @@
             .guest-fields {
                 grid-template-columns: 1fr;
             }
+            .booking-card {
+                top: 70px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header: Toggle left, Back arrow right -->
+        <!-- Header: Toggle left, Back arrow right - Sticky -->
         <div class="header">
             <div class="currency-toggle">
                 <button id="toggle-local" class="toggle-option local-active" onclick="setMode('local')">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M2 20L22 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        <path d="M12 4L5 14L12 11L19 14L12 4Z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
-                        <path d="M12 11V20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M2 20H22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        <path d="M12 4L4 16L12 12L20 16L12 4Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M12 12V20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                     </svg>
                     <span>Local</span>
                 </button>
                 <button id="toggle-foreign" class="toggle-option" onclick="setMode('foreign')">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 16L14 12L21 8L21 16Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
-                        <path d="M14 12L3 12L5 9H8L10 12H14Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
-                        <path d="M14 12L12 15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                        <path d="M22 16L14 12L22 8V16Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M14 12L3 12L5 9H8L10 12H14Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M14 12L12 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
                     <span>Foreign</span>
                 </button>
@@ -701,8 +743,7 @@
         const unitId = urlParams.get('id');
 
         let unit = null;
-        let selectedCheckIn = null;
-        let selectedCheckOut = null;
+        let selectedDates = [];
         let bookedDates = [];
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
@@ -712,7 +753,6 @@
         let galleryImages = [];
         let currentImageIndex = 0;
         let slideInterval = null;
-
         let currentMode = 'local';
 
         async function loadUnit() {
@@ -745,7 +785,12 @@
                     
                     await fetchAvailability();
                     renderUnitDetails();
-                    generateCalendar(currentMonth, currentYear);
+                    
+                    // Fix calendar visibility: ensure grid exists before generating
+                    setTimeout(() => {
+                        generateCalendar(currentMonth, currentYear);
+                    }, 100);
+                    
                     setupGallery();
                 } else {
                     document.getElementById('content').innerHTML = '<div class="card"><p>Unit not found. <a href="index.html">Go back</a></p></div>';
@@ -758,9 +803,7 @@
 
         function setupGallery() {
             if (galleryImages.length <= 1) return;
-            
             startAutoSlide();
-            
             const slider = document.getElementById('gallery-slider');
             if (slider) {
                 let touchStartX = 0;
@@ -779,55 +822,19 @@
 
         function updateGalleryImage() {
             const slides = document.querySelectorAll('.gallery-slide');
-            slides.forEach((slide, idx) => {
-                slide.classList.toggle('active', idx === currentImageIndex);
-            });
-            
+            slides.forEach((slide, idx) => { slide.classList.toggle('active', idx === currentImageIndex); });
             const dots = document.querySelectorAll('.gallery-dot');
-            dots.forEach((dot, idx) => {
-                dot.classList.toggle('active', idx === currentImageIndex);
-            });
-            
+            dots.forEach((dot, idx) => { dot.classList.toggle('active', idx === currentImageIndex); });
             const counter = document.querySelector('.gallery-counter');
-            if (counter) {
-                counter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
-            }
-            
+            if (counter) counter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
             resetAutoSlide();
         }
 
-        function nextImage() {
-            if (galleryImages.length) {
-                currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
-                updateGalleryImage();
-            }
-        }
-
-        function prevImage() {
-            if (galleryImages.length) {
-                currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
-                updateGalleryImage();
-            }
-        }
-
-        function goToImage(index) {
-            currentImageIndex = index;
-            updateGalleryImage();
-        }
-
-        function startAutoSlide() {
-            if (slideInterval) clearInterval(slideInterval);
-            if (galleryImages.length > 1) {
-                slideInterval = setInterval(nextImage, 5000);
-            }
-        }
-
-        function resetAutoSlide() {
-            if (slideInterval) clearInterval(slideInterval);
-            if (galleryImages.length > 1) {
-                slideInterval = setInterval(nextImage, 5000);
-            }
-        }
+        function nextImage() { if (galleryImages.length) { currentImageIndex = (currentImageIndex + 1) % galleryImages.length; updateGalleryImage(); } }
+        function prevImage() { if (galleryImages.length) { currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length; updateGalleryImage(); } }
+        function goToImage(index) { currentImageIndex = index; updateGalleryImage(); }
+        function startAutoSlide() { if (slideInterval) clearInterval(slideInterval); if (galleryImages.length > 1) slideInterval = setInterval(nextImage, 5000); }
+        function resetAutoSlide() { if (slideInterval) clearInterval(slideInterval); if (galleryImages.length > 1) slideInterval = setInterval(nextImage, 5000); }
 
         async function fetchAvailability() {
             if (!unit) return;
@@ -862,89 +869,74 @@
                 const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const isBooked = bookedDates.includes(dateStr);
                 const isToday = today.getDate() === d && today.getMonth() === month && today.getFullYear() === year;
-                const isSelected = (selectedCheckIn === dateStr || selectedCheckOut === dateStr);
+                const isSelected = selectedDates.includes(dateStr);
                 let classes = 'calendar-day';
-                if (isBooked) classes += ' booked';
+                if (isBooked) {
+                    classes += ' booked';
+                } else {
+                    classes += ' available';
+                }
                 if (isToday) classes += ' today';
                 if (isSelected) classes += ' selected';
-                html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isBooked})">${d}</div>`;
+                html += `<div class="${classes}" data-date="${dateStr}" onclick="toggleDate('${dateStr}', ${isBooked})">${d}</div>`;
             }
             
             const grid = document.getElementById('calendar-grid');
             if (grid) grid.innerHTML = html;
             const monthYear = document.getElementById('calendar-month-year');
             if (monthYear) monthYear.textContent = `${monthNames[month]} ${year}`;
+            
+            updateSelectedDatesDisplay();
         }
 
-        function selectDate(dateStr, isBooked) {
+        // New calendar logic: toggle dates on/off
+        function toggleDate(dateStr, isBooked) {
             if (isBooked) {
                 showMessage('This date is not available', 'error');
                 return;
             }
             
-            if (!selectedCheckIn) {
-                selectedCheckIn = dateStr;
-                selectedCheckOut = null;
-                document.getElementById('check-in').value = formatDate(dateStr);
+            const index = selectedDates.indexOf(dateStr);
+            if (index === -1) {
+                selectedDates.push(dateStr);
+            } else {
+                selectedDates.splice(index, 1);
+            }
+            
+            // Sort dates
+            selectedDates.sort();
+            
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        function updateSelectedDatesDisplay() {
+            if (selectedDates.length === 0) {
+                document.getElementById('check-in').value = '';
                 document.getElementById('check-out').value = '';
                 document.getElementById('price-breakdown').style.display = 'none';
-                generateCalendar(currentMonth, currentYear);
                 return;
             }
             
-            if (selectedCheckIn && !selectedCheckOut) {
-                const checkInDate = new Date(selectedCheckIn);
-                const checkOutDate = new Date(dateStr);
-                
-                if (checkOutDate < checkInDate) {
-                    selectedCheckIn = dateStr;
-                    selectedCheckOut = null;
-                    document.getElementById('check-in').value = formatDate(dateStr);
-                    document.getElementById('check-out').value = '';
-                    document.getElementById('price-breakdown').style.display = 'none';
-                    generateCalendar(currentMonth, currentYear);
-                    return;
-                }
-                
-                let hasBookedNight = false;
-                let cur = new Date(checkInDate);
-                while (cur < checkOutDate) {
-                    const dateToCheck = cur.toISOString().split('T')[0];
-                    if (bookedDates.includes(dateToCheck)) {
-                        hasBookedNight = true;
-                        break;
-                    }
-                    cur.setDate(cur.getDate() + 1);
-                }
-                
-                if (hasBookedNight) {
-                    showMessage('One or more nights between your selected dates are already booked', 'error');
-                    return;
-                }
-                
-                selectedCheckOut = dateStr;
-                document.getElementById('check-out').value = formatDate(dateStr);
-                
-                const nights = Math.max(1, Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)));
-                const totalMvr = nights * parseFloat(unit.rate_mvr);
-                
-                document.getElementById('night-count').textContent = nights;
-                document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
-                document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
-                document.getElementById('price-breakdown').style.display = 'block';
-                generateCalendar(currentMonth, currentYear);
-                return;
-            }
+            const earliest = selectedDates[0];
+            const latest = selectedDates[selectedDates.length - 1];
             
-            if (selectedCheckIn && selectedCheckOut) {
-                selectedCheckIn = dateStr;
-                selectedCheckOut = null;
-                document.getElementById('check-in').value = formatDate(dateStr);
-                document.getElementById('check-out').value = '';
-                document.getElementById('price-breakdown').style.display = 'none';
-                generateCalendar(currentMonth, currentYear);
-                return;
-            }
+            // Calculate check-out = latest selected date + 1 day
+            const checkOutDate = new Date(latest);
+            checkOutDate.setDate(checkOutDate.getDate() + 1);
+            const checkOutStr = checkOutDate.toISOString().split('T')[0];
+            
+            document.getElementById('check-in').value = formatDate(earliest);
+            document.getElementById('check-out').value = formatDate(checkOutStr);
+            
+            const checkInDate = new Date(earliest);
+            const checkOutDateObj = new Date(checkOutStr);
+            const nights = Math.max(1, Math.ceil((checkOutDateObj - checkInDate) / (1000 * 60 * 60 * 24)));
+            const totalMvr = nights * parseFloat(unit.rate_mvr);
+            
+            document.getElementById('night-count').textContent = nights;
+            document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
+            document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
+            document.getElementById('price-breakdown').style.display = 'block';
         }
 
         function formatDate(dateStr) {
@@ -986,10 +978,16 @@
         async function submitBooking(e) {
             e.preventDefault();
             
-            if (!selectedCheckIn || !selectedCheckOut) {
-                showMessage('Please select check-in and check-out dates', 'error');
+            if (selectedDates.length === 0) {
+                showMessage('Please select at least one date', 'error');
                 return;
             }
+            
+            const earliest = selectedDates[0];
+            const latest = selectedDates[selectedDates.length - 1];
+            const checkOutDate = new Date(latest);
+            checkOutDate.setDate(checkOutDate.getDate() + 1);
+            const checkOutStr = checkOutDate.toISOString().split('T')[0];
             
             const adults = parseInt(document.getElementById('adults').value) || 1;
             const children = parseInt(document.getElementById('children').value) || 0;
@@ -997,7 +995,6 @@
             const phone = document.getElementById('phone').value;
             
             if (!validateGuests(adults, children)) return;
-            
             if (!name || !phone) {
                 showMessage('Please fill all required fields', 'error');
                 return;
@@ -1009,9 +1006,9 @@
             submitBtn.disabled = true;
             
             try {
-                const checkInDate = new Date(selectedCheckIn);
-                const checkOutDate = new Date(selectedCheckOut);
-                const nights = Math.max(1, Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)));
+                const checkInDate = new Date(earliest);
+                const checkOutDateObj = new Date(checkOutStr);
+                const nights = Math.max(1, Math.ceil((checkOutDateObj - checkInDate) / (1000 * 60 * 60 * 24)));
                 const total = nights * parseFloat(unit.rate_mvr);
                 
                 const res = await fetch(`${API_BASE_URL}/bookings/create`, {
@@ -1022,8 +1019,8 @@
                         guest_name: name,
                         guest_email: '',
                         guest_phone: phone,
-                        check_in_date: selectedCheckIn,
-                        check_out_date: selectedCheckOut,
+                        check_in_date: earliest,
+                        check_out_date: checkOutStr,
                         number_of_guests: adults + children,
                         number_of_adults: adults,
                         number_of_children: children,
@@ -1042,8 +1039,8 @@
                         `*Unit:* ${unit.unit_name}%0A` +
                         `*Guest:* ${name}%0A` +
                         `*Phone:* ${phone}%0A` +
-                        `*Check-in:* ${formatDate(selectedCheckIn)} (14:00)%0A` +
-                        `*Check-out:* ${formatDate(selectedCheckOut)} (12:00)%0A` +
+                        `*Check-in:* ${formatDate(earliest)} (14:00)%0A` +
+                        `*Check-out:* ${formatDate(checkOutStr)} (12:00)%0A` +
                         `*Nights:* ${nights}%0A` +
                         `*Guests:* ${adults} adults, ${children} children%0A` +
                         `*Total:* MVR ${total.toFixed(2)}%0A%0A` +
@@ -1051,8 +1048,7 @@
                     
                     window.open(`https://wa.me/9609373113?text=${msg}`, '_blank');
                     
-                    selectedCheckIn = null;
-                    selectedCheckOut = null;
+                    selectedDates = [];
                     document.getElementById('check-in').value = '';
                     document.getElementById('check-out').value = '';
                     document.getElementById('price-breakdown').style.display = 'none';
@@ -1082,47 +1078,48 @@
             
             if (mode === 'local') {
                 localBtn.classList.add('local-active');
-                localBtn.classList.remove('foreign-active');
                 foreignBtn.classList.remove('foreign-active');
-                foreignBtn.classList.remove('local-active');
-                // Update SVG fills
-                const localSvg = localBtn.querySelector('svg');
-                const foreignSvg = foreignBtn.querySelector('svg');
-                localSvg.querySelectorAll('path').forEach(p => {
-                    if (p.getAttribute('fill') !== 'none') {
-                        p.setAttribute('fill', '#40B5AD');
-                    }
-                    p.setAttribute('stroke', '#0A2540');
-                });
-                foreignSvg.querySelectorAll('path').forEach(p => {
-                    p.setAttribute('fill', 'none');
-                    p.setAttribute('stroke', '#6C757D');
-                });
             } else {
                 foreignBtn.classList.add('foreign-active');
-                foreignBtn.classList.remove('local-active');
-                localBtn.classList.remove('foreign-active');
                 localBtn.classList.remove('local-active');
-                const localSvg = localBtn.querySelector('svg');
-                const foreignSvg = foreignBtn.querySelector('svg');
-                localSvg.querySelectorAll('path').forEach(p => {
-                    p.setAttribute('fill', 'none');
-                    p.setAttribute('stroke', '#6C757D');
-                });
-                foreignSvg.querySelectorAll('path').forEach(p => {
-                    if (p.getAttribute('fill') !== 'none') {
-                        p.setAttribute('fill', '#40B5AD');
-                    }
-                    p.setAttribute('stroke', '#0A2540');
-                });
             }
             
             renderUnitDetails();
+            
+            // Regenerate calendar after render
+            setTimeout(() => {
+                generateCalendar(currentMonth, currentYear);
+            }, 100);
+        }
+
+        function toggleDescription() {
+            const desc = document.getElementById('description-text');
+            const btn = document.getElementById('desc-show-more-btn');
+            if (desc.classList.contains('collapsed')) {
+                desc.classList.remove('collapsed');
+                btn.textContent = 'Show less';
+            } else {
+                desc.classList.add('collapsed');
+                btn.textContent = 'Show more';
+            }
+        }
+
+        function toggleAmenities() {
+            const grid = document.getElementById('amenities-grid');
+            const btn = document.getElementById('amenities-show-all-btn');
+            if (grid.classList.contains('collapsed')) {
+                grid.classList.remove('collapsed');
+                btn.textContent = 'Show less';
+            } else {
+                grid.classList.add('collapsed');
+                btn.textContent = `Show all ${unit.amenities?.length || 0} amenities`;
+            }
         }
 
         function renderUnitDetails() {
             const defaultAmenities = ['Free WiFi', 'Smart TV', 'Air Conditioning', 'Kitchen', 'Tea & Coffee', 'Hot Water'];
             const amenitiesList = (unit.amenities && unit.amenities.length) ? unit.amenities : defaultAmenities;
+            const showAllAmenities = amenitiesList.length > 6;
             
             let slidesHtml = '';
             let dotsHtml = '';
@@ -1132,10 +1129,7 @@
                         <img src="${img}" alt="${unit.unit_name} - Image ${idx+1}">
                     </div>
                 `).join('');
-                
-                dotsHtml = galleryImages.map((_, idx) => `
-                    <div class="gallery-dot ${idx === 0 ? 'active' : ''}" onclick="goToImage(${idx})"></div>
-                `).join('');
+                dotsHtml = galleryImages.map((_, idx) => `<div class="gallery-dot ${idx === 0 ? 'active' : ''}" onclick="goToImage(${idx})"></div>`).join('');
             } else {
                 slidesHtml = `<div class="gallery-slide active"><img src="https://via.placeholder.com/800x600?text=HTM+Rentals" alt="Placeholder"></div>`;
             }
@@ -1171,6 +1165,9 @@
             for (let i = 1; i <= maxChildren; i++) {
                 childOptions += `<option value="${i}">${i} child${i > 1 ? 'ren' : ''}</option>`;
             }
+            
+            const description = unit.description || 'Comfortable apartment with all essential amenities for a relaxing stay in Hulhumale\'. Perfect for business travelers, couples, or small families.';
+            const showDescMore = description.length > 150;
             
             document.getElementById('content').innerHTML = `
                 <div class="unit-layout">
@@ -1222,15 +1219,21 @@
                             </div>
                         </div>
                         
-                        <div class="description">
-                            <p>${unit.description || 'Comfortable apartment with all essential amenities for a relaxing stay in Hulhumale\'. Perfect for business travelers, couples, or small families.'}</p>
+                        <!-- Description with Glass Card -->
+                        <div class="glass-card">
+                            <div id="description-text" class="description ${showDescMore ? 'collapsed' : ''}">
+                                ${escapeHtml(description)}
+                            </div>
+                            ${showDescMore ? `<button id="desc-show-more-btn" class="show-more-btn" onclick="toggleDescription()">Show more</button>` : ''}
                         </div>
                         
-                        <div class="amenities-section">
+                        <!-- Amenities with Glass Card -->
+                        <div class="glass-card amenities-section">
                             <h3>What this place offers</h3>
-                            <div class="amenities-grid">
+                            <div id="amenities-grid" class="amenities-grid ${showAllAmenities ? 'collapsed' : ''}">
                                 ${amenitiesList.map(a => `<div class="amenity"><i class="fas fa-check-circle"></i><span>${escapeHtml(a)}</span></div>`).join('')}
                             </div>
+                            ${showAllAmenities ? `<button id="amenities-show-all-btn" class="show-all-btn" onclick="toggleAmenities()">Show all ${amenitiesList.length} amenities</button>` : ''}
                         </div>
                         
                         <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};">
@@ -1244,7 +1247,7 @@
                     <div>
                         <div class="booking-card">
                             <div class="price-display">
-                                <span id="price-display" class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span>
+                                <span class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span>
                                 <span class="price-nightly">/ night</span>
                             </div>
                             
@@ -1267,11 +1270,11 @@
                             <div class="date-inputs">
                                 <div class="date-field">
                                     <label>CHECK-IN</label>
-                                    <input type="text" id="check-in" readonly placeholder="Add date" value="">
+                                    <input type="text" id="check-in" readonly placeholder="Select dates above" value="">
                                 </div>
                                 <div class="date-field">
                                     <label>CHECK-OUT</label>
-                                    <input type="text" id="check-out" readonly placeholder="Add date" value="">
+                                    <input type="text" id="check-out" readonly placeholder="Select dates above" value="">
                                 </div>
                             </div>
                             
@@ -1349,6 +1352,8 @@
             window.nextImage = nextImage;
             window.prevImage = prevImage;
             window.goToImage = goToImage;
+            window.toggleDescription = toggleDescription;
+            window.toggleAmenities = toggleAmenities;
         }
 
         function escapeHtml(str) {
