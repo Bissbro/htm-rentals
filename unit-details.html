@@ -85,13 +85,13 @@
             backdrop-filter: blur(4px);
         }
 
-        .toggle-option.local-active,
-        .toggle-option.foreign-active {
+        .toggle-option.foreign-active,
+        .toggle-option.local-active {
             background: var(--turquoise);
             color: white;
         }
 
-        .toggle-option:not(.local-active):not(.foreign-active) {
+        .toggle-option:not(.foreign-active):not(.local-active) {
             color: var(--gray-text);
         }
 
@@ -239,10 +239,17 @@
         /* Typography */
         .unit-title h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 500;
             color: var(--navy);
             margin-bottom: 8px;
+            text-align: left;
+        }
+
+        @media (min-width: 768px) {
+            .unit-title h1 {
+                font-size: 2rem;
+            }
         }
 
         .features-row {
@@ -497,26 +504,6 @@
             color: white;
         }
 
-        .calendar-day.selected-start {
-            background: var(--ocean);
-            color: white;
-            border-top-left-radius: 30px;
-            border-bottom-left-radius: 30px;
-        }
-
-        .calendar-day.selected-end {
-            background: var(--ocean);
-            color: white;
-            border-top-right-radius: 30px;
-            border-bottom-right-radius: 30px;
-        }
-
-        .calendar-day.in-range {
-            background: rgba(0, 105, 148, 0.2);
-            color: var(--navy);
-            border-radius: 0;
-        }
-
         .calendar-day.today {
             border: 2px solid var(--turquoise);
             font-weight: 600;
@@ -525,6 +512,14 @@
         .calendar-day.empty {
             cursor: default;
             background: transparent;
+        }
+
+        .calendar-instruction {
+            font-size: 11px;
+            color: var(--gray-text);
+            text-align: center;
+            margin-top: 12px;
+            font-style: italic;
         }
 
         /* Date Inputs */
@@ -721,11 +716,11 @@
         <!-- Header: Toggle left, Back arrow right - Sticky -->
         <div class="header">
             <div class="currency-toggle">
-                <button id="toggle-foreign" class="toggle-option" onclick="setMode('foreign')">
+                <button id="toggle-foreign" class="toggle-option foreign-active" onclick="setMode('foreign')">
                     <i class="fas fa-plane"></i>
                     <span>Foreign</span>
                 </button>
-                <button id="toggle-local" class="toggle-option local-active" onclick="setMode('local')">
+                <button id="toggle-local" class="toggle-option" onclick="setMode('local')">
                     <i class="fas fa-sailboat"></i>
                     <span>Local</span>
                 </button>
@@ -742,7 +737,7 @@
 
     <!-- Sticky Footer - Mobile Only -->
     <div class="sticky-footer">
-        <button class="availability-btn" onclick="scrollToCalendar()">
+        <button class="availability-btn" onclick="scrollToBookingCard()">
             <i class="far fa-calendar-alt"></i>
             Availability
         </button>
@@ -765,12 +760,12 @@
         let galleryImages = [];
         let currentImageIndex = 0;
         let slideInterval = null;
-        let currentMode = 'local';
+        let currentMode = 'foreign';
 
-        function scrollToCalendar() {
-            const calendarSection = document.querySelector('.calendar-section');
-            if (calendarSection) {
-                calendarSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        function scrollToBookingCard() {
+            const bookingCard = document.querySelector('.booking-card');
+            if (bookingCard) {
+                bookingCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
@@ -890,23 +885,12 @@
                 const isBooked = bookedDates.includes(dateStr);
                 const isToday = dateStr === todayStr;
                 let isSelected = false;
-                let isInRange = false;
-                let isStart = false;
-                let isEnd = false;
                 
-                if (startDate && endDate) {
-                    if (dateStr === startDate) {
-                        isSelected = true;
-                        isStart = true;
-                    } else if (dateStr === endDate) {
-                        isSelected = true;
-                        isEnd = true;
-                    } else if (dateStr > startDate && dateStr < endDate) {
-                        isInRange = true;
-                    }
-                } else if (startDate && dateStr === startDate) {
+                if (startDate && dateStr === startDate) {
                     isSelected = true;
-                    isStart = true;
+                }
+                if (endDate && dateStr === endDate) {
+                    isSelected = true;
                 }
                 
                 let classes = 'calendar-day';
@@ -917,9 +901,6 @@
                 }
                 if (isToday) classes += ' today';
                 if (isSelected) classes += ' selected';
-                if (isStart) classes += ' selected-start';
-                if (isEnd) classes += ' selected-end';
-                if (isInRange) classes += ' in-range';
                 
                 html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isBooked})">${d}</div>`;
             }
@@ -937,11 +918,19 @@
             }
             
             if (!startDate || (startDate && endDate)) {
+                // First tap: set start date, auto set end date to next day
                 startDate = dateStr;
-                endDate = null;
+                const nextDay = new Date(dateStr);
+                nextDay.setDate(nextDay.getDate() + 1);
+                endDate = nextDay.toISOString().split('T')[0];
             } else if (startDate && !endDate) {
+                // Second tap: update end date
                 if (dateStr < startDate) {
+                    // If tapped date is before start, reset both
                     startDate = dateStr;
+                    const nextDay = new Date(dateStr);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    endDate = nextDay.toISOString().split('T')[0];
                 } else {
                     endDate = dateStr;
                 }
@@ -955,9 +944,9 @@
             if (startDate) {
                 document.getElementById('check-in').value = formatDate(startDate);
                 if (endDate) {
-                    const endDateObj = new Date(endDate);
-                    endDateObj.setDate(endDateObj.getDate() + 1);
-                    const checkOutStr = endDateObj.toISOString().split('T')[0];
+                    const checkOutDate = new Date(endDate);
+                    checkOutDate.setDate(checkOutDate.getDate() + 1);
+                    const checkOutStr = checkOutDate.toISOString().split('T')[0];
                     document.getElementById('check-out').value = formatDate(checkOutStr);
                     
                     const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
@@ -967,9 +956,6 @@
                     document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                     document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                     document.getElementById('price-breakdown').style.display = 'block';
-                } else {
-                    document.getElementById('check-out').value = '';
-                    document.getElementById('price-breakdown').style.display = 'none';
                 }
             } else {
                 document.getElementById('check-in').value = '';
@@ -1022,9 +1008,9 @@
                 return;
             }
             
-            const endDateObj = new Date(endDate);
-            endDateObj.setDate(endDateObj.getDate() + 1);
-            const checkOutStr = endDateObj.toISOString().split('T')[0];
+            const checkOutDate = new Date(endDate);
+            checkOutDate.setDate(checkOutDate.getDate() + 1);
+            const checkOutStr = checkOutDate.toISOString().split('T')[0];
             
             const adults = parseInt(document.getElementById('adults').value) || 1;
             const children = parseInt(document.getElementById('children').value) || 0;
@@ -1280,7 +1266,7 @@
                     </div>
                     
                     <div>
-                        <div class="booking-card">
+                        <div class="booking-card" id="booking-card">
                             <div class="price-display">
                                 <span class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span>
                                 <span class="price-nightly">/ night</span>
@@ -1295,15 +1281,18 @@
                                     </div>
                                 </div>
                                 <div id="calendar-grid" class="calendar-grid"></div>
+                                <div class="calendar-instruction">
+                                    <i class="fas fa-info-circle"></i> Select a date to check availability. Check-out date auto-calculated.
+                                </div>
                             </div>
                             
                             <div class="date-inputs">
                                 <div class="date-field">
-                                    <label>CHECK-IN</label>
+                                    <label>CHECK-IN (14:00)</label>
                                     <input type="text" id="check-in" readonly placeholder="Select date" value="">
                                 </div>
                                 <div class="date-field">
-                                    <label>CHECK-OUT</label>
+                                    <label>CHECK-OUT (12:00)</label>
                                     <input type="text" id="check-out" readonly placeholder="Select date" value="">
                                 </div>
                             </div>
@@ -1384,7 +1373,7 @@
             window.goToImage = goToImage;
             window.toggleDescription = toggleDescription;
             window.toggleAmenities = toggleAmenities;
-            window.scrollToCalendar = scrollToCalendar;
+            window.scrollToBookingCard = scrollToBookingCard;
         }
 
         function escapeHtml(str) {
