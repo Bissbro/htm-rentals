@@ -9,17 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #FFFFFF;
-            color: #222222;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #FFFFFF; color: #222222; }
 
         :root {
             --navy: #0A2540;
@@ -35,11 +26,7 @@
             --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 
         /* Header - Sticky */
         .header {
@@ -55,13 +42,8 @@
             border-bottom: 1px solid var(--gray-border);
         }
 
-        /* Toggle - Foreign first, Local second */
-        .currency-toggle {
-            display: flex;
-            gap: 8px;
-            background: transparent;
-        }
-
+        /* Toggle */
+        .currency-toggle { display: flex; gap: 8px; }
         .toggle-option {
             display: flex;
             align-items: center;
@@ -72,663 +54,130 @@
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
             border-radius: 40px;
+            transition: all 0.2s ease;
         }
-
-        .toggle-option i {
-            font-size: 14px;
-        }
-
-        .toggle-option:hover {
-            background: rgba(64, 181, 173, 0.15);
-            backdrop-filter: blur(4px);
-        }
-
-        .toggle-option.foreign-active,
-        .toggle-option.local-active {
-            background: var(--turquoise);
-            color: white;
-        }
-
-        .toggle-option:not(.foreign-active):not(.local-active) {
-            color: var(--gray-text);
-        }
+        .toggle-option i { font-size: 14px; }
+        .toggle-option:hover { background: rgba(64, 181, 173, 0.15); backdrop-filter: blur(4px); }
+        .toggle-option.foreign-active, .toggle-option.local-active { background: var(--turquoise); color: white; }
+        .toggle-option:not(.foreign-active):not(.local-active) { color: var(--gray-text); }
 
         /* Back Arrow */
-        .back-arrow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            padding: 8px;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-        }
-
-        .back-arrow:hover {
-            background: rgba(0, 105, 148, 0.1);
-            backdrop-filter: blur(4px);
-        }
-
-        .back-arrow svg {
-            width: 28px;
-            height: 28px;
-        }
+        .back-arrow { display: flex; align-items: center; justify-content: center; text-decoration: none; padding: 8px; border-radius: 50%; transition: all 0.2s ease; }
+        .back-arrow:hover { background: rgba(0, 105, 148, 0.1); backdrop-filter: blur(4px); }
+        .back-arrow svg { width: 28px; height: 28px; }
 
         /* Layout */
-        .unit-layout {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 48px;
-            margin-top: 8px;
-        }
-
-        @media (max-width: 900px) {
-            .unit-layout {
-                grid-template-columns: 1fr;
-                gap: 32px;
-            }
-            .booking-card {
-                position: static;
-                margin-top: 24px;
-            }
-        }
+        .unit-layout { display: grid; grid-template-columns: 1fr 380px; gap: 48px; margin-top: 8px; }
+        @media (max-width: 900px) { .unit-layout { grid-template-columns: 1fr; gap: 32px; } .booking-card { position: static; margin-top: 24px; } }
 
         /* Gallery */
-        .gallery-container {
-            position: relative;
-            margin-bottom: 24px;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-        }
-
-        .gallery-slider {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 4 / 3;
-        }
-
-        .gallery-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .gallery-slide.active {
-            opacity: 1;
-        }
-
-        .gallery-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .gallery-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: var(--navy);
-            transition: all 0.2s;
-            z-index: 10;
-        }
-
-        .gallery-nav:hover {
-            background: white;
-            box-shadow: var(--shadow-md);
-        }
-
-        .gallery-nav.prev {
-            left: 16px;
-        }
-
-        .gallery-nav.next {
-            right: 16px;
-        }
-
-        .gallery-counter {
-            position: absolute;
-            bottom: 16px;
-            right: 16px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            z-index: 10;
-        }
-
-        .gallery-dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .gallery-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--gray-border);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .gallery-dot.active {
-            width: 20px;
-            border-radius: 4px;
-            background: var(--ocean);
-        }
+        .gallery-container { position: relative; margin-bottom: 24px; border-radius: var(--radius-lg); overflow: hidden; }
+        .gallery-slider { position: relative; width: 100%; aspect-ratio: 4 / 3; }
+        .gallery-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s ease; }
+        .gallery-slide.active { opacity: 1; }
+        .gallery-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--navy); transition: all 0.2s; z-index: 10; }
+        .gallery-nav.prev { left: 16px; }
+        .gallery-nav.next { right: 16px; }
+        .gallery-counter { position: absolute; bottom: 16px; right: 16px; background: rgba(0,0,0,0.7); color: white; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; z-index: 10; }
+        .gallery-dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+        .gallery-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gray-border); cursor: pointer; transition: all 0.2s; }
+        .gallery-dot.active { width: 20px; border-radius: 4px; background: var(--ocean); }
 
         /* Typography */
-        .unit-title h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 500;
-            color: var(--navy);
-            margin-bottom: 8px;
-            text-align: left;
-        }
-
-        @media (min-width: 768px) {
-            .unit-title h1 {
-                font-size: 2rem;
-            }
-        }
-
-        .features-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--gray-border);
-            margin-bottom: 24px;
-        }
-
-        .feature {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .feature i {
-            font-size: 20px;
-            color: var(--ocean);
-        }
-
-        .feature-text {
-            font-size: 14px;
-            color: var(--gray-text);
-        }
-
-        .feature-text strong {
-            display: block;
-            color: var(--navy);
-            font-weight: 600;
-        }
-
-        .capacity-detail {
-            font-size: 12px;
-            color: var(--gray-text);
-            margin-top: 2px;
-        }
+        .unit-title h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 500; color: var(--navy); margin-bottom: 8px; text-align: left; }
+        @media (min-width: 768px) { .unit-title h1 { font-size: 2rem; } }
+        .features-row { display: flex; flex-wrap: wrap; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--gray-border); margin-bottom: 24px; }
+        .feature { display: flex; align-items: center; gap: 12px; }
+        .feature i { font-size: 20px; color: var(--ocean); }
+        .feature-text { font-size: 14px; color: var(--gray-text); }
+        .feature-text strong { display: block; color: var(--navy); font-weight: 600; }
+        .capacity-detail { font-size: 12px; color: var(--gray-text); margin-top: 2px; }
 
         /* Glass Cards */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .description {
-            line-height: 1.6;
-            color: #4a4a4a;
-            font-size: 16px;
-            font-weight: 400;
-        }
-
-        .description.collapsed {
-            max-height: 100px;
-            overflow: hidden;
-        }
-
-        .show-more-btn {
-            background: none;
-            border: none;
-            color: var(--ocean);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 12px;
-            padding: 0;
-        }
-
-        .amenities-section h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: var(--navy);
-            margin-bottom: 16px;
-        }
-
-        .amenities-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .amenities-grid.collapsed {
-            max-height: 200px;
-            overflow: hidden;
-        }
-
-        .amenity {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-        }
-
-        .amenity i {
-            width: 24px;
-            color: var(--turquoise);
-            font-size: 16px;
-        }
-
-        .amenity span {
-            font-size: 14px;
-            font-weight: 400;
-            color: #333;
-        }
-
-        .show-all-btn {
-            background: none;
-            border: none;
-            color: var(--ocean);
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            margin-top: 12px;
-            padding: 0;
-        }
+        .glass-card { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(10px); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow-sm); }
+        .description { line-height: 1.6; color: #4a4a4a; font-size: 16px; font-weight: 400; }
+        .description.collapsed { max-height: 100px; overflow: hidden; }
+        .show-more-btn { background: none; border: none; color: var(--ocean); font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 12px; padding: 0; }
+        .amenities-section h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 500; color: var(--navy); margin-bottom: 16px; }
+        .amenities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .amenities-grid.collapsed { max-height: 200px; overflow: hidden; }
+        .amenity { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+        .amenity i { width: 24px; color: var(--turquoise); font-size: 16px; }
+        .amenity span { font-size: 14px; font-weight: 400; color: #333; }
+        .show-all-btn { background: none; border: none; color: var(--ocean); font-weight: 600; font-size: 13px; cursor: pointer; margin-top: 12px; padding: 0; }
 
         /* External Buttons */
-        .external-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 24px 0;
-            padding-top: 16px;
-            border-top: 1px solid var(--gray-border);
-        }
-
-        .ext-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 10px 16px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 13px;
-            transition: all 0.3s ease;
-        }
-
-        .ext-btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
-
+        .external-buttons { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0; padding-top: 16px; border-top: 1px solid var(--gray-border); }
+        .ext-btn { flex: 1; min-width: 100px; padding: 10px 16px; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; transition: all 0.3s ease; }
+        .ext-btn:hover { transform: translateY(-2px); opacity: 0.9; }
         .ext-btn.airbnb { background: #FF5A5F; color: white; }
         .ext-btn.agoda { background: #1E5D86; color: white; }
         .ext-btn.trip { background: #2680EB; color: white; }
         .ext-btn.booking { background: #003580; color: white; }
 
         /* Booking Card */
-        .booking-card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--gray-border);
-            position: sticky;
-            top: 80px;
-        }
-
-        .price-display {
-            display: flex;
-            align-items: baseline;
-            gap: 4px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-        .price-mvr {
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: var(--navy);
-        }
-
-        .price-nightly {
-            font-size: 14px;
-            color: var(--gray-text);
-        }
+        .booking-card { background: white; border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-md); border: 1px solid var(--gray-border); position: sticky; top: 80px; }
+        .price-display { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; margin-bottom: 16px; }
+        .price-mvr { font-size: 1.75rem; font-weight: 600; color: var(--navy); }
+        .price-nightly { font-size: 14px; color: var(--gray-text); }
 
         /* Calendar */
-        .calendar-section {
-            margin: 20px 0;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .calendar-nav button {
-            background: var(--gray-light);
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .calendar-nav button:hover {
-            background: var(--turquoise);
-            color: white;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            text-align: center;
-        }
-
-        .calendar-weekday {
-            font-weight: 600;
-            padding: 10px 0;
-            font-size: 12px;
-            color: var(--gray-text);
-        }
-
-        .calendar-day {
-            padding: 10px 5px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .calendar-day.available:hover {
-            background: var(--turquoise);
-            color: white;
-        }
-
-        .calendar-day.booked {
-            background: var(--gray-light);
-            color: var(--gray-text);
-            text-decoration: line-through;
-            cursor: not-allowed;
-        }
-
-        .calendar-day.selected {
-            background: var(--ocean);
-            color: white;
-        }
-
-        .calendar-day.in-range {
-            background: rgba(0, 105, 148, 0.2);
-            color: var(--navy);
-            border-radius: 0;
-        }
-
-        .calendar-day.today {
-            border: 2px solid var(--turquoise);
-            font-weight: 600;
-        }
-
-        .calendar-day.empty {
-            cursor: default;
-            background: transparent;
-        }
-
-        .calendar-instruction {
-            font-size: 11px;
-            color: var(--gray-text);
-            text-align: center;
-            margin-top: 12px;
-            font-style: italic;
-        }
+        .calendar-section { margin: 20px 0; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .calendar-nav button { background: var(--gray-light); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: all 0.3s; }
+        .calendar-nav button:hover { background: var(--turquoise); color: white; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+        .calendar-weekday { font-weight: 600; padding: 10px 0; font-size: 12px; color: var(--gray-text); }
+        .calendar-day { padding: 10px 5px; border-radius: 30px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+        .calendar-day.available:hover { background: var(--turquoise); color: white; }
+        .calendar-day.booked { background: var(--gray-light); color: var(--gray-text); text-decoration: line-through; cursor: not-allowed; }
+        .calendar-day.selected { background: var(--ocean); color: white; }
+        .calendar-day.in-range { background: rgba(0, 105, 148, 0.2); color: var(--navy); border-radius: 0; }
+        .calendar-day.today { border: 2px solid var(--turquoise); font-weight: 600; }
+        .calendar-day.empty { cursor: default; background: transparent; }
+        .calendar-instruction { font-size: 11px; color: var(--gray-text); text-align: center; margin-top: 12px; font-style: italic; }
 
         /* Date Inputs */
-        .date-inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 16px 0;
-        }
-
-        .date-field {
-            border: 1px solid var(--gray-border);
-            border-radius: var(--radius-md);
-            padding: 12px;
-            background: var(--gray-light);
-        }
-
-        .date-field label {
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--gray-text);
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .date-field input {
-            background: transparent;
-            border: none;
-            font-size: 14px;
-            font-weight: 500;
-            width: 100%;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-        }
-
-        .date-field input:focus {
-            outline: none;
-        }
+        .date-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+        .date-field { border: 1px solid var(--gray-border); border-radius: var(--radius-md); padding: 12px; background: var(--gray-light); }
+        .date-field label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-text); display: block; margin-bottom: 4px; }
+        .date-field input { background: transparent; border: none; font-size: 14px; font-weight: 500; width: 100%; font-family: 'Inter', sans-serif; cursor: pointer; }
+        .date-field input:focus { outline: none; }
 
         /* Form */
-        .guest-fields {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            font-size: 13px;
-            color: var(--navy);
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--gray-border);
-            border-radius: var(--radius-md);
-            font-size: 14px;
-            transition: all 0.3s;
-            background: white;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--turquoise);
-        }
-
-        .price-breakdown {
-            background: var(--gray-light);
-            padding: 16px;
-            border-radius: var(--radius-md);
-            margin: 16px 0;
-        }
-
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            font-size: 14px;
-        }
-
-        .price-row.total {
-            font-weight: 700;
-            border-top: 1px solid var(--gray-border);
-            margin-top: 8px;
-            padding-top: 12px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--turquoise);
-            color: white;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            background: var(--ocean);
-            transform: translateY(-2px);
-        }
-
-        .message {
-            padding: 14px;
-            border-radius: var(--radius-md);
-            margin-bottom: 16px;
-            display: none;
-        }
-
-        .message.success {
-            background: #D4EDDA;
-            color: #155724;
-            display: block;
-        }
-
-        .message.error {
-            background: #F8D7DA;
-            color: #721C24;
-            display: block;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 60px;
-            color: var(--gray-text);
-        }
-
-        hr {
-            margin: 20px 0;
-            border: none;
-            border-top: 1px solid var(--gray-border);
-        }
+        .guest-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; color: var(--navy); }
+        .form-group input, .form-group select { width: 100%; padding: 12px 16px; border: 1px solid var(--gray-border); border-radius: var(--radius-md); font-size: 14px; transition: all 0.3s; background: white; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--turquoise); }
+        .price-breakdown { background: var(--gray-light); padding: 16px; border-radius: var(--radius-md); margin: 16px 0; }
+        .price-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; }
+        .price-row.total { font-weight: 700; border-top: 1px solid var(--gray-border); margin-top: 8px; padding-top: 12px; }
+        .submit-btn { width: 100%; padding: 14px; background: var(--turquoise); color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 16px; transition: all 0.3s ease; }
+        .submit-btn:hover { background: var(--ocean); transform: translateY(-2px); }
+        .message { padding: 14px; border-radius: var(--radius-md); margin-bottom: 16px; display: none; }
+        .message.success { background: #D4EDDA; color: #155724; display: block; }
+        .message.error { background: #F8D7DA; color: #721C24; display: block; }
+        .loading { text-align: center; padding: 60px; color: var(--gray-text); }
+        hr { margin: 20px 0; border: none; border-top: 1px solid var(--gray-border); }
 
         /* Sticky Footer - Mobile Only */
-        .sticky-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 12px 16px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            z-index: 99;
-            display: none;
-            border-top: 1px solid var(--gray-border);
-        }
-
-        .sticky-footer .availability-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--turquoise);
-            color: white;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .sticky-footer {
-                display: block;
-            }
-            body {
-                padding-bottom: 80px;
-            }
-            .booking-card {
-                top: 70px;
-            }
-        }
+        .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 12px 16px; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 99; display: none; border-top: 1px solid var(--gray-border); }
+        .sticky-footer .availability-btn { width: 100%; padding: 14px; background: var(--turquoise); color: white; border: none; border-radius: 40px; font-weight: 600; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        @media (max-width: 768px) { .sticky-footer { display: block; } body { padding-bottom: 80px; } .booking-card { top: 70px; } }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header: Toggle left, Back arrow right - Sticky -->
         <div class="header">
             <div class="currency-toggle">
                 <button id="toggle-foreign" class="toggle-option foreign-active" onclick="setMode('foreign')">
-                    <i class="fas fa-plane"></i>
-                    <span>Foreign</span>
+                    <i class="fas fa-plane"></i><span>Foreign</span>
                 </button>
                 <button id="toggle-local" class="toggle-option" onclick="setMode('local')">
-                    <i class="fas fa-sailboat"></i>
-                    <span>Local</span>
+                    <i class="fas fa-sailboat"></i><span>Local</span>
                 </button>
             </div>
             <a href="index.html" class="back-arrow">
@@ -737,15 +186,12 @@
                 </svg>
             </a>
         </div>
-
         <div id="content"><div class="loading">Loading unit details...</div></div>
     </div>
 
-    <!-- Sticky Footer - Mobile Only -->
     <div class="sticky-footer">
         <button class="availability-btn" onclick="scrollToBookingCard()">
-            <i class="far fa-calendar-alt"></i>
-            Availability
+            <i class="far fa-calendar-alt"></i> Availability
         </button>
     </div>
 
@@ -770,9 +216,7 @@
 
         function scrollToBookingCard() {
             const bookingCard = document.querySelector('.booking-card');
-            if (bookingCard) {
-                bookingCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            if (bookingCard) bookingCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         async function loadUnit() {
@@ -805,11 +249,7 @@
                     
                     await fetchAvailability();
                     renderUnitDetails();
-                    
-                    setTimeout(() => {
-                        generateCalendar(currentMonth, currentYear);
-                    }, 100);
-                    
+                    setTimeout(() => { generateCalendar(currentMonth, currentYear); }, 100);
                     setupGallery();
                 } else {
                     document.getElementById('content').innerHTML = '<div class="card"><p>Unit not found. <a href="index.html">Go back</a></p></div>';
@@ -880,43 +320,26 @@
             let html = '';
             const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
             weekdays.forEach(day => html += `<div class="calendar-weekday">${day}</div>`);
-            
             for (let i = 0; i < firstDay; i++) html += '<div class="calendar-day empty"></div>';
-            
             const today = new Date();
             const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-            
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const isBooked = bookedDates.includes(dateStr);
                 const isToday = dateStr === todayStr;
-                
-                let isSelected = false;
-                let isInRange = false;
-                
+                let isSelected = false, isInRange = false;
                 if (startDate && endDate) {
-                    if (dateStr === startDate || dateStr === endDate) {
-                        isSelected = true;
-                    } else if (dateStr > startDate && dateStr < endDate) {
-                        isInRange = true;
-                    }
-                } else if (startDate && dateStr === startDate) {
-                    isSelected = true;
-                }
-                
+                    if (dateStr === startDate || dateStr === endDate) isSelected = true;
+                    else if (dateStr > startDate && dateStr < endDate) isInRange = true;
+                } else if (startDate && dateStr === startDate) isSelected = true;
                 let classes = 'calendar-day';
-                if (isBooked) {
-                    classes += ' booked';
-                } else {
-                    classes += ' available';
-                }
+                if (isBooked) classes += ' booked';
+                else classes += ' available';
                 if (isToday) classes += ' today';
                 if (isSelected) classes += ' selected';
                 if (isInRange) classes += ' in-range';
-                
                 html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isBooked})">${d}</div>`;
             }
-            
             const grid = document.getElementById('calendar-grid');
             if (grid) grid.innerHTML = html;
             const monthYear = document.getElementById('calendar-month-year');
@@ -924,56 +347,37 @@
         }
 
         function selectDate(dateStr, isBooked) {
-            if (isBooked) {
-                showMessage('This date is not available', 'error');
-                return;
-            }
-            
-            // If clicking on the same date that is already selected, clear everything
+            if (isBooked) { showMessage('This date is not available', 'error'); return; }
             if (startDate === dateStr && !endDate) {
-                startDate = null;
-                endDate = null;
+                startDate = null; endDate = null;
                 document.getElementById('check-in').value = '';
                 document.getElementById('check-out').value = '';
                 document.getElementById('price-breakdown').style.display = 'none';
                 generateCalendar(currentMonth, currentYear);
                 return;
             }
-            
-            // If no start date, set start date
             if (!startDate) {
-                startDate = dateStr;
-                endDate = null;
-                
-                // Auto set checkout to next day
-                const nextDay = new Date(dateStr);
-                nextDay.setDate(nextDay.getDate() + 1);
+                startDate = dateStr; endDate = null;
+                const nextDay = new Date(dateStr); nextDay.setDate(nextDay.getDate() + 1);
                 const checkOutStr = nextDay.toISOString().split('T')[0];
                 document.getElementById('check-in').value = formatDate(dateStr);
                 document.getElementById('check-out').value = formatDate(checkOutStr);
-                
                 const nights = 1;
                 const totalMvr = nights * parseFloat(unit.rate_mvr);
                 document.getElementById('night-count').textContent = nights;
                 document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                 document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                 document.getElementById('price-breakdown').style.display = 'block';
-                
                 generateCalendar(currentMonth, currentYear);
                 return;
             }
-            
-            // If start date exists and no end date, set end date
             if (startDate && !endDate) {
                 if (dateStr < startDate) {
-                    // If selected date is before start, reset and set as new start
                     startDate = dateStr;
-                    const nextDay = new Date(dateStr);
-                    nextDay.setDate(nextDay.getDate() + 1);
+                    const nextDay = new Date(dateStr); nextDay.setDate(nextDay.getDate() + 1);
                     const checkOutStr = nextDay.toISOString().split('T')[0];
                     document.getElementById('check-in').value = formatDate(dateStr);
                     document.getElementById('check-out').value = formatDate(checkOutStr);
-                    
                     const nights = 1;
                     const totalMvr = nights * parseFloat(unit.rate_mvr);
                     document.getElementById('night-count').textContent = nights;
@@ -981,150 +385,98 @@
                     document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                 } else {
                     endDate = dateStr;
-                    const checkOutDate = new Date(endDate);
-                    checkOutDate.setDate(checkOutDate.getDate() + 1);
+                    const checkOutDate = new Date(endDate); checkOutDate.setDate(checkOutDate.getDate() + 1);
                     const checkOutStr = checkOutDate.toISOString().split('T')[0];
                     document.getElementById('check-out').value = formatDate(checkOutStr);
-                    
                     const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
                     const totalMvr = nights * parseFloat(unit.rate_mvr);
                     document.getElementById('night-count').textContent = nights;
                     document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                     document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                 }
-                
                 generateCalendar(currentMonth, currentYear);
                 return;
             }
-            
-            // If both start and end exist, reset and start new selection
             if (startDate && endDate) {
-                startDate = dateStr;
-                endDate = null;
-                const nextDay = new Date(dateStr);
-                nextDay.setDate(nextDay.getDate() + 1);
+                startDate = dateStr; endDate = null;
+                const nextDay = new Date(dateStr); nextDay.setDate(nextDay.getDate() + 1);
                 const checkOutStr = nextDay.toISOString().split('T')[0];
                 document.getElementById('check-in').value = formatDate(dateStr);
                 document.getElementById('check-out').value = formatDate(checkOutStr);
-                
                 const nights = 1;
                 const totalMvr = nights * parseFloat(unit.rate_mvr);
                 document.getElementById('night-count').textContent = nights;
                 document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                 document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                 document.getElementById('price-breakdown').style.display = 'block';
-                
                 generateCalendar(currentMonth, currentYear);
             }
         }
 
-        function formatDate(dateStr) {
-            const d = new Date(dateStr);
-            return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        }
+        function formatDate(dateStr) { const d = new Date(dateStr); return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); }
+        function showMessage(msg, type) { const el = document.getElementById('form-message'); if (!el) return; el.textContent = msg; el.className = `message ${type}`; setTimeout(() => { el.style.display = 'none'; el.className = 'message'; }, 5000); }
 
-        function showMessage(msg, type) {
-            const el = document.getElementById('form-message');
-            if (!el) return;
-            el.textContent = msg;
-            el.className = `message ${type}`;
-            setTimeout(() => {
-                el.style.display = 'none';
-                el.className = 'message';
-            }, 5000);
+        function updateChildrenOptions(selectedAdults) {
+            const maxAdults = unit.max_adults || unit.max_guests;
+            const maxChildren = unit.max_children || 0;
+            const maxTotal = unit.max_guests;
+            const remaining = maxTotal - selectedAdults;
+            const maxAllowedChildren = Math.min(maxChildren, remaining);
+            const childrenSelect = document.getElementById('children');
+            if (childrenSelect) {
+                const currentValue = parseInt(childrenSelect.value) || 0;
+                childrenSelect.innerHTML = '<option value="0">0 children</option>';
+                for (let i = 1; i <= maxAllowedChildren; i++) {
+                    childrenSelect.innerHTML += `<option value="${i}">${i} child${i > 1 ? 'ren' : ''}</option>`;
+                }
+                if (currentValue <= maxAllowedChildren) childrenSelect.value = currentValue;
+                else childrenSelect.value = 0;
+            }
         }
 
         function validateGuests(adults, children) {
             const maxAdults = unit.max_adults || unit.max_guests;
             const maxChildren = unit.max_children || 0;
             const maxCapacity = unit.max_guests;
-            
-            if (adults > maxAdults) {
-                showMessage(`Maximum ${maxAdults} adult(s) allowed`, 'error');
-                return false;
-            }
-            if (children > maxChildren) {
-                showMessage(`Maximum ${maxChildren} child(ren) allowed`, 'error');
-                return false;
-            }
-            if (adults + children > maxCapacity) {
-                showMessage(`Total guests cannot exceed ${maxCapacity} (${adults} adults + ${children} children)`, 'error');
-                return false;
-            }
+            if (adults > maxAdults) { showMessage(`Maximum ${maxAdults} adult(s) allowed`, 'error'); return false; }
+            if (children > maxChildren) { showMessage(`Maximum ${maxChildren} child(ren) allowed`, 'error'); return false; }
+            if (adults + children > maxCapacity) { showMessage(`Total guests cannot exceed ${maxCapacity} (${adults} adults + ${children} children)`, 'error'); return false; }
             return true;
         }
 
         async function submitBooking(e) {
             e.preventDefault();
-            
-            if (!startDate || !endDate) {
-                showMessage('Please select check-in and check-out dates', 'error');
-                return;
-            }
-            
-            const checkOutDate = new Date(endDate);
-            checkOutDate.setDate(checkOutDate.getDate() + 1);
+            if (!startDate || !endDate) { showMessage('Please select check-in and check-out dates', 'error'); return; }
+            const checkOutDate = new Date(endDate); checkOutDate.setDate(checkOutDate.getDate() + 1);
             const checkOutStr = checkOutDate.toISOString().split('T')[0];
-            
             const adults = parseInt(document.getElementById('adults').value) || 1;
             const children = parseInt(document.getElementById('children').value) || 0;
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
-            
             if (!validateGuests(adults, children)) return;
-            if (!name || !phone) {
-                showMessage('Please fill all required fields', 'error');
-                return;
-            }
-            
+            if (!name || !phone) { showMessage('Please fill all required fields', 'error'); return; }
             const submitBtn = e.target.querySelector('.submit-btn');
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             submitBtn.disabled = true;
-            
             try {
                 const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
                 const total = nights * parseFloat(unit.rate_mvr);
-                
                 const res = await fetch(`${API_BASE_URL}/bookings/create`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        unit_id: unit.id,
-                        guest_name: name,
-                        guest_email: '',
-                        guest_phone: phone,
-                        check_in_date: startDate,
-                        check_out_date: checkOutStr,
-                        number_of_guests: adults + children,
-                        number_of_adults: adults,
-                        number_of_children: children,
-                        special_requests: '',
-                        currency: 'MVR'
+                        unit_id: unit.id, guest_name: name, guest_email: '', guest_phone: phone,
+                        check_in_date: startDate, check_out_date: checkOutStr,
+                        number_of_guests: adults + children, number_of_adults: adults, number_of_children: children,
+                        special_requests: '', currency: 'MVR'
                     })
                 });
-                
                 const data = await res.json();
-                
                 if (data.success) {
                     showMessage('Booking request sent! We will contact you shortly.', 'success');
-                    
-                    const msg = `*New Local Booking Request - HTM Rentals*%0A%0A` +
-                        `*Booking ID:* ${data.booking_id}%0A` +
-                        `*Unit:* ${unit.unit_name}%0A` +
-                        `*Guest:* ${name}%0A` +
-                        `*Phone:* ${phone}%0A` +
-                        `*Check-in:* ${formatDate(startDate)} (14:00)%0A` +
-                        `*Check-out:* ${formatDate(checkOutStr)} (12:00)%0A` +
-                        `*Nights:* ${nights}%0A` +
-                        `*Guests:* ${adults} adults, ${children} children%0A` +
-                        `*Total:* MVR ${total.toFixed(2)}%0A%0A` +
-                        `Please confirm this booking in the admin panel.`;
-                    
+                    const msg = `*New Local Booking Request - HTM Rentals*%0A%0A*Booking ID:* ${data.booking_id}%0A*Unit:* ${unit.unit_name}%0A*Guest:* ${name}%0A*Phone:* ${phone}%0A*Check-in:* ${formatDate(startDate)} (14:00)%0A*Check-out:* ${formatDate(checkOutStr)} (12:00)%0A*Nights:* ${nights}%0A*Guests:* ${adults} adults, ${children} children%0A*Total:* MVR ${total.toFixed(2)}%0A%0APlease confirm this booking in the admin panel.`;
                     window.open(`https://wa.me/9609373113?text=${msg}`, '_blank');
-                    
-                    startDate = null;
-                    endDate = null;
+                    startDate = null; endDate = null;
                     document.getElementById('check-in').value = '';
                     document.getElementById('check-out').value = '';
                     document.getElementById('price-breakdown').style.display = 'none';
@@ -1132,309 +484,111 @@
                     document.getElementById('children').value = '0';
                     document.getElementById('name').value = '';
                     document.getElementById('phone').value = '';
-                    
                     generateCalendar(currentMonth, currentYear);
-                } else {
-                    showMessage(data.error || 'Booking failed', 'error');
-                }
-            } catch(error) {
-                console.error('Booking error:', error);
-                showMessage('Network error. Please try again.', 'error');
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
+                } else { showMessage(data.error || 'Booking failed', 'error'); }
+            } catch(error) { console.error('Booking error:', error); showMessage('Network error. Please try again.', 'error'); }
+            finally { submitBtn.innerHTML = originalText; submitBtn.disabled = false; }
         }
 
         function setMode(mode) {
             currentMode = mode;
-            
             const localBtn = document.getElementById('toggle-local');
             const foreignBtn = document.getElementById('toggle-foreign');
-            
-            if (mode === 'local') {
-                localBtn.classList.add('local-active');
-                foreignBtn.classList.remove('foreign-active');
-            } else {
-                foreignBtn.classList.add('foreign-active');
-                localBtn.classList.remove('local-active');
-            }
-            
+            if (mode === 'local') { localBtn.classList.add('local-active'); foreignBtn.classList.remove('foreign-active'); }
+            else { foreignBtn.classList.add('foreign-active'); localBtn.classList.remove('local-active'); }
             renderUnitDetails();
-            
-            setTimeout(() => {
-                generateCalendar(currentMonth, currentYear);
-            }, 100);
+            setTimeout(() => { generateCalendar(currentMonth, currentYear); }, 100);
         }
 
         function toggleDescription() {
             const desc = document.getElementById('description-text');
             const btn = document.getElementById('desc-show-more-btn');
-            if (desc.classList.contains('collapsed')) {
-                desc.classList.remove('collapsed');
-                btn.textContent = 'Show less';
-            } else {
-                desc.classList.add('collapsed');
-                btn.textContent = 'Show more';
-            }
+            if (desc.classList.contains('collapsed')) { desc.classList.remove('collapsed'); btn.textContent = 'Show less'; }
+            else { desc.classList.add('collapsed'); btn.textContent = 'Show more'; }
         }
 
         function toggleAmenities() {
             const grid = document.getElementById('amenities-grid');
             const btn = document.getElementById('amenities-show-all-btn');
-            if (grid.classList.contains('collapsed')) {
-                grid.classList.remove('collapsed');
-                btn.textContent = 'Show less';
-            } else {
-                grid.classList.add('collapsed');
-                btn.textContent = `Show all ${unit.amenities?.length || 0} amenities`;
-            }
+            if (grid.classList.contains('collapsed')) { grid.classList.remove('collapsed'); btn.textContent = 'Show less'; }
+            else { grid.classList.add('collapsed'); btn.textContent = `Show all ${unit.amenities?.length || 0} amenities`; }
         }
 
         function renderUnitDetails() {
             const defaultAmenities = ['Free WiFi', 'Smart TV', 'Air Conditioning', 'Kitchen', 'Tea & Coffee', 'Hot Water'];
             const amenitiesList = (unit.amenities && unit.amenities.length) ? unit.amenities : defaultAmenities;
             const showAllAmenities = amenitiesList.length > 6;
-            
-            let slidesHtml = '';
-            let dotsHtml = '';
+            let slidesHtml = '', dotsHtml = '';
             if (galleryImages.length) {
-                slidesHtml = galleryImages.map((img, idx) => `
-                    <div class="gallery-slide ${idx === 0 ? 'active' : ''}">
-                        <img src="${img}" alt="${unit.unit_name} - Image ${idx+1}">
-                    </div>
-                `).join('');
+                slidesHtml = galleryImages.map((img, idx) => `<div class="gallery-slide ${idx === 0 ? 'active' : ''}"><img src="${img}" alt="${unit.unit_name} - Image ${idx+1}"></div>`).join('');
                 dotsHtml = galleryImages.map((_, idx) => `<div class="gallery-dot ${idx === 0 ? 'active' : ''}" onclick="goToImage(${idx})"></div>`).join('');
-            } else {
-                slidesHtml = `<div class="gallery-slide active"><img src="https://via.placeholder.com/800x600?text=HTM+Rentals" alt="Placeholder"></div>`;
-            }
-            
+            } else { slidesHtml = `<div class="gallery-slide active"><img src="https://via.placeholder.com/800x600?text=HTM+Rentals" alt="Placeholder"></div>`; }
             let externalButtonsHtml = '';
-            if (unit.airbnb_url && unit.airbnb_url.trim() !== '') {
-                externalButtonsHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb"></i> Airbnb</a>`;
-            }
-            if (unit.agoda_url && unit.agoda_url.trim() !== '') {
-                externalButtonsHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">Agoda</a>`;
-            }
-            if (unit.trip_url && unit.trip_url.trim() !== '') {
-                externalButtonsHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">Trip.com</a>`;
-            }
-            if (unit.booking_url && unit.booking_url.trim() !== '') {
-                externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">Booking.com</a>`;
-            }
-            
+            if (unit.airbnb_url && unit.airbnb_url.trim() !== '') externalButtonsHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb"></i> Airbnb</a>`;
+            if (unit.agoda_url && unit.agoda_url.trim() !== '') externalButtonsHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">Agoda</a>`;
+            if (unit.trip_url && unit.trip_url.trim() !== '') externalButtonsHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">Trip.com</a>`;
+            if (unit.booking_url && unit.booking_url.trim() !== '') externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">Booking.com</a>`;
             const foreignInquiryHtml = `<button class="ext-btn" style="background:var(--ocean); color:white;" onclick="window.open('https://wa.me/9609373113?text=I%27m%20interested%20in%20direct%20booking%20for%20${encodeURIComponent(unit.unit_name)}%20with%20crypto/cash', '_blank')"><i class="fab fa-whatsapp"></i> Direct Inquiry (Crypto/Cash)</button>`;
-            
             const usdRate = unit.rate_usd || (unit.rate_mvr / 15.42).toFixed(2);
-            
             const maxAdults = unit.max_adults || unit.max_guests;
             const maxChildren = unit.max_children || 0;
             const maxTotal = unit.max_guests;
-            
             let adultOptions = '';
-            for (let i = 1; i <= Math.min(maxAdults, maxTotal); i++) {
-                adultOptions += `<option value="${i}">${i} adult${i > 1 ? 's' : ''}</option>`;
-            }
-            
+            for (let i = 1; i <= Math.min(maxAdults, maxTotal); i++) adultOptions += `<option value="${i}">${i} adult${i > 1 ? 's' : ''}</option>`;
             let childOptions = '<option value="0">0 children</option>';
-            for (let i = 1; i <= maxChildren; i++) {
-                childOptions += `<option value="${i}">${i} child${i > 1 ? 'ren' : ''}</option>`;
-            }
-            
+            for (let i = 1; i <= maxChildren; i++) childOptions += `<option value="${i}">${i} child${i > 1 ? 'ren' : ''}</option>`;
             const description = unit.description || 'Comfortable apartment with all essential amenities for a relaxing stay in Hulhumale\'. Perfect for business travelers, couples, or small families.';
             const showDescMore = description.length > 150;
-            
             document.getElementById('content').innerHTML = `
                 <div class="unit-layout">
                     <div>
-                        <div class="gallery-container">
-                            <div class="gallery-slider" id="gallery-slider">
-                                ${slidesHtml}
-                                ${galleryImages.length > 1 ? `
-                                    <button class="gallery-nav prev" onclick="prevImage()"><i class="fas fa-chevron-left"></i></button>
-                                    <button class="gallery-nav next" onclick="nextImage()"><i class="fas fa-chevron-right"></i></button>
-                                    <div class="gallery-counter">1 / ${galleryImages.length}</div>
-                                ` : ''}
-                            </div>
-                            ${galleryImages.length > 1 ? `<div class="gallery-dots" id="gallery-dots">${dotsHtml}</div>` : ''}
-                        </div>
-                        
-                        <div class="unit-title">
-                            <h1>${escapeHtml(unit.unit_name)}</h1>
-                        </div>
-                        
+                        <div class="gallery-container"><div class="gallery-slider" id="gallery-slider">${slidesHtml}${galleryImages.length > 1 ? `<button class="gallery-nav prev" onclick="prevImage()"><i class="fas fa-chevron-left"></i></button><button class="gallery-nav next" onclick="nextImage()"><i class="fas fa-chevron-right"></i></button><div class="gallery-counter">1 / ${galleryImages.length}</div>` : ''}</div>${galleryImages.length > 1 ? `<div class="gallery-dots" id="gallery-dots">${dotsHtml}</div>` : ''}</div>
+                        <div class="unit-title"><h1>${escapeHtml(unit.unit_name)}</h1></div>
                         <div class="features-row">
-                            <div class="feature">
-                                <i class="fas fa-user-friends"></i>
-                                <div class="feature-text">
-                                    <strong>${unit.max_guests} guests maximum</strong>
-                                    <div class="capacity-detail">${unit.max_adults || unit.max_guests} adults max · ${unit.max_children || 0} children max</div>
-                                </div>
-                            </div>
-                            <div class="feature">
-                                <i class="fas fa-bed"></i>
-                                <div class="feature-text">
-                                    <strong>${unit.bedrooms} bedroom${unit.bedrooms !== 1 ? 's' : ''}</strong>
-                                    <div class="capacity-detail">private</div>
-                                </div>
-                            </div>
-                            <div class="feature">
-                                <i class="fas fa-bed"></i>
-                                <div class="feature-text">
-                                    <strong>${unit.beds} bed${unit.beds !== 1 ? 's' : ''}</strong>
-                                    ${unit.bed_types ? `<div class="capacity-detail">${escapeHtml(unit.bed_types)}</div>` : ''}
-                                </div>
-                            </div>
-                            <div class="feature">
-                                <i class="fas fa-bath"></i>
-                                <div class="feature-text">
-                                    <strong>${unit.bathrooms} bathroom${unit.bathrooms !== 1 ? 's' : ''}</strong>
-                                    <div class="capacity-detail">private</div>
-                                </div>
-                            </div>
+                            <div class="feature"><i class="fas fa-user-friends"></i><div class="feature-text"><strong>${unit.max_guests} guests maximum</strong><div class="capacity-detail">${unit.max_adults || unit.max_guests} adults max · ${unit.max_children || 0} children max</div></div></div>
+                            <div class="feature"><i class="fas fa-bed"></i><div class="feature-text"><strong>${unit.bedrooms} bedroom${unit.bedrooms !== 1 ? 's' : ''}</strong><div class="capacity-detail">private</div></div></div>
+                            <div class="feature"><i class="fas fa-bed"></i><div class="feature-text"><strong>${unit.beds} bed${unit.beds !== 1 ? 's' : ''}</strong>${unit.bed_types ? `<div class="capacity-detail">${escapeHtml(unit.bed_types)}</div>` : ''}</div></div>
+                            <div class="feature"><i class="fas fa-bath"></i><div class="feature-text"><strong>${unit.bathrooms} bathroom${unit.bathrooms !== 1 ? 's' : ''}</strong><div class="capacity-detail">private</div></div></div>
                         </div>
-                        
-                        <!-- Description with Glass Card -->
-                        <div class="glass-card">
-                            <div id="description-text" class="description ${showDescMore ? 'collapsed' : ''}">
-                                ${escapeHtml(description)}
-                            </div>
-                            ${showDescMore ? `<button id="desc-show-more-btn" class="show-more-btn" onclick="toggleDescription()">Show more</button>` : ''}
-                        </div>
-                        
-                        <!-- Amenities with Glass Card -->
-                        <div class="glass-card amenities-section">
-                            <h3>What this place offers</h3>
-                            <div id="amenities-grid" class="amenities-grid ${showAllAmenities ? 'collapsed' : ''}">
-                                ${amenitiesList.map(a => `<div class="amenity"><i class="fas fa-check-circle"></i><span>${escapeHtml(a)}</span></div>`).join('')}
-                            </div>
-                            ${showAllAmenities ? `<button id="amenities-show-all-btn" class="show-all-btn" onclick="toggleAmenities()">Show all ${amenitiesList.length} amenities</button>` : ''}
-                        </div>
-                        
-                        <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};">
-                            <div class="external-buttons">
-                                ${externalButtonsHtml || '<p style="color: var(--gray-text);">No external booking links available. Please contact us directly.</p>'}
-                                ${foreignInquiryHtml}
-                            </div>
-                        </div>
+                        <div class="glass-card"><div id="description-text" class="description ${showDescMore ? 'collapsed' : ''}">${escapeHtml(description)}</div>${showDescMore ? `<button id="desc-show-more-btn" class="show-more-btn" onclick="toggleDescription()">Show more</button>` : ''}</div>
+                        <div class="glass-card amenities-section"><h3>What this place offers</h3><div id="amenities-grid" class="amenities-grid ${showAllAmenities ? 'collapsed' : ''}">${amenitiesList.map(a => `<div class="amenity"><i class="fas fa-check-circle"></i><span>${escapeHtml(a)}</span></div>`).join('')}</div>${showAllAmenities ? `<button id="amenities-show-all-btn" class="show-all-btn" onclick="toggleAmenities()">Show all ${amenitiesList.length} amenities</button>` : ''}</div>
+                        <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};"><div class="external-buttons">${externalButtonsHtml || '<p style="color: var(--gray-text);">No external booking links available. Please contact us directly.</p>'}${foreignInquiryHtml}</div></div>
                     </div>
-                    
                     <div>
                         <div class="booking-card" id="booking-card">
-                            <div class="price-display">
-                                <span class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span>
-                                <span class="price-nightly">/ night</span>
-                            </div>
-                            
-                            <div class="calendar-section">
-                                <div class="calendar-header">
-                                    <h4 id="calendar-month-year">${monthNames[currentMonth]} ${currentYear}</h4>
-                                    <div class="calendar-nav">
-                                        <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
-                                        <button id="next-month"><i class="fas fa-chevron-right"></i></button>
-                                    </div>
-                                </div>
-                                <div id="calendar-grid" class="calendar-grid"></div>
-                                <div class="calendar-instruction">
-                                    <i class="fas fa-info-circle"></i> Tap a date to start. Tap another date to end. Tap same date to clear.
-                                </div>
-                            </div>
-                            
-                            <div class="date-inputs">
-                                <div class="date-field">
-                                    <label>CHECK-IN (14:00)</label>
-                                    <input type="text" id="check-in" readonly placeholder="Select date" value="">
-                                </div>
-                                <div class="date-field">
-                                    <label>CHECK-OUT (12:00)</label>
-                                    <input type="text" id="check-out" readonly placeholder="Select date" value="">
-                                </div>
-                            </div>
-                            
+                            <div class="price-display"><span class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span><span class="price-nightly">/ night</span></div>
+                            <div class="calendar-section"><div class="calendar-header"><h4 id="calendar-month-year">${monthNames[currentMonth]} ${currentYear}</h4><div class="calendar-nav"><button id="prev-month"><i class="fas fa-chevron-left"></i></button><button id="next-month"><i class="fas fa-chevron-right"></i></button></div></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-instruction"><i class="fas fa-info-circle"></i> Tap a date to start. Tap another date to end. Tap same date to clear.</div></div>
+                            <div class="date-inputs"><div class="date-field"><label>CHECK-IN (14:00)</label><input type="text" id="check-in" readonly placeholder="Select date" value=""></div><div class="date-field"><label>CHECK-OUT (12:00)</label><input type="text" id="check-out" readonly placeholder="Select date" value=""></div></div>
                             <div id="local-booking-form" style="display: ${currentMode === 'local' ? 'block' : 'none'};">
                                 <form id="booking-form">
-                                    <div class="guest-fields">
-                                        <div class="form-group">
-                                            <label>Adults</label>
-                                            <select id="adults" required>
-                                                ${adultOptions}
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Children</label>
-                                            <select id="children">
-                                                ${childOptions}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label>Full name</label>
-                                        <input type="text" id="name" placeholder="Your full name" required>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label>Phone number</label>
-                                        <input type="tel" id="phone" placeholder="WhatsApp / Mobile number" required>
-                                    </div>
-                                    
-                                    <div id="price-breakdown" class="price-breakdown" style="display:none;">
-                                        <div class="price-row">
-                                            <span>MVR ${unit.rate_mvr} × <span id="night-count">0</span> nights</span>
-                                            <span id="subtotal-mvr">MVR 0</span>
-                                        </div>
-                                        <div class="price-row total">
-                                            <span>Total (MVR)</span>
-                                            <span id="total-mvr">MVR 0</span>
-                                        </div>
-                                    </div>
-                                    
+                                    <div class="guest-fields"><div class="form-group"><label>Adults</label><select id="adults" required>${adultOptions}</select></div><div class="form-group"><label>Children</label><select id="children">${childOptions}</select></div></div>
+                                    <div class="form-group"><label>Full name</label><input type="text" id="name" placeholder="Your full name" required></div>
+                                    <div class="form-group"><label>Phone number</label><input type="tel" id="phone" placeholder="WhatsApp / Mobile number" required></div>
+                                    <div id="price-breakdown" class="price-breakdown" style="display:none;"><div class="price-row"><span>MVR ${unit.rate_mvr} × <span id="night-count">0</span> nights</span><span id="subtotal-mvr">MVR 0</span></div><div class="price-row total"><span>Total (MVR)</span><span id="total-mvr">MVR 0</span></div></div>
                                     <div id="form-message" class="message"></div>
-                                    
                                     <button type="submit" class="submit-btn">Request to book</button>
                                 </form>
-                                <hr>
-                                <p style="font-size: 12px; color: var(--gray-text); text-align: center; margin-top: 12px;">
-                                    <i class="fas fa-lock"></i> You won't be charged yet
-                                </p>
+                                <hr><p style="font-size: 12px; color: var(--gray-text); text-align: center; margin-top: 12px;"><i class="fas fa-lock"></i> You won't be charged yet</p>
                             </div>
-                            
-                            <div id="foreign-message" style="display: ${currentMode === 'foreign' ? 'block' : 'none'}; text-align: center; padding: 20px;">
-                                <p style="color: var(--gray-text); margin-bottom: 16px;">For foreign guests, please book through our partner platforms or contact us directly for crypto/cash payments.</p>
-                                <p style="font-size: 12px; color: var(--gray-text);">
-                                    <i class="fab fa-bitcoin"></i> We accept USDT, BTC, and major cryptocurrencies
-                                </p>
-                            </div>
+                            <div id="foreign-message" style="display: ${currentMode === 'foreign' ? 'block' : 'none'}; text-align: center; padding: 20px;"><p style="color: var(--gray-text); margin-bottom: 16px;">For foreign guests, please book through our partner platforms or contact us directly for crypto/cash payments.</p><p style="font-size: 12px; color: var(--gray-text);"><i class="fab fa-bitcoin"></i> We accept USDT, BTC, and major cryptocurrencies</p></div>
                         </div>
                     </div>
                 </div>
             `;
-            
-            document.getElementById('prev-month')?.addEventListener('click', () => {
-                currentMonth--;
-                if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-                generateCalendar(currentMonth, currentYear);
-            });
-            document.getElementById('next-month')?.addEventListener('click', () => {
-                currentMonth++;
-                if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-                generateCalendar(currentMonth, currentYear);
-            });
+            document.getElementById('prev-month')?.addEventListener('click', () => { currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } generateCalendar(currentMonth, currentYear); });
+            document.getElementById('next-month')?.addEventListener('click', () => { currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } generateCalendar(currentMonth, currentYear); });
+            const adultsSelect = document.getElementById('adults');
+            if (adultsSelect) {
+                adultsSelect.addEventListener('change', (e) => updateChildrenOptions(parseInt(e.target.value) || 1));
+                updateChildrenOptions(parseInt(adultsSelect.value) || 1);
+            }
             document.getElementById('booking-form')?.addEventListener('submit', submitBooking);
-            
-            window.nextImage = nextImage;
-            window.prevImage = prevImage;
-            window.goToImage = goToImage;
-            window.toggleDescription = toggleDescription;
-            window.toggleAmenities = toggleAmenities;
+            window.nextImage = nextImage; window.prevImage = prevImage; window.goToImage = goToImage;
+            window.toggleDescription = toggleDescription; window.toggleAmenities = toggleAmenities;
             window.scrollToBookingCard = scrollToBookingCard;
         }
 
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-        }
-        
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
         loadUnit();
     </script>
 </body>
