@@ -82,6 +82,57 @@
         .modal-header { padding: 20px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
         .modal-body { padding: 20px; }
         .modal-footer { padding: 20px; border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end; gap: 12px; }
+        
+        /* Calendar Styles for Block Dates */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+            margin-top: 16px;
+        }
+        .calendar-weekday {
+            font-weight: 600;
+            padding: 10px 0;
+            font-size: 12px;
+            color: var(--gray-600);
+        }
+        .calendar-day {
+            padding: 10px 5px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .calendar-day.available:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .calendar-day.selected {
+            background: var(--primary);
+            color: white;
+        }
+        .calendar-day.in-range {
+            background: rgba(0, 105, 148, 0.2);
+            color: var(--gray-800);
+            border-radius: 0;
+        }
+        .calendar-day.today {
+            border: 2px solid var(--primary);
+            font-weight: 600;
+        }
+        .calendar-day.empty {
+            cursor: default;
+            background: transparent;
+        }
+        .selected-dates-preview {
+            background: var(--gray-100);
+            padding: 12px;
+            border-radius: var(--radius);
+            margin: 16px 0;
+            text-align: center;
+        }
+        
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -194,8 +245,46 @@
                     <div class="card"><div class="card-header"><h2>Minibar Catalog</h2><button class="btn btn-primary btn-sm" onclick="addMinibarCatalogItem()">Add Item</button></div><div id="minibar-catalog-list"></div></div>
                 </div>
 
+                <!-- Block Dates Section - Updated with Unit Selector and Calendar -->
                 <div id="block-dates-section" style="display:none">
-                    <div class="card"><h2>Block Dates</h2><div class="form-row"><div class="form-group"><label>Single Date</label><input type="date" id="block-single-date"><input type="text" id="block-single-reason" placeholder="Reason" style="margin-top:8px;"><button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="blockSingleDate()">Block This Date</button></div><div class="form-group"><label>Date Range</label><input type="date" id="block-range-start"><input type="date" id="block-range-end" style="margin-top:8px;"><input type="text" id="block-range-reason" placeholder="Reason" style="margin-top:8px;"><button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="blockDateRange()">Block Range</button></div></div><h3 style="margin-top:32px;">Currently Blocked Dates</h3><div id="blocked-dates-list"></div></div>
+                    <div class="card">
+                        <h2>Block Dates</h2>
+                        <p style="color: var(--gray-600); margin-bottom: 20px;">Select a unit, then click dates on the calendar to block them.</p>
+                        
+                        <div class="form-group">
+                            <label>Select Unit</label>
+                            <select id="block-unit-select" onchange="loadBlockedDatesForUnit()">
+                                <option value="">-- Select Unit --</option>
+                            </select>
+                        </div>
+                        
+                        <div id="block-calendar-container" style="display: none;">
+                            <div class="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h4 id="block-calendar-month-year">January 2026</h4>
+                                <div class="calendar-nav">
+                                    <button id="block-prev-month"><i class="fas fa-chevron-left"></i></button>
+                                    <button id="block-next-month"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            <div id="block-calendar-grid" class="calendar-grid"></div>
+                            
+                            <div id="selected-dates-preview" class="selected-dates-preview" style="display: none;">
+                                <strong>Selected to block:</strong> <span id="selected-dates-text"></span>
+                            </div>
+                            
+                            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                                <button class="btn btn-primary" onclick="blockSelectedDates()">Block Selected Dates</button>
+                                <button class="btn btn-danger" onclick="clearSelectedDates()">Clear Selection</button>
+                            </div>
+                        </div>
+                        
+                        <div id="no-unit-message" style="display: none; text-align: center; padding: 40px; color: var(--gray-600);">
+                            Please select a unit to manage blocked dates.
+                        </div>
+                        
+                        <h3 style="margin-top: 32px;">Currently Blocked Dates for Selected Unit</h3>
+                        <div id="blocked-dates-list"></div>
+                    </div>
                 </div>
 
                 <div id="settings-section" style="display:none">
@@ -253,16 +342,22 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Bedrooms</label>
-                        <input type="number" id="unit-beds" value="1" placeholder="Number of bedrooms">
+                        <input type="number" id="unit-bedrooms" value="1" placeholder="Number of bedrooms">
                     </div>
                     <div class="form-group">
                         <label>Beds</label>
-                        <input type="number" id="unit-beds-count" value="1" placeholder="Number of beds">
+                        <input type="number" id="unit-beds" value="1" placeholder="Number of beds">
                     </div>
                     <div class="form-group">
                         <label>Bathrooms</label>
                         <input type="number" id="unit-bathrooms" step="0.5" value="1" placeholder="1.0">
                     </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Bed Types (e.g., 1 double bed • 1 single bed)</label>
+                    <input type="text" id="unit-bed-types" placeholder="1 double bed • 1 single bed">
+                    <small>Optional - displayed under bed count</small>
                 </div>
                 
                 <div class="form-group">
@@ -411,6 +506,13 @@
             { name: 'Chips', price_usd: 2.5, price_mvr: 38 }
         ];
 
+        // Block Dates Variables
+        let blockStartDate = null;
+        let blockEndDate = null;
+        let blockCurrentMonth = new Date().getMonth();
+        let blockCurrentYear = new Date().getFullYear();
+        const blockMonthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
         function showToast(msg, type) { const t = document.createElement('div'); t.className = `toast ${type}`; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
         function formatCurrency(amount) { const num = parseFloat(amount) || 0; if (currentCurrency === 'USD') return `$${num.toFixed(2)}`; return `MVR ${(num * exchangeRate).toFixed(2)}`; }
@@ -439,7 +541,7 @@
                     headers: { 'Authorization': 'Bearer admin-secret-token' }
                 });
                 const data = await res.json();
-                if (data.success) { allUnits = data.units; displayUnits(); }
+                if (data.success) { allUnits = data.units; displayUnits(); populateUnitSelectors(); }
             } catch(e) { showToast('Failed to load units', 'error'); }
         }
         
@@ -460,6 +562,14 @@
             }</tbody></table>`;
         }
         
+        function populateUnitSelectors() {
+            const select = document.getElementById('block-unit-select');
+            if (select) {
+                select.innerHTML = '<option value="">-- Select Unit --</option>' + 
+                    allUnits.map(u => `<option value="${u.id}">${escapeHtml(u.unit_name)}</option>`).join('');
+            }
+        }
+        
         function openUnitModal() {
             document.getElementById('unit-modal-title').textContent = 'Add Unit';
             document.getElementById('unit-id').value = '';
@@ -469,9 +579,10 @@
             document.getElementById('unit-guests').value = '4';
             document.getElementById('unit-max-adults').value = '4';
             document.getElementById('unit-max-children').value = '2';
+            document.getElementById('unit-bedrooms').value = '1';
             document.getElementById('unit-beds').value = '1';
-            document.getElementById('unit-beds-count').value = '1';
             document.getElementById('unit-bathrooms').value = '1';
+            document.getElementById('unit-bed-types').value = '';
             document.getElementById('unit-description').value = '';
             document.getElementById('unit-image').value = '';
             document.getElementById('unit-amenities').value = '';
@@ -497,9 +608,10 @@
             document.getElementById('unit-guests').value = unit.max_guests || 4;
             document.getElementById('unit-max-adults').value = unit.max_adults || unit.max_guests || 4;
             document.getElementById('unit-max-children').value = unit.max_children || 0;
-            document.getElementById('unit-beds').value = unit.bedrooms || 1;
-            document.getElementById('unit-beds-count').value = unit.beds || unit.bedrooms || 1;
+            document.getElementById('unit-bedrooms').value = unit.bedrooms || 1;
+            document.getElementById('unit-beds').value = unit.beds || unit.bedrooms || 1;
             document.getElementById('unit-bathrooms').value = unit.bathrooms || 1;
+            document.getElementById('unit-bed-types').value = unit.bed_types || '';
             document.getElementById('unit-description').value = unit.description || '';
             document.getElementById('unit-image').value = unit.featured_image || '';
             document.getElementById('unit-amenities').value = (unit.amenities || []).join(', ');
@@ -576,9 +688,10 @@
                 max_guests: maxGuests,
                 max_adults: maxAdults,
                 max_children: maxChildren,
-                bedrooms: parseInt(document.getElementById('unit-beds').value) || 1,
-                beds: parseInt(document.getElementById('unit-beds-count').value) || 1,
+                bedrooms: parseInt(document.getElementById('unit-bedrooms').value) || 1,
+                beds: parseInt(document.getElementById('unit-beds').value) || 1,
                 bathrooms: parseFloat(document.getElementById('unit-bathrooms').value) || 1,
+                bed_types: document.getElementById('unit-bed-types').value || null,
                 description: document.getElementById('unit-description').value,
                 featured_image: document.getElementById('unit-image').value,
                 gallery_images: currentGalleryImages,
@@ -1333,7 +1446,7 @@
                 if(select) {
                     select.innerHTML = '<option value="">Select item</option>' + minibarItems.map((i,idx) => `<option value="${idx}">${i.name} - ${currentCurrency === 'USD' ? `$${i.price_usd}` : `MVR ${i.price_mvr}`}</option>`).join('');
                 }
-                c.innerHTML = `<table class="data-table"><thead><tr><th>Item</th><th>USD</th><th>MVR</th><th></th></tr></thead><tbody>${minibarItems.map((i,idx) => `<tr><td>${escapeHtml(i.name)}</td><td>$${i.price_usd.toFixed(2)}</td><td>MVR ${i.price_mvr.toFixed(2)}</td><td><button class="delete-btn" onclick="deleteMinibarItem(${idx})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody>}</table>`;
+                c.innerHTML = `<table class="data-table"><thead><tr><th>Item</th><th>USD</th><th>MVR</th><th></th></tr></thead><tbody>${minibarItems.map((i,idx) => `<tr><td>${escapeHtml(i.name)}</td><td>$${i.price_usd.toFixed(2)}</td><td>MVR ${i.price_mvr.toFixed(2)}</td><td><button class="delete-btn" onclick="deleteMinibarItem(${idx})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody></table>`;
             }
         }
         
@@ -1348,60 +1461,175 @@
         
         function deleteMinibarItem(idx) { if(confirm('Delete?')) { minibarItems.splice(idx,1); renderMinibarCatalog(); showToast('Deleted','success'); } }
 
-        // ==================== BLOCK DATES ====================
-        async function loadBlockedDates() {
+        // ==================== BLOCK DATES (Updated with Unit Selector and Calendar) ====================
+        let blockUnitId = null;
+        let blockSelectedDates = [];
+        
+        function generateBlockCalendar(month, year) {
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            let html = '';
+            const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            weekdays.forEach(day => html += `<div class="calendar-weekday">${day}</div>`);
+            
+            for (let i = 0; i < firstDay; i++) html += '<div class="calendar-day empty"></div>';
+            
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+            
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const isToday = dateStr === todayStr;
+                const isSelected = blockSelectedDates.includes(dateStr);
+                
+                let classes = 'calendar-day available';
+                if (isToday) classes += ' today';
+                if (isSelected) classes += ' selected';
+                
+                html += `<div class="${classes}" data-date="${dateStr}" onclick="toggleBlockDate('${dateStr}')">${d}</div>`;
+            }
+            
+            const grid = document.getElementById('block-calendar-grid');
+            if (grid) grid.innerHTML = html;
+            const monthYearSpan = document.getElementById('block-calendar-month-year');
+            if (monthYearSpan) monthYearSpan.textContent = `${blockMonthNames[month]} ${year}`;
+            
+            updateSelectedPreview();
+        }
+        
+        function toggleBlockDate(dateStr) {
+            const index = blockSelectedDates.indexOf(dateStr);
+            if (index === -1) {
+                blockSelectedDates.push(dateStr);
+            } else {
+                blockSelectedDates.splice(index, 1);
+            }
+            blockSelectedDates.sort();
+            generateBlockCalendar(blockCurrentMonth, blockCurrentYear);
+        }
+        
+        function updateSelectedPreview() {
+            const previewDiv = document.getElementById('selected-dates-preview');
+            const previewText = document.getElementById('selected-dates-text');
+            if (blockSelectedDates.length === 0) {
+                previewDiv.style.display = 'none';
+            } else {
+                previewDiv.style.display = 'block';
+                if (blockSelectedDates.length === 1) {
+                    previewText.textContent = blockSelectedDates[0];
+                } else {
+                    previewText.textContent = `${blockSelectedDates[0]} to ${blockSelectedDates[blockSelectedDates.length - 1]} (${blockSelectedDates.length} days)`;
+                }
+            }
+        }
+        
+        function clearSelectedDates() {
+            blockSelectedDates = [];
+            generateBlockCalendar(blockCurrentMonth, blockCurrentYear);
+        }
+        
+        async function blockSelectedDates() {
+            if (!blockUnitId) {
+                showToast('Please select a unit first', 'error');
+                return;
+            }
+            if (blockSelectedDates.length === 0) {
+                showToast('Please select dates to block', 'error');
+                return;
+            }
+            
+            let successCount = 0;
+            for (const date of blockSelectedDates) {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/admin/block-dates`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer admin-secret-token'
+                        },
+                        body: JSON.stringify({
+                            start_date: date,
+                            end_date: date,
+                            reason: 'Manually blocked',
+                            unit_id: blockUnitId
+                        })
+                    });
+                    if (res.ok) successCount++;
+                } catch(e) { console.error(e); }
+            }
+            
+            if (successCount > 0) {
+                showToast(`Blocked ${successCount} date(s)`, 'success');
+                blockSelectedDates = [];
+                generateBlockCalendar(blockCurrentMonth, blockCurrentYear);
+                loadBlockedDatesForUnit();
+            } else {
+                showToast('Failed to block dates', 'error');
+            }
+        }
+        
+        async function loadBlockedDatesForUnit() {
+            const select = document.getElementById('block-unit-select');
+            blockUnitId = select.value;
+            const container = document.getElementById('blocked-dates-list');
+            const calendarContainer = document.getElementById('block-calendar-container');
+            const noUnitMsg = document.getElementById('no-unit-message');
+            
+            if (!blockUnitId) {
+                calendarContainer.style.display = 'none';
+                noUnitMsg.style.display = 'block';
+                container.innerHTML = '<p>Please select a unit to view blocked dates.</p>';
+                return;
+            }
+            
+            calendarContainer.style.display = 'block';
+            noUnitMsg.style.display = 'none';
+            
+            // Reset selected dates
+            blockSelectedDates = [];
+            generateBlockCalendar(blockCurrentMonth, blockCurrentYear);
+            
             try {
-                const res = await fetch(`${API_BASE_URL}/bookings/availability`);
+                const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${blockUnitId}`);
                 const data = await res.json();
-                const container = document.getElementById('blocked-dates-list');
-                if(container) container.innerHTML = (data.blocked_dates||[]).length ? data.blocked_dates.map(b => `<div class="blocked-item"><div><strong>${b.start_date === b.end_date ? b.start_date : `${b.start_date} to ${b.end_date}`}</strong><div style="font-size:0.85rem">${b.reason||''}</div></div><button class="delete-btn" onclick="unblockDate(${b.id})">Unblock</button></div>`).join('') : '<p>No blocked dates</p>';
-            } catch(e){ console.error(e); }
-        }
-        
-        async function blockSingleDate() {
-            const date = document.getElementById('block-single-date').value;
-            if(!date) { showToast('Select date','error'); return; }
-            try {
-                const res = await fetch(`${API_BASE_URL}/admin/block-dates`,{
-                    method:'POST',
-                    headers:{
-                        'Content-Type':'application/json',
-                        'Authorization':'Bearer admin-secret-token'
-                    },
-                    body:JSON.stringify({start_date:date,end_date:date,reason:document.getElementById('block-single-reason').value||'Blocked'})
-                });
-                if(res.ok) { showToast('Date blocked','success'); loadBlockedDates(); document.getElementById('block-single-date').value=''; document.getElementById('block-single-reason').value=''; }
-                else showToast('Failed','error');
-            } catch(e){ showToast('Error','error'); }
-        }
-        
-        async function blockDateRange() {
-            const start = document.getElementById('block-range-start').value, end = document.getElementById('block-range-end').value;
-            if(!start||!end) { showToast('Select dates','error'); return; }
-            if(new Date(start)>new Date(end)) { showToast('Start before end','error'); return; }
-            try {
-                const res = await fetch(`${API_BASE_URL}/admin/block-dates`,{
-                    method:'POST',
-                    headers:{
-                        'Content-Type':'application/json',
-                        'Authorization':'Bearer admin-secret-token'
-                    },
-                    body:JSON.stringify({start_date:start,end_date:end,reason:document.getElementById('block-range-reason').value||'Blocked'})
-                });
-                if(res.ok) { showToast('Range blocked','success'); loadBlockedDates(); document.getElementById('block-range-start').value=''; document.getElementById('block-range-end').value=''; document.getElementById('block-range-reason').value=''; }
-                else showToast('Failed','error');
-            } catch(e){ showToast('Error','error'); }
+                if (data.success && data.blocked_dates) {
+                    const filtered = data.blocked_dates.filter(b => b.unit_id == blockUnitId);
+                    if (filtered.length === 0) {
+                        container.innerHTML = '<p>No blocked dates for this unit.</p>';
+                    } else {
+                        container.innerHTML = filtered.map(b => `
+                            <div class="blocked-item">
+                                <div>
+                                    <strong>${b.start_date === b.end_date ? b.start_date : `${b.start_date} to ${b.end_date}`}</strong>
+                                    <div style="font-size:0.85rem">${b.reason || 'No reason'}</div>
+                                </div>
+                                <button class="delete-btn" onclick="unblockDate(${b.id})">Unblock</button>
+                            </div>
+                        `).join('');
+                    }
+                } else {
+                    container.innerHTML = '<p>No blocked dates for this unit.</p>';
+                }
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = '<p>Failed to load blocked dates.</p>';
+            }
         }
         
         async function unblockDate(id) {
-            if(!confirm('Unblock this date?')) return;
+            if (!confirm('Unblock this date?')) return;
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`,{
-                    method:'DELETE',
-                    headers:{ 'Authorization':'Bearer admin-secret-token' }
+                const res = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
                 });
-                if(res.ok) { showToast('Unblocked','success'); loadBlockedDates(); }
-            } catch(e){ showToast('Error','error'); }
+                if (res.ok) {
+                    showToast('Date unblocked', 'success');
+                    loadBlockedDatesForUnit();
+                } else {
+                    showToast('Failed to unblock', 'error');
+                }
+            } catch(e) { showToast('Error', 'error'); }
         }
 
         // ==================== NAVIGATION ====================
@@ -1421,7 +1649,10 @@
             else if(section === 'experiences') loadExperiences();
             else if(section === 'bookings') loadAllBookings();
             else if(section === 'invoices') loadInvoices();
-            else if(section === 'block-dates') loadBlockedDates();
+            else if(section === 'block-dates') {
+                loadUnits();
+                loadBlockedDatesForUnit();
+            }
             else if(section === 'minibar') renderMinibarCatalog();
             if(window.innerWidth <= 768) { const sidebar = document.getElementById('sidebar'); if(sidebar) sidebar.classList.remove('open'); }
         }
@@ -1440,6 +1671,16 @@
         
         document.getElementById('menu-toggle')?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
         document.getElementById('booking-search')?.addEventListener('input', e => filterBookings(e.target.value));
+        document.getElementById('block-prev-month')?.addEventListener('click', () => {
+            blockCurrentMonth--;
+            if (blockCurrentMonth < 0) { blockCurrentMonth = 11; blockCurrentYear--; }
+            generateBlockCalendar(blockCurrentMonth, blockCurrentYear);
+        });
+        document.getElementById('block-next-month')?.addEventListener('click', () => {
+            blockCurrentMonth++;
+            if (blockCurrentMonth > 11) { blockCurrentMonth = 0; blockCurrentYear++; }
+            generateBlockCalendar(blockCurrentMonth, blockCurrentYear);
+        });
         
         if(sessionStorage.getItem('adminLoggedIn') === 'true') {
             document.getElementById('login-wrapper').style.display = 'none';
