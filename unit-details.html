@@ -55,7 +55,7 @@
             border-bottom: 1px solid var(--gray-border);
         }
 
-        /* Toggle */
+        /* Toggle - Foreign first, Local second */
         .currency-toggle {
             display: flex;
             gap: 8px;
@@ -65,10 +65,10 @@
         .toggle-option {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             background: transparent;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 18px;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
@@ -76,39 +76,23 @@
             border-radius: 40px;
         }
 
-        .toggle-option svg {
-            width: 20px;
-            height: 20px;
-            transition: all 0.2s ease;
+        .toggle-option i {
+            font-size: 14px;
         }
 
-        /* Hover glass effect */
         .toggle-option:hover {
             background: rgba(64, 181, 173, 0.15);
             backdrop-filter: blur(4px);
         }
 
-        /* Active state - solid turquoise */
         .toggle-option.local-active,
         .toggle-option.foreign-active {
             background: var(--turquoise);
             color: white;
         }
 
-        .toggle-option.local-active svg path,
-        .toggle-option.foreign-active svg path {
-            fill: white;
-            stroke: white;
-        }
-
-        /* Inactive state */
         .toggle-option:not(.local-active):not(.foreign-active) {
             color: var(--gray-text);
-        }
-
-        .toggle-option:not(.local-active):not(.foreign-active) svg path {
-            fill: none;
-            stroke: var(--gray-text);
         }
 
         /* Back Arrow */
@@ -442,11 +426,6 @@
             color: var(--navy);
         }
 
-        .price-usd {
-            font-size: 1rem;
-            color: var(--gray-text);
-        }
-
         .price-nightly {
             font-size: 14px;
             color: var(--gray-text);
@@ -507,8 +486,8 @@
         }
 
         .calendar-day.booked {
-            background: #FFEBEE;
-            color: #DC3545;
+            background: var(--gray-light);
+            color: var(--gray-text);
             text-decoration: line-through;
             cursor: not-allowed;
         }
@@ -516,6 +495,26 @@
         .calendar-day.selected {
             background: var(--ocean);
             color: white;
+        }
+
+        .calendar-day.selected-start {
+            background: var(--ocean);
+            color: white;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
+        }
+
+        .calendar-day.selected-end {
+            background: var(--ocean);
+            color: white;
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+
+        .calendar-day.in-range {
+            background: rgba(0, 105, 148, 0.2);
+            color: var(--navy);
+            border-radius: 0;
         }
 
         .calendar-day.today {
@@ -528,40 +527,43 @@
             background: transparent;
         }
 
-        .legend {
-            display: flex;
-            gap: 20px;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid var(--gray-border);
-            font-size: 12px;
+        /* Date Inputs */
+        .date-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 16px 0;
         }
 
-        .legend-color {
-            width: 14px;
-            height: 14px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-right: 6px;
-        }
-
-        /* Selected Dates Display */
-        .selected-dates {
-            background: var(--gray-light);
+        .date-field {
+            border: 1px solid var(--gray-border);
             border-radius: var(--radius-md);
             padding: 12px;
-            margin: 16px 0;
-            text-align: center;
+            background: var(--gray-light);
         }
 
-        .selected-dates p {
+        .date-field label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-text);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .date-field input {
+            background: transparent;
+            border: none;
             font-size: 14px;
-            color: var(--navy);
+            font-weight: 500;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
         }
 
-        .selected-dates .nights {
-            font-weight: 700;
-            color: var(--turquoise);
+        .date-field input:focus {
+            outline: none;
         }
 
         /* Form */
@@ -671,33 +673,42 @@
             border-top: 1px solid var(--gray-border);
         }
 
+        /* Sticky Footer - Mobile Only */
+        .sticky-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 12px 16px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 99;
+            display: none;
+            border-top: 1px solid var(--gray-border);
+        }
+
+        .sticky-footer .availability-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--turquoise);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
         @media (max-width: 768px) {
-            .container {
-                padding: 0 16px;
+            .sticky-footer {
+                display: block;
             }
-            .unit-title h1 {
-                font-size: 1.4rem;
-            }
-            .features-row {
-                gap: 16px;
-            }
-            .amenities-grid {
-                grid-template-columns: 1fr;
-            }
-            .external-buttons {
-                flex-wrap: wrap;
-            }
-            .ext-btn {
-                flex: auto;
-                min-width: calc(50% - 6px);
-            }
-            .gallery-nav {
-                width: 32px;
-                height: 32px;
-                font-size: 14px;
-            }
-            .guest-fields {
-                grid-template-columns: 1fr;
+            body {
+                padding-bottom: 80px;
             }
             .booking-card {
                 top: 70px;
@@ -710,21 +721,13 @@
         <!-- Header: Toggle left, Back arrow right - Sticky -->
         <div class="header">
             <div class="currency-toggle">
-                <button id="toggle-local" class="toggle-option local-active" onclick="setMode('local')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M2 20H22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                        <path d="M12 4L4 16L12 12L20 16L12 4Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                        <path d="M12 12V20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                    </svg>
-                    <span>Local</span>
-                </button>
                 <button id="toggle-foreign" class="toggle-option" onclick="setMode('foreign')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M22 16L14 12L22 8V16Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                        <path d="M14 12L3 12L5 9H8L10 12H14Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                        <path d="M14 12L12 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
+                    <i class="fas fa-plane"></i>
                     <span>Foreign</span>
+                </button>
+                <button id="toggle-local" class="toggle-option local-active" onclick="setMode('local')">
+                    <i class="fas fa-sailboat"></i>
+                    <span>Local</span>
                 </button>
             </div>
             <a href="index.html" class="back-arrow">
@@ -737,13 +740,22 @@
         <div id="content"><div class="loading">Loading unit details...</div></div>
     </div>
 
+    <!-- Sticky Footer - Mobile Only -->
+    <div class="sticky-footer">
+        <button class="availability-btn" onclick="scrollToCalendar()">
+            <i class="far fa-calendar-alt"></i>
+            Availability
+        </button>
+    </div>
+
     <script>
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         const urlParams = new URLSearchParams(window.location.search);
         const unitId = urlParams.get('id');
 
         let unit = null;
-        let selectedDates = [];
+        let startDate = null;
+        let endDate = null;
         let bookedDates = [];
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
@@ -754,6 +766,13 @@
         let currentImageIndex = 0;
         let slideInterval = null;
         let currentMode = 'local';
+
+        function scrollToCalendar() {
+            const calendarSection = document.querySelector('.calendar-section');
+            if (calendarSection) {
+                calendarSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
 
         async function loadUnit() {
             if (!unitId) {
@@ -786,7 +805,6 @@
                     await fetchAvailability();
                     renderUnitDetails();
                     
-                    // Fix calendar visibility: ensure grid exists before generating
                     setTimeout(() => {
                         generateCalendar(currentMonth, currentYear);
                     }, 100);
@@ -865,11 +883,32 @@
             for (let i = 0; i < firstDay; i++) html += '<div class="calendar-day empty"></div>';
             
             const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+            
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const isBooked = bookedDates.includes(dateStr);
-                const isToday = today.getDate() === d && today.getMonth() === month && today.getFullYear() === year;
-                const isSelected = selectedDates.includes(dateStr);
+                const isToday = dateStr === todayStr;
+                let isSelected = false;
+                let isInRange = false;
+                let isStart = false;
+                let isEnd = false;
+                
+                if (startDate && endDate) {
+                    if (dateStr === startDate) {
+                        isSelected = true;
+                        isStart = true;
+                    } else if (dateStr === endDate) {
+                        isSelected = true;
+                        isEnd = true;
+                    } else if (dateStr > startDate && dateStr < endDate) {
+                        isInRange = true;
+                    }
+                } else if (startDate && dateStr === startDate) {
+                    isSelected = true;
+                    isStart = true;
+                }
+                
                 let classes = 'calendar-day';
                 if (isBooked) {
                     classes += ' booked';
@@ -878,65 +917,65 @@
                 }
                 if (isToday) classes += ' today';
                 if (isSelected) classes += ' selected';
-                html += `<div class="${classes}" data-date="${dateStr}" onclick="toggleDate('${dateStr}', ${isBooked})">${d}</div>`;
+                if (isStart) classes += ' selected-start';
+                if (isEnd) classes += ' selected-end';
+                if (isInRange) classes += ' in-range';
+                
+                html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isBooked})">${d}</div>`;
             }
             
             const grid = document.getElementById('calendar-grid');
             if (grid) grid.innerHTML = html;
             const monthYear = document.getElementById('calendar-month-year');
             if (monthYear) monthYear.textContent = `${monthNames[month]} ${year}`;
-            
-            updateSelectedDatesDisplay();
         }
 
-        // New calendar logic: toggle dates on/off
-        function toggleDate(dateStr, isBooked) {
+        function selectDate(dateStr, isBooked) {
             if (isBooked) {
                 showMessage('This date is not available', 'error');
                 return;
             }
             
-            const index = selectedDates.indexOf(dateStr);
-            if (index === -1) {
-                selectedDates.push(dateStr);
-            } else {
-                selectedDates.splice(index, 1);
+            if (!startDate || (startDate && endDate)) {
+                startDate = dateStr;
+                endDate = null;
+            } else if (startDate && !endDate) {
+                if (dateStr < startDate) {
+                    startDate = dateStr;
+                } else {
+                    endDate = dateStr;
+                }
             }
             
-            // Sort dates
-            selectedDates.sort();
-            
             generateCalendar(currentMonth, currentYear);
+            updateDateInputs();
         }
 
-        function updateSelectedDatesDisplay() {
-            if (selectedDates.length === 0) {
+        function updateDateInputs() {
+            if (startDate) {
+                document.getElementById('check-in').value = formatDate(startDate);
+                if (endDate) {
+                    const endDateObj = new Date(endDate);
+                    endDateObj.setDate(endDateObj.getDate() + 1);
+                    const checkOutStr = endDateObj.toISOString().split('T')[0];
+                    document.getElementById('check-out').value = formatDate(checkOutStr);
+                    
+                    const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
+                    const totalMvr = nights * parseFloat(unit.rate_mvr);
+                    
+                    document.getElementById('night-count').textContent = nights;
+                    document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
+                    document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
+                    document.getElementById('price-breakdown').style.display = 'block';
+                } else {
+                    document.getElementById('check-out').value = '';
+                    document.getElementById('price-breakdown').style.display = 'none';
+                }
+            } else {
                 document.getElementById('check-in').value = '';
                 document.getElementById('check-out').value = '';
                 document.getElementById('price-breakdown').style.display = 'none';
-                return;
             }
-            
-            const earliest = selectedDates[0];
-            const latest = selectedDates[selectedDates.length - 1];
-            
-            // Calculate check-out = latest selected date + 1 day
-            const checkOutDate = new Date(latest);
-            checkOutDate.setDate(checkOutDate.getDate() + 1);
-            const checkOutStr = checkOutDate.toISOString().split('T')[0];
-            
-            document.getElementById('check-in').value = formatDate(earliest);
-            document.getElementById('check-out').value = formatDate(checkOutStr);
-            
-            const checkInDate = new Date(earliest);
-            const checkOutDateObj = new Date(checkOutStr);
-            const nights = Math.max(1, Math.ceil((checkOutDateObj - checkInDate) / (1000 * 60 * 60 * 24)));
-            const totalMvr = nights * parseFloat(unit.rate_mvr);
-            
-            document.getElementById('night-count').textContent = nights;
-            document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
-            document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
-            document.getElementById('price-breakdown').style.display = 'block';
         }
 
         function formatDate(dateStr) {
@@ -978,16 +1017,14 @@
         async function submitBooking(e) {
             e.preventDefault();
             
-            if (selectedDates.length === 0) {
-                showMessage('Please select at least one date', 'error');
+            if (!startDate || !endDate) {
+                showMessage('Please select check-in and check-out dates', 'error');
                 return;
             }
             
-            const earliest = selectedDates[0];
-            const latest = selectedDates[selectedDates.length - 1];
-            const checkOutDate = new Date(latest);
-            checkOutDate.setDate(checkOutDate.getDate() + 1);
-            const checkOutStr = checkOutDate.toISOString().split('T')[0];
+            const endDateObj = new Date(endDate);
+            endDateObj.setDate(endDateObj.getDate() + 1);
+            const checkOutStr = endDateObj.toISOString().split('T')[0];
             
             const adults = parseInt(document.getElementById('adults').value) || 1;
             const children = parseInt(document.getElementById('children').value) || 0;
@@ -1006,9 +1043,7 @@
             submitBtn.disabled = true;
             
             try {
-                const checkInDate = new Date(earliest);
-                const checkOutDateObj = new Date(checkOutStr);
-                const nights = Math.max(1, Math.ceil((checkOutDateObj - checkInDate) / (1000 * 60 * 60 * 24)));
+                const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
                 const total = nights * parseFloat(unit.rate_mvr);
                 
                 const res = await fetch(`${API_BASE_URL}/bookings/create`, {
@@ -1019,7 +1054,7 @@
                         guest_name: name,
                         guest_email: '',
                         guest_phone: phone,
-                        check_in_date: earliest,
+                        check_in_date: startDate,
                         check_out_date: checkOutStr,
                         number_of_guests: adults + children,
                         number_of_adults: adults,
@@ -1039,7 +1074,7 @@
                         `*Unit:* ${unit.unit_name}%0A` +
                         `*Guest:* ${name}%0A` +
                         `*Phone:* ${phone}%0A` +
-                        `*Check-in:* ${formatDate(earliest)} (14:00)%0A` +
+                        `*Check-in:* ${formatDate(startDate)} (14:00)%0A` +
                         `*Check-out:* ${formatDate(checkOutStr)} (12:00)%0A` +
                         `*Nights:* ${nights}%0A` +
                         `*Guests:* ${adults} adults, ${children} children%0A` +
@@ -1048,7 +1083,8 @@
                     
                     window.open(`https://wa.me/9609373113?text=${msg}`, '_blank');
                     
-                    selectedDates = [];
+                    startDate = null;
+                    endDate = null;
                     document.getElementById('check-in').value = '';
                     document.getElementById('check-out').value = '';
                     document.getElementById('price-breakdown').style.display = 'none';
@@ -1086,7 +1122,6 @@
             
             renderUnitDetails();
             
-            // Regenerate calendar after render
             setTimeout(() => {
                 generateCalendar(currentMonth, currentYear);
             }, 100);
@@ -1260,21 +1295,16 @@
                                     </div>
                                 </div>
                                 <div id="calendar-grid" class="calendar-grid"></div>
-                                <div class="legend">
-                                    <div><span class="legend-color" style="background:white; border:2px solid var(--turquoise);"></span> Available</div>
-                                    <div><span class="legend-color" style="background:#FFEBEE;"></span> Booked</div>
-                                    <div><span class="legend-color" style="background:var(--ocean);"></span> Selected</div>
-                                </div>
                             </div>
                             
                             <div class="date-inputs">
                                 <div class="date-field">
                                     <label>CHECK-IN</label>
-                                    <input type="text" id="check-in" readonly placeholder="Select dates above" value="">
+                                    <input type="text" id="check-in" readonly placeholder="Select date" value="">
                                 </div>
                                 <div class="date-field">
                                     <label>CHECK-OUT</label>
-                                    <input type="text" id="check-out" readonly placeholder="Select dates above" value="">
+                                    <input type="text" id="check-out" readonly placeholder="Select date" value="">
                                 </div>
                             </div>
                             
@@ -1354,6 +1384,7 @@
             window.goToImage = goToImage;
             window.toggleDescription = toggleDescription;
             window.toggleAmenities = toggleAmenities;
+            window.scrollToCalendar = scrollToCalendar;
         }
 
         function escapeHtml(str) {
