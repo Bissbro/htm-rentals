@@ -504,6 +504,12 @@
             color: white;
         }
 
+        .calendar-day.in-range {
+            background: rgba(0, 105, 148, 0.2);
+            color: var(--navy);
+            border-radius: 0;
+        }
+
         .calendar-day.today {
             border: 2px solid var(--turquoise);
             font-weight: 600;
@@ -884,12 +890,17 @@
                 const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const isBooked = bookedDates.includes(dateStr);
                 const isToday = dateStr === todayStr;
-                let isSelected = false;
                 
-                if (startDate && dateStr === startDate) {
-                    isSelected = true;
-                }
-                if (endDate && dateStr === endDate) {
+                let isSelected = false;
+                let isInRange = false;
+                
+                if (startDate && endDate) {
+                    if (dateStr === startDate || dateStr === endDate) {
+                        isSelected = true;
+                    } else if (dateStr > startDate && dateStr < endDate) {
+                        isInRange = true;
+                    }
+                } else if (startDate && dateStr === startDate) {
                     isSelected = true;
                 }
                 
@@ -901,6 +912,7 @@
                 }
                 if (isToday) classes += ' today';
                 if (isSelected) classes += ' selected';
+                if (isInRange) classes += ' in-range';
                 
                 html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isBooked})">${d}</div>`;
             }
@@ -917,33 +929,58 @@
                 return;
             }
             
-            if (!startDate || (startDate && endDate)) {
-                // First tap: set start date, auto set end date to next day
+            // If clicking on the same date that is already selected, clear everything
+            if (startDate === dateStr && !endDate) {
+                startDate = null;
+                endDate = null;
+                document.getElementById('check-in').value = '';
+                document.getElementById('check-out').value = '';
+                document.getElementById('price-breakdown').style.display = 'none';
+                generateCalendar(currentMonth, currentYear);
+                return;
+            }
+            
+            // If no start date, set start date
+            if (!startDate) {
                 startDate = dateStr;
+                endDate = null;
+                
+                // Auto set checkout to next day
                 const nextDay = new Date(dateStr);
                 nextDay.setDate(nextDay.getDate() + 1);
-                endDate = nextDay.toISOString().split('T')[0];
-            } else if (startDate && !endDate) {
-                // Second tap: update end date
+                const checkOutStr = nextDay.toISOString().split('T')[0];
+                document.getElementById('check-in').value = formatDate(dateStr);
+                document.getElementById('check-out').value = formatDate(checkOutStr);
+                
+                const nights = 1;
+                const totalMvr = nights * parseFloat(unit.rate_mvr);
+                document.getElementById('night-count').textContent = nights;
+                document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
+                document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
+                document.getElementById('price-breakdown').style.display = 'block';
+                
+                generateCalendar(currentMonth, currentYear);
+                return;
+            }
+            
+            // If start date exists and no end date, set end date
+            if (startDate && !endDate) {
                 if (dateStr < startDate) {
-                    // If tapped date is before start, reset both
+                    // If selected date is before start, reset and set as new start
                     startDate = dateStr;
                     const nextDay = new Date(dateStr);
                     nextDay.setDate(nextDay.getDate() + 1);
-                    endDate = nextDay.toISOString().split('T')[0];
+                    const checkOutStr = nextDay.toISOString().split('T')[0];
+                    document.getElementById('check-in').value = formatDate(dateStr);
+                    document.getElementById('check-out').value = formatDate(checkOutStr);
+                    
+                    const nights = 1;
+                    const totalMvr = nights * parseFloat(unit.rate_mvr);
+                    document.getElementById('night-count').textContent = nights;
+                    document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
+                    document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                 } else {
                     endDate = dateStr;
-                }
-            }
-            
-            generateCalendar(currentMonth, currentYear);
-            updateDateInputs();
-        }
-
-        function updateDateInputs() {
-            if (startDate) {
-                document.getElementById('check-in').value = formatDate(startDate);
-                if (endDate) {
                     const checkOutDate = new Date(endDate);
                     checkOutDate.setDate(checkOutDate.getDate() + 1);
                     const checkOutStr = checkOutDate.toISOString().split('T')[0];
@@ -951,16 +988,33 @@
                     
                     const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
                     const totalMvr = nights * parseFloat(unit.rate_mvr);
-                    
                     document.getElementById('night-count').textContent = nights;
                     document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                     document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
-                    document.getElementById('price-breakdown').style.display = 'block';
                 }
-            } else {
-                document.getElementById('check-in').value = '';
-                document.getElementById('check-out').value = '';
-                document.getElementById('price-breakdown').style.display = 'none';
+                
+                generateCalendar(currentMonth, currentYear);
+                return;
+            }
+            
+            // If both start and end exist, reset and start new selection
+            if (startDate && endDate) {
+                startDate = dateStr;
+                endDate = null;
+                const nextDay = new Date(dateStr);
+                nextDay.setDate(nextDay.getDate() + 1);
+                const checkOutStr = nextDay.toISOString().split('T')[0];
+                document.getElementById('check-in').value = formatDate(dateStr);
+                document.getElementById('check-out').value = formatDate(checkOutStr);
+                
+                const nights = 1;
+                const totalMvr = nights * parseFloat(unit.rate_mvr);
+                document.getElementById('night-count').textContent = nights;
+                document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
+                document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
+                document.getElementById('price-breakdown').style.display = 'block';
+                
+                generateCalendar(currentMonth, currentYear);
             }
         }
 
@@ -1282,7 +1336,7 @@
                                 </div>
                                 <div id="calendar-grid" class="calendar-grid"></div>
                                 <div class="calendar-instruction">
-                                    <i class="fas fa-info-circle"></i> Select a date to check availability. Check-out date auto-calculated.
+                                    <i class="fas fa-info-circle"></i> Tap a date to start. Tap another date to end. Tap same date to clear.
                                 </div>
                             </div>
                             
