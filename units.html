@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>HTM Rentals | Units</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8F9FA;
+            padding: 20px;
+        }
+        :root {
+            --navy: #0A2540;
+            --ocean: #006994;
+            --turquoise: #40B5AD;
+            --gray-light: #F8F9FA;
+            --gray-border: #E5E5E5;
+            --gray-text: #6C757D;
+            --success: #28a745;
+            --danger: #dc3545;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--gray-border);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); }
+        .back-link { color: var(--ocean); text-decoration: none; font-size: 1rem; }
+        
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--turquoise); color: white; }
+        .btn-primary:hover { background: var(--ocean); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        
+        /* Table */
+        .units-table {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-border);
+        }
+        th {
+            font-weight: 600;
+            color: var(--gray-text);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td {
+            font-size: 14px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--navy);
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+        .image-upload-area {
+            border: 2px dashed var(--gray-border);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--gray-light);
+        }
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .preview-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--gray-border);
+        }
+        .preview-img-container {
+            position: relative;
+            display: inline-block;
+        }
+        .remove-img {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .message {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            display: none;
+        }
+        .message.success { background: #D4EDDA; color: #155724; display: block; }
+        .message.error { background: #F8D7DA; color: #721C24; display: block; }
+        
+        .loading { text-align: center; padding: 40px; color: var(--gray-text); }
+        
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .card { padding: 16px; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Units</h1>
+            <a href="admin.html" class="back-link">← Back to Admin</a>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Property Units</h2>
+                <button class="btn btn-primary" onclick="openUnitModal()">+ Add Unit</button>
+            </div>
+            
+            <div id="message" class="message"></div>
+            
+            <div class="units-table">
+                <div id="units-container" class="loading">Loading units...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Unit Modal -->
+    <div id="unit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add Unit</h2>
+                <button onclick="closeUnitModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="unit-id">
+                
+                <div class="form-group">
+                    <label>Unit Name *</label>
+                    <input type="text" id="unit-name" placeholder="e.g., Ocean View Apartment">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>USD Rate (per night)</label>
+                        <input type="number" id="unit-usd" step="0.01" placeholder="90">
+                    </div>
+                    <div class="form-group">
+                        <label>MVR Rate (per night)</label>
+                        <input type="number" id="unit-mvr" step="0.01" placeholder="1380">
+                    </div>
+                </div>
+                
+                <h4 style="margin: 16px 0 12px;">Guest Capacity</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Max Total Guests</label>
+                        <input type="number" id="unit-guests" value="4">
+                        <small>Maximum humans allowed</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Max Adults</label>
+                        <input type="number" id="unit-max-adults" value="4">
+                        <small>Maximum adults (18+)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Max Children</label>
+                        <input type="number" id="unit-max-children" value="2">
+                        <small>Maximum children (under 18)</small>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Bedrooms</label>
+                        <input type="number" id="unit-bedrooms" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Beds</label>
+                        <input type="number" id="unit-beds" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Bathrooms</label>
+                        <input type="number" id="unit-bathrooms" step="0.5" value="1">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Bed Types (e.g., 1 double bed • 1 single bed)</label>
+                    <input type="text" id="unit-bed-types" placeholder="1 double bed • 1 single bed">
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="unit-description" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Featured Image</label>
+                    <div class="image-upload-area" onclick="document.getElementById('featured-image-input').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload</p>
+                        <input type="file" id="featured-image-input" accept="image/*" style="display:none" onchange="uploadFeaturedImage(this)">
+                    </div>
+                    <div id="featured-image-preview" class="image-preview"></div>
+                    <input type="hidden" id="unit-featured-image">
+                </div>
+                
+                <div class="form-group">
+                    <label>Gallery Images</label>
+                    <div class="image-upload-area" onclick="document.getElementById('gallery-image-input').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload (multiple)</p>
+                        <input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)">
+                    </div>
+                    <div id="gallery-images-preview" class="image-preview"></div>
+                    <input type="hidden" id="unit-gallery">
+                </div>
+                
+                <div class="form-group">
+                    <label>Amenities (comma separated)</label>
+                    <input type="text" id="unit-amenities" placeholder="WiFi, AC, Kitchen, Smart TV, Hot Water">
+                </div>
+                
+                <h4 style="margin: 16px 0 12px;">External Booking Links</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Airbnb URL</label>
+                        <input type="text" id="unit-airbnb" placeholder="https://airbnb.com/rooms/...">
+                    </div>
+                    <div class="form-group">
+                        <label>Agoda URL</label>
+                        <input type="text" id="unit-agoda" placeholder="https://agoda.com/...">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Trip.com URL</label>
+                        <input type="text" id="unit-trip" placeholder="https://trip.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>Booking.com URL</label>
+                        <input type="text" id="unit-booking" placeholder="https://booking.com/...">
+                    </div>
+                </div>
+                
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button class="btn btn-primary" onclick="saveUnit()">Save Unit</button>
+                    <button class="btn btn-danger" id="delete-unit-btn" style="display:none" onclick="deleteUnit()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://api.htmrentals.com/api';
+        
+        let allUnits = [];
+        let currentGalleryImages = [];
+        
+        async function loadUnits() {
+            const container = document.getElementById('units-container');
+            container.innerHTML = '<div class="loading">Loading units...</div>';
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/units`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    allUnits = data.units;
+                    displayUnits();
+                } else {
+                    container.innerHTML = '<div class="empty">Failed to load units</div>';
+                }
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = '<div class="empty">Error loading units</div>';
+            }
+        }
+        
+        function displayUnits() {
+            const container = document.getElementById('units-container');
+            
+            if (!allUnits || allUnits.length === 0) {
+                container.innerHTML = '<div class="empty">No units found. Click "Add Unit" to create one.</div>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>USD</th>
+                            <th>MVR</th>
+                            <th>Guests</th>
+                            <th>Adults/Children</th>
+                            <th>Beds/Baths</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${allUnits.map(unit => `
+                            <tr>
+                                <td>${unit.id}</td>
+                                <td><strong>${escapeHtml(unit.unit_name)}</strong></td>
+                                <td>$${unit.rate_usd || '—'}</td>
+                                <td>MVR ${unit.rate_mvr || '—'}</td>
+                                <td>${unit.max_guests}</td>
+                                <td>${unit.max_adults || unit.max_guests} / ${unit.max_children || 0}</td>
+                                <td>${unit.beds || unit.bedrooms} / ${unit.bathrooms || 1}</td>
+                                <td>
+                                    <button class="btn btn-sm" style="background:var(--turquoise); color:white;" onclick="editUnit(${unit.id})">Edit</button>
+                                 </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+        
+        function openUnitModal() {
+            document.getElementById('modal-title').textContent = 'Add Unit';
+            document.getElementById('unit-id').value = '';
+            document.getElementById('unit-name').value = '';
+            document.getElementById('unit-usd').value = '';
+            document.getElementById('unit-mvr').value = '';
+            document.getElementById('unit-guests').value = '4';
+            document.getElementById('unit-max-adults').value = '4';
+            document.getElementById('unit-max-children').value = '2';
+            document.getElementById('unit-bedrooms').value = '1';
+            document.getElementById('unit-beds').value = '1';
+            document.getElementById('unit-bathrooms').value = '1';
+            document.getElementById('unit-bed-types').value = '';
+            document.getElementById('unit-description').value = '';
+            document.getElementById('unit-featured-image').value = '';
+            document.getElementById('unit-amenities').value = '';
+            document.getElementById('unit-airbnb').value = '';
+            document.getElementById('unit-agoda').value = '';
+            document.getElementById('unit-trip').value = '';
+            document.getElementById('unit-booking').value = '';
+            document.getElementById('featured-image-preview').innerHTML = '';
+            currentGalleryImages = [];
+            displayGalleryPreviews();
+            document.getElementById('delete-unit-btn').style.display = 'none';
+            document.getElementById('unit-modal').style.display = 'flex';
+        }
+        
+        function editUnit(id) {
+            const unit = allUnits.find(u => u.id === id);
+            if (!unit) return;
+            
+            document.getElementById('modal-title').textContent = 'Edit Unit';
+            document.getElementById('unit-id').value = unit.id;
+            document.getElementById('unit-name').value = unit.unit_name || '';
+            document.getElementById('unit-usd').value = unit.rate_usd || '';
+            document.getElementById('unit-mvr').value = unit.rate_mvr || '';
+            document.getElementById('unit-guests').value = unit.max_guests || 4;
+            document.getElementById('unit-max-adults').value = unit.max_adults || unit.max_guests || 4;
+            document.getElementById('unit-max-children').value = unit.max_children || 0;
+            document.getElementById('unit-bedrooms').value = unit.bedrooms || 1;
+            document.getElementById('unit-beds').value = unit.beds || unit.bedrooms || 1;
+            document.getElementById('unit-bathrooms').value = unit.bathrooms || 1;
+            document.getElementById('unit-bed-types').value = unit.bed_types || '';
+            document.getElementById('unit-description').value = unit.description || '';
+            document.getElementById('unit-featured-image').value = unit.featured_image || '';
+            document.getElementById('unit-amenities').value = (unit.amenities || []).join(', ');
+            document.getElementById('unit-airbnb').value = unit.airbnb_url || '';
+            document.getElementById('unit-agoda').value = unit.agoda_url || '';
+            document.getElementById('unit-trip').value = unit.trip_url || '';
+            document.getElementById('unit-booking').value = unit.booking_url || '';
+            
+            if (unit.featured_image) {
+                document.getElementById('featured-image-preview').innerHTML = `<div class="preview-img-container"><img src="${unit.featured_image}" class="preview-img"><div class="remove-img" onclick="removeFeaturedImage()">×</div></div>`;
+            }
+            
+            currentGalleryImages = unit.gallery_images || [];
+            displayGalleryPreviews();
+            
+            document.getElementById('delete-unit-btn').style.display = 'inline-block';
+            document.getElementById('unit-modal').style.display = 'flex';
+        }
+        
+        function closeUnitModal() {
+            document.getElementById('unit-modal').style.display = 'none';
+        }
+        
+        function displayGalleryPreviews() {
+            const container = document.getElementById('gallery-images-preview');
+            container.innerHTML = currentGalleryImages.map((url, idx) => `
+                <div class="preview-img-container">
+                    <img src="${url}" class="preview-img">
+                    <div class="remove-img" onclick="removeGalleryImage(${idx})">×</div>
+                </div>
+            `).join('');
+            document.getElementById('unit-gallery').value = currentGalleryImages.join(',');
+        }
+        
+        function removeGalleryImage(idx) {
+            currentGalleryImages.splice(idx, 1);
+            displayGalleryPreviews();
+        }
+        
+        function removeFeaturedImage() {
+            document.getElementById('unit-featured-image').value = '';
+            document.getElementById('featured-image-preview').innerHTML = '';
+        }
+        
+        async function uploadFeaturedImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' },
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('unit-featured-image').value = data.url;
+                    document.getElementById('featured-image-preview').innerHTML = `<div class="preview-img-container"><img src="${data.url}" class="preview-img"><div class="remove-img" onclick="removeFeaturedImage()">×</div></div>`;
+                    showMessage('Image uploaded', 'success');
+                } else {
+                    showMessage('Upload failed', 'error');
+                }
+            } catch(e) {
+                showMessage('Error uploading', 'error');
+            }
+            input.value = '';
+        }
+        
+        async function uploadGalleryImages(input) {
+            const files = Array.from(input.files);
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                try {
+                    const res = await fetch(`${API_BASE_URL}/admin/upload`, {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer admin-secret-token' },
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        currentGalleryImages.push(data.url);
+                        displayGalleryPreviews();
+                        showMessage('Image uploaded', 'success');
+                    }
+                } catch(e) {
+                    showMessage('Upload failed', 'error');
+                }
+            }
+            input.value = '';
+        }
+        
+        async function saveUnit() {
+            const id = document.getElementById('unit-id').value;
+            const maxGuests = parseInt(document.getElementById('unit-guests').value) || 2;
+            const maxAdults = parseInt(document.getElementById('unit-max-adults').value) || maxGuests;
+            const maxChildren = parseInt(document.getElementById('unit-max-children').value) || 0;
+            
+            const unitData = {
+                unit_name: document.getElementById('unit-name').value,
+                rate_usd: parseFloat(document.getElementById('unit-usd').value) || 0,
+                rate_mvr: parseFloat(document.getElementById('unit-mvr').value) || 0,
+                max_guests: maxGuests,
+                max_adults: maxAdults,
+                max_children: maxChildren,
+                bedrooms: parseInt(document.getElementById('unit-bedrooms').value) || 1,
+                beds: parseInt(document.getElementById('unit-beds').value) || 1,
+                bathrooms: parseFloat(document.getElementById('unit-bathrooms').value) || 1,
+                bed_types: document.getElementById('unit-bed-types').value || null,
+                description: document.getElementById('unit-description').value,
+                featured_image: document.getElementById('unit-featured-image').value,
+                gallery_images: currentGalleryImages,
+                amenities: document.getElementById('unit-amenities').value.split(',').map(s => s.trim()).filter(s => s),
+                airbnb_url: document.getElementById('unit-airbnb').value.trim() || null,
+                agoda_url: document.getElementById('unit-agoda').value.trim() || null,
+                trip_url: document.getElementById('unit-trip').value.trim() || null,
+                booking_url: document.getElementById('unit-booking').value.trim() || null
+            };
+            
+            if (!unitData.unit_name) {
+                showMessage('Unit name required', 'error');
+                return;
+            }
+            
+            try {
+                let url, method;
+                if (id) {
+                    url = `${API_BASE_URL}/admin/units/${id}`;
+                    method = 'PUT';
+                } else {
+                    url = `${API_BASE_URL}/admin/units`;
+                    method = 'POST';
+                }
+                
+                const res = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-secret-token'
+                    },
+                    body: JSON.stringify(unitData)
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showMessage(id ? 'Unit updated' : 'Unit created', 'success');
+                    closeUnitModal();
+                    loadUnits();
+                } else {
+                    showMessage(data.error || 'Failed to save', 'error');
+                }
+            } catch(e) {
+                showMessage('Error saving unit', 'error');
+            }
+        }
+        
+        async function deleteUnit() {
+            const id = document.getElementById('unit-id').value;
+            if (!id || !confirm('Delete this unit permanently? This cannot be undone.')) return;
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/units/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showMessage('Unit deleted', 'success');
+                    closeUnitModal();
+                    loadUnits();
+                } else {
+                    showMessage(data.error || 'Failed to delete', 'error');
+                }
+            } catch(e) {
+                showMessage('Error deleting unit', 'error');
+            }
+        }
+        
+        function showMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.className = `message ${type}`;
+            setTimeout(() => {
+                el.style.display = 'none';
+                el.className = 'message';
+            }, 3000);
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+        }
+        
+        loadUnits();
+    </script>
+</body>
+</html>
