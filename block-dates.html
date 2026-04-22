@@ -276,6 +276,7 @@
                 const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${unitId}`);
                 const data = await res.json();
                 if (data.success) {
+                    // Get booked dates from bookings
                     bookedDates = [];
                     if (data.bookings) {
                         data.bookings.forEach(booking => {
@@ -287,11 +288,13 @@
                         });
                     }
                     
+                    // Get blocked dates from unit_availability
                     blockedDates = [];
                     if (data.blocked_dates) {
                         blockedDates = data.blocked_dates.map(b => b.date || b.blocked_date);
                     }
                     
+                    console.log('Blocked dates loaded:', blockedDates);
                     renderCalendar();
                     renderBlockedList();
                 }
@@ -407,6 +410,8 @@
             const blockStart = selectedStartDate;
             const blockEnd = selectedEndDate ? selectedEndDate : selectedStartDate;
             
+            showMessage('Blocking dates...', 'success');
+            
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/block-dates`, {
                     method: 'POST',
@@ -425,14 +430,17 @@
                 const result = await res.json();
                 
                 if (result.success) {
-                    showMessage(`Blocked ${blockStart} to ${blockEnd}`, 'success');
-                    clearSelection();
+                    showMessage(`✓ Blocked ${blockStart} to ${blockEnd}`, 'success');
+                    // Clear selection
+                    selectedStartDate = null;
+                    selectedEndDate = null;
+                    // Reload availability to refresh the calendar and blocked list
                     await loadAvailability(selectedUnitId);
                 } else {
                     showMessage(result.error || 'Failed to block dates', 'error');
                 }
             } catch(e) {
-                showMessage('Error blocking dates: ' + e.message, 'error');
+                showMessage('Error: ' + e.message, 'error');
             }
         }
         
@@ -444,7 +452,7 @@
                     headers: { 'Authorization': 'Bearer admin-secret-token' }
                 });
                 if (res.ok) {
-                    showMessage(`Unblocked ${dateStr}`, 'success');
+                    showMessage(`✓ Unblocked ${dateStr}`, 'success');
                     await loadAvailability(selectedUnitId);
                 } else {
                     showMessage('Failed to unblock', 'error');
@@ -461,10 +469,16 @@
                 return;
             }
             
+            if (blockedDates.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
+                return;
+            }
+            
+            // Need to get the IDs for each blocked date
             try {
                 const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${selectedUnitId}`);
                 const data = await res.json();
-                if (data.success && data.blocked_dates && data.blocked_dates.length) {
+                if (data.success && data.blocked_dates) {
                     const blockedEntries = data.blocked_dates.filter(b => b.date);
                     if (blockedEntries.length === 0) {
                         container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
