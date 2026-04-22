@@ -42,7 +42,7 @@
             border-bottom: 1px solid var(--gray-border);
         }
 
-        /* Toggle */
+        /* Toggle - Foreign first, Local second */
         .currency-toggle { display: flex; gap: 8px; }
         .toggle-option {
             display: flex;
@@ -235,13 +235,6 @@
                     if (typeof unit.amenities === 'string') {
                         try { unit.amenities = JSON.parse(unit.amenities); } catch(e) { unit.amenities = []; }
                     }
-                    unit.blocked_dates = data.blocked_dates || [];
-                    
-                    unit.max_adults = unit.max_adults || unit.max_guests || 2;
-                    unit.max_children = unit.max_children || 0;
-                    unit.bathrooms = unit.bathrooms || 1;
-                    unit.beds = unit.beds || unit.bedrooms || 1;
-                    unit.bed_types = unit.bed_types || '';
                     
                     galleryImages = [];
                     if (unit.featured_image) galleryImages.push(unit.featured_image);
@@ -302,14 +295,25 @@
                 const data = await res.json();
                 if (data.success) {
                     bookedDates = [];
-                    data.bookings.forEach(booking => {
-                        const start = new Date(booking.check_in_date);
-                        const end = new Date(booking.check_out_date);
-                        for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
-                            bookedDates.push(d.toISOString().split('T')[0]);
-                        }
-                    });
-                    if (unit.blocked_dates) unit.blocked_dates.forEach(date => bookedDates.push(date));
+                    // Add booked dates from confirmed/pending bookings
+                    if (data.bookings) {
+                        data.bookings.forEach(booking => {
+                            const start = new Date(booking.check_in_date);
+                            const end = new Date(booking.check_out_date);
+                            for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+                                bookedDates.push(d.toISOString().split('T')[0]);
+                            }
+                        });
+                    }
+                    // Add blocked dates from unit_availability
+                    if (data.blocked_dates && data.blocked_dates.length) {
+                        data.blocked_dates.forEach(block => {
+                            const date = block.blocked_date || block.date;
+                            if (date) {
+                                bookedDates.push(date.split('T')[0]);
+                            }
+                        });
+                    }
                 }
             } catch(e) { console.error(e); }
         }
