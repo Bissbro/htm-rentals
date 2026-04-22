@@ -25,8 +25,6 @@
             --gray-text: #6C757D;
             --radius-lg: 20px;
             --radius-md: 12px;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
-            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
         }
         .container { max-width: 800px; margin: 0 auto; }
         
@@ -46,7 +44,7 @@
             border-radius: var(--radius-lg);
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         
         .form-group { margin-bottom: 20px; }
@@ -80,7 +78,7 @@
             height: 36px;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s;
+            font-size: 16px;
         }
         .calendar-nav button:hover { background: var(--turquoise); color: white; }
         
@@ -157,12 +155,12 @@
             cursor: pointer;
             font-size: 14px;
             transition: all 0.2s;
+            flex: 1;
         }
         .btn-primary { background: var(--turquoise); color: white; }
         .btn-primary:hover { background: var(--ocean); }
         .btn-danger { background: #dc3545; color: white; }
         .btn-danger:hover { background: #c82333; }
-        .btn-sm { padding: 6px 12px; font-size: 12px; }
         
         .blocked-list { margin-top: 20px; }
         .blocked-item {
@@ -247,11 +245,10 @@
         
         let allUnits = [];
         let selectedUnitId = null;
-        let bookedDates = [];      // Dates from bookings
-        let blockedDates = [];     // Dates from unit_availability (is_available=0)
-        let selectedDates = [];
-        let startDate = null;
-        let endDate = null;
+        let bookedDates = [];
+        let blockedDates = [];
+        let selectedStartDate = null;
+        let selectedEndDate = null;
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -279,7 +276,6 @@
                 const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${unitId}`);
                 const data = await res.json();
                 if (data.success) {
-                    // Get booked dates from bookings
                     bookedDates = [];
                     if (data.bookings) {
                         data.bookings.forEach(booking => {
@@ -291,7 +287,6 @@
                         });
                     }
                     
-                    // Get blocked dates from unit_availability
                     blockedDates = [];
                     if (data.blocked_dates) {
                         blockedDates = data.blocked_dates.map(b => b.date || b.blocked_date);
@@ -326,13 +321,11 @@
                 const isToday = dateStr === todayStr;
                 
                 let isSelected = false;
-                if (startDate && endDate) {
-                    if (dateStr === startDate || dateStr === endDate) {
-                        isSelected = true;
-                    } else if (dateStr > startDate && dateStr < endDate) {
+                if (selectedStartDate && selectedEndDate) {
+                    if (dateStr >= selectedStartDate && dateStr <= selectedEndDate) {
                         isSelected = true;
                     }
-                } else if (startDate && dateStr === startDate) {
+                } else if (selectedStartDate && dateStr === selectedStartDate) {
                     isSelected = true;
                 }
                 
@@ -359,14 +352,17 @@
                 return;
             }
             
-            if (!startDate || (startDate && endDate)) {
-                startDate = dateStr;
-                endDate = null;
-            } else if (startDate && !endDate) {
-                if (dateStr < startDate) {
-                    startDate = dateStr;
+            if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
+                // Start new selection
+                selectedStartDate = dateStr;
+                selectedEndDate = null;
+            } else if (selectedStartDate && !selectedEndDate) {
+                if (dateStr < selectedStartDate) {
+                    // If clicked date is before start, reset and set as new start
+                    selectedStartDate = dateStr;
                 } else {
-                    endDate = dateStr;
+                    // Set as end date
+                    selectedEndDate = dateStr;
                 }
             }
             
@@ -377,24 +373,24 @@
             const preview = document.getElementById('selected-preview');
             const textSpan = document.getElementById('selected-dates-text');
             
-            if (!startDate) {
+            if (!selectedStartDate) {
                 preview.style.display = 'none';
                 return;
             }
             
-            if (startDate && !endDate) {
+            if (selectedStartDate && !selectedEndDate) {
                 preview.style.display = 'block';
-                textSpan.textContent = startDate;
-            } else if (startDate && endDate) {
+                textSpan.textContent = selectedStartDate + ' (1 night)';
+            } else if (selectedStartDate && selectedEndDate) {
+                const nights = Math.ceil((new Date(selectedEndDate) - new Date(selectedStartDate)) / (1000 * 60 * 60 * 24)) + 1;
                 preview.style.display = 'block';
-                const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
-                textSpan.textContent = `${startDate} to ${endDate} (${nights} nights)`;
+                textSpan.textContent = `${selectedStartDate} to ${selectedEndDate} (${nights} nights)`;
             }
         }
         
         function clearSelection() {
-            startDate = null;
-            endDate = null;
+            selectedStartDate = null;
+            selectedEndDate = null;
             renderCalendar();
         }
         
@@ -403,13 +399,13 @@
                 showMessage('Please select a unit', 'error');
                 return;
             }
-            if (!startDate) {
+            if (!selectedStartDate) {
                 showMessage('Please select dates to block', 'error');
                 return;
             }
             
-            let blockStart = startDate;
-            let blockEnd = endDate ? endDate : startDate;
+            const blockStart = selectedStartDate;
+            const blockEnd = selectedEndDate ? selectedEndDate : selectedStartDate;
             
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/block-dates`, {
@@ -426,15 +422,17 @@
                     })
                 });
                 
-                if (res.ok) {
+                const result = await res.json();
+                
+                if (result.success) {
                     showMessage(`Blocked ${blockStart} to ${blockEnd}`, 'success');
                     clearSelection();
                     await loadAvailability(selectedUnitId);
                 } else {
-                    showMessage('Failed to block dates', 'error');
+                    showMessage(result.error || 'Failed to block dates', 'error');
                 }
             } catch(e) {
-                showMessage('Error blocking dates', 'error');
+                showMessage('Error blocking dates: ' + e.message, 'error');
             }
         }
         
@@ -474,7 +472,7 @@
                         container.innerHTML = blockedEntries.map(b => `
                             <div class="blocked-item">
                                 <div><strong>${b.date}</strong> ${b.reason ? `<span style="font-size:12px; color:var(--gray-text);">(${escapeHtml(b.reason)})</span>` : ''}</div>
-                                <button class="btn btn-danger btn-sm" onclick="unblockDate('${b.date}', ${b.id})">Unblock</button>
+                                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="unblockDate('${b.date}', ${b.id})">Unblock</button>
                             </div>
                         `).join('');
                     }
@@ -507,8 +505,8 @@
             if (selectedUnitId) {
                 document.getElementById('calendar-card').style.display = 'block';
                 document.getElementById('blocked-card').style.display = 'block';
-                startDate = null;
-                endDate = null;
+                selectedStartDate = null;
+                selectedEndDate = null;
                 await loadAvailability(selectedUnitId);
             } else {
                 document.getElementById('calendar-card').style.display = 'none';
