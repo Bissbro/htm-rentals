@@ -119,6 +119,15 @@
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const shortMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        function formatDateShort(dateStr) {
+            const d = new Date(dateStr);
+            const day = d.getDate();
+            const month = shortMonthNames[d.getMonth()];
+            const year = d.getFullYear().toString().slice(-2);
+            return `${day} ${month} ${year}`;
+        }
         
         async function loadUnits() {
             try {
@@ -143,7 +152,6 @@
                 const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${unitId}`);
                 const data = await res.json();
                 if (data.success) {
-                    // Get booked dates from bookings
                     bookedDates = [];
                     if (data.bookings) {
                         data.bookings.forEach(booking => {
@@ -155,7 +163,6 @@
                         });
                     }
                     
-                    // FIX: Extract only YYYY-MM-DD from blocked_date
                     blockedDates = [];
                     if (data.blocked_dates) {
                         blockedDates = data.blocked_dates.map(b => {
@@ -239,11 +246,11 @@
             }
             if (selectedStartDate && !selectedEndDate) {
                 preview.style.display = 'block';
-                textSpan.textContent = selectedStartDate + ' (1 night)';
+                textSpan.textContent = formatDateShort(selectedStartDate) + ' (1 night)';
             } else if (selectedStartDate && selectedEndDate) {
                 const nights = Math.ceil((new Date(selectedEndDate) - new Date(selectedStartDate)) / (1000 * 60 * 60 * 24)) + 1;
                 preview.style.display = 'block';
-                textSpan.textContent = `${selectedStartDate} to ${selectedEndDate} (${nights} nights)`;
+                textSpan.textContent = `${formatDateShort(selectedStartDate)} to ${formatDateShort(selectedEndDate)} (${nights} nights)`;
             }
         }
         
@@ -269,7 +276,7 @@
                 const result = await res.json();
                 if (result.success) {
                     const nights = Math.ceil((new Date(blockEnd) - new Date(blockStart)) / (1000 * 60 * 60 * 24)) + 1;
-                    showMessage(`✓ Blocked ${blockStart} to ${blockEnd} (${nights} nights)`, 'success');
+                    showMessage(`✓ Blocked ${formatDateShort(blockStart)} to ${formatDateShort(blockEnd)} (${nights} nights)`, 'success');
                     selectedStartDate = null;
                     selectedEndDate = null;
                     await loadAvailability(selectedUnitId);
@@ -279,20 +286,48 @@
             } catch(e) { showMessage('Error: ' + e.message, 'error'); }
         }
         
-        async function unblockDate(id, dateStr) {
-            if (!confirm(`Unblock ${dateStr}?`)) return;
+        async function unblockRange(startDate, endDate, firstEntryId) {
+            if (!confirm(`Unblock ${formatDateShort(startDate)} to ${formatDateShort(endDate)}?`)) return;
+            
+            // Get all blocked dates for this unit to find all IDs in the range
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': 'Bearer admin-secret-token' }
-                });
-                if (res.ok) {
-                    showMessage(`✓ Unblocked ${dateStr}`, 'success');
-                    await loadAvailability(selectedUnitId);
-                } else {
-                    showMessage('Failed to unblock', 'error');
+                const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${selectedUnitId}`);
+                const data = await res.json();
+                if (data.success && data.blocked_dates) {
+                    const rangeDates = [];
+                    const current = new Date(startDate);
+                    const end = new Date(endDate);
+                    while (current <= end) {
+                        rangeDates.push(current.toISOString().split('T')[0]);
+                        current.setDate(current.getDate() + 1);
+                    }
+                    
+                    const idsToDelete = data.blocked_dates
+                        .filter(b => {
+                            const date = (b.blocked_date || b.date).split('T')[0];
+                            return rangeDates.includes(date);
+                        })
+                        .map(b => b.id);
+                    
+                    let deletedCount = 0;
+                    for (const id of idsToDelete) {
+                        const deleteRes = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': 'Bearer admin-secret-token' }
+                        });
+                        if (deleteRes.ok) deletedCount++;
+                    }
+                    
+                    if (deletedCount > 0) {
+                        showMessage(`✓ Unblocked ${formatDateShort(startDate)} to ${formatDateShort(endDate)}`, 'success');
+                        await loadAvailability(selectedUnitId);
+                    } else {
+                        showMessage('Failed to unblock', 'error');
+                    }
                 }
-            } catch(e) { showMessage('Error', 'error'); }
+            } catch(e) {
+                showMessage('Error', 'error');
+            }
         }
         
         async function renderBlockedList(blockedDatesData) {
@@ -307,42 +342,52 @@
                 return;
             }
             
-            // Filter for current unit and format date nicely
+            // Filter for current unit
             const unitBlocked = blockedDatesData.filter(b => b.unit_id == selectedUnitId);
             if (unitBlocked.length === 0) {
                 container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
-            } else {
-                // Group consecutive dates into ranges
-                const dates = unitBlocked.map(b => b.blocked_date.split('T')[0]).sort();
-                const ranges = [];
-                let start = dates[0];
-                let end = dates[0];
-                for (let i = 1; i < dates.length; i++) {
-                    const prev = new Date(dates[i-1]);
-                    const curr = new Date(dates[i]);
-                    const diffDays = (curr - prev) / (1000 * 60 * 60 * 24);
-                    if (diffDays === 1) {
-                        end = dates[i];
-                    } else {
-                        ranges.push({ start, end });
-                        start = dates[i];
-                        end = dates[i];
-                    }
-                }
-                ranges.push({ start, end });
-                
-                container.innerHTML = ranges.map(range => {
-                    const displayText = range.start === range.end ? range.start : `${range.start} to ${range.end}`;
-                    // Find the first id for this range (use the first date's id)
-                    const firstEntry = unitBlocked.find(b => b.blocked_date.split('T')[0] === range.start);
-                    return `
-                        <div class="blocked-item">
-                            <div><strong>${displayText}</strong></div>
-                            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="unblockDate(${firstEntry.id}, '${range.start}')">Unblock</button>
-                        </div>
-                    `;
-                }).join('');
+                return;
             }
+            
+            // Get all dates and sort
+            const dates = unitBlocked.map(b => (b.blocked_date || b.date).split('T')[0]).sort();
+            
+            // Group consecutive dates into ranges
+            const ranges = [];
+            let rangeStart = dates[0];
+            let rangeEnd = dates[0];
+            
+            for (let i = 1; i < dates.length; i++) {
+                const prev = new Date(dates[i-1]);
+                const curr = new Date(dates[i]);
+                const diffDays = (curr - prev) / (1000 * 60 * 60 * 24);
+                if (diffDays === 1) {
+                    rangeEnd = dates[i];
+                } else {
+                    ranges.push({ start: rangeStart, end: rangeEnd });
+                    rangeStart = dates[i];
+                    rangeEnd = dates[i];
+                }
+            }
+            ranges.push({ start: rangeStart, end: rangeEnd });
+            
+            // Find the first entry's id for each range (used for unblock)
+            container.innerHTML = ranges.map(range => {
+                const displayStart = formatDateShort(range.start);
+                const displayEnd = formatDateShort(range.end);
+                const isSingle = range.start === range.end;
+                const displayText = isSingle ? displayStart : `${displayStart} to ${displayEnd}`;
+                
+                // Find the first blocked entry in this range to get an id
+                const firstEntry = unitBlocked.find(b => (b.blocked_date || b.date).split('T')[0] === range.start);
+                
+                return `
+                    <div class="blocked-item">
+                        <div><strong>${displayText}</strong></div>
+                        <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="unblockRange('${range.start}', '${range.end}', ${firstEntry.id})">Unblock</button>
+                    </div>
+                `;
+            }).join('');
         }
         
         function showMessage(msg, type) {
@@ -385,6 +430,8 @@
         
         document.getElementById('block-btn').addEventListener('click', blockSelected);
         document.getElementById('clear-btn').addEventListener('click', clearSelection);
+        
+        window.unblockRange = unblockRange;
         
         loadUnits();
     </script>
