@@ -52,6 +52,54 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         
+        /* Filters */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-border);
+        }
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        .filter-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-text);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+        }
+        .filter-actions {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        .filter-actions button {
+            padding: 10px 16px;
+            background: var(--turquoise);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .filter-actions button.clear {
+            background: var(--gray-text);
+        }
+        
         .search-box {
             display: flex;
             gap: 12px;
@@ -192,6 +240,7 @@
             .card { padding: 16px; }
             .desktop-table { display: none; }
             .mobile-cards { display: flex; }
+            .filter-group { min-width: 100%; }
         }
         
         @media (min-width: 769px) {
@@ -208,10 +257,40 @@
         </div>
         
         <div class="card">
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="status-filter">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>From Date</label>
+                    <input type="date" id="from-date">
+                </div>
+                <div class="filter-group">
+                    <label>To Date</label>
+                    <input type="date" id="to-date">
+                </div>
+                <div class="filter-group">
+                    <label>Unit</label>
+                    <select id="unit-filter">
+                        <option value="">All Units</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button onclick="applyFilters()">Apply Filters</button>
+                    <button class="clear" onclick="clearFilters()">Clear</button>
+                </div>
+            </div>
+            
+            <!-- Search -->
             <div class="search-box">
-                <input type="text" id="search-input" placeholder="Search by guest name or phone..." onkeyup="filterBookings()">
-                <button onclick="filterBookings()"><i class="fas fa-search"></i> Search</button>
-                <button onclick="loadAllBookings()" style="background: var(--gray-text);"><i class="fas fa-sync-alt"></i> Refresh</button>
+                <input type="text" id="search-input" placeholder="Search by guest name or phone..." onkeyup="applyFilters()">
             </div>
             
             <div id="message" class="message"></div>
@@ -232,6 +311,7 @@
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         
         let allBookings = [];
+        let allUnits = [];
         
         async function loadAllBookings() {
             const desktopContainer = document.getElementById('bookings-container');
@@ -247,8 +327,8 @@
                 
                 if (data.success) {
                     allBookings = data.bookings;
-                    displayBookingsDesktop(allBookings);
-                    displayBookingsMobile(allBookings);
+                    await loadUnits();
+                    applyFilters();
                 } else {
                     desktopContainer.innerHTML = '<div class="empty">Failed to load bookings</div>';
                     mobileContainer.innerHTML = '<div class="empty">Failed to load bookings</div>';
@@ -258,6 +338,81 @@
                 desktopContainer.innerHTML = '<div class="empty">Error loading bookings</div>';
                 mobileContainer.innerHTML = '<div class="empty">Error loading bookings</div>';
             }
+        }
+        
+        async function loadUnits() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/units`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    allUnits = data.units;
+                    const unitSelect = document.getElementById('unit-filter');
+                    unitSelect.innerHTML = '<option value="">All Units</option>' + 
+                        allUnits.map(u => `<option value="${u.id}">${escapeHtml(u.unit_name)}</option>`).join('');
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+        
+        function applyFilters() {
+            const status = document.getElementById('status-filter').value;
+            const fromDate = document.getElementById('from-date').value;
+            const toDate = document.getElementById('to-date').value;
+            const unitId = document.getElementById('unit-filter').value;
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            let filtered = [...allBookings];
+            
+            // Filter by status
+            if (status) {
+                filtered = filtered.filter(b => b.booking_status === status);
+            }
+            
+            // Filter by unit
+            if (unitId) {
+                filtered = filtered.filter(b => b.unit_id == unitId);
+            }
+            
+            // Filter by date range
+            if (fromDate) {
+                const from = new Date(fromDate);
+                from.setHours(0, 0, 0, 0);
+                filtered = filtered.filter(b => {
+                    const checkIn = new Date(b.check_in_date);
+                    return checkIn >= from;
+                });
+            }
+            if (toDate) {
+                const to = new Date(toDate);
+                to.setHours(23, 59, 59, 999);
+                filtered = filtered.filter(b => {
+                    const checkIn = new Date(b.check_in_date);
+                    return checkIn <= to;
+                });
+            }
+            
+            // Filter by search term
+            if (searchTerm) {
+                filtered = filtered.filter(b => 
+                    b.guest_name.toLowerCase().includes(searchTerm) || 
+                    (b.guest_phone && b.guest_phone.includes(searchTerm))
+                );
+            }
+            
+            displayBookingsDesktop(filtered);
+            displayBookingsMobile(filtered);
+        }
+        
+        function clearFilters() {
+            document.getElementById('status-filter').value = '';
+            document.getElementById('from-date').value = '';
+            document.getElementById('to-date').value = '';
+            document.getElementById('unit-filter').value = '';
+            document.getElementById('search-input').value = '';
+            applyFilters();
         }
         
         function displayBookingsDesktop(bookings) {
@@ -288,7 +443,7 @@
                                 <td>
                                     <strong>${escapeHtml(booking.guest_name)}</strong><br>
                                     <small style="color: var(--gray-text);">${booking.guest_phone || ''}</small>
-                                 </td>
+                                  </td>
                                 <td>${escapeHtml(booking.unit_name || 'N/A')}</td>
                                 <td>${formatDate(booking.check_in_date)}</td>
                                 <td>${formatDate(booking.check_out_date)}</td>
@@ -359,21 +514,6 @@
             if (!dateStr) return '—';
             const d = new Date(dateStr);
             return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-        }
-        
-        function filterBookings() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            if (!searchTerm) {
-                displayBookingsDesktop(allBookings);
-                displayBookingsMobile(allBookings);
-                return;
-            }
-            const filtered = allBookings.filter(b => 
-                b.guest_name.toLowerCase().includes(searchTerm) || 
-                (b.guest_phone && b.guest_phone.includes(searchTerm))
-            );
-            displayBookingsDesktop(filtered);
-            displayBookingsMobile(filtered);
         }
         
         async function confirmBooking(id) {
