@@ -27,6 +27,7 @@
             --danger: #dc3545;
             --radius-lg: 20px;
             --radius-md: 12px;
+            --radius-sm: 8px;
         }
         .container { max-width: 1200px; margin: 0 auto; }
         
@@ -75,13 +76,15 @@
             cursor: pointer;
         }
         
-        .bookings-table {
-            width: 100%;
+        /* Desktop Table View */
+        .desktop-table {
+            display: block;
             overflow-x: auto;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 800px;
         }
         th, td {
             padding: 12px;
@@ -99,6 +102,55 @@
             font-size: 14px;
         }
         
+        /* Mobile Card View */
+        .mobile-cards {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .booking-item {
+            background: white;
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+        }
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .guest-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--navy);
+        }
+        .booking-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--gray-text);
+            flex-wrap: wrap;
+        }
+        .booking-detail i {
+            width: 20px;
+            color: var(--turquoise);
+        }
+        .booking-detail strong {
+            color: var(--navy);
+            font-weight: 600;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        
         .badge {
             display: inline-block;
             padding: 4px 10px;
@@ -110,18 +162,13 @@
         .badge-confirmed { background: #D4EDDA; color: #155724; }
         .badge-cancelled { background: #F8D7DA; color: #721C24; }
         
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
         .btn-sm {
             padding: 6px 12px;
             border: none;
             border-radius: 20px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 12px;
             transition: all 0.2s;
         }
         .btn-confirm { background: var(--success); color: white; }
@@ -143,8 +190,13 @@
         @media (max-width: 768px) {
             body { padding: 12px; }
             .card { padding: 16px; }
-            th, td { padding: 8px; }
-            .action-buttons { flex-direction: column; }
+            .desktop-table { display: none; }
+            .mobile-cards { display: flex; }
+        }
+        
+        @media (min-width: 769px) {
+            .desktop-table { display: block; }
+            .mobile-cards { display: none; }
         }
     </style>
 </head>
@@ -164,8 +216,14 @@
             
             <div id="message" class="message"></div>
             
-            <div class="bookings-table">
+            <!-- Desktop Table View -->
+            <div id="desktop-table" class="desktop-table">
                 <div id="bookings-container" class="loading">Loading bookings...</div>
+            </div>
+            
+            <!-- Mobile Card View -->
+            <div id="mobile-cards" class="mobile-cards">
+                <div class="loading">Loading bookings...</div>
             </div>
         </div>
     </div>
@@ -176,8 +234,10 @@
         let allBookings = [];
         
         async function loadAllBookings() {
-            const container = document.getElementById('bookings-container');
-            container.innerHTML = '<div class="loading">Loading bookings...</div>';
+            const desktopContainer = document.getElementById('bookings-container');
+            const mobileContainer = document.getElementById('mobile-cards');
+            desktopContainer.innerHTML = '<div class="loading">Loading bookings...</div>';
+            mobileContainer.innerHTML = '<div class="loading">Loading bookings...</div>';
             
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings`, {
@@ -187,17 +247,20 @@
                 
                 if (data.success) {
                     allBookings = data.bookings;
-                    displayBookings(allBookings);
+                    displayBookingsDesktop(allBookings);
+                    displayBookingsMobile(allBookings);
                 } else {
-                    container.innerHTML = '<div class="empty">Failed to load bookings</div>';
+                    desktopContainer.innerHTML = '<div class="empty">Failed to load bookings</div>';
+                    mobileContainer.innerHTML = '<div class="empty">Failed to load bookings</div>';
                 }
             } catch(e) {
                 console.error(e);
-                container.innerHTML = '<div class="empty">Error loading bookings</div>';
+                desktopContainer.innerHTML = '<div class="empty">Error loading bookings</div>';
+                mobileContainer.innerHTML = '<div class="empty">Error loading bookings</div>';
             }
         }
         
-        function displayBookings(bookings) {
+        function displayBookingsDesktop(bookings) {
             const container = document.getElementById('bookings-container');
             
             if (!bookings || bookings.length === 0) {
@@ -225,7 +288,7 @@
                                 <td>
                                     <strong>${escapeHtml(booking.guest_name)}</strong><br>
                                     <small style="color: var(--gray-text);">${booking.guest_phone || ''}</small>
-                                </td>
+                                 </td>
                                 <td>${escapeHtml(booking.unit_name || 'N/A')}</td>
                                 <td>${formatDate(booking.check_in_date)}</td>
                                 <td>${formatDate(booking.check_out_date)}</td>
@@ -233,19 +296,63 @@
                                 <td>${booking.currency === 'MVR' ? 'MVR' : '$'}${parseFloat(booking.total_amount || 0).toFixed(2)}</td>
                                 <td><span class="badge badge-${booking.booking_status}">${booking.booking_status}</span></td>
                                 <td class="action-buttons">
-                                    ${booking.booking_status === 'pending' ? 
-                                        `<button class="btn-sm btn-confirm" onclick="confirmBooking(${booking.id})">Confirm</button>
-                                         <button class="btn-sm btn-cancel" onclick="cancelBooking(${booking.id})">Cancel</button>` : 
-                                        booking.booking_status === 'confirmed' ?
-                                        `<button class="btn-sm btn-cancel" onclick="cancelBooking(${booking.id})">Cancel</button>` :
-                                        `<button class="btn-sm btn-delete" onclick="deleteBooking(${booking.id})">Delete</button>`
-                                    }
+                                    ${getActionButtons(booking)}
                                 </td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
             `;
+        }
+        
+        function displayBookingsMobile(bookings) {
+            const container = document.getElementById('mobile-cards');
+            
+            if (!bookings || bookings.length === 0) {
+                container.innerHTML = '<div class="empty">No bookings found</div>';
+                return;
+            }
+            
+            container.innerHTML = bookings.map(booking => `
+                <div class="booking-item">
+                    <div class="booking-header">
+                        <span class="guest-name">${escapeHtml(booking.guest_name)}</span>
+                        <span class="badge badge-${booking.booking_status}">${booking.booking_status}</span>
+                    </div>
+                    <div class="booking-detail">
+                        <i class="fas fa-phone"></i>
+                        <span>${booking.guest_phone || 'No phone'}</span>
+                    </div>
+                    <div class="booking-detail">
+                        <i class="fas fa-building"></i>
+                        <span>${escapeHtml(booking.unit_name || 'N/A')}</span>
+                    </div>
+                    <div class="booking-detail">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span><strong>${formatDate(booking.check_in_date)}</strong> → <strong>${formatDate(booking.check_out_date)}</strong> (${booking.total_nights || '?'} nights)</span>
+                    </div>
+                    <div class="booking-detail">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span><strong>${booking.currency === 'MVR' ? 'MVR' : '$'}${parseFloat(booking.total_amount || 0).toFixed(2)}</strong></span>
+                    </div>
+                    <div class="action-buttons">
+                        ${getActionButtons(booking)}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getActionButtons(booking) {
+            if (booking.booking_status === 'pending') {
+                return `
+                    <button class="btn-sm btn-confirm" onclick="confirmBooking(${booking.id})">Confirm</button>
+                    <button class="btn-sm btn-cancel" onclick="cancelBooking(${booking.id})">Cancel</button>
+                `;
+            } else if (booking.booking_status === 'confirmed') {
+                return `<button class="btn-sm btn-cancel" onclick="cancelBooking(${booking.id})">Cancel</button>`;
+            } else {
+                return `<button class="btn-sm btn-delete" onclick="deleteBooking(${booking.id})">Delete</button>`;
+            }
         }
         
         function formatDate(dateStr) {
@@ -257,14 +364,16 @@
         function filterBookings() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
             if (!searchTerm) {
-                displayBookings(allBookings);
+                displayBookingsDesktop(allBookings);
+                displayBookingsMobile(allBookings);
                 return;
             }
             const filtered = allBookings.filter(b => 
                 b.guest_name.toLowerCase().includes(searchTerm) || 
                 (b.guest_phone && b.guest_phone.includes(searchTerm))
             );
-            displayBookings(filtered);
+            displayBookingsDesktop(filtered);
+            displayBookingsMobile(filtered);
         }
         
         async function confirmBooking(id) {
