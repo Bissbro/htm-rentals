@@ -213,6 +213,7 @@
         let currentImageIndex = 0;
         let slideInterval = null;
         let currentMode = 'foreign';
+        let refreshInterval = null;
 
         function scrollToBookingCard() {
             const bookingCard = document.querySelector('.booking-card');
@@ -244,6 +245,15 @@
                     renderUnitDetails();
                     setTimeout(() => { generateCalendar(currentMonth, currentYear); }, 100);
                     setupGallery();
+                    
+                    // Start auto-refresh every 10 seconds
+                    if (refreshInterval) clearInterval(refreshInterval);
+                    refreshInterval = setInterval(async () => {
+                        if (unit && document.getElementById('calendar-grid')) {
+                            await fetchAvailability();
+                            generateCalendar(currentMonth, currentYear);
+                        }
+                    }, 10000);
                 } else {
                     document.getElementById('content').innerHTML = '<div class="card"><p>Unit not found. <a href="index.html">Go back</a></p></div>';
                 }
@@ -593,6 +603,7 @@
         }
 
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+        
         loadUnit();
     </script>
 </body>
