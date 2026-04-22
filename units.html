@@ -74,9 +74,9 @@
         .btn-danger { background: var(--danger); color: white; }
         .btn-sm { padding: 6px 12px; font-size: 12px; }
         
-        /* Table */
-        .units-table {
-            width: 100%;
+        /* Desktop Table View */
+        .desktop-table {
+            display: block;
             overflow-x: auto;
         }
         table {
@@ -98,6 +98,54 @@
         }
         td {
             font-size: 14px;
+        }
+        
+        /* Mobile Card View */
+        .mobile-cards {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .unit-card {
+            background: white;
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+        }
+        .unit-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .unit-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--navy);
+        }
+        .unit-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 14px;
+            color: var(--gray-text);
+            flex-wrap: wrap;
+        }
+        .unit-detail i {
+            width: 20px;
+            color: var(--turquoise);
+        }
+        .unit-detail strong {
+            color: var(--navy);
+            font-weight: 600;
+        }
+        .unit-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
         }
         
         /* Modal */
@@ -210,7 +258,14 @@
         @media (max-width: 768px) {
             body { padding: 12px; }
             .card { padding: 16px; }
+            .desktop-table { display: none; }
+            .mobile-cards { display: flex; }
             .form-row { grid-template-columns: 1fr; }
+        }
+        
+        @media (min-width: 769px) {
+            .desktop-table { display: block; }
+            .mobile-cards { display: none; }
         }
     </style>
 </head>
@@ -229,8 +284,14 @@
             
             <div id="message" class="message"></div>
             
-            <div class="units-table">
+            <!-- Desktop Table View -->
+            <div id="desktop-table" class="desktop-table">
                 <div id="units-container" class="loading">Loading units...</div>
+            </div>
+            
+            <!-- Mobile Card View -->
+            <div id="mobile-cards" class="mobile-cards">
+                <div class="loading">Loading units...</div>
             </div>
         </div>
     </div>
@@ -369,8 +430,10 @@
         let currentGalleryImages = [];
         
         async function loadUnits() {
-            const container = document.getElementById('units-container');
-            container.innerHTML = '<div class="loading">Loading units...</div>';
+            const desktopContainer = document.getElementById('units-container');
+            const mobileContainer = document.getElementById('mobile-cards');
+            desktopContainer.innerHTML = '<div class="loading">Loading units...</div>';
+            mobileContainer.innerHTML = '<div class="loading">Loading units...</div>';
             
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/units`, {
@@ -380,17 +443,20 @@
                 
                 if (data.success) {
                     allUnits = data.units;
-                    displayUnits();
+                    displayUnitsDesktop();
+                    displayUnitsMobile();
                 } else {
-                    container.innerHTML = '<div class="empty">Failed to load units</div>';
+                    desktopContainer.innerHTML = '<div class="empty">Failed to load units</div>';
+                    mobileContainer.innerHTML = '<div class="empty">Failed to load units</div>';
                 }
             } catch(e) {
                 console.error(e);
-                container.innerHTML = '<div class="empty">Error loading units</div>';
+                desktopContainer.innerHTML = '<div class="empty">Error loading units</div>';
+                mobileContainer.innerHTML = '<div class="empty">Error loading units</div>';
             }
         }
         
-        function displayUnits() {
+        function displayUnitsDesktop() {
             const container = document.getElementById('units-container');
             
             if (!allUnits || allUnits.length === 0) {
@@ -399,7 +465,7 @@
             }
             
             container.innerHTML = `
-                <table>
+                </table>
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -430,6 +496,40 @@
                     </tbody>
                 </table>
             `;
+        }
+        
+        function displayUnitsMobile() {
+            const container = document.getElementById('mobile-cards');
+            
+            if (!allUnits || allUnits.length === 0) {
+                container.innerHTML = '<div class="empty">No units found. Click "Add Unit" to create one.</div>';
+                return;
+            }
+            
+            container.innerHTML = allUnits.map(unit => `
+                <div class="unit-card">
+                    <div class="unit-card-header">
+                        <span class="unit-name">${escapeHtml(unit.unit_name)}</span>
+                        <span style="font-size: 12px; color: var(--gray-text);">ID: ${unit.id}</span>
+                    </div>
+                    <div class="unit-detail">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span><strong>$${unit.rate_usd || '—'}</strong> USD / <strong>MVR ${unit.rate_mvr || '—'}</strong> per night</span>
+                    </div>
+                    <div class="unit-detail">
+                        <i class="fas fa-user-friends"></i>
+                        <span><strong>${unit.max_guests}</strong> guests max</span>
+                        <span style="color: var(--gray-text);">(${unit.max_adults || unit.max_guests} adults / ${unit.max_children || 0} children)</span>
+                    </div>
+                    <div class="unit-detail">
+                        <i class="fas fa-bed"></i>
+                        <span><strong>${unit.bedrooms}</strong> bedrooms, <strong>${unit.beds || unit.bedrooms}</strong> beds, <strong>${unit.bathrooms || 1}</strong> bathrooms</span>
+                    </div>
+                    <div class="unit-actions">
+                        <button class="btn btn-sm" style="background:var(--turquoise); color:white;" onclick="editUnit(${unit.id})">Edit</button>
+                    </div>
+                </div>
+            `).join('');
         }
         
         function openUnitModal() {
