@@ -143,6 +143,7 @@
                 const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${unitId}`);
                 const data = await res.json();
                 if (data.success) {
+                    // Get booked dates from bookings
                     bookedDates = [];
                     if (data.bookings) {
                         data.bookings.forEach(booking => {
@@ -154,14 +155,17 @@
                         });
                     }
                     
-                    // FIX: Use blocked_date field from API
+                    // FIX: Extract only YYYY-MM-DD from blocked_date
                     blockedDates = [];
                     if (data.blocked_dates) {
-                        blockedDates = data.blocked_dates.map(b => b.blocked_date || b.date);
+                        blockedDates = data.blocked_dates.map(b => {
+                            const date = b.blocked_date || b.date;
+                            return date ? date.split('T')[0] : null;
+                        }).filter(d => d);
                     }
                     
                     renderCalendar();
-                    renderBlockedList();
+                    renderBlockedList(data.blocked_dates);
                 }
             } catch(e) {
                 console.error(e);
@@ -264,7 +268,8 @@
                 });
                 const result = await res.json();
                 if (result.success) {
-                    showMessage(`✓ Blocked ${blockStart} to ${blockEnd}`, 'success');
+                    const nights = Math.ceil((new Date(blockEnd) - new Date(blockStart)) / (1000 * 60 * 60 * 24)) + 1;
+                    showMessage(`✓ Blocked ${blockStart} to ${blockEnd} (${nights} nights)`, 'success');
                     selectedStartDate = null;
                     selectedEndDate = null;
                     await loadAvailability(selectedUnitId);
@@ -274,7 +279,7 @@
             } catch(e) { showMessage('Error: ' + e.message, 'error'); }
         }
         
-        async function unblockDate(dateStr, id) {
+        async function unblockDate(id, dateStr) {
             if (!confirm(`Unblock ${dateStr}?`)) return;
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, {
@@ -290,34 +295,53 @@
             } catch(e) { showMessage('Error', 'error'); }
         }
         
-        async function renderBlockedList() {
+        async function renderBlockedList(blockedDatesData) {
             const container = document.getElementById('blocked-list');
             if (!selectedUnitId) {
                 container.innerHTML = '<div class="loading">Select a unit to view blocked dates</div>';
                 return;
             }
             
-            try {
-                const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${selectedUnitId}`);
-                const data = await res.json();
-                if (data.success && data.blocked_dates && data.blocked_dates.length) {
-                    // FIX: Use blocked_date field
-                    const blockedEntries = data.blocked_dates.filter(b => b.blocked_date);
-                    if (blockedEntries.length === 0) {
-                        container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
+            if (!blockedDatesData || blockedDatesData.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
+                return;
+            }
+            
+            // Filter for current unit and format date nicely
+            const unitBlocked = blockedDatesData.filter(b => b.unit_id == selectedUnitId);
+            if (unitBlocked.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
+            } else {
+                // Group consecutive dates into ranges
+                const dates = unitBlocked.map(b => b.blocked_date.split('T')[0]).sort();
+                const ranges = [];
+                let start = dates[0];
+                let end = dates[0];
+                for (let i = 1; i < dates.length; i++) {
+                    const prev = new Date(dates[i-1]);
+                    const curr = new Date(dates[i]);
+                    const diffDays = (curr - prev) / (1000 * 60 * 60 * 24);
+                    if (diffDays === 1) {
+                        end = dates[i];
                     } else {
-                        container.innerHTML = blockedEntries.map(b => `
-                            <div class="blocked-item">
-                                <div><strong>${b.blocked_date}</strong> ${b.reason ? `<span style="font-size:12px; color:var(--gray-text);">(${escapeHtml(b.reason)})</span>` : ''}</div>
-                                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="unblockDate('${b.blocked_date}', ${b.id})">Unblock</button>
-                            </div>
-                        `).join('');
+                        ranges.push({ start, end });
+                        start = dates[i];
+                        end = dates[i];
                     }
-                } else {
-                    container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
                 }
-            } catch(e) {
-                container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">Failed to load blocked dates</p>';
+                ranges.push({ start, end });
+                
+                container.innerHTML = ranges.map(range => {
+                    const displayText = range.start === range.end ? range.start : `${range.start} to ${range.end}`;
+                    // Find the first id for this range (use the first date's id)
+                    const firstEntry = unitBlocked.find(b => b.blocked_date.split('T')[0] === range.start);
+                    return `
+                        <div class="blocked-item">
+                            <div><strong>${displayText}</strong></div>
+                            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="unblockDate(${firstEntry.id}, '${range.start}')">Unblock</button>
+                        </div>
+                    `;
+                }).join('');
             }
         }
         
