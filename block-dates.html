@@ -6,7 +6,7 @@
     <title>HTM Rentals | Block Dates</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,10 +23,10 @@
             --gray-light: #F8F9FA;
             --gray-border: #E5E5E5;
             --gray-text: #6C757D;
-            --danger: #dc3545;
-            --success: #28a745;
-            --radius: 12px;
-            --radius-sm: 8px;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
         }
         .container { max-width: 800px; margin: 0 auto; }
         
@@ -34,19 +34,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
+            padding: 16px 0;
+            margin-bottom: 16px;
             border-bottom: 1px solid var(--gray-border);
         }
-        .header h1 { font-size: 1.5rem; color: var(--navy); }
-        .back-link { color: var(--ocean); text-decoration: none; font-size: 1.2rem; }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); }
+        .back-link { color: var(--ocean); text-decoration: none; font-size: 1rem; }
         
         .card {
             background: white;
-            border-radius: var(--radius);
+            border-radius: var(--radius-lg);
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-sm);
         }
         
         .form-group { margin-bottom: 20px; }
@@ -57,31 +57,16 @@
             font-size: 14px;
             color: var(--navy);
         }
-        select, input {
+        select {
             width: 100%;
-            padding: 12px;
+            padding: 12px 16px;
             border: 1px solid var(--gray-border);
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-md);
             font-size: 14px;
             font-family: 'Inter', sans-serif;
+            background: white;
         }
         
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .btn-primary { background: var(--ocean); color: white; }
-        .btn-primary:hover { background: var(--navy); }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-sm { padding: 6px 12px; font-size: 12px; }
-        
-        /* Calendar */
         .calendar-header {
             display: flex;
             justify-content: space-between;
@@ -95,11 +80,14 @@
             height: 36px;
             border-radius: 50%;
             cursor: pointer;
+            transition: all 0.3s;
         }
+        .calendar-nav button:hover { background: var(--turquoise); color: white; }
+        
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
+            gap: 4px;
             text-align: center;
         }
         .calendar-weekday {
@@ -109,52 +97,74 @@
             color: var(--gray-text);
         }
         .calendar-day {
-            padding: 12px 5px;
+            padding: 10px 5px;
             border-radius: 30px;
             cursor: pointer;
             font-size: 14px;
             transition: all 0.2s;
-            background: white;
-            border: 1px solid var(--gray-border);
         }
-        .calendar-day.available:hover {
-            background: var(--turquoise);
-            color: white;
-            border-color: var(--turquoise);
-        }
-        .calendar-day.selected {
-            background: var(--ocean);
-            color: white;
-            border-color: var(--ocean);
-        }
-        .calendar-day.blocked {
+        .calendar-day.available:hover { background: var(--turquoise); color: white; }
+        .calendar-day.booked {
             background: var(--gray-light);
             color: var(--gray-text);
             text-decoration: line-through;
             cursor: not-allowed;
-            border-color: var(--gray-border);
+        }
+        .calendar-day.selected {
+            background: var(--ocean);
+            color: white;
         }
         .calendar-day.today {
             border: 2px solid var(--turquoise);
             font-weight: 600;
         }
-        .calendar-day.empty {
-            cursor: default;
-            background: transparent;
-            border: none;
+        .calendar-day.empty { cursor: default; background: transparent; }
+        
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--gray-border);
+            font-size: 12px;
+        }
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 6px;
         }
         
         .selected-preview {
             background: var(--gray-light);
             padding: 16px;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-md);
             margin: 20px 0;
             text-align: center;
         }
         
-        .blocked-list {
+        .action-buttons {
+            display: flex;
+            gap: 12px;
             margin-top: 20px;
         }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--turquoise); color: white; }
+        .btn-primary:hover { background: var(--ocean); }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        
+        .blocked-list { margin-top: 20px; }
         .blocked-item {
             display: flex;
             justify-content: space-between;
@@ -164,29 +174,15 @@
         }
         
         .message {
-            padding: 12px;
-            border-radius: var(--radius-sm);
+            padding: 14px;
+            border-radius: var(--radius-md);
             margin-bottom: 16px;
             display: none;
         }
-        .message.success {
-            background: #D4EDDA;
-            color: #155724;
-            display: block;
-        }
-        .message.error {
-            background: #F8D7DA;
-            color: #721C24;
-            display: block;
-        }
+        .message.success { background: #D4EDDA; color: #155724; display: block; }
+        .message.error { background: #F8D7DA; color: #721C24; display: block; }
         
         .loading { text-align: center; padding: 40px; color: var(--gray-text); }
-        
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
         
         @media (max-width: 600px) {
             body { padding: 12px; }
@@ -206,12 +202,12 @@
             <div class="form-group">
                 <label>Select Unit</label>
                 <select id="unit-select">
-                    <option value="">-- Loading units --</option>
+                    <option value="">-- Select Unit --</option>
                 </select>
             </div>
         </div>
         
-        <div id="calendar-container" class="card" style="display: none;">
+        <div id="calendar-card" class="card" style="display: none;">
             <div class="calendar-header">
                 <h3 id="calendar-month-year">January 2026</h3>
                 <div class="calendar-nav">
@@ -220,18 +216,23 @@
                 </div>
             </div>
             <div id="calendar-grid" class="calendar-grid"></div>
+            <div class="legend">
+                <div><span class="legend-color" style="background:white; border:2px solid var(--turquoise);"></span> Available</div>
+                <div><span class="legend-color" style="background:var(--gray-light);"></span> Booked/Blocked</div>
+                <div><span class="legend-color" style="background:var(--ocean);"></span> Selected</div>
+            </div>
             
             <div id="selected-preview" class="selected-preview" style="display: none;">
-                <strong>Selected to block:</strong> <span id="selected-dates-list"></span>
+                <strong>Selected to block:</strong> <span id="selected-dates-text"></span>
             </div>
             
             <div class="action-buttons">
-                <button id="block-btn" class="btn btn-primary" style="flex:1;">Block Selected Dates</button>
-                <button id="clear-btn" class="btn btn-danger" style="flex:1;">Clear Selection</button>
+                <button id="block-btn" class="btn btn-primary">Block Selected Dates</button>
+                <button id="clear-btn" class="btn btn-danger">Clear Selection</button>
             </div>
         </div>
         
-        <div id="blocked-section" class="card" style="display: none;">
+        <div id="blocked-card" class="card" style="display: none;">
             <h3>Currently Blocked Dates</h3>
             <div id="blocked-list" class="blocked-list">
                 <div class="loading">Select a unit to view blocked dates</div>
@@ -246,8 +247,11 @@
         
         let allUnits = [];
         let selectedUnitId = null;
-        let blockedDates = [];
+        let bookedDates = [];      // Dates from bookings
+        let blockedDates = [];     // Dates from unit_availability (is_available=0)
         let selectedDates = [];
+        let startDate = null;
+        let endDate = null;
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -269,22 +273,36 @@
             }
         }
         
-        async function loadBlockedDates(unitId) {
+        async function loadAvailability(unitId) {
             if (!unitId) return;
             try {
                 const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${unitId}`);
                 const data = await res.json();
                 if (data.success) {
-                    // Extract blocked dates from unit_availability
+                    // Get booked dates from bookings
+                    bookedDates = [];
+                    if (data.bookings) {
+                        data.bookings.forEach(booking => {
+                            const start = new Date(booking.check_in_date);
+                            const end = new Date(booking.check_out_date);
+                            for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+                                bookedDates.push(d.toISOString().split('T')[0]);
+                            }
+                        });
+                    }
+                    
+                    // Get blocked dates from unit_availability
                     blockedDates = [];
                     if (data.blocked_dates) {
                         blockedDates = data.blocked_dates.map(b => b.date || b.blocked_date);
                     }
+                    
                     renderCalendar();
                     renderBlockedList();
                 }
             } catch(e) {
-                showMessage('Failed to load blocked dates', 'error');
+                console.error(e);
+                showMessage('Failed to load availability', 'error');
             }
         }
         
@@ -302,20 +320,32 @@
             
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const isBooked = bookedDates.includes(dateStr);
                 const isBlocked = blockedDates.includes(dateStr);
+                const isUnavailable = isBooked || isBlocked;
                 const isToday = dateStr === todayStr;
-                const isSelected = selectedDates.includes(dateStr);
+                
+                let isSelected = false;
+                if (startDate && endDate) {
+                    if (dateStr === startDate || dateStr === endDate) {
+                        isSelected = true;
+                    } else if (dateStr > startDate && dateStr < endDate) {
+                        isSelected = true;
+                    }
+                } else if (startDate && dateStr === startDate) {
+                    isSelected = true;
+                }
                 
                 let classes = 'calendar-day';
-                if (isBlocked) {
-                    classes += ' blocked';
+                if (isUnavailable) {
+                    classes += ' booked';
                 } else {
                     classes += ' available';
                 }
                 if (isToday) classes += ' today';
                 if (isSelected) classes += ' selected';
                 
-                html += `<div class="${classes}" data-date="${dateStr}" onclick="toggleDate('${dateStr}')">${d}</div>`;
+                html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isUnavailable})">${d}</div>`;
             }
             
             document.getElementById('calendar-grid').innerHTML = html;
@@ -323,40 +353,48 @@
             updateSelectedPreview();
         }
         
-        function toggleDate(dateStr) {
-            const isBlocked = blockedDates.includes(dateStr);
-            if (isBlocked) {
-                showMessage('This date is already blocked', 'error');
+        function selectDate(dateStr, isUnavailable) {
+            if (isUnavailable) {
+                showMessage('This date is already booked or blocked', 'error');
                 return;
             }
             
-            const index = selectedDates.indexOf(dateStr);
-            if (index === -1) {
-                selectedDates.push(dateStr);
-            } else {
-                selectedDates.splice(index, 1);
+            if (!startDate || (startDate && endDate)) {
+                startDate = dateStr;
+                endDate = null;
+            } else if (startDate && !endDate) {
+                if (dateStr < startDate) {
+                    startDate = dateStr;
+                } else {
+                    endDate = dateStr;
+                }
             }
-            selectedDates.sort();
+            
             renderCalendar();
         }
         
         function updateSelectedPreview() {
             const preview = document.getElementById('selected-preview');
-            const listSpan = document.getElementById('selected-dates-list');
-            if (selectedDates.length === 0) {
+            const textSpan = document.getElementById('selected-dates-text');
+            
+            if (!startDate) {
                 preview.style.display = 'none';
-            } else {
+                return;
+            }
+            
+            if (startDate && !endDate) {
                 preview.style.display = 'block';
-                if (selectedDates.length === 1) {
-                    listSpan.textContent = selectedDates[0];
-                } else {
-                    listSpan.textContent = `${selectedDates[0]} to ${selectedDates[selectedDates.length-1]} (${selectedDates.length} days)`;
-                }
+                textSpan.textContent = startDate;
+            } else if (startDate && endDate) {
+                preview.style.display = 'block';
+                const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
+                textSpan.textContent = `${startDate} to ${endDate} (${nights} nights)`;
             }
         }
         
-        function clearSelected() {
-            selectedDates = [];
+        function clearSelection() {
+            startDate = null;
+            endDate = null;
             renderCalendar();
         }
         
@@ -365,41 +403,42 @@
                 showMessage('Please select a unit', 'error');
                 return;
             }
-            if (selectedDates.length === 0) {
+            if (!startDate) {
                 showMessage('Please select dates to block', 'error');
                 return;
             }
             
-            let successCount = 0;
-            for (const date of selectedDates) {
-                try {
-                    const res = await fetch(`${API_BASE_URL}/admin/block-dates`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Bearer admin-secret-token'
-                        },
-                        body: JSON.stringify({
-                            start_date: date,
-                            end_date: date,
-                            reason: 'Manually blocked',
-                            unit_id: selectedUnitId
-                        })
-                    });
-                    if (res.ok) successCount++;
-                } catch(e) { console.error(e); }
-            }
+            let blockStart = startDate;
+            let blockEnd = endDate ? endDate : startDate;
             
-            if (successCount > 0) {
-                showMessage(`Blocked ${successCount} date(s)`, 'success');
-                selectedDates = [];
-                await loadBlockedDates(selectedUnitId);
-            } else {
-                showMessage('Failed to block dates', 'error');
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/block-dates`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-secret-token'
+                    },
+                    body: JSON.stringify({
+                        start_date: blockStart,
+                        end_date: blockEnd,
+                        reason: 'Manually blocked',
+                        unit_id: selectedUnitId
+                    })
+                });
+                
+                if (res.ok) {
+                    showMessage(`Blocked ${blockStart} to ${blockEnd}`, 'success');
+                    clearSelection();
+                    await loadAvailability(selectedUnitId);
+                } else {
+                    showMessage('Failed to block dates', 'error');
+                }
+            } catch(e) {
+                showMessage('Error blocking dates', 'error');
             }
         }
         
-        async function unblockDate(id, dateStr) {
+        async function unblockDate(dateStr, id) {
             if (!confirm(`Unblock ${dateStr}?`)) return;
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, {
@@ -408,50 +447,43 @@
                 });
                 if (res.ok) {
                     showMessage(`Unblocked ${dateStr}`, 'success');
-                    await loadBlockedDates(selectedUnitId);
+                    await loadAvailability(selectedUnitId);
                 } else {
                     showMessage('Failed to unblock', 'error');
                 }
-            } catch(e) { showMessage('Error', 'error'); }
+            } catch(e) {
+                showMessage('Error', 'error');
+            }
         }
         
-        function renderBlockedList() {
+        async function renderBlockedList() {
             const container = document.getElementById('blocked-list');
-            if (!blockedDates.length) {
-                container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
+            if (!selectedUnitId) {
+                container.innerHTML = '<div class="loading">Select a unit to view blocked dates</div>';
                 return;
             }
             
-            container.innerHTML = blockedDates.map(date => `
-                <div class="blocked-item">
-                    <div><strong>${date}</strong></div>
-                    <button class="btn btn-danger btn-sm" onclick="unblockDateByDate('${date}')">Unblock</button>
-                </div>
-            `).join('');
-        }
-        
-        async function unblockDateByDate(dateStr) {
-            if (!confirm(`Unblock ${dateStr}?`)) return;
             try {
-                // Find the id from blocked dates
                 const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${selectedUnitId}`);
                 const data = await res.json();
-                if (data.success && data.blocked_dates) {
-                    const entry = data.blocked_dates.find(b => b.date === dateStr || b.blocked_date === dateStr);
-                    if (entry && entry.id) {
-                        const deleteRes = await fetch(`${API_BASE_URL}/admin/unblock-date/${entry.id}`, {
-                            method: 'DELETE',
-                            headers: { 'Authorization': 'Bearer admin-secret-token' }
-                        });
-                        if (deleteRes.ok) {
-                            showMessage(`Unblocked ${dateStr}`, 'success');
-                            await loadBlockedDates(selectedUnitId);
-                        } else {
-                            showMessage('Failed to unblock', 'error');
-                        }
+                if (data.success && data.blocked_dates && data.blocked_dates.length) {
+                    const blockedEntries = data.blocked_dates.filter(b => b.date);
+                    if (blockedEntries.length === 0) {
+                        container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
+                    } else {
+                        container.innerHTML = blockedEntries.map(b => `
+                            <div class="blocked-item">
+                                <div><strong>${b.date}</strong> ${b.reason ? `<span style="font-size:12px; color:var(--gray-text);">(${escapeHtml(b.reason)})</span>` : ''}</div>
+                                <button class="btn btn-danger btn-sm" onclick="unblockDate('${b.date}', ${b.id})">Unblock</button>
+                            </div>
+                        `).join('');
                     }
+                } else {
+                    container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
                 }
-            } catch(e) { showMessage('Error', 'error'); }
+            } catch(e) {
+                container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">Failed to load blocked dates</p>';
+            }
         }
         
         function showMessage(msg, type) {
@@ -469,16 +501,18 @@
             return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
         }
         
+        // Event Listeners
         document.getElementById('unit-select').addEventListener('change', async (e) => {
             selectedUnitId = e.target.value;
             if (selectedUnitId) {
-                document.getElementById('calendar-container').style.display = 'block';
-                document.getElementById('blocked-section').style.display = 'block';
-                selectedDates = [];
-                await loadBlockedDates(selectedUnitId);
+                document.getElementById('calendar-card').style.display = 'block';
+                document.getElementById('blocked-card').style.display = 'block';
+                startDate = null;
+                endDate = null;
+                await loadAvailability(selectedUnitId);
             } else {
-                document.getElementById('calendar-container').style.display = 'none';
-                document.getElementById('blocked-section').style.display = 'none';
+                document.getElementById('calendar-card').style.display = 'none';
+                document.getElementById('blocked-card').style.display = 'none';
             }
         });
         
@@ -495,7 +529,7 @@
         });
         
         document.getElementById('block-btn').addEventListener('click', blockSelected);
-        document.getElementById('clear-btn').addEventListener('click', clearSelected);
+        document.getElementById('clear-btn').addEventListener('click', clearSelection);
         
         loadUnits();
     </script>
