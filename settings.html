@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>HTM Rentals | Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8F9FA;
+            padding: 20px;
+        }
+        :root {
+            --navy: #0A2540;
+            --ocean: #006994;
+            --turquoise: #40B5AD;
+            --gray-light: #F8F9FA;
+            --gray-border: #E5E5E5;
+            --gray-text: #6C757D;
+            --success: #28a745;
+            --danger: #dc3545;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--gray-border);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); }
+        .back-link { color: var(--ocean); text-decoration: none; font-size: 1rem; }
+        
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray-border);
+        }
+        .card-header h2 {
+            font-size: 1.2rem;
+            color: var(--navy);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--navy);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-group textarea {
+            resize: vertical;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--turquoise); color: white; width: 100%; }
+        .btn-primary:hover { background: var(--ocean); }
+        
+        .message {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            display: none;
+        }
+        .message.success { background: #D4EDDA; color: #155724; display: block; }
+        .message.error { background: #F8D7DA; color: #721C24; display: block; }
+        
+        .loading { text-align: center; padding: 40px; color: var(--gray-text); }
+        
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid var(--gray-border);
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .card { padding: 16px; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Settings</h1>
+            <a href="admin.html" class="back-link">← Back to Admin</a>
+        </div>
+        
+        <div id="message" class="message"></div>
+        
+        <div id="settings-container" class="loading">Loading settings...</div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://api.htmrentals.com/api';
+        
+        let settings = {};
+        
+        async function loadSettings() {
+            const container = document.getElementById('settings-container');
+            container.innerHTML = '<div class="loading">Loading settings...</div>';
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/settings`);
+                const data = await res.json();
+                
+                if (data.success) {
+                    settings = data.settings;
+                    displaySettings();
+                } else {
+                    container.innerHTML = '<div class="card">Failed to load settings</div>';
+                }
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = '<div class="card">Error loading settings</div>';
+            }
+        }
+        
+        function displaySettings() {
+            const container = document.getElementById('settings-container');
+            
+            container.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <h2>General Settings</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Company Name</label>
+                        <input type="text" id="company_name" value="${escapeHtml(settings.company_name || 'HTM Rentals')}">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Number</label>
+                        <input type="text" id="whatsapp_number" value="${escapeHtml(settings.whatsapp_number || '+960 9373113')}">
+                        <small>Include country code</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email_address" value="${escapeHtml(settings.email_address || 'htmrentalss@gmail.com')}">
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="address" rows="2">${escapeHtml(settings.address || 'Malas Residence, Hulhumale\' Phase 2')}</textarea>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Booking Settings</h2>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Check-in Time</label>
+                            <input type="time" id="checkin_time" value="${settings.checkin_time || '14:00'}">
+                        </div>
+                        <div class="form-group">
+                            <label>Check-out Time</label>
+                            <input type="time" id="checkout_time" value="${settings.checkout_time || '12:00'}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>USD to MVR Exchange Rate</label>
+                        <input type="number" id="exchange_rate" step="0.01" value="${settings.exchange_rate || '15.42'}">
+                        <small>Used for currency conversion in admin panel</small>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Admin Settings</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Change Admin Password</label>
+                        <input type="password" id="admin_password" placeholder="Leave blank to keep current password">
+                        <small>Minimum 4 characters</small>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <button class="btn btn-primary" onclick="saveSettings()">Save All Settings</button>
+                </div>
+            `;
+        }
+        
+        async function saveSettings() {
+            const settingsData = {
+                company_name: document.getElementById('company_name').value,
+                whatsapp_number: document.getElementById('whatsapp_number').value,
+                email_address: document.getElementById('email_address').value,
+                address: document.getElementById('address').value,
+                checkin_time: document.getElementById('checkin_time').value,
+                checkout_time: document.getElementById('checkout_time').value,
+                exchange_rate: parseFloat(document.getElementById('exchange_rate').value) || 15.42,
+                admin_password: document.getElementById('admin_password').value
+            };
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/settings`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settingsData)
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showMessage('Settings saved successfully', 'success');
+                    document.getElementById('admin_password').value = '';
+                    // Update localStorage exchange rate
+                    localStorage.setItem('exchangeRate', settingsData.exchange_rate);
+                } else {
+                    showMessage(data.error || 'Failed to save settings', 'error');
+                }
+            } catch(e) {
+                showMessage('Error saving settings', 'error');
+            }
+        }
+        
+        function showMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.className = `message ${type}`;
+            setTimeout(() => {
+                el.style.display = 'none';
+                el.className = 'message';
+            }, 3000);
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+        }
+        
+        loadSettings();
+    </script>
+</body>
+</html>
