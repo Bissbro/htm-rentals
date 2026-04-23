@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>HTM Rentals | Experiences</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8F9FA;
+            padding: 20px;
+        }
+        :root {
+            --navy: #0A2540;
+            --ocean: #006994;
+            --turquoise: #40B5AD;
+            --gray-light: #F8F9FA;
+            --gray-border: #E5E5E5;
+            --gray-text: #6C757D;
+            --success: #28a745;
+            --danger: #dc3545;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--gray-border);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); }
+        .back-link { color: var(--ocean); text-decoration: none; font-size: 1rem; }
+        
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--turquoise); color: white; }
+        .btn-primary:hover { background: var(--ocean); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        
+        /* Grid for experiences */
+        .exp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .exp-card {
+            background: white;
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        .exp-card-images {
+            display: flex;
+            height: 120px;
+        }
+        .exp-card-images img {
+            width: 50%;
+            object-fit: cover;
+        }
+        .exp-card-content {
+            padding: 16px;
+        }
+        .exp-card-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+        .exp-card-description {
+            font-size: 13px;
+            color: var(--gray-text);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .exp-card-order {
+            font-size: 12px;
+            color: var(--gray-text);
+            margin-bottom: 12px;
+        }
+        .exp-card-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--navy);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+        .image-upload-area {
+            border: 2px dashed var(--gray-border);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--gray-light);
+        }
+        .image-preview {
+            margin-top: 10px;
+        }
+        .preview-img {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--gray-border);
+        }
+        
+        .message {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            display: none;
+        }
+        .message.success { background: #D4EDDA; color: #155724; display: block; }
+        .message.error { background: #F8D7DA; color: #721C24; display: block; }
+        
+        .loading { text-align: center; padding: 40px; color: var(--gray-text); }
+        .empty { text-align: center; padding: 40px; color: var(--gray-text); }
+        
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .card { padding: 16px; }
+            .exp-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Experiences</h1>
+            <a href="admin.html" class="back-link">← Back to Admin</a>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Experiences</h2>
+                <button class="btn btn-primary" onclick="openExperienceModal()">+ Add Experience</button>
+            </div>
+            
+            <div id="message" class="message"></div>
+            
+            <div id="exp-container" class="loading">Loading experiences...</div>
+        </div>
+    </div>
+    
+    <!-- Experience Modal -->
+    <div id="experience-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add Experience</h2>
+                <button onclick="closeExperienceModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="exp-id">
+                
+                <div class="form-group">
+                    <label>Title *</label>
+                    <input type="text" id="exp-title" placeholder="e.g., Dolphin Cruise">
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="exp-description" rows="3" placeholder="Describe the experience..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Image 1</label>
+                    <div class="image-upload-area" onclick="document.getElementById('exp-image1-input').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload</p>
+                        <input type="file" id="exp-image1-input" accept="image/*" style="display:none" onchange="uploadExpImage1(this)">
+                    </div>
+                    <div id="exp-image1-preview" class="image-preview"></div>
+                    <input type="hidden" id="exp-image1-url">
+                </div>
+                
+                <div class="form-group">
+                    <label>Image 2</label>
+                    <div class="image-upload-area" onclick="document.getElementById('exp-image2-input').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload</p>
+                        <input type="file" id="exp-image2-input" accept="image/*" style="display:none" onchange="uploadExpImage2(this)">
+                    </div>
+                    <div id="exp-image2-preview" class="image-preview"></div>
+                    <input type="hidden" id="exp-image2-url">
+                </div>
+                
+                <div class="form-group">
+                    <label>Sort Order</label>
+                    <input type="number" id="exp-order" value="0">
+                    <small>Lower numbers appear first</small>
+                </div>
+                
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button class="btn btn-primary" onclick="saveExperience()">Save</button>
+                    <button class="btn btn-danger" id="delete-exp-btn" style="display:none" onclick="deleteExperience()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://api.htmrentals.com/api';
+        
+        let allExperiences = [];
+        
+        async function loadExperiences() {
+            const container = document.getElementById('exp-container');
+            container.innerHTML = '<div class="loading">Loading experiences...</div>';
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/experiences`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    allExperiences = data.experiences;
+                    displayExperiences();
+                } else {
+                    container.innerHTML = '<div class="empty">Failed to load experiences</div>';
+                }
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = '<div class="empty">Error loading experiences</div>';
+            }
+        }
+        
+        function displayExperiences() {
+            const container = document.getElementById('exp-container');
+            
+            if (!allExperiences || allExperiences.length === 0) {
+                container.innerHTML = '<div class="empty">No experiences found. Click "Add Experience" to create one.</div>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="exp-grid">
+                    ${allExperiences.map(exp => `
+                        <div class="exp-card">
+                            <div class="exp-card-images">
+                                <img src="${exp.image1_url || 'https://via.placeholder.com/150x120?text=No+Image'}" onerror="this.src='https://via.placeholder.com/150x120?text=No+Image'">
+                                <img src="${exp.image2_url || 'https://via.placeholder.com/150x120?text=No+Image'}" onerror="this.src='https://via.placeholder.com/150x120?text=No+Image'">
+                            </div>
+                            <div class="exp-card-content">
+                                <div class="exp-card-title">${escapeHtml(exp.title)}</div>
+                                <div class="exp-card-description">${escapeHtml(exp.description || 'No description')}</div>
+                                <div class="exp-card-order">Order: ${exp.sort_order || 0}</div>
+                                <div class="exp-card-actions">
+                                    <button class="btn btn-sm" style="background:var(--turquoise); color:white;" onclick="editExperience(${exp.id})">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function openExperienceModal() {
+            document.getElementById('modal-title').textContent = 'Add Experience';
+            document.getElementById('exp-id').value = '';
+            document.getElementById('exp-title').value = '';
+            document.getElementById('exp-description').value = '';
+            document.getElementById('exp-order').value = '0';
+            document.getElementById('exp-image1-url').value = '';
+            document.getElementById('exp-image2-url').value = '';
+            document.getElementById('exp-image1-preview').innerHTML = '';
+            document.getElementById('exp-image2-preview').innerHTML = '';
+            document.getElementById('delete-exp-btn').style.display = 'none';
+            document.getElementById('experience-modal').style.display = 'flex';
+        }
+        
+        function editExperience(id) {
+            const exp = allExperiences.find(e => e.id === id);
+            if (!exp) return;
+            
+            document.getElementById('modal-title').textContent = 'Edit Experience';
+            document.getElementById('exp-id').value = exp.id;
+            document.getElementById('exp-title').value = exp.title || '';
+            document.getElementById('exp-description').value = exp.description || '';
+            document.getElementById('exp-order').value = exp.sort_order || 0;
+            
+            if (exp.image1_url) {
+                document.getElementById('exp-image1-url').value = exp.image1_url;
+                document.getElementById('exp-image1-preview').innerHTML = `<img src="${exp.image1_url}" class="preview-img">`;
+            }
+            if (exp.image2_url) {
+                document.getElementById('exp-image2-url').value = exp.image2_url;
+                document.getElementById('exp-image2-preview').innerHTML = `<img src="${exp.image2_url}" class="preview-img">`;
+            }
+            
+            document.getElementById('delete-exp-btn').style.display = 'inline-block';
+            document.getElementById('experience-modal').style.display = 'flex';
+        }
+        
+        function closeExperienceModal() {
+            document.getElementById('experience-modal').style.display = 'none';
+        }
+        
+        async function uploadExpImage1(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' },
+                    body: formData
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('exp-image1-url').value = data.url;
+                    document.getElementById('exp-image1-preview').innerHTML = `<img src="${data.url}" class="preview-img">`;
+                    showMessage('Image 1 uploaded', 'success');
+                } else {
+                    showMessage('Upload failed', 'error');
+                }
+            } catch(e) {
+                showMessage('Error uploading', 'error');
+            }
+            input.value = '';
+        }
+        
+        async function uploadExpImage2(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' },
+                    body: formData
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('exp-image2-url').value = data.url;
+                    document.getElementById('exp-image2-preview').innerHTML = `<img src="${data.url}" class="preview-img">`;
+                    showMessage('Image 2 uploaded', 'success');
+                } else {
+                    showMessage('Upload failed', 'error');
+                }
+            } catch(e) {
+                showMessage('Error uploading', 'error');
+            }
+            input.value = '';
+        }
+        
+        async function saveExperience() {
+            const id = document.getElementById('exp-id').value;
+            const title = document.getElementById('exp-title').value;
+            
+            if (!title) {
+                showMessage('Title is required', 'error');
+                return;
+            }
+            
+            const expData = {
+                title: title,
+                description: document.getElementById('exp-description').value,
+                image1_url: document.getElementById('exp-image1-url').value,
+                image2_url: document.getElementById('exp-image2-url').value,
+                sort_order: parseInt(document.getElementById('exp-order').value) || 0
+            };
+            
+            try {
+                let url, method;
+                if (id) {
+                    url = `${API_BASE_URL}/admin/experiences/${id}`;
+                    method = 'PUT';
+                } else {
+                    url = `${API_BASE_URL}/admin/experiences`;
+                    method = 'POST';
+                }
+                
+                const res = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-secret-token'
+                    },
+                    body: JSON.stringify(expData)
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showMessage(id ? 'Experience updated' : 'Experience added', 'success');
+                    closeExperienceModal();
+                    loadExperiences();
+                } else {
+                    showMessage(data.error || 'Failed to save', 'error');
+                }
+            } catch(e) {
+                showMessage('Error saving', 'error');
+            }
+        }
+        
+        async function deleteExperience() {
+            const id = document.getElementById('exp-id').value;
+            if (!id || !confirm('Delete this experience permanently?')) return;
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/experiences/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showMessage('Experience deleted', 'success');
+                    closeExperienceModal();
+                    loadExperiences();
+                } else {
+                    showMessage(data.error || 'Failed to delete', 'error');
+                }
+            } catch(e) {
+                showMessage('Error deleting', 'error');
+            }
+        }
+        
+        function showMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.className = `message ${type}`;
+            setTimeout(() => {
+                el.style.display = 'none';
+                el.className = 'message';
+            }, 3000);
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+        }
+        
+        loadExperiences();
+    </script>
+</body>
+</html>
