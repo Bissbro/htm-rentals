@@ -91,7 +91,6 @@
         .badge-overdue { background: #F8D7DA; color: #721C24; }
         .badge-cancelled { background: #F8D7DA; color: #721C24; }
         
-        /* Table */
         .invoices-table {
             width: 100%;
             overflow-x: auto;
@@ -117,7 +116,6 @@
             font-size: 14px;
         }
         
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -148,6 +146,13 @@
         }
         .modal-body {
             padding: 20px;
+        }
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--gray-border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
         }
         .form-group {
             margin-bottom: 16px;
@@ -216,6 +221,7 @@
             .card { padding: 16px; }
             .form-row { grid-template-columns: 1fr; }
             th, td { padding: 8px; }
+            .modal-footer { flex-direction: column; }
         }
     </style>
 </head>
@@ -224,7 +230,7 @@
         <div class="header">
             <h1>Invoices</h1>
             <div>
-                <button class="btn btn-primary btn-sm" onclick="openNewInvoiceModal()" style="margin-right: 8px;"><i class="fas fa-plus"></i> New Invoice</button>
+                <button class="btn btn-primary btn-sm" onclick="openStandaloneInvoiceModal()" style="margin-right: 8px;"><i class="fas fa-plus"></i> New Invoice</button>
                 <a href="admin.html" class="back-link">← Back</a>
             </div>
         </div>
@@ -251,26 +257,26 @@
         </div>
     </div>
     
-    <!-- New Invoice Modal -->
-    <div id="new-invoice-modal" class="modal">
+    <!-- Standalone Invoice Modal -->
+    <div id="standalone-invoice-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Create Invoice</h2>
-                <button onclick="closeNewInvoiceModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+                <button onclick="closeStandaloneInvoiceModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <label>Customer Name *</label>
-                    <input type="text" id="inv-customer-name" placeholder="Full name">
+                    <input type="text" id="invoice-customer-name">
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" id="inv-customer-email" placeholder="Email">
+                        <input type="email" id="invoice-customer-email">
                     </div>
                     <div class="form-group">
                         <label>Phone</label>
-                        <input type="tel" id="inv-customer-phone" placeholder="Phone">
+                        <input type="tel" id="invoice-customer-phone">
                     </div>
                 </div>
                 
@@ -278,26 +284,6 @@
                 
                 <h4>Add Items</h4>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Room Nights</label>
-                        <select id="room-select">
-                            <option value="">Select nights</option>
-                            <option value="1">1 night - $90</option>
-                            <option value="2">2 nights - $180</option>
-                            <option value="3">3 nights - $270</option>
-                        </select>
-                        <button class="btn btn-primary btn-sm" style="margin-top: 8px;" onclick="addRoomItem()">Add Room Charge</button>
-                    </div>
-                    <div class="form-group">
-                        <label>Minibar Item</label>
-                        <select id="minibar-select">
-                            <option value="">Select item</option>
-                        </select>
-                        <div style="display: flex; gap: 8px; margin-top: 8px;">
-                            <input type="number" id="minibar-qty" placeholder="Qty" value="1" style="width: 80px;">
-                            <button class="btn btn-primary btn-sm" onclick="addMinibarItem()">Add</button>
-                        </div>
-                    </div>
                     <div class="form-group">
                         <label>Custom Item</label>
                         <input type="text" id="custom-desc" placeholder="Description">
@@ -334,7 +320,7 @@
                 </div>
                 
                 <div style="display:flex; gap:12px; margin-top:20px;">
-                    <button class="btn btn-primary" style="flex:1;" onclick="createInvoice()">Create Invoice</button>
+                    <button class="btn btn-primary" style="flex:1;" onclick="createStandaloneInvoice()">Create Invoice</button>
                 </div>
             </div>
         </div>
@@ -348,7 +334,7 @@
                 <button onclick="closeViewInvoiceModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
             </div>
             <div class="modal-body" id="invoice-view-content"></div>
-            <div class="modal-footer" style="padding: 20px; border-top: 1px solid var(--gray-border); display: flex; gap: 12px; flex-wrap: wrap;">
+            <div class="modal-footer">
                 <button class="btn btn-sm btn-primary" onclick="printInvoice()">Print</button>
                 <button class="btn btn-sm btn-success" onclick="recordPayment()">Record Payment</button>
                 <button class="btn btn-sm btn-warning" onclick="updateInvoiceStatus()">Update Status</button>
@@ -360,10 +346,14 @@
     <script>
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         
+        // Authentication check
+        if (!sessionStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin.html';
+        }
+        
         let allInvoices = [];
         let currentInvoiceItems = [];
         let currentInvoiceData = null;
-        let minibarItems = [];
         
         async function loadInvoices() {
             const container = document.getElementById('invoices-container');
@@ -419,11 +409,11 @@
                             return `
                             <tr>
                                 <td><strong>${escapeHtml(inv.invoice_number)}</strong></td>
-                                <td>${escapeHtml(inv.guest_name)}</td>
+                                <td>${escapeHtml(inv.guest_name || '—')}</td>
                                 <td>${formatDate(inv.issue_date)}</td>
-                                <td>$${parseFloat(inv.total_amount).toFixed(2)}</td>
-                                <td>$${parseFloat(inv.amount_paid || 0).toFixed(2)}</td>
-                                <td>$${balance.toFixed(2)}</td>
+                                <td>${formatCurrency(inv.total_amount)}</td>
+                                <td>${formatCurrency(inv.amount_paid || 0)}</td>
+                                <td>${formatCurrency(balance)}</td>
                                 <td><span class="badge badge-${inv.status}">${inv.status}</span></td>
                                 <td><button class="btn btn-sm" style="background:var(--turquoise); color:white;" onclick="viewInvoice(${inv.id})">View</button></td>
                             </tr>
@@ -433,34 +423,23 @@
             `;
         }
         
-        async function loadMinibarItems() {
-            try {
-                const res = await fetch(`${API_BASE_URL}/admin/minibar`);
-                const data = await res.json();
-                if (data.success) {
-                    minibarItems = data.items;
-                    const select = document.getElementById('minibar-select');
-                    select.innerHTML = '<option value="">Select item</option>' + 
-                        minibarItems.map((item, idx) => `<option value="${idx}">${item.name} - $${item.price_usd}</option>`).join('');
-                }
-            } catch(e) {
-                console.error(e);
-            }
+        function formatCurrency(amount) {
+            return `$${parseFloat(amount || 0).toFixed(2)}`;
         }
         
-        function openNewInvoiceModal() {
+        function openStandaloneInvoiceModal() {
             currentInvoiceItems = [];
-            document.getElementById('inv-customer-name').value = '';
-            document.getElementById('inv-customer-email').value = '';
-            document.getElementById('inv-customer-phone').value = '';
+            document.getElementById('invoice-customer-name').value = '';
+            document.getElementById('invoice-customer-email').value = '';
+            document.getElementById('invoice-customer-phone').value = '';
             document.getElementById('inv-tax-rate').value = '0';
             renderInvoiceItems();
             updateInvoiceTotal();
-            document.getElementById('new-invoice-modal').style.display = 'flex';
+            document.getElementById('standalone-invoice-modal').style.display = 'flex';
         }
         
-        function closeNewInvoiceModal() {
-            document.getElementById('new-invoice-modal').style.display = 'none';
+        function closeStandaloneInvoiceModal() {
+            document.getElementById('standalone-invoice-modal').style.display = 'none';
         }
         
         function renderInvoiceItems() {
@@ -473,8 +452,8 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--gray-light); border-radius:var(--radius-sm); margin-bottom:8px;">
                     <div style="flex:2;"><strong>${escapeHtml(item.description)}</strong></div>
                     <div style="width:60px; text-align:center;">${item.quantity}</div>
-                    <div style="width:100px; text-align:right;">$${item.unit_price.toFixed(2)}</div>
-                    <div style="width:100px; text-align:right;">$${item.amount.toFixed(2)}</div>
+                    <div style="width:100px; text-align:right;">${formatCurrency(item.unit_price)}</div>
+                    <div style="width:100px; text-align:right;">${formatCurrency(item.amount)}</div>
                     <button class="btn btn-sm btn-danger" onclick="removeInvoiceItem(${idx})" style="padding:4px 8px;">✗</button>
                 </div>
             `).join('');
@@ -491,46 +470,9 @@
             const taxRate = parseFloat(document.getElementById('inv-tax-rate').value) || 0;
             const tax = subtotal * taxRate / 100;
             const total = subtotal + tax;
-            document.getElementById('inv-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-            document.getElementById('inv-tax').textContent = `$${tax.toFixed(2)}`;
-            document.getElementById('inv-total').textContent = `$${total.toFixed(2)}`;
-        }
-        
-        function addRoomItem() {
-            const nights = parseInt(document.getElementById('room-select').value);
-            if (!nights) {
-                showMessage('Select nights', 'error');
-                return;
-            }
-            currentInvoiceItems.push({
-                description: `Room Rent - ${nights} night(s)`,
-                quantity: nights,
-                unit_price: 90,
-                amount: nights * 90
-            });
-            renderInvoiceItems();
-            updateInvoiceTotal();
-            document.getElementById('room-select').value = '';
-        }
-        
-        function addMinibarItem() {
-            const idx = document.getElementById('minibar-select').value;
-            if (!idx) {
-                showMessage('Select item', 'error');
-                return;
-            }
-            const item = minibarItems[parseInt(idx)];
-            const qty = parseInt(document.getElementById('minibar-qty').value) || 1;
-            currentInvoiceItems.push({
-                description: item.name,
-                quantity: qty,
-                unit_price: parseFloat(item.price_usd),
-                amount: qty * parseFloat(item.price_usd)
-            });
-            renderInvoiceItems();
-            updateInvoiceTotal();
-            document.getElementById('minibar-select').value = '';
-            document.getElementById('minibar-qty').value = '1';
+            document.getElementById('inv-subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('inv-tax').textContent = formatCurrency(tax);
+            document.getElementById('inv-total').textContent = formatCurrency(total);
         }
         
         function addCustomItem() {
@@ -558,8 +500,8 @@
             document.getElementById('custom-qty').value = '1';
         }
         
-        async function createInvoice() {
-            const name = document.getElementById('inv-customer-name').value;
+        async function createStandaloneInvoice() {
+            const name = document.getElementById('invoice-customer-name').value;
             if (!name) {
                 showMessage('Customer name required', 'error');
                 return;
@@ -574,8 +516,8 @@
             
             const data = {
                 guest_name: name,
-                guest_email: document.getElementById('inv-customer-email').value,
-                guest_phone: document.getElementById('inv-customer-phone').value,
+                guest_email: document.getElementById('invoice-customer-email').value,
+                guest_phone: document.getElementById('invoice-customer-phone').value,
                 items: currentInvoiceItems.map(i => ({
                     description: i.description,
                     quantity: i.quantity,
@@ -596,7 +538,7 @@
                 const result = await res.json();
                 if (result.success) {
                     showMessage('Invoice created', 'success');
-                    closeNewInvoiceModal();
+                    closeStandaloneInvoiceModal();
                     loadInvoices();
                 } else {
                     showMessage(result.error || 'Failed to create invoice', 'error');
@@ -612,7 +554,7 @@
                 const data = await res.json();
                 if (data.success) {
                     currentInvoiceData = data;
-                    displayInvoiceDetails(data.invoice, data.items, data.payments);
+                    displayInvoiceDetails(data.invoice, data.items || [], data.payments || []);
                     document.getElementById('view-invoice-modal').style.display = 'flex';
                 } else {
                     showMessage('Failed to load invoice', 'error');
@@ -628,30 +570,32 @@
             container.innerHTML = `
                 <div class="invoice-view">
                     <div><strong>Invoice:</strong> ${invoice.invoice_number}</div>
-                    <div><strong>Customer:</strong> ${escapeHtml(invoice.guest_name)}</div>
+                    <div><strong>Customer:</strong> ${escapeHtml(invoice.guest_name || '—')}</div>
+                    <div><strong>Email:</strong> ${escapeHtml(invoice.guest_email || '—')}</div>
+                    <div><strong>Phone:</strong> ${escapeHtml(invoice.guest_phone || '—')}</div>
                     <div><strong>Status:</strong> <span class="badge badge-${invoice.status}">${invoice.status}</span></div>
-                    <div><strong>Date:</strong> ${formatDate(invoice.issue_date)}</div>
-                    ${invoice.due_date ? `<div><strong>Due Date:</strong> ${formatDate(invoice.due_date)}</div>` : ''}
+                    <div><strong>Issue Date:</strong> ${formatDate(invoice.issue_date)}</div>
+                    <div><strong>Due Date:</strong> ${formatDate(invoice.due_date)}</div>
                     
                     <h3>Items</h3>
                     ${items.map(item => `
                         <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-border);">
                             <span>${escapeHtml(item.description)}</span>
-                            <span>${item.quantity} × $${parseFloat(item.unit_price).toFixed(2)} = $${parseFloat(item.amount).toFixed(2)}</span>
+                            <span>${item.quantity} × ${formatCurrency(item.unit_price)} = ${formatCurrency(item.amount)}</span>
                         </div>
                     `).join('')}
                     
                     <div class="invoice-summary">
-                        <div class="summary-row"><span>Subtotal</span><span>$${parseFloat(invoice.subtotal).toFixed(2)}</span></div>
-                        <div class="summary-row"><span>Tax (${invoice.tax_rate}%)</span><span>$${parseFloat(invoice.tax_amount).toFixed(2)}</span></div>
-                        <div class="summary-row total"><span>Total</span><span>$${parseFloat(invoice.total_amount).toFixed(2)}</span></div>
-                        <div class="summary-row"><span>Paid</span><span>$${parseFloat(invoice.amount_paid || 0).toFixed(2)}</span></div>
-                        <div class="summary-row"><span>Balance Due</span><span>$${balance.toFixed(2)}</span></div>
+                        <div class="summary-row"><span>Subtotal</span><span>${formatCurrency(invoice.subtotal)}</span></div>
+                        <div class="summary-row"><span>Tax (${invoice.tax_rate}%)</span><span>${formatCurrency(invoice.tax_amount)}</span></div>
+                        <div class="summary-row total"><span>Total</span><span>${formatCurrency(invoice.total_amount)}</span></div>
+                        <div class="summary-row"><span>Paid</span><span>${formatCurrency(invoice.amount_paid || 0)}</span></div>
+                        <div class="summary-row"><span>Balance Due</span><span>${formatCurrency(balance)}</span></div>
                     </div>
                     
                     ${payments.length ? `<h3>Payments</h3>` + payments.map(p => `
-                        <div style="display:flex; justify-content:space-between; padding:4px 0;">
-                            <span>$${parseFloat(p.amount).toFixed(2)}</span>
+                        <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--gray-border);">
+                            <span>${formatCurrency(p.amount)}</span>
                             <span>${p.payment_method}</span>
                             <span>${formatDate(p.payment_date)}</span>
                         </div>
@@ -773,7 +717,6 @@
         }
         
         loadInvoices();
-        loadMinibarItems();
     </script>
 </body>
 </html>
