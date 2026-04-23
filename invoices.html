@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>HTM Rentals | Invoices</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8F9FA;
+            padding: 20px;
+        }
+        :root {
+            --navy: #0A2540;
+            --ocean: #006994;
+            --turquoise: #40B5AD;
+            --gray-light: #F8F9FA;
+            --gray-border: #E5E5E5;
+            --gray-text: #6C757D;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--gray-border);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); }
+        .back-link { color: var(--ocean); text-decoration: none; font-size: 1rem; }
+        
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--turquoise); color: white; }
+        .btn-primary:hover { background: var(--ocean); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--warning); color: #333; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-draft { background: var(--gray-light); color: var(--gray-text); }
+        .badge-sent { background: #E3F2FD; color: #1565C0; }
+        .badge-paid { background: #D4EDDA; color: #155724; }
+        .badge-partially_paid { background: #FFF3CD; color: #856404; }
+        .badge-overdue { background: #F8D7DA; color: #721C24; }
+        .badge-cancelled { background: #F8D7DA; color: #721C24; }
+        
+        /* Table */
+        .invoices-table {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-border);
+        }
+        th {
+            font-weight: 600;
+            color: var(--gray-text);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td {
+            font-size: 14px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--navy);
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .invoice-summary {
+            background: var(--gray-light);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            margin-top: 16px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .summary-row.total {
+            font-weight: 700;
+            border-top: 2px solid var(--gray-border);
+            margin-top: 8px;
+            padding-top: 12px;
+        }
+        
+        .invoice-view {
+            font-size: 14px;
+        }
+        .invoice-view h3 {
+            margin: 15px 0 10px;
+            color: var(--navy);
+        }
+        
+        .message {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            display: none;
+        }
+        .message.success { background: #D4EDDA; color: #155724; display: block; }
+        .message.error { background: #F8D7DA; color: #721C24; display: block; }
+        
+        .loading { text-align: center; padding: 40px; color: var(--gray-text); }
+        .empty { text-align: center; padding: 40px; color: var(--gray-text); }
+        
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .card { padding: 16px; }
+            .form-row { grid-template-columns: 1fr; }
+            th, td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Invoices</h1>
+            <div>
+                <button class="btn btn-primary btn-sm" onclick="openNewInvoiceModal()" style="margin-right: 8px;"><i class="fas fa-plus"></i> New Invoice</button>
+                <a href="admin.html" class="back-link">← Back</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>All Invoices</h2>
+                <select id="status-filter" onchange="loadInvoices()" style="padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--gray-border);">
+                    <option value="">All Status</option>
+                    <option value="draft">Draft</option>
+                    <option value="sent">Sent</option>
+                    <option value="paid">Paid</option>
+                    <option value="partially_paid">Partially Paid</option>
+                    <option value="overdue">Overdue</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+            
+            <div id="message" class="message"></div>
+            
+            <div class="invoices-table">
+                <div id="invoices-container" class="loading">Loading invoices...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Invoice Modal -->
+    <div id="new-invoice-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Invoice</h2>
+                <button onclick="closeNewInvoiceModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Customer Name *</label>
+                    <input type="text" id="inv-customer-name" placeholder="Full name">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="inv-customer-email" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="inv-customer-phone" placeholder="Phone">
+                    </div>
+                </div>
+                
+                <hr style="margin: 16px 0;">
+                
+                <h4>Add Items</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Room Nights</label>
+                        <select id="room-select">
+                            <option value="">Select nights</option>
+                            <option value="1">1 night - $90</option>
+                            <option value="2">2 nights - $180</option>
+                            <option value="3">3 nights - $270</option>
+                        </select>
+                        <button class="btn btn-primary btn-sm" style="margin-top: 8px;" onclick="addRoomItem()">Add Room Charge</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Minibar Item</label>
+                        <select id="minibar-select">
+                            <option value="">Select item</option>
+                        </select>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <input type="number" id="minibar-qty" placeholder="Qty" value="1" style="width: 80px;">
+                            <button class="btn btn-primary btn-sm" onclick="addMinibarItem()">Add</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Custom Item</label>
+                        <input type="text" id="custom-desc" placeholder="Description">
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <input type="number" id="custom-price" placeholder="Price" step="0.01" style="flex:1;">
+                            <input type="number" id="custom-qty" placeholder="Qty" value="1" style="width: 80px;">
+                            <button class="btn btn-primary btn-sm" onclick="addCustomItem()">Add</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr style="margin: 16px 0;">
+                
+                <h4>Invoice Items</h4>
+                <div id="invoice-items-list"></div>
+                
+                <div class="invoice-summary">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="inv-subtotal">$0.00</span>
+                    </div>
+                    <div class="form-group" style="margin: 12px 0;">
+                        <label>Tax Rate (%)</label>
+                        <input type="number" id="inv-tax-rate" value="0" step="0.1" style="width: 100px;" oninput="updateInvoiceTotal()">
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax</span>
+                        <span id="inv-tax">$0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span id="inv-total">$0.00</span>
+                    </div>
+                </div>
+                
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button class="btn btn-primary" style="flex:1;" onclick="createInvoice()">Create Invoice</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- View Invoice Modal -->
+    <div id="view-invoice-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Invoice Details</h2>
+                <button onclick="closeViewInvoiceModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body" id="invoice-view-content"></div>
+            <div class="modal-footer" style="padding: 20px; border-top: 1px solid var(--gray-border); display: flex; gap: 12px; flex-wrap: wrap;">
+                <button class="btn btn-sm btn-primary" onclick="printInvoice()">Print</button>
+                <button class="btn btn-sm btn-success" onclick="recordPayment()">Record Payment</button>
+                <button class="btn btn-sm btn-warning" onclick="updateInvoiceStatus()">Update Status</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteInvoice()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://api.htmrentals.com/api';
+        
+        let allInvoices = [];
+        let currentInvoiceItems = [];
+        let currentInvoiceData = null;
+        let minibarItems = [];
+        
+        async function loadInvoices() {
+            const container = document.getElementById('invoices-container');
+            container.innerHTML = '<div class="loading">Loading invoices...</div>';
+            
+            const statusFilter = document.getElementById('status-filter').value;
+            let url = `${API_BASE_URL}/admin/invoices`;
+            if (statusFilter) {
+                url += `?status=${statusFilter}`;
+            }
+            
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                
+                if (data.success) {
+                    allInvoices = data.invoices;
+                    displayInvoices();
+                } else {
+                    container.innerHTML = '<div class="empty">Failed to load invoices</div>';
+                }
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = '<div class="empty">Error loading invoices</div>';
+            }
+        }
+        
+        function displayInvoices() {
+            const container = document.getElementById('invoices-container');
+            
+            if (!allInvoices || allInvoices.length === 0) {
+                container.innerHTML = '<div class="empty">No invoices found</div>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${allInvoices.map(inv => {
+                            const balance = inv.total_amount - (inv.amount_paid || 0);
+                            return `
+                            <tr>
+                                <td><strong>${escapeHtml(inv.invoice_number)}</strong></td>
+                                <td>${escapeHtml(inv.guest_name)}</td>
+                                <td>${formatDate(inv.issue_date)}</td>
+                                <td>$${parseFloat(inv.total_amount).toFixed(2)}</td>
+                                <td>$${parseFloat(inv.amount_paid || 0).toFixed(2)}</td>
+                                <td>$${balance.toFixed(2)}</td>
+                                <td><span class="badge badge-${inv.status}">${inv.status}</span></td>
+                                <td><button class="btn btn-sm" style="background:var(--turquoise); color:white;" onclick="viewInvoice(${inv.id})">View</button></td>
+                            </tr>
+                        `}).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+        
+        async function loadMinibarItems() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/minibar`);
+                const data = await res.json();
+                if (data.success) {
+                    minibarItems = data.items;
+                    const select = document.getElementById('minibar-select');
+                    select.innerHTML = '<option value="">Select item</option>' + 
+                        minibarItems.map((item, idx) => `<option value="${idx}">${item.name} - $${item.price_usd}</option>`).join('');
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+        
+        function openNewInvoiceModal() {
+            currentInvoiceItems = [];
+            document.getElementById('inv-customer-name').value = '';
+            document.getElementById('inv-customer-email').value = '';
+            document.getElementById('inv-customer-phone').value = '';
+            document.getElementById('inv-tax-rate').value = '0';
+            renderInvoiceItems();
+            updateInvoiceTotal();
+            document.getElementById('new-invoice-modal').style.display = 'flex';
+        }
+        
+        function closeNewInvoiceModal() {
+            document.getElementById('new-invoice-modal').style.display = 'none';
+        }
+        
+        function renderInvoiceItems() {
+            const container = document.getElementById('invoice-items-list');
+            if (!currentInvoiceItems.length) {
+                container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--gray-text);">No items added</p>';
+                return;
+            }
+            container.innerHTML = currentInvoiceItems.map((item, idx) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--gray-light); border-radius:var(--radius-sm); margin-bottom:8px;">
+                    <div style="flex:2;"><strong>${escapeHtml(item.description)}</strong></div>
+                    <div style="width:60px; text-align:center;">${item.quantity}</div>
+                    <div style="width:100px; text-align:right;">$${item.unit_price.toFixed(2)}</div>
+                    <div style="width:100px; text-align:right;">$${item.amount.toFixed(2)}</div>
+                    <button class="btn btn-sm btn-danger" onclick="removeInvoiceItem(${idx})" style="padding:4px 8px;">✗</button>
+                </div>
+            `).join('');
+        }
+        
+        function removeInvoiceItem(idx) {
+            currentInvoiceItems.splice(idx, 1);
+            renderInvoiceItems();
+            updateInvoiceTotal();
+        }
+        
+        function updateInvoiceTotal() {
+            const subtotal = currentInvoiceItems.reduce((sum, item) => sum + item.amount, 0);
+            const taxRate = parseFloat(document.getElementById('inv-tax-rate').value) || 0;
+            const tax = subtotal * taxRate / 100;
+            const total = subtotal + tax;
+            document.getElementById('inv-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('inv-tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('inv-total').textContent = `$${total.toFixed(2)}`;
+        }
+        
+        function addRoomItem() {
+            const nights = parseInt(document.getElementById('room-select').value);
+            if (!nights) {
+                showMessage('Select nights', 'error');
+                return;
+            }
+            currentInvoiceItems.push({
+                description: `Room Rent - ${nights} night(s)`,
+                quantity: nights,
+                unit_price: 90,
+                amount: nights * 90
+            });
+            renderInvoiceItems();
+            updateInvoiceTotal();
+            document.getElementById('room-select').value = '';
+        }
+        
+        function addMinibarItem() {
+            const idx = document.getElementById('minibar-select').value;
+            if (!idx) {
+                showMessage('Select item', 'error');
+                return;
+            }
+            const item = minibarItems[parseInt(idx)];
+            const qty = parseInt(document.getElementById('minibar-qty').value) || 1;
+            currentInvoiceItems.push({
+                description: item.name,
+                quantity: qty,
+                unit_price: parseFloat(item.price_usd),
+                amount: qty * parseFloat(item.price_usd)
+            });
+            renderInvoiceItems();
+            updateInvoiceTotal();
+            document.getElementById('minibar-select').value = '';
+            document.getElementById('minibar-qty').value = '1';
+        }
+        
+        function addCustomItem() {
+            const desc = document.getElementById('custom-desc').value;
+            if (!desc) {
+                showMessage('Enter description', 'error');
+                return;
+            }
+            const price = parseFloat(document.getElementById('custom-price').value);
+            if (isNaN(price) || price <= 0) {
+                showMessage('Valid price required', 'error');
+                return;
+            }
+            const qty = parseInt(document.getElementById('custom-qty').value) || 1;
+            currentInvoiceItems.push({
+                description: desc,
+                quantity: qty,
+                unit_price: price,
+                amount: qty * price
+            });
+            renderInvoiceItems();
+            updateInvoiceTotal();
+            document.getElementById('custom-desc').value = '';
+            document.getElementById('custom-price').value = '';
+            document.getElementById('custom-qty').value = '1';
+        }
+        
+        async function createInvoice() {
+            const name = document.getElementById('inv-customer-name').value;
+            if (!name) {
+                showMessage('Customer name required', 'error');
+                return;
+            }
+            if (currentInvoiceItems.length === 0) {
+                showMessage('Add at least one item', 'error');
+                return;
+            }
+            
+            const subtotal = currentInvoiceItems.reduce((sum, item) => sum + item.amount, 0);
+            const taxRate = parseFloat(document.getElementById('inv-tax-rate').value) || 0;
+            
+            const data = {
+                guest_name: name,
+                guest_email: document.getElementById('inv-customer-email').value,
+                guest_phone: document.getElementById('inv-customer-phone').value,
+                items: currentInvoiceItems.map(i => ({
+                    description: i.description,
+                    quantity: i.quantity,
+                    unit_price: i.unit_price
+                })),
+                tax_rate: taxRate,
+                subtotal: subtotal,
+                tax_amount: subtotal * taxRate / 100,
+                total_amount: subtotal + (subtotal * taxRate / 100)
+            };
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/standalone`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showMessage('Invoice created', 'success');
+                    closeNewInvoiceModal();
+                    loadInvoices();
+                } else {
+                    showMessage(result.error || 'Failed to create invoice', 'error');
+                }
+            } catch(e) {
+                showMessage('Error creating invoice', 'error');
+            }
+        }
+        
+        async function viewInvoice(invoiceId) {
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`);
+                const data = await res.json();
+                if (data.success) {
+                    currentInvoiceData = data;
+                    displayInvoiceDetails(data.invoice, data.items, data.payments);
+                    document.getElementById('view-invoice-modal').style.display = 'flex';
+                } else {
+                    showMessage('Failed to load invoice', 'error');
+                }
+            } catch(e) {
+                showMessage('Error loading invoice', 'error');
+            }
+        }
+        
+        function displayInvoiceDetails(invoice, items, payments) {
+            const balance = invoice.total_amount - (invoice.amount_paid || 0);
+            const container = document.getElementById('invoice-view-content');
+            container.innerHTML = `
+                <div class="invoice-view">
+                    <div><strong>Invoice:</strong> ${invoice.invoice_number}</div>
+                    <div><strong>Customer:</strong> ${escapeHtml(invoice.guest_name)}</div>
+                    <div><strong>Status:</strong> <span class="badge badge-${invoice.status}">${invoice.status}</span></div>
+                    <div><strong>Date:</strong> ${formatDate(invoice.issue_date)}</div>
+                    ${invoice.due_date ? `<div><strong>Due Date:</strong> ${formatDate(invoice.due_date)}</div>` : ''}
+                    
+                    <h3>Items</h3>
+                    ${items.map(item => `
+                        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-border);">
+                            <span>${escapeHtml(item.description)}</span>
+                            <span>${item.quantity} × $${parseFloat(item.unit_price).toFixed(2)} = $${parseFloat(item.amount).toFixed(2)}</span>
+                        </div>
+                    `).join('')}
+                    
+                    <div class="invoice-summary">
+                        <div class="summary-row"><span>Subtotal</span><span>$${parseFloat(invoice.subtotal).toFixed(2)}</span></div>
+                        <div class="summary-row"><span>Tax (${invoice.tax_rate}%)</span><span>$${parseFloat(invoice.tax_amount).toFixed(2)}</span></div>
+                        <div class="summary-row total"><span>Total</span><span>$${parseFloat(invoice.total_amount).toFixed(2)}</span></div>
+                        <div class="summary-row"><span>Paid</span><span>$${parseFloat(invoice.amount_paid || 0).toFixed(2)}</span></div>
+                        <div class="summary-row"><span>Balance Due</span><span>$${balance.toFixed(2)}</span></div>
+                    </div>
+                    
+                    ${payments.length ? `<h3>Payments</h3>` + payments.map(p => `
+                        <div style="display:flex; justify-content:space-between; padding:4px 0;">
+                            <span>$${parseFloat(p.amount).toFixed(2)}</span>
+                            <span>${p.payment_method}</span>
+                            <span>${formatDate(p.payment_date)}</span>
+                        </div>
+                    `).join('') : ''}
+                    
+                    <input type="hidden" id="current-invoice-id" value="${invoice.id}">
+                </div>
+            `;
+        }
+        
+        function closeViewInvoiceModal() {
+            document.getElementById('view-invoice-modal').style.display = 'none';
+            currentInvoiceData = null;
+        }
+        
+        async function recordPayment() {
+            const invoiceId = document.getElementById('current-invoice-id')?.value;
+            if (!invoiceId) return;
+            
+            const amount = prompt('Enter payment amount:');
+            if (!amount) return;
+            
+            const method = prompt('Payment method (cash/bank_transfer/card/crypto):');
+            if (!method) return;
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}/payments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: parseFloat(amount),
+                        payment_method: method,
+                        payment_date: new Date().toISOString().split('T')[0]
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showMessage('Payment recorded', 'success');
+                    closeViewInvoiceModal();
+                    loadInvoices();
+                } else {
+                    showMessage(data.error || 'Failed', 'error');
+                }
+            } catch(e) {
+                showMessage('Error', 'error');
+            }
+        }
+        
+        async function updateInvoiceStatus() {
+            const invoiceId = document.getElementById('current-invoice-id')?.value;
+            if (!invoiceId) return;
+            
+            const status = prompt('Enter status (draft/sent/paid/partially_paid/overdue/cancelled):');
+            if (!status) return;
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showMessage('Status updated', 'success');
+                    closeViewInvoiceModal();
+                    loadInvoices();
+                } else {
+                    showMessage(data.error || 'Failed', 'error');
+                }
+            } catch(e) {
+                showMessage('Error', 'error');
+            }
+        }
+        
+        async function deleteInvoice() {
+            const invoiceId = document.getElementById('current-invoice-id')?.value;
+            if (!invoiceId || !confirm('Delete this invoice permanently?')) return;
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`, {
+                    method: 'DELETE'
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showMessage('Invoice deleted', 'success');
+                    closeViewInvoiceModal();
+                    loadInvoices();
+                } else {
+                    showMessage(data.error || 'Failed', 'error');
+                }
+            } catch(e) {
+                showMessage('Error', 'error');
+            }
+        }
+        
+        function printInvoice() {
+            window.print();
+        }
+        
+        function formatDate(dateStr) {
+            if (!dateStr) return '—';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+        
+        function showMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.className = `message ${type}`;
+            setTimeout(() => {
+                el.style.display = 'none';
+                el.className = 'message';
+            }, 3000);
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+        }
+        
+        loadInvoices();
+        loadMinibarItems();
+    </script>
+</body>
+</html>
