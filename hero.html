@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>HTM Rentals | Hero Images</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8F9FA;
+            padding: 20px;
+        }
+        :root {
+            --navy: #0A2540;
+            --ocean: #006994;
+            --turquoise: #40B5AD;
+            --gray-light: #F8F9FA;
+            --gray-border: #E5E5E5;
+            --gray-text: #6C757D;
+            --success: #28a745;
+            --danger: #dc3545;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--gray-border);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); }
+        .back-link { color: var(--ocean); text-decoration: none; font-size: 1rem; }
+        
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--turquoise); color: white; }
+        .btn-primary:hover { background: var(--ocean); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        
+        /* Grid for hero images */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .hero-card {
+            background: white;
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        .hero-card-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        .hero-card-content {
+            padding: 16px;
+        }
+        .hero-card-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+        .hero-card-subtitle {
+            font-size: 12px;
+            color: var(--gray-text);
+            margin-bottom: 8px;
+        }
+        .hero-card-order {
+            font-size: 12px;
+            color: var(--gray-text);
+            margin-bottom: 12px;
+        }
+        .hero-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--navy);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+        .image-upload-area {
+            border: 2px dashed var(--gray-border);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--gray-light);
+        }
+        .image-preview {
+            margin-top: 10px;
+        }
+        .preview-img {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--gray-border);
+        }
+        
+        .message {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            display: none;
+        }
+        .message.success { background: #D4EDDA; color: #155724; display: block; }
+        .message.error { background: #F8D7DA; color: #721C24; display: block; }
+        
+        .loading { text-align: center; padding: 40px; color: var(--gray-text); }
+        .empty { text-align: center; padding: 40px; color: var(--gray-text); }
+        
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .card { padding: 16px; }
+            .hero-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hero Images</h1>
+            <a href="admin.html" class="back-link">← Back to Admin</a>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Slideshow Images</h2>
+                <button class="btn btn-primary" onclick="openHeroModal()">+ Add Image</button>
+            </div>
+            
+            <div id="message" class="message"></div>
+            
+            <div id="hero-container" class="loading">Loading hero images...</div>
+        </div>
+    </div>
+    
+    <!-- Hero Modal -->
+    <div id="hero-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add Hero Image</h2>
+                <button onclick="closeHeroModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hero-id">
+                
+                <div class="form-group">
+                    <label>Image *</label>
+                    <div class="image-upload-area" onclick="document.getElementById('hero-image-input').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload</p>
+                        <input type="file" id="hero-image-input" accept="image/*" style="display:none" onchange="uploadHeroImage(this)">
+                    </div>
+                    <div id="hero-image-preview" class="image-preview"></div>
+                    <input type="hidden" id="hero-image-url">
+                </div>
+                
+                <div class="form-group">
+                    <label>Title (optional)</label>
+                    <input type="text" id="hero-title" placeholder="Your Safe Space">
+                </div>
+                
+                <div class="form-group">
+                    <label>Subtitle (optional)</label>
+                    <input type="text" id="hero-subtitle" placeholder="Welcome to HTM Rentals">
+                </div>
+                
+                <div class="form-group">
+                    <label>Button Text (optional)</label>
+                    <input type="text" id="hero-btn-text" placeholder="Explore">
+                </div>
+                
+                <div class="form-group">
+                    <label>Button Link (optional)</label>
+                    <input type="text" id="hero-btn-link" placeholder="#units">
+                </div>
+                
+                <div class="form-group">
+                    <label>Sort Order</label>
+                    <input type="number" id="hero-order" value="0" placeholder="0, 1, 2...">
+                    <small>Lower numbers appear first</small>
+                </div>
+                
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button class="btn btn-primary" onclick="saveHeroImage()">Save</button>
+                    <button class="btn btn-danger" id="delete-hero-btn" style="display:none" onclick="deleteHeroImage()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://api.htmrentals.com/api';
+        
+        let allHeroImages = [];
+        
+        async function loadHeroImages() {
+            const container = document.getElementById('hero-container');
+            container.innerHTML = '<div class="loading">Loading hero images...</div>';
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/hero-images`, {
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    allHeroImages = data.images;
+                    displayHeroImages();
+                } else {
+                    container.innerHTML = '<div class="empty">Failed to load hero images</div>';
+                }
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = '<div class="empty">Error loading hero images</div>';
+            }
+        }
+        
+        function displayHeroImages() {
+            const container = document.getElementById('hero-container');
+            
+            if (!allHeroImages || allHeroImages.length === 0) {
+                container.innerHTML = '<div class="empty">No hero images found. Click "Add Image" to create one.</div>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="hero-grid">
+                    ${allHeroImages.map(img => `
+                        <div class="hero-card">
+                            <img src="${img.image_url}" class="hero-card-image" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'">
+                            <div class="hero-card-content">
+                                <div class="hero-card-title">${escapeHtml(img.title || 'Untitled')}</div>
+                                <div class="hero-card-subtitle">${escapeHtml(img.subtitle || 'No subtitle')}</div>
+                                <div class="hero-card-order">Order: ${img.sort_order || 0}</div>
+                                <div class="hero-card-actions">
+                                    <button class="btn btn-sm" style="background:var(--turquoise); color:white;" onclick="editHeroImage(${img.id})">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function openHeroModal() {
+            document.getElementById('modal-title').textContent = 'Add Hero Image';
+            document.getElementById('hero-id').value = '';
+            document.getElementById('hero-title').value = '';
+            document.getElementById('hero-subtitle').value = '';
+            document.getElementById('hero-btn-text').value = '';
+            document.getElementById('hero-btn-link').value = '';
+            document.getElementById('hero-order').value = '0';
+            document.getElementById('hero-image-url').value = '';
+            document.getElementById('hero-image-preview').innerHTML = '';
+            document.getElementById('delete-hero-btn').style.display = 'none';
+            document.getElementById('hero-modal').style.display = 'flex';
+        }
+        
+        function editHeroImage(id) {
+            const img = allHeroImages.find(i => i.id === id);
+            if (!img) return;
+            
+            document.getElementById('modal-title').textContent = 'Edit Hero Image';
+            document.getElementById('hero-id').value = img.id;
+            document.getElementById('hero-title').value = img.title || '';
+            document.getElementById('hero-subtitle').value = img.subtitle || '';
+            document.getElementById('hero-btn-text').value = img.button_text || '';
+            document.getElementById('hero-btn-link').value = img.button_link || '';
+            document.getElementById('hero-order').value = img.sort_order || 0;
+            document.getElementById('hero-image-url').value = img.image_url;
+            
+            if (img.image_url) {
+                document.getElementById('hero-image-preview').innerHTML = `<img src="${img.image_url}" class="preview-img">`;
+            }
+            
+            document.getElementById('delete-hero-btn').style.display = 'inline-block';
+            document.getElementById('hero-modal').style.display = 'flex';
+        }
+        
+        function closeHeroModal() {
+            document.getElementById('hero-modal').style.display = 'none';
+        }
+        
+        async function uploadHeroImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/upload`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' },
+                    body: formData
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('hero-image-url').value = data.url;
+                    document.getElementById('hero-image-preview').innerHTML = `<img src="${data.url}" class="preview-img">`;
+                    showMessage('Image uploaded', 'success');
+                } else {
+                    showMessage('Upload failed', 'error');
+                }
+            } catch(e) {
+                showMessage('Error uploading', 'error');
+            }
+            input.value = '';
+        }
+        
+        async function saveHeroImage() {
+            const id = document.getElementById('hero-id').value;
+            const imageUrl = document.getElementById('hero-image-url').value;
+            
+            if (!imageUrl) {
+                showMessage('Image is required', 'error');
+                return;
+            }
+            
+            const heroData = {
+                image_url: imageUrl,
+                title: document.getElementById('hero-title').value,
+                subtitle: document.getElementById('hero-subtitle').value,
+                button_text: document.getElementById('hero-btn-text').value,
+                button_link: document.getElementById('hero-btn-link').value,
+                sort_order: parseInt(document.getElementById('hero-order').value) || 0
+            };
+            
+            try {
+                let url, method;
+                if (id) {
+                    url = `${API_BASE_URL}/admin/hero-images/${id}`;
+                    method = 'PUT';
+                } else {
+                    url = `${API_BASE_URL}/admin/hero-images`;
+                    method = 'POST';
+                }
+                
+                const res = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer admin-secret-token'
+                    },
+                    body: JSON.stringify(heroData)
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showMessage(id ? 'Hero image updated' : 'Hero image added', 'success');
+                    closeHeroModal();
+                    loadHeroImages();
+                } else {
+                    showMessage(data.error || 'Failed to save', 'error');
+                }
+            } catch(e) {
+                showMessage('Error saving', 'error');
+            }
+        }
+        
+        async function deleteHeroImage() {
+            const id = document.getElementById('hero-id').value;
+            if (!id || !confirm('Delete this hero image permanently?')) return;
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/hero-images/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showMessage('Hero image deleted', 'success');
+                    closeHeroModal();
+                    loadHeroImages();
+                } else {
+                    showMessage(data.error || 'Failed to delete', 'error');
+                }
+            } catch(e) {
+                showMessage('Error deleting', 'error');
+            }
+        }
+        
+        function showMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.className = `message ${type}`;
+            setTimeout(() => {
+                el.style.display = 'none';
+                el.className = 'message';
+            }, 3000);
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+        }
+        
+        loadHeroImages();
+    </script>
+</body>
+</html>
