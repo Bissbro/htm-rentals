@@ -81,7 +81,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 400px;
+            min-width: 500px;
         }
         th, td {
             padding: 12px;
@@ -226,6 +226,12 @@
     </div>
 
     <script>
+        // ==================== AUTHENTICATION CHECK ====================
+        if (!sessionStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin.html';
+        }
+        // ============================================================
+        
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         
         let minibarItems = [];
@@ -235,9 +241,7 @@
             container.innerHTML = '<div class="loading">Loading minibar items...</div>';
             
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/minibar`, {
-                    headers: { 'Authorization': 'Bearer admin-secret-token' }
-                });
+                const res = await fetch(`${API_BASE_URL}/admin/minibar`);
                 const data = await res.json();
                 
                 if (data.success) {
@@ -261,7 +265,7 @@
             }
             
             container.innerHTML = `
-                <table>
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th>Item Name</th>
@@ -353,10 +357,7 @@
                 
                 const res = await fetch(url, {
                     method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer admin-secret-token'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(itemData)
                 });
                 const data = await res.json();
@@ -381,8 +382,7 @@
             
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/minibar/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                    method: 'DELETE'
                 });
                 const data = await res.json();
                 
