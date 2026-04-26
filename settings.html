@@ -23,7 +23,6 @@
             --gray-border: #E5E5E5;
             --gray-text: #6C757D;
             --success: #28a745;
-            --danger: #dc3545;
             --radius-lg: 20px;
             --radius-md: 12px;
             --radius-sm: 8px;
@@ -137,6 +136,12 @@
     </div>
 
     <script>
+        // ==================== AUTHENTICATION CHECK ====================
+        if (!sessionStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin.html';
+        }
+        // ============================================================
+        
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         
         let settings = {};
