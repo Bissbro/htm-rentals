@@ -10,54 +10,187 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #F8F9FA; padding: 20px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8F9FA;
+            padding: 20px;
+        }
         :root {
-            --navy: #0A2540; --ocean: #006994; --turquoise: #40B5AD;
-            --gray-light: #F8F9FA; --gray-border: #E5E5E5; --gray-text: #6C757D;
-            --radius-lg: 20px; --radius-md: 12px;
+            --navy: #0A2540;
+            --ocean: #006994;
+            --turquoise: #40B5AD;
+            --gray-light: #F8F9FA;
+            --gray-border: #E5E5E5;
+            --gray-text: #6C757D;
+            --danger: #dc3545;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
         }
         .container { max-width: 800px; margin: 0 auto; }
+        
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 16px 0;
-            margin-bottom: 16px;
+            margin-bottom: 24px;
             border-bottom: 1px solid var(--gray-border);
+            flex-wrap: wrap;
+            gap: 16px;
         }
         .header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); }
         .back-link { color: var(--ocean); text-decoration: none; font-size: 1rem; }
-        .card { background: white; border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: var(--navy); }
-        select { width: 100%; padding: 12px 16px; border: 1px solid var(--gray-border); border-radius: var(--radius-md); font-size: 14px; font-family: 'Inter', sans-serif; background: white; }
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .calendar-nav button { background: var(--gray-light); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 16px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--navy);
+        }
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .calendar-nav button {
+            background: var(--gray-light);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
         .calendar-nav button:hover { background: var(--turquoise); color: white; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-        .calendar-weekday { font-weight: 600; padding: 10px 0; font-size: 12px; color: var(--gray-text); }
-        .calendar-day { padding: 10px 5px; border-radius: 30px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+        }
+        .calendar-weekday {
+            font-weight: 600;
+            padding: 10px 0;
+            font-size: 12px;
+            color: var(--gray-text);
+        }
+        .calendar-day {
+            padding: 10px 5px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
         .calendar-day.available:hover { background: var(--turquoise); color: white; }
-        .calendar-day.booked { background: var(--gray-light); color: var(--gray-text); text-decoration: line-through; cursor: not-allowed; }
-        .calendar-day.selected { background: var(--ocean); color: white; }
-        .calendar-day.today { border: 2px solid var(--turquoise); font-weight: 600; }
+        .calendar-day.booked {
+            background: var(--gray-light);
+            color: var(--gray-text);
+            text-decoration: line-through;
+            cursor: not-allowed;
+        }
+        .calendar-day.selected {
+            background: var(--ocean);
+            color: white;
+        }
+        .calendar-day.today {
+            border: 2px solid var(--turquoise);
+            font-weight: 600;
+        }
         .calendar-day.empty { cursor: default; background: transparent; }
-        .legend { display: flex; gap: 20px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-border); font-size: 12px; }
-        .legend-color { width: 14px; height: 14px; border-radius: 4px; display: inline-block; margin-right: 6px; }
-        .selected-preview { background: var(--gray-light); padding: 16px; border-radius: var(--radius-md); margin: 20px 0; text-align: center; }
-        .action-buttons { display: flex; gap: 12px; margin-top: 20px; }
-        .btn { padding: 12px 24px; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s; flex: 1; }
+        
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--gray-border);
+            font-size: 12px;
+        }
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        
+        .selected-preview {
+            background: var(--gray-light);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            flex: 1;
+        }
         .btn-primary { background: var(--turquoise); color: white; }
         .btn-primary:hover { background: var(--ocean); }
         .btn-danger { background: #dc3545; color: white; }
         .btn-danger:hover { background: #c82333; }
+        
         .blocked-list { margin-top: 20px; }
-        .blocked-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--gray-border); }
-        .message { padding: 14px; border-radius: var(--radius-md); margin-bottom: 16px; display: none; }
+        .blocked-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid var(--gray-border);
+        }
+        
+        .message {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            display: none;
+        }
         .message.success { background: #D4EDDA; color: #155724; display: block; }
         .message.error { background: #F8D7DA; color: #721C24; display: block; }
+        
         .loading { text-align: center; padding: 40px; color: var(--gray-text); }
-        @media (max-width: 600px) { body { padding: 12px; } .card { padding: 16px; } .calendar-day { padding: 8px 3px; font-size: 12px; } }
+        .empty { text-align: center; padding: 40px; color: var(--gray-text); }
+        
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .card { padding: 16px; }
+            .calendar-day { padding: 8px 3px; font-size: 12px; }
+        }
     </style>
 </head>
 <body>
@@ -108,6 +241,12 @@
     </div>
 
     <script>
+        // ==================== AUTHENTICATION CHECK ====================
+        if (!sessionStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin.html';
+        }
+        // ============================================================
+        
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         
         let allUnits = [];
@@ -131,9 +270,7 @@
         
         async function loadUnits() {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/units`, {
-                    headers: { 'Authorization': 'Bearer admin-secret-token' }
-                });
+                const res = await fetch(`${API_BASE_URL}/admin/units`);
                 const data = await res.json();
                 if (data.success) {
                     allUnits = data.units;
@@ -270,7 +407,7 @@
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/block-dates`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer admin-secret-token' },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ start_date: blockStart, end_date: blockEnd, reason: 'Manually blocked', unit_id: selectedUnitId })
                 });
                 const result = await res.json();
@@ -289,7 +426,6 @@
         async function unblockRange(startDate, endDate, firstEntryId) {
             if (!confirm(`Unblock ${formatDateShort(startDate)} to ${formatDateShort(endDate)}?`)) return;
             
-            // Get all blocked dates for this unit to find all IDs in the range
             try {
                 const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${selectedUnitId}`);
                 const data = await res.json();
@@ -312,8 +448,7 @@
                     let deletedCount = 0;
                     for (const id of idsToDelete) {
                         const deleteRes = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, {
-                            method: 'DELETE',
-                            headers: { 'Authorization': 'Bearer admin-secret-token' }
+                            method: 'DELETE'
                         });
                         if (deleteRes.ok) deletedCount++;
                     }
@@ -342,17 +477,14 @@
                 return;
             }
             
-            // Filter for current unit
             const unitBlocked = blockedDatesData.filter(b => b.unit_id == selectedUnitId);
             if (unitBlocked.length === 0) {
                 container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
                 return;
             }
             
-            // Get all dates and sort
             const dates = unitBlocked.map(b => (b.blocked_date || b.date).split('T')[0]).sort();
             
-            // Group consecutive dates into ranges
             const ranges = [];
             let rangeStart = dates[0];
             let rangeEnd = dates[0];
@@ -371,14 +503,11 @@
             }
             ranges.push({ start: rangeStart, end: rangeEnd });
             
-            // Find the first entry's id for each range (used for unblock)
             container.innerHTML = ranges.map(range => {
                 const displayStart = formatDateShort(range.start);
                 const displayEnd = formatDateShort(range.end);
                 const isSingle = range.start === range.end;
                 const displayText = isSingle ? displayStart : `${displayStart} to ${displayEnd}`;
-                
-                // Find the first blocked entry in this range to get an id
                 const firstEntry = unitBlocked.find(b => (b.blocked_date || b.date).split('T')[0] === range.start);
                 
                 return `
