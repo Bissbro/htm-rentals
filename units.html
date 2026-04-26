@@ -254,6 +254,7 @@
         .message.error { background: #F8D7DA; color: #721C24; display: block; }
         
         .loading { text-align: center; padding: 40px; color: var(--gray-text); }
+        .empty { text-align: center; padding: 40px; color: var(--gray-text); }
         
         @media (max-width: 768px) {
             body { padding: 12px; }
@@ -424,6 +425,12 @@
     </div>
 
     <script>
+        // ==================== AUTHENTICATION CHECK ====================
+        if (!sessionStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin.html';
+        }
+        // ============================================================
+        
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         
         let allUnits = [];
@@ -465,7 +472,7 @@
             }
             
             container.innerHTML = `
-                </table>
+                <table>
                     <thead>
                         <tr>
                             <th>ID</th>
