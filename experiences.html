@@ -22,7 +22,6 @@
             --gray-light: #F8F9FA;
             --gray-border: #E5E5E5;
             --gray-text: #6C757D;
-            --success: #28a745;
             --danger: #dc3545;
             --radius-lg: 20px;
             --radius-md: 12px;
@@ -282,6 +281,12 @@
     </div>
 
     <script>
+        // ==================== AUTHENTICATION CHECK ====================
+        if (!sessionStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin.html';
+        }
+        // ============================================================
+        
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         
         let allExperiences = [];
@@ -291,9 +296,7 @@
             container.innerHTML = '<div class="loading">Loading experiences...</div>';
             
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/experiences`, {
-                    headers: { 'Authorization': 'Bearer admin-secret-token' }
-                });
+                const res = await fetch(`${API_BASE_URL}/admin/experiences`);
                 const data = await res.json();
                 
                 if (data.success) {
@@ -389,7 +392,6 @@
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/upload`, {
                     method: 'POST',
-                    headers: { 'Authorization': 'Bearer admin-secret-token' },
                     body: formData
                 });
                 const data = await res.json();
@@ -417,7 +419,6 @@
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/upload`, {
                     method: 'POST',
-                    headers: { 'Authorization': 'Bearer admin-secret-token' },
                     body: formData
                 });
                 const data = await res.json();
@@ -464,10 +465,7 @@
                 
                 const res = await fetch(url, {
                     method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer admin-secret-token'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(expData)
                 });
                 const data = await res.json();
@@ -490,8 +488,7 @@
             
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/experiences/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': 'Bearer admin-secret-token' }
+                    method: 'DELETE'
                 });
                 const data = await res.json();
                 
