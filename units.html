@@ -588,7 +588,7 @@
             document.getElementById('unit-bed-types').value = unit.bed_types || '';
             document.getElementById('unit-description').value = unit.description || '';
             document.getElementById('unit-featured-image').value = unit.featured_image || '';
-            document.getElementById('unit-amenities').value = (unit.amenities || []).join(', ');
+            const amenitiesArr = typeof unit.amenities === 'string' ? JSON.parse(unit.amenities || '[]') : (unit.amenities || []); document.getElementById('unit-amenities').value = amenitiesArr.join(', ');
             document.getElementById('unit-airbnb').value = unit.airbnb_url || '';
             document.getElementById('unit-agoda').value = unit.agoda_url || '';
             document.getElementById('unit-trip').value = unit.trip_url || '';
