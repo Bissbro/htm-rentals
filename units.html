@@ -571,7 +571,7 @@
         }
         
         function editUnit(id) {
-            const unit = allUnits.find(u => u.id === id);
+            const unit = allUnits.find(u => u.id == id);
             if (!unit) return;
             
             document.getElementById('modal-title').textContent = 'Edit Unit';
