@@ -570,7 +570,7 @@
             document.getElementById('unit-modal').style.display = 'flex';
         }
         
-        function editUnit(id) {
+        function editUnit(id) { console.log("editUnit called", id, allUnits.length);
             const unit = allUnits.find(u => u.id == id);
             if (!unit) return;
             
