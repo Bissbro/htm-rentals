@@ -342,13 +342,22 @@
 
     <script>
         const API_BASE_URL = 'https://api.htmrentals.com/api';
-        const ADMIN_USERNAME = 'bissbro';
-        const ADMIN_PASSWORD = 'admin123';
+
+        function getToken() { return sessionStorage.getItem('adminToken'); }
+        function authHeaders() { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }; }
+
+        function handleAuthError() {
+            sessionStorage.removeItem('adminToken');
+            sessionStorage.removeItem('adminUser');
+            document.getElementById('login-wrapper').style.display = 'flex';
+            document.getElementById('admin-container').style.display = 'none';
+        }
 
         async function loadDashboard() {
             try {
                 // Load bookings for stats
-                const res = await fetch(`${API_BASE_URL}/admin/bookings`);
+                const res = await fetch(`${API_BASE_URL}/admin/bookings`, { headers: authHeaders() });
+                if (res.status === 401) { handleAuthError(); return; }
                 const data = await res.json();
                 if (data.success) {
                     const bookings = data.bookings;
@@ -376,7 +385,7 @@
                 }
 
                 // Load invoices
-                const invRes = await fetch(`${API_BASE_URL}/admin/invoices`);
+                const invRes = await fetch(`${API_BASE_URL}/admin/invoices`, { headers: authHeaders() });
                 const invData = await invRes.json();
                 if (invData.success && invData.invoices) {
                     const recentInvoices = invData.invoices.slice(0,5);
@@ -404,24 +413,43 @@
             return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
         }
 
-        function handleLogin() {
-            const u = document.getElementById('login-username').value;
-            const p = document.getElementById('login-password').value;
-            if (u === ADMIN_USERNAME && p === ADMIN_PASSWORD) {
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                document.getElementById('login-wrapper').style.display = 'none';
-                document.getElementById('admin-container').style.display = 'block';
-                loadDashboard();
-            } else {
-                const err = document.getElementById('login-error');
-                err.textContent = 'Invalid credentials';
+        async function handleLogin() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const err = document.getElementById('login-error');
+            if (!username || !password) {
+                err.textContent = 'Please enter username and password';
+                err.style.display = 'block';
+                return;
+            }
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    sessionStorage.setItem('adminToken', data.token);
+                    sessionStorage.setItem('adminUser', data.username);
+                    document.getElementById('login-wrapper').style.display = 'none';
+                    document.getElementById('admin-container').style.display = 'block';
+                    loadDashboard();
+                } else {
+                    err.textContent = data.error || 'Invalid credentials';
+                    err.style.display = 'block';
+                    setTimeout(() => err.style.display = 'none', 3000);
+                }
+            } catch (e) {
+                err.textContent = 'Connection error. Please try again.';
                 err.style.display = 'block';
                 setTimeout(() => err.style.display = 'none', 3000);
             }
         }
 
         function handleLogout() {
-            sessionStorage.removeItem('adminLoggedIn');
+            sessionStorage.removeItem('adminToken');
+            sessionStorage.removeItem('adminUser');
             document.getElementById('login-wrapper').style.display = 'flex';
             document.getElementById('admin-container').style.display = 'none';
             document.getElementById('login-username').value = '';
@@ -429,7 +457,7 @@
         }
 
         // Check if already logged in
-        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+        if (getToken()) {
             document.getElementById('login-wrapper').style.display = 'none';
             document.getElementById('admin-container').style.display = 'block';
             loadDashboard();

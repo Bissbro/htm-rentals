@@ -270,12 +270,15 @@
 
     <script>
         // ==================== AUTHENTICATION CHECK ====================
-        if (!sessionStorage.getItem('adminLoggedIn')) {
+        if (!sessionStorage.getItem('adminToken')) {
             window.location.href = 'admin.html';
         }
         // ============================================================
-        
+
         const API_BASE_URL = 'https://api.htmrentals.com/api';
+        function getToken() { return sessionStorage.getItem('adminToken'); }
+        function authHeaders(extra) { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json', ...extra }; }
+        function handleAuthError(res) { if (res && res.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = 'admin.html'; return true; } return false; }
         
         let allPromoImages = [];
         
@@ -284,7 +287,8 @@
             container.innerHTML = '<div class="loading">Loading promotion images...</div>';
             
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/promotion-gallery`);
+                const res = await fetch(`${API_BASE_URL}/admin/promotion-gallery`, { headers: authHeaders() });
+                if (handleAuthError(res)) return;
                 const data = await res.json();
                 
                 if (data.success) {
@@ -371,6 +375,7 @@
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/upload`, {
                     method: 'POST',
+                    headers: { 'Authorization': `Bearer ${getToken()}` },
                     body: formData
                 });
                 const data = await res.json();
@@ -416,7 +421,7 @@
                 
                 const res = await fetch(url, {
                     method,
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify(promoData)
                 });
                 const data = await res.json();
@@ -439,7 +444,8 @@
             
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/promotion-gallery/${id}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: authHeaders()
                 });
                 const data = await res.json();
                 

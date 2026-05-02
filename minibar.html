@@ -227,12 +227,15 @@
 
     <script>
         // ==================== AUTHENTICATION CHECK ====================
-        if (!sessionStorage.getItem('adminLoggedIn')) {
+        if (!sessionStorage.getItem('adminToken')) {
             window.location.href = 'admin.html';
         }
         // ============================================================
-        
+
         const API_BASE_URL = 'https://api.htmrentals.com/api';
+        function getToken() { return sessionStorage.getItem('adminToken'); }
+        function authHeaders(extra) { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json', ...extra }; }
+        function handleAuthError(res) { if (res && res.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = 'admin.html'; return true; } return false; }
         
         let minibarItems = [];
         
@@ -241,7 +244,8 @@
             container.innerHTML = '<div class="loading">Loading minibar items...</div>';
             
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/minibar`);
+                const res = await fetch(`${API_BASE_URL}/admin/minibar`, { headers: authHeaders() });
+                if (handleAuthError(res)) return;
                 const data = await res.json();
                 
                 if (data.success) {
@@ -357,7 +361,7 @@
                 
                 const res = await fetch(url, {
                     method,
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify(itemData)
                 });
                 const data = await res.json();
@@ -382,7 +386,8 @@
             
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/minibar/${id}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: authHeaders()
                 });
                 const data = await res.json();
                 

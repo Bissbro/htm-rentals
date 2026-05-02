@@ -137,12 +137,15 @@
 
     <script>
         // ==================== AUTHENTICATION CHECK ====================
-        if (!sessionStorage.getItem('adminLoggedIn')) {
+        if (!sessionStorage.getItem('adminToken')) {
             window.location.href = 'admin.html';
         }
         // ============================================================
-        
+
         const API_BASE_URL = 'https://api.htmrentals.com/api';
+        function getToken() { return sessionStorage.getItem('adminToken'); }
+        function authHeaders(extra) { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json', ...extra }; }
+        function handleAuthError(res) { if (res && res.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = 'admin.html'; return true; } return false; }
         
         let settings = {};
         
@@ -151,7 +154,8 @@
             container.innerHTML = '<div class="loading">Loading settings...</div>';
             
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/settings`);
+                const res = await fetch(`${API_BASE_URL}/admin/settings`, { headers: authHeaders() });
+                if (handleAuthError(res)) return;
                 const data = await res.json();
                 
                 if (data.success) {
@@ -246,7 +250,7 @@
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/settings`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify(settingsData)
                 });
                 const data = await res.json();

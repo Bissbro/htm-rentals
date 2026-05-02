@@ -311,12 +311,15 @@
 
     <script>
         // ==================== AUTHENTICATION CHECK ====================
-        if (!sessionStorage.getItem('adminLoggedIn')) {
+        if (!sessionStorage.getItem('adminToken')) {
             window.location.href = 'admin.html';
         }
         // ============================================================
-        
+
         const API_BASE_URL = 'https://api.htmrentals.com/api';
+        function getToken() { return sessionStorage.getItem('adminToken'); }
+        function authHeaders(extra) { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json', ...extra }; }
+        function handleAuthError(res) { if (res && res.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = 'admin.html'; return true; } return false; }
         
         let allBookings = [];
         let allUnits = [];
@@ -328,7 +331,8 @@
             mobileContainer.innerHTML = '<div class="loading">Loading bookings...</div>';
             
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/bookings`);
+                const res = await fetch(`${API_BASE_URL}/admin/bookings`, { headers: authHeaders() });
+                if (handleAuthError(res)) return;
                 const data = await res.json();
                 
                 if (data.success) {
@@ -348,7 +352,7 @@
         
         async function loadUnits() {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/units`);
+                const res = await fetch(`${API_BASE_URL}/admin/units`, { headers: authHeaders() });
                 const data = await res.json();
                 if (data.success) {
                     allUnits = data.units;
@@ -521,7 +525,7 @@
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`, {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({ status: 'confirmed' })
                 });
                 if (res.ok) {
@@ -540,7 +544,7 @@
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings/${id}/status`, {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({ status: 'cancelled' })
                 });
                 if (res.ok) {
@@ -558,7 +562,8 @@
             if (!confirm('Permanently delete this booking? This cannot be undone.')) return;
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/bookings/${id}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: authHeaders()
                 });
                 if (res.ok) {
                     showMessage('Booking deleted', 'success');

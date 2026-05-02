@@ -345,9 +345,12 @@
 
     <script>
         const API_BASE_URL = 'https://api.htmrentals.com/api';
-        
+        function getToken() { return sessionStorage.getItem('adminToken'); }
+        function authHeaders(extra) { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json', ...extra }; }
+        function handleAuthError(res) { if (res && res.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = 'admin.html'; return true; } return false; }
+
         // Authentication check
-        if (!sessionStorage.getItem('adminLoggedIn')) {
+        if (!sessionStorage.getItem('adminToken')) {
             window.location.href = 'admin.html';
         }
         
@@ -366,7 +369,8 @@
             }
             
             try {
-                const res = await fetch(url);
+                const res = await fetch(url, { headers: authHeaders() });
+                if (handleAuthError(res)) return;
                 const data = await res.json();
                 
                 if (data.success) {
@@ -532,7 +536,7 @@
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/invoices/standalone`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify(data)
                 });
                 const result = await res.json();
@@ -550,7 +554,7 @@
         
         async function viewInvoice(invoiceId) {
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`);
+                const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`, { headers: authHeaders() });
                 const data = await res.json();
                 if (data.success) {
                     currentInvoiceData = data;
@@ -624,7 +628,7 @@
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}/payments`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({
                         amount: parseFloat(amount),
                         payment_method: method,
@@ -654,7 +658,7 @@
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}/status`, {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({ status })
                 });
                 const data = await res.json();
@@ -676,7 +680,8 @@
             
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/invoices/${invoiceId}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: authHeaders()
                 });
                 const data = await res.json();
                 if (data.success) {
