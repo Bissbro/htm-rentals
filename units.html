@@ -598,7 +598,7 @@
                 document.getElementById('featured-image-preview').innerHTML = `<div class="preview-img-container"><img src="${unit.featured_image}" class="preview-img"><div class="remove-img" onclick="removeFeaturedImage()">×</div></div>`;
             }
             
-            currentGalleryImages = unit.gallery_images || [];
+            currentGalleryImages = typeof unit.gallery_images === "string" ? JSON.parse(unit.gallery_images || "[]") : (unit.gallery_images || []);
             displayGalleryPreviews();
             
             document.getElementById('delete-unit-btn').style.display = 'inline-block';
