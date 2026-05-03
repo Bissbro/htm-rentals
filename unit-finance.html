@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>HTM Rentals | Finance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #F8F9FA; padding: 20px; }
+        :root {
+            --navy: #0A2540;
+            --ocean: #006994;
+            --turquoise: #40B5AD;
+            --gray-light: #F8F9FA;
+            --gray-border: #E5E5E5;
+            --gray-text: #6C757D;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 0; margin-bottom: 24px;
+            border-bottom: 1px solid var(--gray-border);
+            flex-wrap: wrap; gap: 16px;
+        }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); }
+        .back-link { color: var(--ocean); text-decoration: none; font-size: 1rem; }
+        .card {
+            background: white; border-radius: var(--radius-lg);
+            padding: 24px; margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+        }
+        .card-header h2 { font-size: 1rem; font-weight: 600; color: var(--navy); }
+        .btn {
+            padding: 10px 20px; border: none; border-radius: 40px;
+            font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;
+        }
+        .btn-primary { background: var(--turquoise); color: white; }
+        .btn-primary:hover { background: var(--ocean); }
+        .btn-secondary { background: var(--gray-light); color: var(--navy); border: 1px solid var(--gray-border); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+        /* Controls bar */
+        .controls {
+            display: flex; gap: 12px; align-items: center;
+            margin-bottom: 24px; flex-wrap: wrap;
+        }
+        .controls select, .controls input[type="month"] {
+            padding: 10px 16px; border: 1px solid var(--gray-border);
+            border-radius: 40px; font-size: 14px; color: var(--navy);
+            background: white; outline: none; cursor: pointer;
+        }
+        .controls select:focus, .controls input[type="month"]:focus {
+            border-color: var(--turquoise);
+        }
+
+        /* Summary cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px; margin-bottom: 24px;
+        }
+        .summary-card {
+            background: white; border-radius: var(--radius-md);
+            padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--turquoise);
+        }
+        .summary-card.revenue { border-left-color: var(--success); }
+        .summary-card.expense { border-left-color: var(--danger); }
+        .summary-card.profit { border-left-color: var(--turquoise); }
+        .summary-card.invested { border-left-color: var(--ocean); }
+        .summary-card .label {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--gray-text); margin-bottom: 8px; font-weight: 600;
+        }
+        .summary-card .value {
+            font-size: 1.4rem; font-weight: 700; color: var(--navy);
+        }
+        .summary-card .sub {
+            font-size: 11px; color: var(--gray-text); margin-top: 4px;
+        }
+        .positive { color: var(--success) !important; }
+        .negative { color: var(--danger) !important; }
+
+        /* Tabs */
+        .tabs {
+            display: flex; gap: 4px; margin-bottom: 24px;
+            border-bottom: 2px solid var(--gray-border);
+            flex-wrap: wrap;
+        }
+        .tab {
+            padding: 10px 20px; cursor: pointer; font-size: 14px;
+            font-weight: 500; color: var(--gray-text); border: none;
+            background: none; border-bottom: 2px solid transparent;
+            margin-bottom: -2px; transition: all 0.2s;
+        }
+        .tab.active { color: var(--turquoise); border-bottom-color: var(--turquoise); font-weight: 600; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Tables */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--gray-border); }
+        th { font-weight: 600; color: var(--gray-text); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { font-size: 14px; }
+        tr:last-child td { border-bottom: none; }
+        .empty { text-align: center; padding: 40px; color: var(--gray-text); font-size: 14px; }
+
+        /* Status badges */
+        .badge {
+            padding: 4px 10px; border-radius: 20px; font-size: 11px;
+            font-weight: 600; display: inline-block;
+        }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-info { background: #d1ecf1; color: #0c5460; }
+        .badge-secondary { background: #e2e3e5; color: #383d41; }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5); z-index: 1000;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-box {
+            background: white; border-radius: var(--radius-lg);
+            padding: 28px; width: 100%; max-width: 560px;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 20px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px 14px; border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm); font-size: 14px; outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--turquoise);
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+
+        /* Contract info */
+        .contract-info {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .info-item .info-label {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--gray-text); font-weight: 600; margin-bottom: 4px;
+        }
+        .info-item .info-value { font-size: 14px; font-weight: 600; color: var(--navy); }
+
+        /* Unit selector pills */
+        .unit-pills {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+        }
+        .unit-pill {
+            padding: 8px 16px; border-radius: 40px; font-size: 13px;
+            font-weight: 500; cursor: pointer; border: 2px solid var(--gray-border);
+            background: white; color: var(--gray-text); transition: all 0.2s;
+        }
+        .unit-pill.active {
+            background: var(--turquoise); color: white; border-color: var(--turquoise);
+        }
+
+        /* Currency breakdown */
+        .currency-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid var(--gray-border);
+        }
+        .currency-row:last-child { border-bottom: none; }
+        .currency-label { font-size: 13px; color: var(--gray-text); }
+        .currency-value { font-size: 14px; font-weight: 600; color: var(--navy); }
+
+        /* Expense items */
+        .expense-items-list { margin-top: 8px; }
+        .expense-item-row {
+            display: flex; gap: 8px; margin-bottom: 8px; align-items: center;
+        }
+        .expense-item-row input { flex: 1; }
+        .expense-item-row input:last-of-type { max-width: 120px; }
+        .add-item-btn {
+            background: none; border: 1px dashed var(--turquoise);
+            color: var(--turquoise); padding: 6px 12px; border-radius: var(--radius-sm);
+            cursor: pointer; font-size: 13px; width: 100%; margin-top: 4px;
+        }
+
+        /* Nav */
+        .nav-links { display: flex; gap: 16px; flex-wrap: wrap; }
+        .nav-links a {
+            color: var(--ocean); text-decoration: none; font-size: 13px;
+            font-weight: 500; padding: 6px 0;
+        }
+        .nav-links a:hover { color: var(--turquoise); }
+
+        .loading { text-align: center; padding: 40px; color: var(--gray-text); }
+
+        /* Deposit status bar */
+        .deposit-bar {
+            background: var(--gray-light); border-radius: var(--radius-md);
+            padding: 16px; display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 12px;
+        }
+        .deposit-bar .deposit-amount { font-size: 1.2rem; font-weight: 700; color: var(--navy); }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+            .summary-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="header">
+        <div>
+            <a href="admin.html" class="back-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
+            <h1 style="margin-top:4px;">Unit Finance</h1>
+        </div>
+        <div class="nav-links">
+            <a href="expenses.html"><i class="fas fa-receipt"></i> Expenses</a>
+            <a href="staff-payroll.html"><i class="fas fa-user-tie"></i> Payroll</a>
+            <a href="partners.html"><i class="fas fa-handshake"></i> Partners</a>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <select id="month-select" onchange="loadAll()">
+            <option value="">All Time</option>
+        </select>
+        <span style="font-size:13px; color:var(--gray-text);">Filter by unit:</span>
+    </div>
+
+    <!-- Unit Pills -->
+    <div class="unit-pills" id="unit-pills">
+        <div class="unit-pill active" data-id="all" onclick="selectUnit('all', this)">All Units</div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+        <div class="summary-card revenue">
+            <div class="label">Total Revenue</div>
+            <div class="value" id="sum-revenue">MVR —</div>
+            <div class="sub" id="sum-revenue-sub"></div>
+        </div>
+        <div class="summary-card expense">
+            <div class="label">Total Expenses</div>
+            <div class="value" id="sum-expenses">MVR —</div>
+            <div class="sub" id="sum-expense-sub"></div>
+        </div>
+        <div class="summary-card profit">
+            <div class="label">Net Profit</div>
+            <div class="value" id="sum-profit">MVR —</div>
+            <div class="sub" id="sum-profit-sub"></div>
+        </div>
+        <div class="summary-card invested">
+            <div class="label">USD Received</div>
+            <div class="value" id="sum-usd">$ —</div>
+            <div class="sub" id="sum-usdt">USDT —</div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('revenue', this)"><i class="fas fa-arrow-down"></i> Revenue</button>
+        <button class="tab" onclick="switchTab('expenses', this)"><i class="fas fa-arrow-up"></i> Expenses</button>
+        <button class="tab" onclick="switchTab('contracts', this)"><i class="fas fa-file-contract"></i> Contracts</button>
+        <button class="tab" onclick="switchTab('renovation', this)"><i class="fas fa-hammer"></i> Renovation</button>
+        <button class="tab" onclick="switchTab('deposits', this)"><i class="fas fa-shield-alt"></i> Deposits</button>
+        <button class="tab" onclick="switchTab('unit-summary', this)"><i class="fas fa-chart-bar"></i> Per Unit</button>
+    </div>
+
+    <!-- REVENUE TAB -->
+    <div class="tab-content active" id="tab-revenue">
+        <div class="card">
+            <div class="card-header">
+                <h2>Revenue Transactions</h2>
+                <button class="btn btn-primary btn-sm" onclick="openRevenueModal()">+ Add Payment</button>
+            </div>
+            <!-- Currency breakdown -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:20px;">
+                <div style="background:var(--gray-light); border-radius:var(--radius-md); padding:14px;">
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray-text); margin-bottom:6px;">MVR Direct</div>
+                    <div style="font-size:1.1rem; font-weight:700; color:var(--navy);" id="rev-mvr-direct">MVR 0</div>
+                </div>
+                <div style="background:var(--gray-light); border-radius:var(--radius-md); padding:14px;">
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray-text); margin-bottom:6px;">USD Received</div>
+                    <div style="font-size:1.1rem; font-weight:700; color:var(--navy);" id="rev-usd">$ 0</div>
+                </div>
+                <div style="background:var(--gray-light); border-radius:var(--radius-md); padding:14px;">
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray-text); margin-bottom:6px;">USDT Received</div>
+                    <div style="font-size:1.1rem; font-weight:700; color:var(--navy);" id="rev-usdt">USDT 0</div>
+                </div>
+                <div style="background:var(--gray-light); border-radius:var(--radius-md); padding:14px;">
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray-text); margin-bottom:6px;">Total in MVR</div>
+                    <div style="font-size:1.1rem; font-weight:700; color:var(--success);" id="rev-total-mvr">MVR 0</div>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Unit</th>
+                            <th>Description</th>
+                            <th>Currency</th>
+                            <th>Amount</th>
+                            <th>MVR Equiv.</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="revenue-table-body">
+                        <tr><td colspan="9" class="loading">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPENSES TAB -->
+    <div class="tab-content" id="tab-expenses">
+        <div class="card">
+            <div class="card-header">
+                <h2>Unit Expenses</h2>
+                <button class="btn btn-primary btn-sm" onclick="openExpenseModal()">+ Add Expense</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Unit</th>
+                            <th>Category</th>
+                            <th>Amount (MVR)</th>
+                            <th>Notes</th>
+                            <th>Items</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenses-table-body">
+                        <tr><td colspan="7" class="loading">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTRACTS TAB -->
+    <div class="tab-content" id="tab-contracts">
+        <div class="card">
+            <div class="card-header">
+                <h2>Unit Contracts</h2>
+                <button class="btn btn-primary btn-sm" onclick="openContractModal()">+ Add Contract</button>
+            </div>
+            <div id="contracts-list" class="loading">Loading...</div>
+        </div>
+    </div>
+
+    <!-- RENOVATION TAB -->
+    <div class="tab-content" id="tab-renovation">
+        <div class="card">
+            <div class="card-header">
+                <h2>Renovation Costs</h2>
+                <button class="btn btn-primary btn-sm" onclick="openRenovationModal()">+ Add Cost</button>
+            </div>
+            <div id="renovation-total" style="background:var(--gray-light); border-radius:var(--radius-md); padding:14px; margin-bottom:16px; font-size:14px; color:var(--navy);">
+                Total: <strong id="renovation-total-val">MVR 0</strong>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Unit</th>
+                            <th>Description</th>
+                            <th>Amount (MVR)</th>
+                            <th>Receipt Note</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="renovation-table-body">
+                        <tr><td colspan="6" class="loading">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEPOSITS TAB -->
+    <div class="tab-content" id="tab-deposits">
+        <div class="card">
+            <div class="card-header">
+                <h2>Security Deposits</h2>
+            </div>
+            <div id="deposits-list" class="loading">Loading...</div>
+        </div>
+    </div>
+
+    <!-- PER UNIT SUMMARY TAB -->
+    <div class="tab-content" id="tab-unit-summary">
+        <div class="card">
+            <div class="card-header">
+                <h2>Profit / Loss Per Unit</h2>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Unit</th>
+                            <th>Revenue (MVR)</th>
+                            <th>Expenses (MVR)</th>
+                            <th>Net (MVR)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="unit-summary-body">
+                        <tr><td colspan="4" class="loading">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- REVENUE MODAL -->
+<div class="modal" id="revenue-modal">
+    <div class="modal-box">
+        <div class="modal-title">Add Payment</div>
+        <input type="hidden" id="rev-id">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Unit</label>
+                <select id="rev-unit-id"></select>
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="rev-date">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <input type="text" id="rev-description" placeholder="e.g. Booking #123 - John Smith">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Currency</label>
+                <select id="rev-currency" onchange="toggleExchangeRate()">
+                    <option value="MVR">MVR</option>
+                    <option value="USD">USD</option>
+                    <option value="USDT">USDT</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Amount</label>
+                <input type="number" id="rev-amount" step="0.01" placeholder="0.00" oninput="calcMVR()">
+            </div>
+        </div>
+        <div class="form-group" id="exchange-rate-group" style="display:none;">
+            <label>Exchange Rate (1 USD/USDT = ? MVR)</label>
+            <input type="number" id="rev-exchange-rate" step="0.0001" placeholder="e.g. 15.42" oninput="calcMVR()">
+            <div style="font-size:12px; color:var(--gray-text); margin-top:4px;">MVR equivalent: <strong id="rev-mvr-preview">—</strong></div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Payment Type</label>
+                <select id="rev-payment-type">
+                    <option value="full">Full Payment</option>
+                    <option value="deposit">Deposit (50%)</option>
+                    <option value="balance">Balance Payment</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Payment Method</label>
+                <select id="rev-payment-method">
+                    <option value="cash">Cash</option>
+                    <option value="transfer">Bank Transfer</option>
+                    <option value="card">Card</option>
+                    <option value="crypto">Crypto</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Status</label>
+                <select id="rev-status">
+                    <option value="received">Received</option>
+                    <option value="pending">Pending</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Booking ID (optional)</label>
+                <input type="number" id="rev-booking-id" placeholder="Leave blank if standalone">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Notes</label>
+            <textarea id="rev-notes" rows="2" placeholder="Any additional notes..."></textarea>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal('revenue-modal')">Cancel</button>
+            <button class="btn btn-danger btn-sm" id="rev-delete-btn" style="display:none;" onclick="deleteRevenue()">Delete</button>
+            <button class="btn btn-primary" onclick="saveRevenue()">Save Payment</button>
+        </div>
+    </div>
+</div>
+
+<!-- EXPENSE MODAL -->
+<div class="modal" id="expense-modal">
+    <div class="modal-box">
+        <div class="modal-title">Add Expense</div>
+        <input type="hidden" id="exp-id">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Unit</label>
+                <select id="exp-unit-id"></select>
+            </div>
+            <div class="form-group">
+                <label>Month</label>
+                <input type="month" id="exp-month">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Category</label>
+                <select id="exp-category">
+                    <option value="rent">Monthly Rent</option>
+                    <option value="electricity">Electricity</option>
+                    <option value="water">Water</option>
+                    <option value="laundry">Laundry</option>
+                    <option value="cleaning">Cleaning</option>
+                    <option value="maintenance">Maintenance</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Total Amount (MVR)</label>
+                <input type="number" id="exp-total" step="0.01" placeholder="0.00">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Notes</label>
+            <textarea id="exp-notes" rows="2" placeholder="Optional notes..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Itemized Breakdown (optional)</label>
+            <div class="expense-items-list" id="expense-items-list"></div>
+            <button class="add-item-btn" onclick="addExpenseItem()">+ Add Item</button>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal('expense-modal')">Cancel</button>
+            <button class="btn btn-danger btn-sm" id="exp-delete-btn" style="display:none;" onclick="deleteExpense()">Delete</button>
+            <button class="btn btn-primary" onclick="saveExpense()">Save Expense</button>
+        </div>
+    </div>
+</div>
+
+<!-- CONTRACT MODAL -->
+<div class="modal" id="contract-modal">
+    <div class="modal-box">
+        <div class="modal-title" id="contract-modal-title">Add Contract</div>
+        <input type="hidden" id="con-id">
+        <div class="form-group">
+            <label>Unit</label>
+            <select id="con-unit-id"></select>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Owner Name</label>
+                <input type="text" id="con-owner-name" placeholder="Unit owner's name">
+            </div>
+            <div class="form-group">
+                <label>Owner Contact</label>
+                <input type="text" id="con-owner-contact" placeholder="Phone or email">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Monthly Rent (MVR)</label>
+                <input type="number" id="con-rent" step="0.01" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label>Security Deposit (MVR)</label>
+                <input type="number" id="con-deposit" step="0.01" placeholder="0.00">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Contract Start</label>
+                <input type="date" id="con-start">
+            </div>
+            <div class="form-group">
+                <label>Contract End (optional)</label>
+                <input type="date" id="con-end">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Status</label>
+            <select id="con-status">
+                <option value="active">Active</option>
+                <option value="ended">Ended</option>
+                <option value="renewed">Renewed</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Notes</label>
+            <textarea id="con-notes" rows="3" placeholder="Any contract notes, deductions, conditions..."></textarea>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal('contract-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveContract()">Save Contract</button>
+        </div>
+    </div>
+</div>
+
+<!-- RENOVATION MODAL -->
+<div class="modal" id="renovation-modal">
+    <div class="modal-box">
+        <div class="modal-title">Add Renovation Cost</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Unit</label>
+                <select id="ren-unit-id"></select>
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="ren-date">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <input type="text" id="ren-description" placeholder="e.g. Painting, Plumbing fix, AC installation">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Amount (MVR)</label>
+                <input type="number" id="ren-amount" step="0.01" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label>Receipt / Note</label>
+                <input type="text" id="ren-receipt" placeholder="Receipt number or reference">
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal('renovation-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveRenovation()">Save Cost</button>
+        </div>
+    </div>
+</div>
+
+<!-- DEPOSIT EDIT MODAL -->
+<div class="modal" id="deposit-modal">
+    <div class="modal-box">
+        <div class="modal-title">Update Security Deposit</div>
+        <input type="hidden" id="dep-id">
+        <div class="form-group">
+            <label>Status</label>
+            <select id="dep-status">
+                <option value="held">Held</option>
+                <option value="partially_deducted">Partially Deducted</option>
+                <option value="fully_deducted">Fully Deducted</option>
+                <option value="returned">Returned</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Deduction Amount (MVR)</label>
+                <input type="number" id="dep-deduction" step="0.01" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label>Return Amount (MVR)</label>
+                <input type="number" id="dep-return-amount" step="0.01" placeholder="0.00">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Return Date</label>
+            <input type="date" id="dep-return-date">
+        </div>
+        <div class="form-group">
+            <label>Deduction Notes</label>
+            <textarea id="dep-deduction-notes" rows="2" placeholder="What was deducted and why..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Notes</label>
+            <textarea id="dep-notes" rows="2" placeholder="Any additional notes..."></textarea>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal('deposit-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveDeposit()">Update Deposit</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== AUTH ====================
+    if (!sessionStorage.getItem('adminToken')) { window.location.href = 'admin.html'; }
+    const API = 'https://api.htmrentals.com/api';
+    function getToken() { return sessionStorage.getItem('adminToken'); }
+    function authHeaders() { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }; }
+    async function handleAuthError(res) { if (res.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = 'admin.html'; return true; } return false; }
+
+    // ==================== STATE ====================
+    let allUnits = [];
+    let selectedUnitId = 'all';
+    let activeTab = 'revenue';
+
+    // ==================== INIT ====================
+    async function init() {
+        populateMonthSelect();
+        await loadUnits();
+        loadAll();
+    }
+
+    function populateMonthSelect() {
+        const sel = document.getElementById('month-select');
+        const now = new Date();
+        for (let i = 0; i < 24; i++) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const val = d.toISOString().slice(0, 7);
+            const label = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            const opt = document.createElement('option');
+            opt.value = val;
+            opt.textContent = label;
+            if (i === 0) opt.selected = true;
+            sel.appendChild(opt);
+        }
+    }
+
+    async function loadUnits() {
+        const res = await fetch(`${API}/admin/units`, { headers: authHeaders() });
+        if (await handleAuthError(res)) return;
+        const data = await res.json();
+        if (data.success) {
+            allUnits = data.units;
+            renderUnitPills();
+            populateUnitSelects();
+        }
+    }
+
+    function renderUnitPills() {
+        const container = document.getElementById('unit-pills');
+        container.innerHTML = `<div class="unit-pill active" data-id="all" onclick="selectUnit('all', this)">All Units</div>`;
+        allUnits.forEach(u => {
+            const pill = document.createElement('div');
+            pill.className = 'unit-pill';
+            pill.dataset.id = u.id;
+            pill.onclick = function() { selectUnit(u.id, this); };
+            pill.textContent = u.unit_name.length > 30 ? u.unit_name.slice(0, 30) + '…' : u.unit_name;
+            container.appendChild(pill);
+        });
+    }
+
+    function populateUnitSelects() {
+        const selects = ['rev-unit-id', 'exp-unit-id', 'con-unit-id', 'ren-unit-id'];
+        selects.forEach(id => {
+            const sel = document.getElementById(id);
+            sel.innerHTML = allUnits.map(u => `<option value="${u.id}">${u.unit_name}</option>`).join('');
+        });
+    }
+
+    function selectUnit(id, el) {
+        selectedUnitId = id;
+        document.querySelectorAll('.unit-pill').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        loadAll();
+    }
+
+    function getMonth() { return document.getElementById('month-select').value; }
+    function getUnitParam() { return selectedUnitId !== 'all' ? `&unit_id=${selectedUnitId}` : ''; }
+
+    function loadAll() {
+        loadSummary();
+        if (activeTab === 'revenue') loadRevenue();
+        else if (activeTab === 'expenses') loadExpenses();
+        else if (activeTab === 'contracts') loadContracts();
+        else if (activeTab === 'renovation') loadRenovation();
+        else if (activeTab === 'deposits') loadDeposits();
+        else if (activeTab === 'unit-summary') loadUnitSummary();
+    }
+
+    // ==================== SUMMARY ====================
+    async function loadSummary() {
+        const month = getMonth();
+        const res = await fetch(`${API}/admin/finance/summary${month ? `?month=${month}` : ''}`, { headers: authHeaders() });
+        if (await handleAuthError(res)) return;
+        const data = await res.json();
+        if (!data.success) return;
+        const s = data.summary;
+        document.getElementById('sum-revenue').textContent = `MVR ${fmt(s.revenue.total_mvr)}`;
+        document.getElementById('sum-revenue-sub').textContent = `USD ${fmt(s.revenue.usd)} · USDT ${fmt(s.revenue.usdt)}`;
+        document.getElementById('sum-expenses').textContent = `MVR ${fmt(s.total_expenses_mvr)}`;
+        document.getElementById('sum-expense-sub').textContent = `Staff: MVR ${fmt(s.staff_salary_mvr)}`;
+        const profit = s.net_profit_mvr;
+        const profitEl = document.getElementById('sum-profit');
+        profitEl.textContent = `MVR ${fmt(profit)}`;
+        profitEl.className = `value ${profit >= 0 ? 'positive' : 'negative'}`;
+        document.getElementById('sum-usd').textContent = `$ ${fmt(s.revenue.usd)}`;
+        document.getElementById('sum-usdt').textContent = `USDT ${fmt(s.revenue.usdt)}`;
+
+        // Unit summary tab
+        const tbody = document.getElementById('unit-summary-body');
+        if (s.unit_profits.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="empty">No data</td></tr>`;
+        } else {
+            tbody.innerHTML = s.unit_profits.map(u => `
+                <tr>
+                    <td><strong>${u.unit_name}</strong></td>
+                    <td>MVR ${fmt(u.revenue_mvr)}</td>
+                    <td>MVR ${fmt(u.expenses_mvr)}</td>
+                    <td class="${u.net_mvr >= 0 ? 'positive' : 'negative'}"><strong>MVR ${fmt(u.net_mvr)}</strong></td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    // ==================== REVENUE ====================
+    async function loadRevenue() {
+        const month = getMonth();
+        const unit = getUnitParam();
+        const res = await fetch(`${API}/admin/revenue?${month ? `month=${month}` : ''}${unit}`, { headers: authHeaders() });
+        if (await handleAuthError(res)) return;
+        const data = await res.json();
+        if (!data.success) return;
+        const t = data.totals;
+        document.getElementById('rev-mvr-direct').textContent = `MVR ${fmt(t.total_mvr_direct)}`;
+        document.getElementById('rev-usd').textContent = `$ ${fmt(t.total_usd)}`;
+        document.getElementById('rev-usdt').textContent = `USDT ${fmt(t.total_usdt)}`;
+        document.getElementById('rev-total-mvr').textContent = `MVR ${fmt(t.total_mvr_equivalent)}`;
+        const tbody = document.getElementById('revenue-table-body');
+        if (data.transactions.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" class="empty">No transactions yet. Click "+ Add Payment" to record one.</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = data.transactions.map(r => `
+            <tr>
+                <td>${formatDate(r.transaction_date)}</td>
+                <td style="font-size:12px;">${r.unit_name}</td>
+                <td>${r.description || '—'}</td>
+                <td><span class="badge badge-info">${r.currency}</span></td>
+                <td><strong>${r.currency === 'MVR' ? 'MVR' : r.currency === 'USD' ? '$' : 'USDT'} ${fmt(r.amount)}</strong></td>
+                <td>MVR ${fmt(r.amount_mvr)}</td>
+                <td>${r.payment_method}</td>
+                <td>${statusBadge(r.status)}</td>
+                <td><button class="btn btn-sm btn-secondary" onclick="editRevenue(${JSON.stringify(r).replace(/"/g, '&quot;')})">Edit</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function openRevenueModal(r = null) {
+        document.getElementById('rev-id').value = '';
+        document.getElementById('rev-unit-id').value = allUnits[0]?.id || '';
+        document.getElementById('rev-date').value = today();
+        document.getElementById('rev-description').value = '';
+        document.getElementById('rev-currency').value = 'MVR';
+        document.getElementById('rev-amount').value = '';
+        document.getElementById('rev-exchange-rate').value = '';
+        document.getElementById('rev-payment-type').value = 'full';
+        document.getElementById('rev-payment-method').value = 'cash';
+        document.getElementById('rev-status').value = 'received';
+        document.getElementById('rev-booking-id').value = '';
+        document.getElementById('rev-notes').value = '';
+        document.getElementById('rev-delete-btn').style.display = 'none';
+        toggleExchangeRate();
+        document.getElementById('revenue-modal').style.display = 'flex';
+    }
+
+    function editRevenue(r) {
+        document.getElementById('rev-id').value = r.id;
+        document.getElementById('rev-unit-id').value = r.unit_id;
+        document.getElementById('rev-date').value = r.transaction_date?.slice(0,10);
+        document.getElementById('rev-description').value = r.description || '';
+        document.getElementById('rev-currency').value = r.currency;
+        document.getElementById('rev-amount').value = r.amount;
+        document.getElementById('rev-exchange-rate').value = r.exchange_rate;
+        document.getElementById('rev-payment-type').value = r.payment_type;
+        document.getElementById('rev-payment-method').value = r.payment_method;
+        document.getElementById('rev-status').value = r.status;
+        document.getElementById('rev-booking-id').value = r.booking_id || '';
+        document.getElementById('rev-notes').value = r.notes || '';
+        document.getElementById('rev-delete-btn').style.display = 'inline-block';
+        toggleExchangeRate();
+        document.getElementById('revenue-modal').style.display = 'flex';
+    }
+
+    function toggleExchangeRate() {
+        const cur = document.getElementById('rev-currency').value;
+        const group = document.getElementById('exchange-rate-group');
+        group.style.display = cur !== 'MVR' ? 'block' : 'none';
+        calcMVR();
+    }
+
+    function calcMVR() {
+        const cur = document.getElementById('rev-currency').value;
+        const amt = parseFloat(document.getElementById('rev-amount').value) || 0;
+        const rate = parseFloat(document.getElementById('rev-exchange-rate').value) || 0;
+        if (cur !== 'MVR' && rate > 0) {
+            document.getElementById('rev-mvr-preview').textContent = `MVR ${fmt(amt * rate)}`;
+        }
+    }
+
+    async function saveRevenue() {
+        const id = document.getElementById('rev-id').value;
+        const currency = document.getElementById('rev-currency').value;
+        const amount = parseFloat(document.getElementById('rev-amount').value);
+        if (!amount) { alert('Please enter an amount'); return; }
+        const body = {
+            unit_id: document.getElementById('rev-unit-id').value,
+            transaction_date: document.getElementById('rev-date').value,
+            description: document.getElementById('rev-description').value,
+            currency,
+            amount,
+            exchange_rate: parseFloat(document.getElementById('rev-exchange-rate').value) || 1,
+            payment_type: document.getElementById('rev-payment-type').value,
+            payment_method: document.getElementById('rev-payment-method').value,
+            status: document.getElementById('rev-status').value,
+            booking_id: document.getElementById('rev-booking-id').value || null,
+            notes: document.getElementById('rev-notes').value
+        };
+        const url = id ? `${API}/admin/revenue/${id}` : `${API}/admin/revenue`;
+        const method = id ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(body) });
+        const data = await res.json();
+        if (data.success) { closeModal('revenue-modal'); loadRevenue(); loadSummary(); }
+        else alert(data.error || 'Failed to save');
+    }
+
+    async function deleteRevenue() {
+        if (!confirm('Delete this transaction?')) return;
+        const id = document.getElementById('rev-id').value;
+        const res = await fetch(`${API}/admin/revenue/${id}`, { method: 'DELETE', headers: authHeaders() });
+        const data = await res.json();
+        if (data.success) { closeModal('revenue-modal'); loadRevenue(); loadSummary(); }
+    }
+
+    // ==================== EXPENSES ====================
+    async function loadExpenses() {
+        const month = getMonth();
+        const unit = getUnitParam();
+        const res = await fetch(`${API}/admin/expenses?${month ? `month=${month}` : ''}${unit}`, { headers: authHeaders() });
+        if (await handleAuthError(res)) return;
+        const data = await res.json();
+        const tbody = document.getElementById('expenses-table-body');
+        if (!data.success || data.expenses.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" class="empty">No expenses yet. Click "+ Add Expense" to record one.</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = data.expenses.map(e => {
+            let items = [];
+            try { items = e.items ? JSON.parse(e.items) : []; } catch(x) {}
+            items = items.filter(Boolean);
+            return `
+            <tr>
+                <td>${e.expense_month?.slice(0,7)}</td>
+                <td style="font-size:12px;">${e.unit_name}</td>
+                <td><span class="badge badge-secondary">${e.category}</span></td>
+                <td><strong>MVR ${fmt(e.total_amount_mvr)}</strong></td>
+                <td style="font-size:12px;">${e.notes || '—'}</td>
+                <td style="font-size:12px;">${items.length > 0 ? items.map(i => `${i.description}: MVR ${fmt(i.amount_mvr)}`).join('<br>') : '—'}</td>
+                <td><button class="btn btn-sm btn-secondary" onclick="editExpense(${JSON.stringify(e).replace(/"/g, '&quot;')})">Edit</button></td>
+            </tr>`;
+        }).join('');
+    }
+
+    function openExpenseModal() {
+        document.getElementById('exp-id').value = '';
+        document.getElementById('exp-unit-id').value = allUnits[0]?.id || '';
+        document.getElementById('exp-month').value = getMonth() || today().slice(0,7);
+        document.getElementById('exp-category').value = 'rent';
+        document.getElementById('exp-total').value = '';
+        document.getElementById('exp-notes').value = '';
+        document.getElementById('expense-items-list').innerHTML = '';
+        document.getElementById('exp-delete-btn').style.display = 'none';
+        document.getElementById('expense-modal').style.display = 'flex';
+    }
+
+    function editExpense(e) {
+        document.getElementById('exp-id').value = e.id;
+        document.getElementById('exp-unit-id').value = e.unit_id;
+        document.getElementById('exp-month').value = e.expense_month?.slice(0,7);
+        document.getElementById('exp-category').value = e.category;
+        document.getElementById('exp-total').value = e.total_amount_mvr;
+        document.getElementById('exp-notes').value = e.notes || '';
+        document.getElementById('exp-delete-btn').style.display = 'inline-block';
+        let items = [];
+        try { items = e.items ? JSON.parse(e.items) : []; } catch(x) {}
+        const list = document.getElementById('expense-items-list');
+        list.innerHTML = '';
+        items.filter(Boolean).forEach(i => addExpenseItem(i.description, i.amount_mvr));
+        document.getElementById('expense-modal').style.display = 'flex';
+    }
+
+    function addExpenseItem(desc = '', amt = '') {
+        const list = document.getElementById('expense-items-list');
+        const row = document.createElement('div');
+        row.className = 'expense-item-row';
+        row.innerHTML = `
+            <input type="text" placeholder="Description" value="${desc}" class="item-desc">
+            <input type="number" placeholder="MVR" step="0.01" value="${amt}" class="item-amt">
+            <button onclick="this.parentElement.remove()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:18px;">×</button>
+        `;
+        list.appendChild(row);
+    }
+
+    async function saveExpense() {
+        const id = document.getElementById('exp-id').value;
+        const items = [...document.querySelectorAll('.expense-item-row')].map(row => ({
+            description: row.querySelector('.item-desc').value,
+            amount_mvr: parseFloat(row.querySelector('.item-amt').value) || 0
+        })).filter(i => i.description);
+        const body = {
+            unit_id: document.getElementById('exp-unit-id').value,
+            expense_month: document.getElementById('exp-month').value + '-01',
+            category: document.getElementById('exp-category').value,
+            total_amount_mvr: parseFloat(document.getElementById('exp-total').value),
+            notes: document.getElementById('exp-notes').value,
+            items
+        };
+        if (!body.total_amount_mvr) { alert('Please enter an amount'); return; }
+        const url = id ? `${API}/admin/expenses/${id}` : `${API}/admin/expenses`;
+        const method = id ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(body) });
+        const data = await res.json();
+        if (data.success) { closeModal('expense-modal'); loadExpenses(); loadSummary(); }
+        else alert(data.error || 'Failed to save');
+    }
+
+    async function deleteExpense() {
+        if (!confirm('Delete this expense?')) return;
+        const id = document.getElementById('exp-id').value;
+        const res = await fetch(`${API}/admin/expenses/${id}`, { method: 'DELETE', headers: authHeaders() });
+        const data = await res.json();
+        if (data.success) { closeModal('expense-modal'); loadExpenses(); loadSummary(); }
+    }
+
+    // ==================== CONTRACTS ====================
+    async function loadContracts() {
+        const res = await fetch(`${API}/admin/contracts`, { headers: authHeaders() });
+        if (await handleAuthError(res)) return;
+        const data = await res.json();
+        const container = document.getElementById('contracts-list');
+        if (!data.success || data.contracts.length === 0) {
+            container.innerHTML = `<div class="empty">No contracts yet. Click "+ Add Contract" to add one.</div>`;
+            return;
+        }
+        const filtered = selectedUnitId !== 'all' ? data.contracts.filter(c => c.unit_id == selectedUnitId) : data.contracts;
+        container.innerHTML = filtered.map(c => `
+            <div style="border:1px solid var(--gray-border); border-radius:var(--radius-md); padding:20px; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+                    <div>
+                        <div style="font-size:1rem; font-weight:700; color:var(--navy);">${c.unit_name}</div>
+                        <div style="font-size:13px; color:var(--gray-text);">Owner: ${c.owner_name} ${c.owner_contact ? `· ${c.owner_contact}` : ''}</div>
+                    </div>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        ${statusBadge(c.status)}
+                        <button class="btn btn-sm btn-secondary" onclick="editContract(${JSON.stringify(c).replace(/"/g, '&quot;')})">Edit</button>
+                    </div>
+                </div>
+                <div class="contract-info">
+                    <div class="info-item"><div class="info-label">Monthly Rent</div><div class="info-value">MVR ${fmt(c.monthly_rent_mvr)}</div></div>
+                    <div class="info-item"><div class="info-label">Security Deposit</div><div class="info-value">MVR ${fmt(c.security_deposit_mvr)}</div></div>
+                    <div class="info-item"><div class="info-label">Start Date</div><div class="info-value">${formatDate(c.contract_start)}</div></div>
+                    <div class="info-item"><div class="info-label">End Date</div><div class="info-value">${c.contract_end ? formatDate(c.contract_end) : 'Ongoing'}</div></div>
+                </div>
+                ${c.notes ? `<div style="margin-top:12px; font-size:13px; color:var(--gray-text); background:var(--gray-light); padding:10px; border-radius:var(--radius-sm);">${c.notes}</div>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function openContractModal() {
+        document.getElementById('con-id').value = '';
+        document.getElementById('contract-modal-title').textContent = 'Add Contract';
+        document.getElementById('con-unit-id').value = allUnits[0]?.id || '';
+        document.getElementById('con-owner-name').value = '';
+        document.getElementById('con-owner-contact').value = '';
+        document.getElementById('con-rent').value = '';
+        document.getElementById('con-deposit').value = '';
+        document.getElementById('con-start').value = today();
+        document.getElementById('con-end').value = '';
+        document.getElementById('con-status').value = 'active';
+        document.getElementById('con-notes').value = '';
+        document.getElementById('contract-modal').style.display = 'flex';
+    }
+
+    function editContract(c) {
+        document.getElementById('con-id').value = c.id;
+        document.getElementById('contract-modal-title').textContent = 'Edit Contract';
+        document.getElementById('con-unit-id').value = c.unit_id;
+        document.getElementById('con-owner-name').value = c.owner_name;
+        document.getElementById('con-owner-contact').value = c.owner_contact || '';
+        document.getElementById('con-rent').value = c.monthly_rent_mvr;
+        document.getElementById('con-deposit').value = c.security_deposit_mvr;
+        document.getElementById('con-start').value = c.contract_start?.slice(0,10);
+        document.getElementById('con-end').value = c.contract_end?.slice(0,10) || '';
+        document.getElementById('con-status').value = c.status;
+        document.getElementById('con-notes').value = c.notes || '';
+        document.getElementById('contract-modal').style.display = 'flex';
+    }
+
+    async function saveContract() {
+        const id = document.getElementById('con-id').value;
+        const body = {
+            unit_id: document.getElementById('con-unit-id').value,
+            owner_name: document.getElementById('con-owner-name').value,
+            owner_contact: document.getElementById('con-owner-contact').value,
+            monthly_rent_mvr: parseFloat(document.getElementById('con-rent').value),
+            security_deposit_mvr: parseFloat(document.getElementById('con-deposit').value),
+            contract_start: document.getElementById('con-start').value,
+            contract_end: document.getElementById('con-end').value || null,
+            status: document.getElementById('con-status').value,
+            notes: document.getElementById('con-notes').value
+        };
+        if (!body.owner_name || !body.monthly_rent_mvr) { alert('Please fill owner name and rent amount'); return; }
+        const url = id ? `${API}/admin/contracts/${id}` : `${API}/admin/contracts`;
+        const method = id ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(body) });
+        const data = await res.json();
+        if (data.success) { closeModal('contract-modal'); loadContracts(); }
+        else alert(data.error || 'Failed to save');
+    }
+
+    // ==================== RENOVATION ====================
+    async function loadRenovation() {
+        const unit = selectedUnitId !== 'all' ? `?unit_id=${selectedUnitId}` : '';
+        const res = await fetch(`${API}/admin/renovation-costs${unit}`, { headers: authHeaders() });
+        if (await handleAuthError(res)) return;
+        const data = await res.json();
+        document.getElementById('renovation-total-val').textContent = `MVR ${fmt(data.total_mvr || 0)}`;
+        const tbody = document.getElementById('renovation-table-body');
+        if (!data.success || data.costs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="empty">No renovation costs yet.</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = data.costs.map(r => `
+            <tr>
+                <td>${formatDate(r.date_incurred)}</td>
+                <td style="font-size:12px;">${r.unit_name}</td>
+                <td>${r.description}</td>
+                <td><strong>MVR ${fmt(r.amount_mvr)}</strong></td>
+                <td style="font-size:12px;">${r.receipt_note || '—'}</td>
+                <td><button class="btn btn-sm btn-danger" onclick="deleteRenovation(${r.id})">Delete</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function openRenovationModal() {
+        document.getElementById('ren-unit-id').value = allUnits[0]?.id || '';
+        document.getElementById('ren-date').value = today();
+        document.getElementById('ren-description').value = '';
+        document.getElementById('ren-amount').value = '';
+        document.getElementById('ren-receipt').value = '';
+        document.getElementById('renovation-modal').style.display = 'flex';
+    }
+
+    async function saveRenovation() {
+        const body = {
+            unit_id: document.getElementById('ren-unit-id').value,
+            description: document.getElementById('ren-description').value,
+            amount_mvr: parseFloat(document.getElementById('ren-amount').value),
+            date_incurred: document.getElementById('ren-date').value,
+            receipt_note: document.getElementById('ren-receipt').value
+        };
+        if (!body.description || !body.amount_mvr) { alert('Please fill description and amount'); return; }
+        const res = await fetch(`${API}/admin/renovation-costs`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) });
+        const data = await res.json();
+        if (data.success) { closeModal('renovation-modal'); loadRenovation(); }
+        else alert(data.error || 'Failed to save');
+    }
+
+    async function deleteRenovation(id) {
+        if (!confirm('Delete this renovation cost?')) return;
+        const res = await fetch(`${API}/admin/renovation-costs/${id}`, { method: 'DELETE', headers: authHeaders() });
+        const data = await res.json();
+        if (data.success) loadRenovation();
+    }
+
+    // ==================== DEPOSITS ====================
+    async function loadDeposits() {
+        const res = await fetch(`${API}/admin/security-deposits`, { headers: authHeaders() });
+        if (await handleAuthError(res)) return;
+        const data = await res.json();
+        const container = document.getElementById('deposits-list');
+        if (!data.success || data.deposits.length === 0) {
+            container.innerHTML = `<div class="empty">No security deposits recorded. They are created automatically when you add a contract.</div>`;
+            return;
+        }
+        const filtered = selectedUnitId !== 'all' ? data.deposits.filter(d => d.unit_id == selectedUnitId) : data.deposits;
+        container.innerHTML = filtered.map(d => `
+            <div class="deposit-bar" style="margin-bottom:12px;">
+                <div>
+                    <div style="font-size:13px; font-weight:600; color:var(--navy);">${d.unit_name}</div>
+                    <div style="font-size:12px; color:var(--gray-text);">Owner: ${d.owner_name} · Paid: ${formatDate(d.date_paid)}</div>
+                </div>
+                <div class="deposit-amount">MVR ${fmt(d.amount_paid_mvr)}</div>
+                <div>${statusBadge(d.status)}</div>
+                <div style="font-size:12px; color:var(--gray-text);">
+                    ${d.deduction_amount_mvr > 0 ? `Deducted: MVR ${fmt(d.deduction_amount_mvr)}` : ''}
+                    ${d.return_amount_mvr ? ` · Returned: MVR ${fmt(d.return_amount_mvr)}` : ''}
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="editDeposit(${JSON.stringify(d).replace(/"/g, '&quot;')})">Update</button>
+            </div>
+        `).join('');
+    }
+
+    function editDeposit(d) {
+        document.getElementById('dep-id').value = d.id;
+        document.getElementById('dep-status').value = d.status;
+        document.getElementById('dep-deduction').value = d.deduction_amount_mvr || '';
+        document.getElementById('dep-return-amount').value = d.return_amount_mvr || '';
+        document.getElementById('dep-return-date').value = d.return_date?.slice(0,10) || '';
+        document.getElementById('dep-deduction-notes').value = d.deduction_notes || '';
+        document.getElementById('dep-notes').value = d.notes || '';
+        document.getElementById('deposit-modal').style.display = 'flex';
+    }
+
+    async function saveDeposit() {
+        const id = document.getElementById('dep-id').value;
+        const body = {
+            status: document.getElementById('dep-status').value,
+            deduction_amount_mvr: parseFloat(document.getElementById('dep-deduction').value) || 0,
+            deduction_notes: document.getElementById('dep-deduction-notes').value,
+            return_date: document.getElementById('dep-return-date').value || null,
+            return_amount_mvr: parseFloat(document.getElementById('dep-return-amount').value) || null,
+            notes: document.getElementById('dep-notes').value
+        };
+        const res = await fetch(`${API}/admin/security-deposits/${id}`, { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) });
+        const data = await res.json();
+        if (data.success) { closeModal('deposit-modal'); loadDeposits(); }
+        else alert(data.error || 'Failed to save');
+    }
+
+    // ==================== TABS ====================
+    function switchTab(tab, el) {
+        activeTab = tab;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById(`tab-${tab}`).classList.add('active');
+        loadAll();
+    }
+
+    // ==================== HELPERS ====================
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function fmt(n) { return parseFloat(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function today() { return new Date().toISOString().slice(0,10); }
+    function formatDate(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }); }
+    function statusBadge(s) {
+        const map = {
+            active: 'success', ended: 'secondary', renewed: 'info',
+            held: 'info', partially_deducted: 'warning', fully_deducted: 'danger', returned: 'success',
+            received: 'success', pending: 'warning', refunded: 'danger',
+            paid: 'success', confirmed: 'success', cancelled: 'danger'
+        };
+        return `<span class="badge badge-${map[s] || 'secondary'}">${s?.replace(/_/g,' ')}</span>`;
+    }
+
+    // Close modals on backdrop click
+    document.querySelectorAll('.modal').forEach(m => {
+        m.addEventListener('click', e => { if (e.target === m) m.style.display = 'none'; });
+    });
+
+    init();
+</script>
+</body>
+</html>
