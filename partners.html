@@ -472,9 +472,12 @@
                         <div style="font-size:1rem; font-weight:700; color:var(--navy);">${formatDate(d.distribution_date)}</div>
                         <div style="font-size:13px; color:var(--gray-text);">${d.notes || ''}</div>
                     </div>
-                    <div style="text-align:right;">
-                        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray-text);">Total</div>
-                        <div style="font-size:1.2rem; font-weight:700; color:var(--navy);">MVR ${fmt(d.total_profit_mvr)}</div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <div style="text-align:right;">
+                            <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray-text);">Total</div>
+                            <div style="font-size:1.2rem; font-weight:700; color:var(--navy);">MVR ${fmt(d.total_profit_mvr)}</div>
+                        </div>
+                        <button class="btn btn-sm btn-danger" onclick="deleteDistribution(${d.id})">Delete</button>
                     </div>
                 </div>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:10px;">
@@ -566,6 +569,14 @@
     }
 
     // ==================== HELPERS ====================
+    async function deleteDistribution(id) {
+        if (!confirm('Delete this distribution record?')) return;
+        const res = await fetch(`${API}/admin/profit-distributions/${id}`, { method: 'DELETE', headers: authHeaders() });
+        const data = await res.json();
+        if (data.success) { loadPartners(); loadDistributions(); }
+        else alert(data.error || 'Failed to delete');
+    }
+
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     function fmt(n) { return parseFloat(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
     function today() { return new Date().toISOString().slice(0, 10); }
