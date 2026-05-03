@@ -246,7 +246,7 @@
     <!-- Controls -->
     <div class="controls">
         <select id="month-select" onchange="loadAll()">
-            <option value="">All Time</option>
+            <option value="" selected>All Time</option>
         </select>
         <span style="font-size:13px; color:var(--gray-text);">Filter by unit:</span>
     </div>
@@ -743,7 +743,7 @@
             const opt = document.createElement('option');
             opt.value = val;
             opt.textContent = label;
-            if (i === 0) opt.selected = true;
+            // no default selection
             sel.appendChild(opt);
         }
     }
