@@ -629,6 +629,7 @@
         </div>
         <div class="modal-actions">
             <button class="btn btn-secondary" onclick="closeModal('contract-modal')">Cancel</button>
+            <button class="btn btn-danger btn-sm" id="con-delete-btn" style="display:none;" onclick="deleteContract()">Delete</button>
             <button class="btn btn-primary" onclick="saveContract()">Save Contract</button>
         </div>
     </div>
@@ -868,6 +869,7 @@
     }
 
     function openRevenueModal(r = null) {
+        if (allUnits.length === 0) { alert('Units are still loading, please try again.'); return; }
         document.getElementById('rev-id').value = '';
         document.getElementById('rev-unit-id').value = allUnits[0]?.id || '';
         document.getElementById('rev-date').value = today();
@@ -942,7 +944,7 @@
         const res = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(body) });
         const data = await res.json();
         if (data.success) { closeModal('revenue-modal'); loadRevenue(); loadSummary(); }
-        else alert(data.error || 'Failed to save');
+        else alert('Error: ' + (data.error || 'Failed to save. Check all fields are filled.'));
     }
 
     async function deleteRevenue() {
@@ -1099,6 +1101,7 @@
         document.getElementById('con-end').value = '';
         document.getElementById('con-status').value = 'active';
         document.getElementById('con-notes').value = '';
+        document.getElementById('con-delete-btn').style.display = 'none';
         document.getElementById('contract-modal').style.display = 'flex';
     }
 
@@ -1114,6 +1117,7 @@
         document.getElementById('con-end').value = c.contract_end?.slice(0,10) || '';
         document.getElementById('con-status').value = c.status;
         document.getElementById('con-notes').value = c.notes || '';
+        document.getElementById('con-delete-btn').style.display = 'inline-block';
         document.getElementById('contract-modal').style.display = 'flex';
     }
 
@@ -1137,6 +1141,15 @@
         const data = await res.json();
         if (data.success) { closeModal('contract-modal'); loadContracts(); }
         else alert(data.error || 'Failed to save');
+    }
+
+    async function deleteContract() {
+        if (!confirm('Delete this contract? The security deposit record will also be removed.')) return;
+        const id = document.getElementById('con-id').value;
+        const res = await fetch(`${API}/admin/contracts/${id}`, { method: 'DELETE', headers: authHeaders() });
+        const data = await res.json();
+        if (data.success) { closeModal('contract-modal'); loadContracts(); loadDeposits(); }
+        else alert(data.error || 'Failed to delete');
     }
 
     // ==================== RENOVATION ====================
