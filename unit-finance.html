@@ -925,9 +925,11 @@
         const id = document.getElementById('rev-id').value;
         const currency = document.getElementById('rev-currency').value;
         const amount = parseFloat(document.getElementById('rev-amount').value);
+        const unit_id = document.getElementById('rev-unit-id').value;
+        if (!unit_id) { alert('No unit selected. Please wait for units to load and try again.'); return; }
         if (!amount) { alert('Please enter an amount'); return; }
         const body = {
-            unit_id: document.getElementById('rev-unit-id').value,
+            unit_id,
             transaction_date: document.getElementById('rev-date').value,
             description: document.getElementById('rev-description').value,
             currency,
@@ -1146,6 +1148,8 @@
     async function deleteContract() {
         if (!confirm('Delete this contract? The security deposit record will also be removed.')) return;
         const id = document.getElementById('con-id').value;
+        // Delete security deposit first to avoid foreign key constraint
+        await fetch(`${API}/admin/security-deposits/by-contract/${id}`, { method: 'DELETE', headers: authHeaders() });
         const res = await fetch(`${API}/admin/contracts/${id}`, { method: 'DELETE', headers: authHeaders() });
         const data = await res.json();
         if (data.success) { closeModal('contract-modal'); loadContracts(); loadDeposits(); }
