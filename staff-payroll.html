@@ -359,6 +359,7 @@
                 <td style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
                     <button class="btn btn-sm btn-primary" onclick="generateSlip(${sJson})"><i class="fas fa-file-pdf"></i> Slip</button>
                     ${s.status === 'pending' ? `<button class="btn btn-sm btn-success" onclick="openPaidModal(${s.id})">Mark Paid</button>` : ''}
+                    <button class="btn btn-sm" style="background:#f8d7da;color:#721c24;" onclick="deleteSalary(${s.id})">Delete</button>
                 </td>
             </tr>`;
         }).join('');
@@ -445,6 +446,14 @@
     }
 
     function closeSlip() { document.getElementById('salary-slip').classList.remove('show'); }
+
+    async function deleteSalary(id) {
+        if (!confirm('Delete this salary record?')) return;
+        const res = await fetch(`${API}/admin/staff-salary/${id}`, { method: 'DELETE', headers: authHeaders() });
+        const data = await res.json();
+        if (data.success) loadSalaryHistory();
+        else alert(data.error || 'Failed to delete');
+    }
 
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     function fmt(n) { return parseFloat(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
