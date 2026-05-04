@@ -328,6 +328,35 @@
             } catch(e) { console.error(e); }
         }
 
+        function copyAccount(number, el) {
+            navigator.clipboard.writeText(number).then(() => {
+                const btn = el.querySelector('div:last-child');
+                const orig = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                btn.style.color = '#28a745';
+                setTimeout(() => { btn.textContent = orig; btn.style.color = '#40B5AD'; }, 2000);
+            }).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = number;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                const btn = el.querySelector('div:last-child');
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => { btn.textContent = 'Tap to copy'; }, 2000);
+            });
+        }
+
+        function updateSlipLabel(input) {
+            const label = document.getElementById('slip-label');
+            if (input.files && input.files[0]) {
+                label.style.borderColor = '#40B5AD';
+                label.style.background = '#f0fafa';
+                label.innerHTML = '<div style="font-size:24px; margin-bottom:8px;">✅</div><div style="font-size:14px; font-weight:600; color:#0A2540; margin-bottom:4px;">' + input.files[0].name + '</div><div style="font-size:12px; color:#40B5AD;">Ready to upload</div>';
+            }
+        }
+
         function showPaymentPage(bookingId, guestName, phone, nights, total, checkIn, checkOut) {
             document.getElementById('pay-booking-id').textContent = '#' + bookingId;
             document.getElementById('pay-guest-name').textContent = guestName;
@@ -652,60 +681,75 @@
     </script>
 
 <!-- PAYMENT MODAL -->
-<div id="payment-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; padding:20px; font-family:'Inter',sans-serif;">
-    <div style="background:white; border-radius:20px; padding:32px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto;">
-        <div style="text-align:center; margin-bottom:24px;">
-            <div style="width:56px; height:56px; background:#0A2540; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
-                <span style="color:white; font-size:1.4rem; font-weight:800;">HTM</span>
-            </div>
-            <h2 style="font-size:1.3rem; font-weight:700; color:#0A2540; margin-bottom:4px;">Complete Your Booking</h2>
-            <p style="color:#6C757D; font-size:14px;">Transfer payment and upload your slip to confirm</p>
-        </div>
-
-        <!-- Booking Summary -->
-        <div style="background:#F8F9FA; border-radius:12px; padding:16px; margin-bottom:20px;">
-            <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#6C757D; margin-bottom:10px; font-weight:600;">Booking Summary</div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <div><div style="font-size:11px; color:#999;">Booking ID</div><div style="font-weight:700; color:#0A2540;" id="pay-booking-id">—</div></div>
-                <div><div style="font-size:11px; color:#999;">Guest</div><div style="font-weight:700; color:#0A2540;" id="pay-guest-name">—</div></div>
-                <div><div style="font-size:11px; color:#999;">Check-in</div><div style="font-weight:600; color:#0A2540; font-size:13px;" id="pay-checkin">—</div></div>
-                <div><div style="font-size:11px; color:#999;">Check-out</div><div style="font-weight:600; color:#0A2540; font-size:13px;" id="pay-checkout">—</div></div>
-                <div><div style="font-size:11px; color:#999;">Nights</div><div style="font-weight:600; color:#0A2540;" id="pay-nights">—</div></div>
-                <div><div style="font-size:11px; color:#999;">Total</div><div style="font-weight:800; color:#006994; font-size:1.1rem;" id="pay-total">—</div></div>
+<div id="payment-modal" style="display:none; position:fixed; inset:0; background:rgba(10,37,64,0.85); z-index:9999; align-items:center; justify-content:center; padding:16px; font-family:'Inter',sans-serif; backdrop-filter:blur(4px);">
+    <div style="background:white; border-radius:24px; width:100%; max-width:460px; max-height:92vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,0.3);">
+        <div style="background:linear-gradient(135deg,#0A2540 0%,#006994 100%); padding:28px 28px 24px; border-radius:24px 24px 0 0; color:white; position:relative;">
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:2px; opacity:0.6; margin-bottom:6px;">HTM Rentals</div>
+            <div style="font-size:1.4rem; font-weight:800; letter-spacing:-0.5px;">Complete Payment</div>
+            <div style="font-size:13px; opacity:0.7; margin-top:4px;">Transfer & upload slip to confirm your booking</div>
+            <div style="position:absolute; top:24px; right:24px; background:rgba(64,181,173,0.25); border:1px solid rgba(64,181,173,0.5); border-radius:40px; padding:8px 16px; text-align:center;">
+                <div style="font-size:10px; opacity:0.7; text-transform:uppercase; letter-spacing:1px;">Total</div>
+                <div style="font-size:1.1rem; font-weight:800; color:#40B5AD;" id="pay-total">—</div>
             </div>
         </div>
-
-        <!-- Bank Details -->
-        <div style="border:2px solid #E5E5E5; border-radius:12px; padding:16px; margin-bottom:20px;">
-            <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#6C757D; margin-bottom:12px; font-weight:600;">Transfer To</div>
-            <div style="margin-bottom:10px;">
-                <div style="font-size:11px; color:#999; margin-bottom:2px;">MVR Payments</div>
-                <div style="font-weight:700; color:#0A2540; font-size:15px; letter-spacing:1px;">7730000770586</div>
-                <div style="font-size:12px; color:#6C757D;">BML — HTM</div>
+        <div style="padding:24px;">
+            <div style="background:#F8F9FA; border-radius:14px; padding:16px; margin-bottom:20px;">
+                <div style="font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:#999; margin-bottom:12px; font-weight:700;">Booking Details</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div><div style="font-size:10px; color:#aaa; margin-bottom:3px;">Booking ID</div><div style="font-weight:700; color:#0A2540; font-size:14px;" id="pay-booking-id">—</div></div>
+                    <div><div style="font-size:10px; color:#aaa; margin-bottom:3px;">Guest</div><div style="font-weight:700; color:#0A2540; font-size:14px;" id="pay-guest-name">—</div></div>
+                    <div><div style="font-size:10px; color:#aaa; margin-bottom:3px;">Check-in</div><div style="font-weight:600; color:#0A2540; font-size:13px;" id="pay-checkin">—</div></div>
+                    <div><div style="font-size:10px; color:#aaa; margin-bottom:3px;">Check-out</div><div style="font-weight:600; color:#0A2540; font-size:13px;" id="pay-checkout">—</div></div>
+                    <div><div style="font-size:10px; color:#aaa; margin-bottom:3px;">Nights</div><div style="font-weight:600; color:#0A2540; font-size:13px;" id="pay-nights">—</div></div>
+                </div>
             </div>
-            <div>
-                <div style="font-size:11px; color:#999; margin-bottom:2px;">USD Payments</div>
-                <div style="font-weight:700; color:#0A2540; font-size:15px; letter-spacing:1px;">7730000770587</div>
-                <div style="font-size:12px; color:#6C757D;">BML — HTM</div>
+            <div style="margin-bottom:20px;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+                    <div style="width:28px; height:28px; background:#0A2540; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:700; flex-shrink:0;">1</div>
+                    <div style="font-size:14px; font-weight:700; color:#0A2540;">Transfer Payment</div>
+                </div>
+                <div style="border:1.5px solid #E8E8E8; border-radius:14px; padding:14px 16px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="copyAccount('7730000770586', this)">
+                    <div>
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                            <span style="background:#E8F4FD; color:#006994; font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;">BML</span>
+                            <span style="font-size:11px; color:#999;">Bank of Maldives</span>
+                        </div>
+                        <div style="font-size:15px; font-weight:800; color:#0A2540; letter-spacing:1px; font-family:monospace;">7730000770586</div>
+                        <div style="font-size:11px; color:#6C757D; margin-top:2px;">Account Name: HTM</div>
+                    </div>
+                    <div style="color:#40B5AD; font-size:12px; font-weight:600; flex-shrink:0;">Tap to copy</div>
+                </div>
+                <div style="border:1.5px solid #E8E8E8; border-radius:14px; padding:14px 16px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="copyAccount('90501400052311000', this)">
+                    <div>
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                            <span style="background:#E8F5E9; color:#2e7d32; font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;">MIB</span>
+                            <span style="font-size:11px; color:#999;">Maldives Islamic Bank</span>
+                        </div>
+                        <div style="font-size:15px; font-weight:800; color:#0A2540; letter-spacing:1px; font-family:monospace;">90501400052311000</div>
+                        <div style="font-size:11px; color:#6C757D; margin-top:2px;">Account Name: HTM</div>
+                    </div>
+                    <div style="color:#40B5AD; font-size:12px; font-weight:600; flex-shrink:0;">Tap to copy</div>
+                </div>
             </div>
-        </div>
-
-        <!-- Upload Slip -->
-        <div style="margin-bottom:20px;">
-            <div style="font-size:13px; font-weight:600; color:#0A2540; margin-bottom:8px;">Upload Payment Slip</div>
-            <input type="file" id="slip-file" accept="image/*,.pdf" style="width:100%; padding:10px; border:2px dashed #E5E5E5; border-radius:8px; font-size:14px; cursor:pointer;">
-            <div style="font-size:12px; color:#6C757D; margin-top:6px;">Take a screenshot or photo of your transfer confirmation</div>
-        </div>
-
-        <input type="hidden" id="pay-booking-id-hidden">
-
-        <button id="upload-slip-btn" onclick="uploadSlip()" style="width:100%; padding:14px; background:#006994; color:white; border:none; border-radius:40px; font-weight:700; font-size:15px; cursor:pointer; margin-bottom:12px;">
-            Upload Slip & Confirm
-        </button>
-
-        <div style="text-align:center; font-size:13px; color:#6C757D;">
-            Having trouble? 
-            <a href="https://wa.me/9609373113" style="color:#006994; font-weight:600;">WhatsApp us</a>
+            <div style="margin-bottom:20px;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+                    <div style="width:28px; height:28px; background:#0A2540; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:700; flex-shrink:0;">2</div>
+                    <div style="font-size:14px; font-weight:700; color:#0A2540;">Upload Transfer Slip</div>
+                </div>
+                <label for="slip-file" style="display:block; border:2px dashed #D0D5DD; border-radius:14px; padding:20px; text-align:center; cursor:pointer;" id="slip-label">
+                    <div style="font-size:24px; margin-bottom:8px;">📎</div>
+                    <div style="font-size:14px; font-weight:600; color:#0A2540; margin-bottom:4px;">Choose file or tap to browse</div>
+                    <div style="font-size:12px; color:#999;">Screenshot or photo of your transfer confirmation</div>
+                </label>
+                <input type="file" id="slip-file" accept="image/*,.pdf" style="display:none;" onchange="updateSlipLabel(this)">
+            </div>
+            <input type="hidden" id="pay-booking-id-hidden">
+            <button id="upload-slip-btn" onclick="uploadSlip()" style="width:100%; padding:16px; background:linear-gradient(135deg,#006994,#40B5AD); color:white; border:none; border-radius:40px; font-weight:700; font-size:15px; cursor:pointer; margin-bottom:16px; box-shadow:0 4px 15px rgba(0,105,148,0.3);">
+                Submit Payment Slip ✓
+            </button>
+            <div style="text-align:center; font-size:13px; color:#999;">
+                Need help? <a href="https://wa.me/9609373113" style="color:#006994; font-weight:600; text-decoration:none;">WhatsApp 9373113</a>
+            </div>
         </div>
     </div>
 </div>
