@@ -367,23 +367,47 @@
 
         async function loadDashboard() {
             try {
-                // Load bookings for stats
-                const res = await fetch(`${API_BASE_URL}/admin/bookings`, { headers: authHeaders() });
-                if (res.status === 401) { handleAuthError(); return; }
-                const data = await res.json();
+                // Load all data in parallel
+                const [bookingRes, financeRes, minibarRes, invoiceRes] = await Promise.all([
+                    fetch(`${API_BASE_URL}/admin/bookings`, { headers: authHeaders() }),
+                    fetch(`${API_BASE_URL}/admin/finance/summary`, { headers: authHeaders() }),
+                    fetch(`${API_BASE_URL}/admin/minibar-summary`, { headers: authHeaders() }),
+                    fetch(`${API_BASE_URL}/admin/invoices`, { headers: authHeaders() })
+                ]);
+                if (bookingRes.status === 401) { handleAuthError(); return; }
+
+                const data = await bookingRes.json();
+                const financeData = await financeRes.json();
+                const minibarData = await minibarRes.json();
+                const invData = await invoiceRes.json();
+
+                const fmt = n => parseFloat(n||0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+
                 if (data.success) {
                     const bookings = data.bookings;
                     const pending = bookings.filter(b => b.booking_status === 'pending').length;
                     const confirmed = bookings.filter(b => b.booking_status === 'confirmed').length;
-                    const cancelled = bookings.filter(b => b.booking_status === 'cancelled').length;
-                    const revenue = bookings.filter(b => b.booking_status === 'confirmed').reduce((s,b) => s + (parseFloat(b.total_amount) || 0), 0);
+                    const today = new Date().toISOString().slice(0,10);
+                    const checkinToday = bookings.filter(b => b.check_in_date === today && b.booking_status === 'confirmed').length;
+                    const checkoutToday = bookings.filter(b => b.check_out_date === today && b.booking_status === 'confirmed').length;
+
+                    // Finance stats
+                    const totalRevenue = financeData.success ? financeData.summary.revenue.total_mvr : 0;
+                    const netProfit = financeData.success ? financeData.summary.net_profit_mvr : 0;
+                    const minibarNet = minibarData.success ? minibarData.summary.net_mvr : 0;
+
+                    // Outstanding invoices
+                    const outstanding = invData.success ? invData.invoices.filter(i => !['paid','cancelled'].includes(i.status)).length : 0;
 
                     document.getElementById('stats-grid').innerHTML = `
-                        <div class="stat-card"><h3>Total Bookings</h3><div class="stat-number">${bookings.length}</div></div>
+                        <div class="stat-card"><h3>Confirmed Bookings</h3><div class="stat-number">${confirmed}</div></div>
                         <div class="stat-card"><h3>Pending</h3><div class="stat-number">${pending}</div></div>
-                        <div class="stat-card"><h3>Confirmed</h3><div class="stat-number">${confirmed}</div></div>
-                        <div class="stat-card"><h3>Cancelled</h3><div class="stat-number">${cancelled}</div></div>
-                        <div class="stat-card"><h3>Revenue</h3><div class="stat-number">$${revenue.toFixed(2)}</div></div>
+                        <div class="stat-card"><h3>Check-in Today</h3><div class="stat-number">${checkinToday}</div></div>
+                        <div class="stat-card"><h3>Check-out Today</h3><div class="stat-number">${checkoutToday}</div></div>
+                        <div class="stat-card"><h3>Total Revenue</h3><div class="stat-number" style="font-size:1rem;">MVR ${fmt(totalRevenue)}</div></div>
+                        <div class="stat-card"><h3>Net Profit</h3><div class="stat-number" style="font-size:1rem; color:${netProfit >= 0 ? '#28a745' : '#dc3545'};">MVR ${fmt(netProfit)}</div></div>
+                        <div class="stat-card"><h3>Minibar Net</h3><div class="stat-number" style="font-size:1rem;">MVR ${fmt(minibarNet)}</div></div>
+                        <div class="stat-card"><h3>Unpaid Invoices</h3><div class="stat-number" style="color:${outstanding > 0 ? '#ffc107' : '#28a745'};">${outstanding}</div></div>
                     `;
 
                     // Recent bookings
@@ -391,20 +415,18 @@
                     document.getElementById('recent-bookings').innerHTML = recentBookings.map(b => `
                         <div class="recent-item">
                             <div><strong>${escapeHtml(b.guest_name)}</strong> <span class="badge badge-${b.booking_status}">${b.booking_status}</span></div>
-                            <div style="font-size:13px; color:var(--gray-600);">${formatDate(b.check_in_date)} → ${formatDate(b.check_out_date)} • ${b.total_nights} nights</div>
+                            <div style="font-size:13px; color:var(--gray-600);">${formatDate(b.check_in_date)} → ${formatDate(b.check_out_date)} · ${b.total_nights} nights · ${b.currency} ${fmt(b.total_amount)}</div>
                         </div>
                     `).join('') || '<div class="recent-item">No recent bookings</div>';
                 }
 
-                // Load invoices
-                const invRes = await fetch(`${API_BASE_URL}/admin/invoices`, { headers: authHeaders() });
-                const invData = await invRes.json();
+                // Recent invoices
                 if (invData.success && invData.invoices) {
                     const recentInvoices = invData.invoices.slice(0,5);
                     document.getElementById('recent-invoices').innerHTML = recentInvoices.map(inv => `
                         <div class="recent-item">
                             <div><strong>${inv.invoice_number}</strong> <span class="badge badge-${inv.status}">${inv.status}</span></div>
-                            <div style="font-size:13px; color:var(--gray-600);">${escapeHtml(inv.guest_name)} • $${parseFloat(inv.total_amount).toFixed(2)}</div>
+                            <div style="font-size:13px; color:var(--gray-600);">${escapeHtml(inv.guest_name || '')} · ${inv.currency} ${fmt(inv.total_amount)}</div>
                         </div>
                     `).join('') || '<div class="recent-item">No recent invoices</div>';
                 }
