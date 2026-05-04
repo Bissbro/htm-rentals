@@ -328,6 +328,50 @@
             } catch(e) { console.error(e); }
         }
 
+        function showPaymentPage(bookingId, guestName, phone, nights, total, checkIn, checkOut) {
+            document.getElementById('pay-booking-id').textContent = '#' + bookingId;
+            document.getElementById('pay-guest-name').textContent = guestName;
+            document.getElementById('pay-nights').textContent = nights + ' night' + (nights > 1 ? 's' : '');
+            document.getElementById('pay-checkin').textContent = formatDate(checkIn);
+            document.getElementById('pay-checkout').textContent = formatDate(checkOut);
+            document.getElementById('pay-total').textContent = 'MVR ' + total.toFixed(2);
+            document.getElementById('pay-booking-id-hidden').value = bookingId;
+            document.getElementById('payment-modal').style.display = 'flex';
+        }
+
+        async function uploadSlip() {
+            const bookingId = document.getElementById('pay-booking-id-hidden').value;
+            const fileInput = document.getElementById('slip-file');
+            const file = fileInput.files[0];
+            if (!file) { alert('Please select your payment slip'); return; }
+
+            const formData = new FormData();
+            formData.append('slip', file);
+
+            const btn = document.getElementById('upload-slip-btn');
+            btn.textContent = 'Uploading...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/bookings/${bookingId}/slip`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('payment-modal').style.display = 'none';
+                    showMessage('Payment slip uploaded! We will confirm your booking shortly.', 'success');
+                } else {
+                    alert(data.error || 'Upload failed. Please try WhatsApp instead.');
+                }
+            } catch(e) {
+                alert('Upload failed. Please send your slip via WhatsApp: 9373113');
+            } finally {
+                btn.textContent = 'Upload Slip';
+                btn.disabled = false;
+            }
+        }
+
         function generateCalendar(month, year) {
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -488,9 +532,8 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    showMessage('Booking request sent! We will contact you shortly.', 'success');
-                    const msg = `*New Local Booking Request - HTM Rentals*%0A%0A*Booking ID:* ${data.booking_id}%0A*Unit:* ${unit.unit_name}%0A*Guest:* ${name}%0A*Phone:* ${phone}%0A*Check-in:* ${formatDate(startDate)} (14:00)%0A*Check-out:* ${formatDate(checkOutStr)} (12:00)%0A*Nights:* ${nights}%0A*Guests:* ${adults} adults, ${children} children%0A*Total:* MVR ${total.toFixed(2)}%0A%0APlease confirm this booking in the admin panel.`;
-                    window.open(`https://wa.me/9609373113?text=${msg}`, '_blank');
+                    // Show payment page
+                    showPaymentPage(data.booking_id, name, phone, nights, total, startDate, checkOutStr);
                     startDate = null; endDate = null;
                     document.getElementById('check-in').value = '';
                     document.getElementById('check-out').value = '';
@@ -607,5 +650,65 @@
         
         loadUnit();
     </script>
+
+<!-- PAYMENT MODAL -->
+<div id="payment-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; padding:20px; font-family:'Inter',sans-serif;">
+    <div style="background:white; border-radius:20px; padding:32px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto;">
+        <div style="text-align:center; margin-bottom:24px;">
+            <div style="width:56px; height:56px; background:#0A2540; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
+                <span style="color:white; font-size:1.4rem; font-weight:800;">HTM</span>
+            </div>
+            <h2 style="font-size:1.3rem; font-weight:700; color:#0A2540; margin-bottom:4px;">Complete Your Booking</h2>
+            <p style="color:#6C757D; font-size:14px;">Transfer payment and upload your slip to confirm</p>
+        </div>
+
+        <!-- Booking Summary -->
+        <div style="background:#F8F9FA; border-radius:12px; padding:16px; margin-bottom:20px;">
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#6C757D; margin-bottom:10px; font-weight:600;">Booking Summary</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div><div style="font-size:11px; color:#999;">Booking ID</div><div style="font-weight:700; color:#0A2540;" id="pay-booking-id">—</div></div>
+                <div><div style="font-size:11px; color:#999;">Guest</div><div style="font-weight:700; color:#0A2540;" id="pay-guest-name">—</div></div>
+                <div><div style="font-size:11px; color:#999;">Check-in</div><div style="font-weight:600; color:#0A2540; font-size:13px;" id="pay-checkin">—</div></div>
+                <div><div style="font-size:11px; color:#999;">Check-out</div><div style="font-weight:600; color:#0A2540; font-size:13px;" id="pay-checkout">—</div></div>
+                <div><div style="font-size:11px; color:#999;">Nights</div><div style="font-weight:600; color:#0A2540;" id="pay-nights">—</div></div>
+                <div><div style="font-size:11px; color:#999;">Total</div><div style="font-weight:800; color:#006994; font-size:1.1rem;" id="pay-total">—</div></div>
+            </div>
+        </div>
+
+        <!-- Bank Details -->
+        <div style="border:2px solid #E5E5E5; border-radius:12px; padding:16px; margin-bottom:20px;">
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#6C757D; margin-bottom:12px; font-weight:600;">Transfer To</div>
+            <div style="margin-bottom:10px;">
+                <div style="font-size:11px; color:#999; margin-bottom:2px;">MVR Payments</div>
+                <div style="font-weight:700; color:#0A2540; font-size:15px; letter-spacing:1px;">7730000770586</div>
+                <div style="font-size:12px; color:#6C757D;">BML — HTM</div>
+            </div>
+            <div>
+                <div style="font-size:11px; color:#999; margin-bottom:2px;">USD Payments</div>
+                <div style="font-weight:700; color:#0A2540; font-size:15px; letter-spacing:1px;">7730000770587</div>
+                <div style="font-size:12px; color:#6C757D;">BML — HTM</div>
+            </div>
+        </div>
+
+        <!-- Upload Slip -->
+        <div style="margin-bottom:20px;">
+            <div style="font-size:13px; font-weight:600; color:#0A2540; margin-bottom:8px;">Upload Payment Slip</div>
+            <input type="file" id="slip-file" accept="image/*,.pdf" style="width:100%; padding:10px; border:2px dashed #E5E5E5; border-radius:8px; font-size:14px; cursor:pointer;">
+            <div style="font-size:12px; color:#6C757D; margin-top:6px;">Take a screenshot or photo of your transfer confirmation</div>
+        </div>
+
+        <input type="hidden" id="pay-booking-id-hidden">
+
+        <button id="upload-slip-btn" onclick="uploadSlip()" style="width:100%; padding:14px; background:#006994; color:white; border:none; border-radius:40px; font-weight:700; font-size:15px; cursor:pointer; margin-bottom:12px;">
+            Upload Slip & Confirm
+        </button>
+
+        <div style="text-align:center; font-size:13px; color:#6C757D;">
+            Having trouble? 
+            <a href="https://wa.me/9609373113" style="color:#006994; font-weight:600;">WhatsApp us</a>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
