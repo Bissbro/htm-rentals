@@ -460,7 +460,8 @@
 
         async function submitBooking(e) {
             e.preventDefault();
-            if (!startDate || !endDate) { showMessage('Please select check-in and check-out dates', 'error'); return; }
+            if (!startDate) { showMessage('Please select a check-in date', 'error'); return; }
+            if (!endDate) { endDate = startDate; } // single night booking
             const checkOutDate = new Date(endDate); checkOutDate.setDate(checkOutDate.getDate() + 1);
             const checkOutStr = checkOutDate.toISOString().split('T')[0];
             const adults = parseInt(document.getElementById('adults').value) || 1;
