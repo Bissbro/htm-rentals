@@ -596,10 +596,25 @@
             currentMode = mode;
             const localBtn = document.getElementById('toggle-local');
             const foreignBtn = document.getElementById('toggle-foreign');
-            if (mode === 'local') { localBtn.classList.add('local-active'); foreignBtn.classList.remove('foreign-active'); }
-            else { foreignBtn.classList.add('foreign-active'); localBtn.classList.remove('local-active'); }
-            renderUnitDetails();
-            setTimeout(() => { generateCalendar(currentMonth, currentYear); }, 100);
+            if (mode === 'local') {
+                localBtn.classList.add('local-active');
+                foreignBtn.classList.remove('foreign-active');
+            } else {
+                foreignBtn.classList.add('foreign-active');
+                localBtn.classList.remove('local-active');
+            }
+            // Just toggle visibility instead of full re-render
+            const localForm = document.getElementById('local-booking-form');
+            const foreignMsg = document.getElementById('foreign-message');
+            const externalBtns = document.getElementById('external-buttons-container');
+            const priceEl = document.querySelector('.price-mvr');
+            if (localForm) localForm.style.display = mode === 'local' ? 'block' : 'none';
+            if (foreignMsg) foreignMsg.style.display = mode === 'foreign' ? 'block' : 'none';
+            if (externalBtns) externalBtns.style.display = mode === 'foreign' ? 'block' : 'none';
+            if (priceEl && unit) {
+                const usdRate = unit.rate_usd || (unit.rate_mvr / 15.42).toFixed(2);
+                priceEl.textContent = mode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`;
+            }
         }
 
         function toggleDescription() {
