@@ -361,7 +361,9 @@
             const name = document.getElementById('f-name').value.trim();
             if (!name) { alert('Please enter your name'); return; }
             const nationality = document.getElementById('f-nationality').value.trim() || 'Not specified';
-            const guests = document.getElementById('f-guests').value || '2';
+            const adults = document.getElementById('f-adults').value || '1';
+            const children = document.getElementById('f-children').value || '0';
+            const guests = parseInt(adults) + parseInt(children);
             const contact = document.getElementById('f-contact').value.trim() || 'Not provided';
             const payment = document.getElementById('f-payment').value;
             const checkIn = document.getElementById('check-in').value || 'Flexible';
@@ -376,7 +378,7 @@ Name: ${name}
 Nationality: ${nationality}
 Check-in: ${checkIn}
 Check-out: ${checkOut}
-Guests: ${guests}
+Guests: ${adults} adult${adults > 1 ? 's' : ''}${children > 0 ? ', ' + children + ' child' + (children > 1 ? 'ren' : '') : ''}
 Contact: ${contact}
 Payment: ${payment}`;
             window.open(`https://wa.me/9607555608?text=${encodeURIComponent(msg)}`, '_blank');
@@ -635,6 +637,20 @@ Payment: ${payment}`;
             const priceEl = document.querySelector('.price-mvr');
             if (localForm) localForm.style.display = mode === 'local' ? 'block' : 'none';
             if (foreignMsg) foreignMsg.style.display = mode === 'foreign' ? 'block' : 'none';
+            // Populate foreign guest dropdowns
+            if (mode === 'foreign' && unit) {
+                const maxAdults = unit.max_adults || unit.max_guests || 4;
+                const maxChildren = unit.max_children || 2;
+                const fAdults = document.getElementById('f-adults');
+                const fChildren = document.getElementById('f-children');
+                if (fAdults && fAdults.options.length === 0) {
+                    for (let i = 1; i <= maxAdults; i++) fAdults.innerHTML += `<option value="${i}">${i} adult${i > 1 ? 's' : ''}</option>`;
+                }
+                if (fChildren && fChildren.options.length === 0) {
+                    fChildren.innerHTML = '<option value="0">0 children</option>';
+                    for (let i = 1; i <= maxChildren; i++) fChildren.innerHTML += `<option value="${i}">${i} child${i > 1 ? 'ren' : ''}</option>`;
+                }
+            }
             if (externalBtns) externalBtns.style.display = mode === 'foreign' ? 'block' : 'none';
             if (priceEl && unit) {
                 const usdRate = unit.rate_usd || (unit.rate_mvr / 15.42).toFixed(2);
@@ -734,13 +750,17 @@ Payment: ${payment}`;
                                     </div>
                                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
                                         <div class="form-group" style="margin-bottom:0;">
-                                            <label>No. of Guests</label>
-                                            <input type="number" id="f-guests" placeholder="2" min="1" max="10" value="2">
+                                            <label>Adults</label>
+                                            <select id="f-adults"></select>
                                         </div>
                                         <div class="form-group" style="margin-bottom:0;">
-                                            <label>WhatsApp / Contact</label>
-                                            <input type="text" id="f-contact" placeholder="+44 7700 900000">
+                                            <label>Children</label>
+                                            <select id="f-children"></select>
                                         </div>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:10px;">
+                                        <label>WhatsApp / Contact</label>
+                                        <input type="text" id="f-contact" placeholder="+44 7700 900000">
                                     </div>
                                     <div class="form-group" style="margin-bottom:10px;">
                                         <label>Payment Preference</label>
