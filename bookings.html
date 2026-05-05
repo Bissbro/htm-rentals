@@ -447,6 +447,7 @@
                                 <td>
                                     <strong>${escapeHtml(booking.guest_name)}</strong><br>
                                     <small style="color: var(--gray-text);">${booking.guest_phone || ''}</small>
+                                    ${booking.guest_nid ? `<small style="color: var(--gray-text);">NID: ${booking.guest_nid}</small>` : ''}
                                   </td>
                                 <td>${escapeHtml(booking.unit_name || 'N/A')}</td>
                                 <td>${formatDate(booking.check_in_date)}</td>
@@ -481,6 +482,10 @@
                     <div class="booking-detail">
                         <i class="fas fa-phone"></i>
                         <span>${booking.guest_phone || 'No phone'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">NID</span>
+                        <span>${booking.guest_nid || 'Not provided'}</span>
                     </div>
                     <div class="booking-detail">
                         <i class="fas fa-building"></i>
