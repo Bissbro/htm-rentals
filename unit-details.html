@@ -122,12 +122,12 @@
 
         /* External Buttons */
         .external-buttons { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0; padding-top: 16px; border-top: 1px solid var(--gray-border); }
-        .ext-btn { flex: 1; min-width: 100px; padding: 10px 16px; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; transition: all 0.3s ease; }
-        .ext-btn:hover { transform: translateY(-2px); opacity: 0.9; }
-        .ext-btn.airbnb { background: #FF5A5F; color: white; }
-        .ext-btn.agoda { background: #1E5D86; color: white; }
-        .ext-btn.trip { background: #2680EB; color: white; }
-        .ext-btn.booking { background: #003580; color: white; }
+        .ext-btn { flex: 1; min-width: 120px; padding: 12px 16px; border: none; border-radius: 40px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; transition: all 0.2s ease; color: white; letter-spacing: 0.2px; }
+        .ext-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .ext-btn.airbnb { background: #FF5A5F; }
+        .ext-btn.agoda { background: #E31837; }
+        .ext-btn.trip { background: #1E88E5; }
+        .ext-btn.booking { background: #003580; }
 
         /* Booking Card */
         .booking-card { background: white; border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-md); border: 1px solid var(--gray-border); position: sticky; top: 80px; overflow: visible; }
@@ -734,10 +734,13 @@ Payment: ${payment}`;
                 dotsHtml = galleryImages.map((_, idx) => `<div class="gallery-dot ${idx === 0 ? 'active' : ''}" onclick="goToImage(${idx})"></div>`).join('');
             } else { slidesHtml = `<div class="gallery-slide active"><img src="https://via.placeholder.com/800x600?text=HTM+Rentals" alt="Placeholder"></div>`; }
             let externalButtonsHtml = '';
-            if (unit.airbnb_url && unit.airbnb_url.trim() !== '') externalButtonsHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb"></i> Airbnb</a>`;
-            if (unit.agoda_url && unit.agoda_url.trim() !== '') externalButtonsHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">Agoda</a>`;
-            if (unit.trip_url && unit.trip_url.trim() !== '') externalButtonsHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">Trip.com</a>`;
-            if (unit.booking_url && unit.booking_url.trim() !== '') externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">Booking.com</a>`;
+            const agodaSvg = `<svg width="16" height="16" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="45" fill="white"/><text x="50" y="66" font-size="52" font-weight="900" text-anchor="middle" fill="#E31837" font-family="Arial">A</text></svg>`;
+            const bookingSvg = `<svg width="16" height="16" viewBox="0 0 100 100"><rect width="100" height="100" rx="8" fill="white"/><text x="50" y="68" font-size="48" font-weight="900" text-anchor="middle" fill="#003580" font-family="Arial">B.</text></svg>`;
+            const tripSvg = `<svg width="16" height="16" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="white"/><text x="50" y="66" font-size="52" font-weight="900" text-anchor="middle" fill="#1E88E5" font-family="Arial">T</text></svg>`;
+            if (unit.airbnb_url && unit.airbnb_url.trim() !== '') externalButtonsHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb" style="font-size:16px;"></i> Airbnb</a>`;
+            if (unit.agoda_url && unit.agoda_url.trim() !== '') externalButtonsHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">${agodaSvg} Agoda</a>`;
+            if (unit.trip_url && unit.trip_url.trim() !== '') externalButtonsHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">${tripSvg} Trip.com</a>`;
+            if (unit.booking_url && unit.booking_url.trim() !== '') externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">${bookingSvg} Booking.com</a>`;
             const foreignInquiryHtml = '';
             const usdRate = unit.rate_usd || (unit.rate_mvr / 15.42).toFixed(2);
             const maxAdults = unit.max_adults || unit.max_guests;
@@ -765,7 +768,10 @@ Payment: ${payment}`;
                     </div>
                     <div>
                         <div class="booking-card" id="booking-card">
-                            <div class="price-display"><span class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span><span class="price-nightly">/ night</span></div>
+                            <div class="price-display" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                                <div><span class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span><span class="price-nightly">/ night</span></div>
+                                <span style="background:#f0fafa; border:1.5px solid #40B5AD; color:#40B5AD; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; letter-spacing:0.5px; white-space:nowrap;">DIRECT BOOKING</span>
+                            </div>
                             <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};"><div class="external-buttons">${externalButtonsHtml || '<p style="color: var(--gray-text);">No external booking links available. Please contact us directly.</p>'}${foreignInquiryHtml}</div></div>
                             <div class="calendar-section"><div class="calendar-header"><h4 id="calendar-month-year">${monthNames[currentMonth]} ${currentYear}</h4><div class="calendar-nav"><button id="prev-month"><i class="fas fa-chevron-left"></i></button><button id="next-month"><i class="fas fa-chevron-right"></i></button></div></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-instruction"><i class="fas fa-info-circle"></i> Tap a date to start. Tap another date to end. Tap same date to clear.</div></div>
                             <div class="date-inputs"><div class="date-field"><label>CHECK-IN (14:00)</label><input type="text" id="check-in" readonly placeholder="Select date" value=""></div><div class="date-field"><label>CHECK-OUT (12:00)</label><input type="text" id="check-out" readonly placeholder="Select date" value=""></div></div>
@@ -785,8 +791,8 @@ Payment: ${payment}`;
                                 <div style="background:#f8f9fa; border-radius:12px; padding:16px; margin-bottom:16px;">
                                     <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#006994; margin-bottom:8px;">Payment Options</div>
                                     <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                                        <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; padding:10px 14px; font-size:13px; font-weight:600; color:#0A2540;">💵 Cash on Arrival</div>
-                                        <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; padding:10px 14px; font-size:13px; font-weight:600; color:#0A2540;">🔵 USDT (Crypto)</div>
+                                        <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; padding:10px 14px; font-size:13px; font-weight:600; color:#0A2540; display:flex; align-items:center; gap:8px;"><i class="fas fa-money-bill-wave" style="color:#40B5AD;"></i> Cash on Arrival</div>
+                                        <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; padding:10px 14px; font-size:13px; font-weight:600; color:#0A2540; display:flex; align-items:center; gap:8px;"><i class="fab fa-bitcoin" style="color:#40B5AD;"></i> USDT (Crypto)</div>
                                     </div>
                                 </div>
                                 <form id="foreign-inquiry-form">
@@ -821,8 +827,8 @@ Payment: ${payment}`;
                                             <option value="Cash">Cash on Arrival</option>
                                         </select>
                                     </div>
-                                    <button type="button" onclick="sendForeignInquiry()" style="width:100%; padding:14px; background:linear-gradient(135deg,#25D366,#128C7E); color:white; border:none; border-radius:40px; font-weight:700; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-                                        <i class="fab fa-whatsapp"></i> Send Inquiry on WhatsApp
+                                    <button type="button" onclick="sendForeignInquiry()" style="width:100%; padding:14px; background:#25D366; color:white; border:none; border-radius:40px; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.2px; box-shadow:0 2px 8px rgba(37,211,102,0.3);">
+                                        <i class="fab fa-whatsapp" style="font-size:18px;"></i> Send Inquiry via WhatsApp
                                     </button>
                                 </form>
                             </div>
