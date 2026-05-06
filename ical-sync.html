@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTM Rentals | iCal Sync</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #F4F7FB; color: #0A2540; min-height: 100vh; }
+        .header { background: #0A2540; color: white; padding: 16px 20px; display: flex; align-items: center; gap: 12px; }
+        .header a { color: white; text-decoration: none; font-size: 20px; }
+        .header h1 { font-size: 18px; font-weight: 600; }
+        .container { max-width: 700px; margin: 0 auto; padding: 20px 16px; }
+
+        /* Unit tabs */
+        .unit-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .unit-tab { padding: 8px 18px; border-radius: 40px; border: 2px solid #E0E0E0; background: white; font-size: 13px; font-weight: 600; color: #666; cursor: pointer; transition: all 0.2s; }
+        .unit-tab.active { border-color: #40B5AD; background: #40B5AD; color: white; }
+
+        /* Cards */
+        .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .card-title { font-size: 16px; font-weight: 700; color: #0A2540; margin-bottom: 4px; }
+        .card-subtitle { font-size: 13px; color: #888; margin-bottom: 16px; }
+
+        /* Export URL */
+        .url-box { display: flex; gap: 8px; align-items: center; }
+        .url-input { flex: 1; padding: 12px 14px; border: 1.5px solid #E0E0E0; border-radius: 10px; font-size: 13px; color: #444; background: #f8f9fa; outline: none; }
+        .btn { padding: 11px 20px; border-radius: 40px; border: none; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background: #006994; color: white; }
+        .btn-primary:hover { background: #005577; }
+        .btn-teal { background: #40B5AD; color: white; }
+        .btn-teal:hover { background: #35a09a; }
+        .btn-danger { background: #fff0f0; color: #dc3545; border: 1.5px solid #ffcdd2; }
+        .btn-danger:hover { background: #ffcdd2; }
+        .btn-outline { background: white; color: #006994; border: 1.5px solid #006994; }
+        .btn-sm { padding: 7px 14px; font-size: 12px; }
+
+        /* Refresh button */
+        .refresh-btn { width: 100%; padding: 13px; border-radius: 12px; border: 1.5px solid #E0E0E0; background: white; font-size: 14px; font-weight: 600; color: #006994; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; margin-bottom: 16px; }
+        .refresh-btn:hover { background: #f0f8ff; border-color: #006994; }
+
+        /* Connections list */
+        .connection-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+        .connection-item:last-child { border-bottom: none; }
+        .connection-info { flex: 1; }
+        .connection-name { font-size: 14px; font-weight: 700; color: #0A2540; margin-bottom: 3px; display: flex; align-items: center; gap: 8px; }
+        .connection-meta { font-size: 12px; color: #888; }
+        .connection-actions { display: flex; gap: 8px; }
+        .platform-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: #f0fafa; color: #40B5AD; border: 1px solid #40B5AD; }
+
+        /* Add connection form */
+        .add-form { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #f0f0f0; }
+        .add-form.open { display: block; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group select { width: 100%; padding: 11px 14px; border: 1.5px solid #E0E0E0; border-radius: 10px; font-size: 14px; outline: none; transition: border-color 0.2s; }
+        .form-group input:focus, .form-group select:focus { border-color: #40B5AD; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* Toast */
+        .toast { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #0A2540; color: white; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600; z-index: 9999; box-shadow: 0 4px 20px rgba(0,0,0,0.3); white-space: nowrap; }
+        .empty-state { text-align: center; padding: 24px; color: #999; font-size: 14px; }
+        .empty-state i { font-size: 32px; display: block; margin-bottom: 8px; color: #ddd; }
+        .spinning { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <a href="admin.html"><i class="fas fa-arrow-left"></i></a>
+    <h1>iCal Sync</h1>
+</div>
+
+<div class="container">
+
+    <!-- Unit Tabs -->
+    <div class="unit-tabs" id="unit-tabs"></div>
+
+    <!-- Refresh All -->
+    <button class="refresh-btn" onclick="syncAll()">
+        <i class="fas fa-sync" id="refresh-icon"></i> Refresh All Connections
+    </button>
+
+    <!-- Export Card -->
+    <div class="card">
+        <div class="card-title">Export Your Calendar</div>
+        <div class="card-subtitle">Copy this link and add it to Airbnb, Agoda, Booking.com to block your HTM Rentals bookings there.</div>
+        <div class="url-box">
+            <input type="text" class="url-input" id="export-url" readonly>
+            <button class="btn btn-teal" onclick="copyExportUrl()">
+                <i class="fas fa-copy"></i> Copy
+            </button>
+        </div>
+    </div>
+
+    <!-- Connections Card -->
+    <div class="card">
+        <div class="card-title">Connected Calendars</div>
+        <div class="card-subtitle">Calendars from other platforms imported into HTM Rentals.</div>
+        <div id="connections-list"></div>
+        <button class="btn btn-outline" style="margin-top:12px; width:100%;" onclick="toggleAddForm()">
+            <i class="fas fa-plus"></i> Connect Calendar
+        </button>
+
+        <!-- Add Form -->
+        <div class="add-form" id="add-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Platform Name</label>
+                    <select id="new-platform">
+                        <option value="Airbnb">Airbnb</option>
+                        <option value="Agoda">Agoda</option>
+                        <option value="Booking.com">Booking.com</option>
+                        <option value="Trip.com">Trip.com</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>iCal URL</label>
+                <input type="text" id="new-url" placeholder="https://...">
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button class="btn btn-primary" onclick="addConnection()" style="flex:1;">
+                    <i class="fas fa-link"></i> Import
+                </button>
+                <button class="btn btn-outline" onclick="toggleAddForm()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://api.htmrentals.com';
+let units = [];
+let currentUnitId = null;
+let connections = [];
+
+function getToken() { return sessionStorage.getItem('adminToken'); }
+
+async function init() {
+    // Check auth
+    if (!getToken()) { window.location.href = 'admin.html'; return; }
+    
+    // Load units (only parent units with ical)
+    const res = await fetch(`${API}/api/units`);
+    const data = await res.json();
+    units = data.units.filter(u => !u.parent_unit_id);
+    
+    renderTabs();
+    selectUnit(units[0]?.id);
+}
+
+function renderTabs() {
+    const tabs = document.getElementById('unit-tabs');
+    tabs.innerHTML = units.map(u => {
+        const short = u.unit_name.match(/A-[\w-]+/)?.[0] || u.unit_name.split('|')[1]?.trim() || u.unit_name.slice(0,10);
+        return `<div class="unit-tab ${u.id === currentUnitId ? 'active' : ''}" onclick="selectUnit(${u.id})">${short}</div>`;
+    }).join('');
+}
+
+function selectUnit(unitId) {
+    currentUnitId = unitId;
+    renderTabs();
+    
+    // Set export URL
+    document.getElementById('export-url').value = `${API}/api/calendar/${unitId}.ics`;
+    
+    // Load connections
+    loadConnections();
+}
+
+async function loadConnections() {
+    try {
+        const res = await fetch(`${API}/api/admin/ical/sources/${currentUnitId}`, {
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        });
+        const data = await res.json();
+        connections = data.sources || [];
+        renderConnections();
+    } catch(e) {
+        renderConnections();
+    }
+}
+
+function renderConnections() {
+    const list = document.getElementById('connections-list');
+    if (connections.length === 0) {
+        list.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-times"></i>No calendars connected yet</div>';
+        return;
+    }
+    list.innerHTML = connections.map(c => `
+        <div class="connection-item">
+            <div class="connection-info">
+                <div class="connection-name">
+                    ${c.platform}
+                    <span class="platform-badge">iCal</span>
+                </div>
+                <div class="connection-meta">
+                    ${c.last_synced ? 'Last synced: ' + formatDate(c.last_synced) : 'Never synced'}
+                </div>
+            </div>
+            <div class="connection-actions">
+                <button class="btn btn-teal btn-sm" onclick="syncUnit(${c.id}, '${c.platform}')">
+                    <i class="fas fa-sync" id="sync-icon-${c.id}"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteConnection(${c.id})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function formatDate(d) {
+    if (!d) return 'Never';
+    const date = new Date(d);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+async function syncAll() {
+    const icon = document.getElementById('refresh-icon');
+    icon.classList.add('spinning');
+    try {
+        const res = await fetch(`${API}/api/admin/ical/sync`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        });
+        const data = await res.json();
+        if (data.success) {
+            const total = data.results.reduce((s, r) => s + (r.blocked || 0), 0);
+            showToast(`Synced — ${total} dates updated`);
+            loadConnections();
+        } else {
+            showToast('Sync failed');
+        }
+    } catch(e) {
+        showToast('Error: ' + e.message);
+    } finally {
+        icon.classList.remove('spinning');
+    }
+}
+
+async function syncUnit(sourceId, platform) {
+    const icon = document.getElementById(`sync-icon-${sourceId}`);
+    if (icon) icon.classList.add('spinning');
+    try {
+        const res = await fetch(`${API}/api/admin/ical/sync/${currentUnitId}`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        });
+        const data = await res.json();
+        if (data.success) {
+            showToast(`${platform} synced successfully`);
+            loadConnections();
+        }
+    } catch(e) {
+        showToast('Sync error');
+    } finally {
+        if (icon) icon.classList.remove('spinning');
+    }
+}
+
+async function deleteConnection(id) {
+    if (!confirm('Remove this calendar connection?')) return;
+    try {
+        const res = await fetch(`${API}/api/admin/ical/source/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        });
+        const data = await res.json();
+        if (data.success) {
+            showToast('Connection removed');
+            loadConnections();
+        }
+    } catch(e) {
+        showToast('Error removing connection');
+    }
+}
+
+function toggleAddForm() {
+    const form = document.getElementById('add-form');
+    form.classList.toggle('open');
+}
+
+async function addConnection() {
+    const platform = document.getElementById('new-platform').value;
+    const url = document.getElementById('new-url').value.trim();
+    if (!url) { showToast('Please enter an iCal URL'); return; }
+    
+    try {
+        const res = await fetch(`${API}/api/admin/ical/source`, {
+            method: 'POST',
+            headers: { 
+                'Authorization': 'Bearer ' + getToken(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ unit_id: currentUnitId, platform, ical_url: url })
+        });
+        const data = await res.json();
+        if (data.success) {
+            showToast(`${platform} connected!`);
+            document.getElementById('new-url').value = '';
+            toggleAddForm();
+            loadConnections();
+            // Auto sync
+            setTimeout(() => syncUnit(data.id, platform), 500);
+        }
+    } catch(e) {
+        showToast('Error adding connection');
+    }
+}
+
+function copyExportUrl() {
+    const url = document.getElementById('export-url').value;
+    navigator.clipboard.writeText(url).then(() => showToast('URL copied to clipboard!'));
+}
+
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 3500);
+}
+
+init();
+</script>
+</body>
+</html>
