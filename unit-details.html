@@ -125,7 +125,7 @@
         .ext-btn { flex: 1; min-width: 120px; padding: 12px 16px; border: none; border-radius: 40px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; transition: all 0.2s ease; color: white; letter-spacing: 0.2px; }
         .ext-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .ext-btn.airbnb { background: #FF5A5F; }
-        .ext-btn.agoda { background: #E31837; }
+        .ext-btn.agoda { background: #9B0D2A; }
         .ext-btn.trip { background: #1E88E5; }
         .ext-btn.booking { background: #003580; }
 
@@ -377,6 +377,29 @@
                 label.style.borderColor = '#40B5AD';
                 label.style.background = '#f0fafa';
                 label.innerHTML = '<div style="font-size:24px; margin-bottom:8px;">✅</div><div style="font-size:14px; font-weight:600; color:#0A2540; margin-bottom:4px;">' + input.files[0].name + '</div><div style="font-size:12px; color:#40B5AD;">Ready to upload</div>';
+            }
+        }
+
+        function selectPayment(type) {
+            const cashEl = document.getElementById('pay-cash');
+            const usdtEl = document.getElementById('pay-usdt');
+            const cashIcon = document.getElementById('pay-cash-icon');
+            const usdtIcon = document.getElementById('pay-usdt-icon');
+            document.getElementById('f-payment').value = type;
+            if (type === 'Cash on Arrival') {
+                cashEl.style.borderColor = '#40B5AD';
+                cashEl.style.background = '#f0fafa';
+                cashIcon.style.color = '#40B5AD';
+                usdtEl.style.borderColor = '#E5E5E5';
+                usdtEl.style.background = 'white';
+                usdtIcon.style.color = '#ccc';
+            } else {
+                usdtEl.style.borderColor = '#40B5AD';
+                usdtEl.style.background = '#f0fafa';
+                usdtIcon.style.color = '#40B5AD';
+                cashEl.style.borderColor = '#E5E5E5';
+                cashEl.style.background = 'white';
+                cashIcon.style.color = '#ccc';
             }
         }
 
@@ -745,10 +768,14 @@ Payment: ${payment}`;
             const agodaSvg = `<svg width="16" height="16" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="45" fill="white"/><text x="50" y="66" font-size="52" font-weight="900" text-anchor="middle" fill="#E31837" font-family="Arial">A</text></svg>`;
             const bookingSvg = `<svg width="16" height="16" viewBox="0 0 100 100"><rect width="100" height="100" rx="8" fill="white"/><text x="50" y="68" font-size="48" font-weight="900" text-anchor="middle" fill="#003580" font-family="Arial">B.</text></svg>`;
             const tripSvg = `<svg width="16" height="16" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="white"/><text x="50" y="66" font-size="52" font-weight="900" text-anchor="middle" fill="#1E88E5" font-family="Arial">T</text></svg>`;
-            if (unit.airbnb_url && unit.airbnb_url.trim() !== '') externalButtonsHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb" style="font-size:16px;"></i> Airbnb</a>`;
-            if (unit.agoda_url && unit.agoda_url.trim() !== '') externalButtonsHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">${agodaSvg} Agoda</a>`;
-            if (unit.trip_url && unit.trip_url.trim() !== '') externalButtonsHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">${tripSvg} Trip.com</a>`;
-            if (unit.booking_url && unit.booking_url.trim() !== '') externalButtonsHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">${bookingSvg} Booking.com</a>`;
+            // Top row buttons
+            let topRowHtml = '';
+            let bottomRowHtml = '';
+            if (unit.airbnb_url && unit.airbnb_url.trim() !== '') topRowHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb" style="font-size:16px;"></i> Airbnb</a>`;
+            if (unit.agoda_url && unit.agoda_url.trim() !== '') topRowHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">${agodaSvg} Agoda</a>`;
+            if (unit.booking_url && unit.booking_url.trim() !== '') topRowHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">${bookingSvg} Booking.com</a>`;
+            if (unit.trip_url && unit.trip_url.trim() !== '') bottomRowHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip" style="width:100%;">${tripSvg} Trip.com</a>`;
+            if (topRowHtml || bottomRowHtml) externalButtonsHtml = `<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:${bottomRowHtml ? '8px' : '0'}">${topRowHtml}</div>${bottomRowHtml ? `<div>${bottomRowHtml}</div>` : ''}`;
             const foreignInquiryHtml = '';
             const usdRate = unit.rate_usd || (unit.rate_mvr / 15.42).toFixed(2);
             const maxAdults = unit.max_adults || unit.max_guests;
@@ -780,7 +807,10 @@ Payment: ${payment}`;
                                 <div><span class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span><span class="price-nightly">/ night</span></div>
                                 <span style="background:#f0fafa; border:1.5px solid #40B5AD; color:#40B5AD; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; letter-spacing:0.5px; white-space:nowrap;">DIRECT BOOKING</span>
                             </div>
-                            <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};"><div class="external-buttons">${externalButtonsHtml || '<p style="color: var(--gray-text);">No external booking links available. Please contact us directly.</p>'}${foreignInquiryHtml}</div></div>
+                            <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};">
+                            ${externalButtonsHtml ? `<div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999; margin-bottom:10px;">Also available on</div>
+                            <div class="external-buttons">${externalButtonsHtml}</div>` : ''}
+                        </div>
                             <div class="calendar-section"><div class="calendar-header"><h4 id="calendar-month-year">${monthNames[currentMonth]} ${currentYear}</h4><div class="calendar-nav"><button id="prev-month"><i class="fas fa-chevron-left"></i></button><button id="next-month"><i class="fas fa-chevron-right"></i></button></div></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-instruction"><i class="fas fa-info-circle"></i> Tap a date to start. Tap another date to end. Tap same date to clear.</div></div>
                             <div class="date-inputs"><div class="date-field"><label>CHECK-IN (14:00)</label><input type="text" id="check-in" readonly placeholder="Select date" value=""></div><div class="date-field"><label>CHECK-OUT (12:00)</label><input type="text" id="check-out" readonly placeholder="Select date" value=""></div></div>
                             <div id="local-booking-form" style="display: ${currentMode === 'local' ? 'block' : 'none'};">
@@ -796,11 +826,17 @@ Payment: ${payment}`;
                                 <hr><p style="font-size: 12px; color: var(--gray-text); text-align: center; margin-top: 12px;"><i class="fas fa-lock"></i> You won't be charged yet</p>
                             </div>
                             <div id="foreign-message" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};">
-                                <div style="background:#f8f9fa; border-radius:12px; padding:16px; margin-bottom:16px;">
-                                    <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#006994; margin-bottom:8px;">Payment Options</div>
-                                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                                        <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; padding:10px 14px; font-size:13px; font-weight:600; color:#0A2540; display:flex; align-items:center; gap:8px;"><i class="fas fa-money-bill-wave" style="color:#40B5AD;"></i> Cash on Arrival</div>
-                                        <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; padding:10px 14px; font-size:13px; font-weight:600; color:#0A2540; display:flex; align-items:center; gap:8px;"><i class="fab fa-bitcoin" style="color:#40B5AD;"></i> USDT (Crypto)</div>
+                                <div style="margin-bottom:16px;">
+                                    <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999; margin-bottom:10px;">Payment Options</div>
+                                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                        <div class="pay-option" id="pay-cash" onclick="selectPayment('Cash on Arrival')" style="background:white; border:2px solid #E5E5E5; border-radius:12px; padding:12px; text-align:center; cursor:pointer; transition:all 0.2s;">
+                                            <i class="fas fa-money-bill-wave" style="font-size:20px; color:#ccc; display:block; margin-bottom:6px;" id="pay-cash-icon"></i>
+                                            <span style="font-size:12px; font-weight:600; color:#0A2540;">Cash on Arrival</span>
+                                        </div>
+                                        <div class="pay-option" id="pay-usdt" onclick="selectPayment('USDT')" style="background:white; border:2px solid #E5E5E5; border-radius:12px; padding:12px; text-align:center; cursor:pointer; transition:all 0.2s;">
+                                            <i class="fab fa-bitcoin" style="font-size:20px; color:#ccc; display:block; margin-bottom:6px;" id="pay-usdt-icon"></i>
+                                            <span style="font-size:12px; font-weight:600; color:#0A2540;">USDT (Crypto)</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <form id="foreign-inquiry-form">
@@ -828,14 +864,8 @@ Payment: ${payment}`;
                                         <label>WhatsApp / Contact</label>
                                         <input type="text" id="f-contact" placeholder="+44 7700 900000">
                                     </div>
-                                    <div class="form-group" style="margin-bottom:10px;">
-                                        <label>Payment Preference</label>
-                                        <select id="f-payment">
-                                            <option value="USDT">USDT (Crypto)</option>
-                                            <option value="Cash">Cash on Arrival</option>
-                                        </select>
-                                    </div>
-                                    <button type="button" onclick="sendForeignInquiry()" style="width:100%; padding:14px; background:#25D366; color:white; border:none; border-radius:40px; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.2px; box-shadow:0 2px 8px rgba(37,211,102,0.3);">
+                                    <input type="hidden" id="f-payment" value="USDT">
+                                    <button type="button" onclick="sendForeignInquiry()" style="width:100%; padding:14px; background:#128C7E; color:white; border:none; border-radius:40px; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.2px; box-shadow:0 2px 8px rgba(18,140,126,0.3);">
                                         <i class="fab fa-whatsapp" style="font-size:18px;"></i> Send Inquiry via WhatsApp
                                     </button>
                                 </form>
