@@ -768,14 +768,30 @@ Payment: ${payment}`;
             const agodaSvg = `<svg width="16" height="16" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="45" fill="white"/><text x="50" y="66" font-size="52" font-weight="900" text-anchor="middle" fill="#E31837" font-family="Arial">A</text></svg>`;
             const bookingSvg = `<svg width="16" height="16" viewBox="0 0 100 100"><rect width="100" height="100" rx="8" fill="white"/><text x="50" y="68" font-size="48" font-weight="900" text-anchor="middle" fill="#003580" font-family="Arial">B.</text></svg>`;
             const tripSvg = `<svg width="16" height="16" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="white"/><text x="50" y="66" font-size="52" font-weight="900" text-anchor="middle" fill="#1E88E5" font-family="Arial">T</text></svg>`;
-            // Top row buttons
+            const hasAirbnb = unit.airbnb_url && unit.airbnb_url.trim() !== '';
+            const hasAgoda = unit.agoda_url && unit.agoda_url.trim() !== '';
+            const hasBooking = unit.booking_url && unit.booking_url.trim() !== '';
+            const hasTrip = unit.trip_url && unit.trip_url.trim() !== '';
+            const totalLinks = [hasAirbnb, hasAgoda, hasBooking, hasTrip].filter(Boolean).length;
+
             let topRowHtml = '';
             let bottomRowHtml = '';
-            if (unit.airbnb_url && unit.airbnb_url.trim() !== '') topRowHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb" style="font-size:16px;"></i> Airbnb</a>`;
-            if (unit.agoda_url && unit.agoda_url.trim() !== '') topRowHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">${agodaSvg} Agoda</a>`;
-            if (unit.booking_url && unit.booking_url.trim() !== '') topRowHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">${bookingSvg} Booking.com</a>`;
-            if (unit.trip_url && unit.trip_url.trim() !== '') bottomRowHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip" style="width:100%;">${tripSvg} Trip.com</a>`;
-            if (topRowHtml || bottomRowHtml) externalButtonsHtml = `<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:${bottomRowHtml ? '8px' : '0'}">${topRowHtml}</div>${bottomRowHtml ? `<div>${bottomRowHtml}</div>` : ''}`;
+
+            if (totalLinks === 4) {
+                // Airbnb, Trip, Agoda on top — Booking.com full width below
+                if (hasAirbnb) topRowHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb" style="font-size:16px;"></i> Airbnb</a>`;
+                if (hasTrip) topRowHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">${tripSvg} Trip.com</a>`;
+                if (hasAgoda) topRowHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">${agodaSvg} Agoda</a>`;
+                if (hasBooking) bottomRowHtml = `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking" style="width:100%;">${bookingSvg} Booking.com</a>`;
+            } else {
+                // 1-3 links: all on one row
+                if (hasAirbnb) topRowHtml += `<a href="${unit.airbnb_url}" target="_blank" class="ext-btn airbnb"><i class="fab fa-airbnb" style="font-size:16px;"></i> Airbnb</a>`;
+                if (hasAgoda) topRowHtml += `<a href="${unit.agoda_url}" target="_blank" class="ext-btn agoda">${agodaSvg} Agoda</a>`;
+                if (hasBooking) topRowHtml += `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">${bookingSvg} Booking.com</a>`;
+                if (hasTrip) topRowHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">${tripSvg} Trip.com</a>`;
+            }
+
+            if (topRowHtml || bottomRowHtml) externalButtonsHtml = `<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:${bottomRowHtml ? '8px' : '0'};">${topRowHtml}</div>${bottomRowHtml ? `<div style="display:flex;">${bottomRowHtml}</div>` : ''}`;
             const foreignInquiryHtml = '';
             const usdRate = unit.rate_usd || (unit.rate_mvr / 15.42).toFixed(2);
             const maxAdults = unit.max_adults || unit.max_guests;
