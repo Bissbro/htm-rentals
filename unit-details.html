@@ -219,8 +219,11 @@
         let refreshInterval = null;
 
         function scrollToBookingCard() {
-            const bookingCard = document.querySelector('.booking-card');
-            if (bookingCard) bookingCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const bookingCard = document.getElementById('booking-card');
+            if (bookingCard) {
+                const y = bookingCard.getBoundingClientRect().top + window.scrollY - 70;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
         }
 
         async function loadUnit() {
@@ -700,7 +703,8 @@ Payment: ${payment}`;
             } else {
                 grid.classList.add('collapsed');
                 btn.textContent = `Show all ${unit.amenities?.length || 0} amenities`;
-                document.querySelector('.amenities-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const amenitiesSection = document.querySelector('.amenities-section');
+                if (amenitiesSection) { const y = amenitiesSection.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({ top: y, behavior: 'smooth' }); }
             }
         }
 
