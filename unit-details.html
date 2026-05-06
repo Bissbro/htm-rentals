@@ -27,7 +27,7 @@
             --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
         }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; width: 100%; }
 
         /* Header - Sticky */
         .header {
@@ -69,7 +69,7 @@
         .back-arrow svg { width: 28px; height: 28px; }
 
         /* Layout */
-        .unit-layout { display: grid; grid-template-columns: 1fr 380px; gap: 48px; margin-top: 8px; }
+        .unit-layout { display: grid; grid-template-columns: 1fr minmax(0, 380px); gap: 48px; margin-top: 8px; }
         @media (max-width: 900px) { .unit-layout { grid-template-columns: 1fr; gap: 32px; } .booking-card { position: static; margin-top: 24px; } }
 
         /* Gallery */
