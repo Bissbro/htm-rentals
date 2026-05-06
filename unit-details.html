@@ -694,8 +694,14 @@ Payment: ${payment}`;
         function toggleAmenities() {
             const grid = document.getElementById('amenities-grid');
             const btn = document.getElementById('amenities-show-all-btn');
-            if (grid.classList.contains('collapsed')) { grid.classList.remove('collapsed'); btn.textContent = 'Show less'; }
-            else { grid.classList.add('collapsed'); btn.textContent = `Show all ${unit.amenities?.length || 0} amenities`; }
+            if (grid.classList.contains('collapsed')) {
+                grid.classList.remove('collapsed');
+                btn.textContent = 'Show less';
+            } else {
+                grid.classList.add('collapsed');
+                btn.textContent = `Show all ${unit.amenities?.length || 0} amenities`;
+                document.querySelector('.amenities-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         function renderUnitDetails() {
@@ -736,11 +742,11 @@ Payment: ${payment}`;
                         </div>
                         <div class="glass-card"><div id="description-text" class="description ${showDescMore ? 'collapsed' : ''}">${escapeHtml(description)}</div>${showDescMore ? `<button id="desc-show-more-btn" class="show-more-btn" onclick="toggleDescription()">Show more</button>` : ''}</div>
                         <div class="glass-card amenities-section"><h3>What this place offers</h3><div id="amenities-grid" class="amenities-grid ${showAllAmenities ? 'collapsed' : ''}">${amenitiesList.map(a => `<div class="amenity"><i class="fas ${getAmenityIcon(a)}" style="color:#40B5AD;"></i><span>${escapeHtml(a)}</span></div>`).join('')}</div>${showAllAmenities ? `<button id="amenities-show-all-btn" class="show-all-btn" onclick="toggleAmenities()">Show all ${amenitiesList.length} amenities</button>` : ''}</div>
-                        <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};"><div class="external-buttons">${externalButtonsHtml || '<p style="color: var(--gray-text);">No external booking links available. Please contact us directly.</p>'}${foreignInquiryHtml}</div></div>
                     </div>
                     <div>
                         <div class="booking-card" id="booking-card">
                             <div class="price-display"><span class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span><span class="price-nightly">/ night</span></div>
+                            <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};"><div class="external-buttons">${externalButtonsHtml || '<p style="color: var(--gray-text);">No external booking links available. Please contact us directly.</p>'}${foreignInquiryHtml}</div></div>
                             <div class="calendar-section"><div class="calendar-header"><h4 id="calendar-month-year">${monthNames[currentMonth]} ${currentYear}</h4><div class="calendar-nav"><button id="prev-month"><i class="fas fa-chevron-left"></i></button><button id="next-month"><i class="fas fa-chevron-right"></i></button></div></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-instruction"><i class="fas fa-info-circle"></i> Tap a date to start. Tap another date to end. Tap same date to clear.</div></div>
                             <div class="date-inputs"><div class="date-field"><label>CHECK-IN (14:00)</label><input type="text" id="check-in" readonly placeholder="Select date" value=""></div><div class="date-field"><label>CHECK-OUT (12:00)</label><input type="text" id="check-out" readonly placeholder="Select date" value=""></div></div>
                             <div id="local-booking-form" style="display: ${currentMode === 'local' ? 'block' : 'none'};">
