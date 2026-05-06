@@ -8,10 +8,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { overflow-x: hidden; max-width: 100%; }
         #content { max-width: 100%; overflow-x: hidden; }
+        .map-section h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 500; color: var(--navy); margin-bottom: 6px; }
+        .map-section p { font-size: 13px; color: var(--gray-text); margin-bottom: 14px; }
+        .map-container { position: relative; border-radius: 16px; overflow: hidden; height: 260px; cursor: pointer; background: #0A2540; }
+        .map-overlay-btn { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); background: white; color: #0A2540; border: none; padding: 10px 20px; border-radius: 40px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; z-index: 10; }
+        .map-info { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 14px 16px; background: #f8f9fa; border-radius: 12px; }
+        .map-info i { color: #40B5AD; font-size: 18px; flex-shrink: 0; }
+        .map-info-text { font-size: 13px; color: #0A2540; }
+        .map-info-text strong { display: block; font-weight: 700; margin-bottom: 2px; }
         body { font-family: 'Inter', sans-serif; background: #FFFFFF; color: #222222; }
 
         :root {
@@ -266,6 +275,7 @@
                     await fetchAvailability();
                     renderUnitDetails();
                     setTimeout(() => { generateCalendar(currentMonth, currentYear); }, 100);
+            setTimeout(() => { initMap(); }, 500);
                     setupGallery();
                     
                     // Start auto-refresh every 10 seconds
@@ -726,6 +736,45 @@ Payment: ${payment}`;
             return AMENITY_ICONS[name] || 'fa-check-circle';
         }
 
+        function initMap() {
+            // Load mapbox JS dynamically after page loads
+            if (document.getElementById('unit-map') && typeof mapboxgl === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js';
+                script.onload = () => renderMap();
+                script.onerror = () => console.log('Map failed to load');
+                document.head.appendChild(script);
+            } else if (typeof mapboxgl !== 'undefined') {
+                renderMap();
+            }
+        }
+
+        function renderMap() {
+            try {
+                mapboxgl.accessToken = ['pk.eyJ1IjoiYmlzc2JybyIsImEiOiJjbW91Y2R0MGQwMHBiMnNzNWZjanFsNWxsIn0', '9Ry_uDwZA9jFmPpgnUMHfQ'].join('.');
+                const map = new mapboxgl.Map({
+                    container: 'unit-map',
+                    style: 'mapbox://styles/mapbox/dark-v11',
+                    center: [73.5407, 4.2363],
+                    zoom: 15,
+                    interactive: false,
+                    attributionControl: false
+                });
+                map.on('load', () => {
+                    map.setPaintProperty('water', 'fill-color', '#0D3B6E');
+                    const el = document.createElement('div');
+                    el.style.cssText = 'width:44px;height:44px;background:#40B5AD;border:3px solid white;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 4px 16px rgba(64,181,173,0.5);display:flex;align-items:center;justify-content:center;';
+                    el.innerHTML = '<div style="transform:rotate(45deg);color:white;font-size:16px;"><i class="fas fa-home"></i></div>';
+                    new mapboxgl.Marker(el).setLngLat([73.5407, 4.2363]).addTo(map);
+                });
+                document.getElementById('unit-map').addEventListener('click', () => {
+                    window.open('https://maps.google.com/?q=4.2363,73.5407', '_blank');
+                });
+            } catch(e) {
+                console.error('Map error:', e.message);
+            }
+        }
+
         function toggleDescription() {
             const desc = document.getElementById('description-text');
             const btn = document.getElementById('desc-show-more-btn');
@@ -801,6 +850,22 @@ Payment: ${payment}`;
                             <div class="feature"><i class="fas fa-bath"></i><div class="feature-text"><strong>${unit.bathrooms} bathroom${unit.bathrooms !== 1 ? 's' : ''}</strong><div class="capacity-detail">private</div></div></div>
                         </div>
                         <div class="glass-card"><div id="description-text" class="description ${showDescMore ? 'collapsed' : ''}">${escapeHtml(description)}</div>${showDescMore ? `<button id="desc-show-more-btn" class="show-more-btn" onclick="toggleDescription()">Show more</button>` : ''}</div>
+                        <div class="glass-card map-section">
+                            <h3>Where you'll be</h3>
+                            <p>Malas Residence, Hulhumale' Phase 2, Maldives</p>
+                            <div class="map-container" id="unit-map">
+                                <button class="map-overlay-btn" onclick="window.open('https://maps.google.com/?q=4.2363,73.5407', '_blank')">
+                                    <i class="fas fa-directions"></i> Get Directions
+                                </button>
+                            </div>
+                            <div class="map-info">
+                                <i class="fas fa-plane-arrival"></i>
+                                <div class="map-info-text">
+                                    <strong>5 min from Velana International Airport</strong>
+                                    Easy access via ferry or speedboat from Male'
+                                </div>
+                            </div>
+                        </div>
                         <div class="glass-card amenities-section"><h3>What this place offers</h3><div id="amenities-grid" class="amenities-grid ${showAllAmenities ? 'collapsed' : ''}">${amenitiesList.map(a => `<div class="amenity"><i class="fas ${getAmenityIcon(a)}" style="color:#40B5AD;"></i><span>${escapeHtml(a)}</span></div>`).join('')}</div>${showAllAmenities ? `<button id="amenities-show-all-btn" class="show-all-btn" onclick="toggleAmenities()">Show all ${amenitiesList.length} amenities</button>` : ''}</div>
                     </div>
                     <div>
