@@ -516,7 +516,7 @@ async function syncIcal() {
     card.style.opacity = '0.7';
     
     try {
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         const res = await fetch('https://api.htmrentals.com/api/admin/ical/sync', {
             method: 'POST',
             headers: { 'Authorization': 'Bearer ' + token }
