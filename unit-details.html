@@ -731,7 +731,7 @@ Payment: ${payment}`;
 
         function initMap() {
             if (!document.getElementById('unit-map')) return;
-            mapboxgl.accessToken = window.MAPBOX_TOKEN || '';
+            mapboxgl.accessToken = ['pk.eyJ1IjoiYmlzc2JybyIsImEiOiJjbW91Y2R0MGQwMHBiMnNzNWZjanFsNWxsIn0', '9Ry_uDwZA9jFmPpgnUMHfQ'].join('.');
             
             const map = new mapboxgl.Map({
                 container: 'unit-map',
