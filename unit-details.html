@@ -851,18 +851,19 @@ Payment: ${payment}`;
                         </div>
                         <div class="glass-card"><div id="description-text" class="description ${showDescMore ? 'collapsed' : ''}">${escapeHtml(description)}</div>${showDescMore ? `<button id="desc-show-more-btn" class="show-more-btn" onclick="toggleDescription()">Show more</button>` : ''}</div>
                         <div class="glass-card map-section">
-                            <h3>Where you'll be</h3>
+                            <h3>Our Location</h3>
                             <p>Malas Residence, Hulhumale' Phase 2, Maldives</p>
-                            <div class="map-container" id="unit-map">
-                                <button class="map-overlay-btn" onclick="window.open('https://maps.google.com/?q=4.2363,73.5407', '_blank')">
-                                    <i class="fas fa-directions"></i> Get Directions
-                                </button>
+                            <div class="map-container" onclick="window.open('https://maps.google.com/?q=4.2363,73.5407', '_blank')" style="cursor:pointer; position:relative; border-radius:16px; overflow:hidden; height:280px;">
+                                <img src="https://api.htmrentals.com/uploads/malas-location-map.jpg" style="width:100%; height:100%; object-fit:cover; display:block;">
+                                <div style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:white; color:#0A2540; border:none; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; box-shadow:0 4px 16px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; white-space:nowrap;">
+                                    <i class="fas fa-directions" style="color:#40B5AD;"></i> Get Directions
+                                </div>
                             </div>
                             <div class="map-info">
                                 <i class="fas fa-plane-arrival"></i>
                                 <div class="map-info-text">
-                                    <strong>5 min from Velana International Airport</strong>
-                                    Easy access via ferry or speedboat from Male'
+                                    <strong>10-15 min from Velana International Airport</strong>
+                                    Easy access by taxi or bus from the airport
                                 </div>
                             </div>
                         </div>
