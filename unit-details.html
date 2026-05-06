@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="config.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { overflow-x: hidden; max-width: 100%; }
@@ -265,7 +268,7 @@
                     
                     await fetchAvailability();
                     renderUnitDetails();
-                    setTimeout(() => { generateCalendar(currentMonth, currentYear); }, 100);
+                    setTimeout(() => { generateCalendar(currentMonth, currentYear); initMap(); }, 100);
                     setupGallery();
                     
                     // Start auto-refresh every 10 seconds
@@ -726,6 +729,56 @@ Payment: ${payment}`;
             return AMENITY_ICONS[name] || 'fa-check-circle';
         }
 
+        function initMap() {
+            if (!document.getElementById('unit-map')) return;
+            mapboxgl.accessToken = window.MAPBOX_TOKEN || '';
+            
+            const map = new mapboxgl.Map({
+                container: 'unit-map',
+                style: 'mapbox://styles/mapbox/dark-v11',
+                center: [73.5407, 4.2363],
+                zoom: 15,
+                interactive: false,
+                attributionControl: false
+            });
+
+            map.on('load', () => {
+                // Custom teal color for water
+                map.setPaintProperty('water', 'fill-color', '#0D3B6E');
+                map.setPaintProperty('water-shadow', 'fill-color', '#0A2540');
+                
+                // Add custom marker
+                const el = document.createElement('div');
+                el.style.cssText = \`
+                    width: 48px; height: 48px;
+                    background: #40B5AD;
+                    border: 3px solid white;
+                    border-radius: 50% 50% 50% 0;
+                    transform: rotate(-45deg);
+                    box-shadow: 0 4px 16px rgba(64,181,173,0.5);
+                \`;
+                
+                const inner = document.createElement('div');
+                inner.style.cssText = \`
+                    width: 100%; height: 100%;
+                    display: flex; align-items: center; justify-content: center;
+                    transform: rotate(45deg);
+                    color: white; font-size: 18px;
+                \`;
+                inner.innerHTML = '<i class="fas fa-home"></i>';
+                el.appendChild(inner);
+
+                new mapboxgl.Marker(el)
+                    .setLngLat([73.5407, 4.2363])
+                    .addTo(map);
+            });
+
+            // Click to open Google Maps
+            document.getElementById('unit-map').addEventListener('click', () => {
+                window.open('https://maps.google.com/?q=4.2363,73.5407', '_blank');
+            });
+        }
+
         function toggleDescription() {
             const desc = document.getElementById('description-text');
             const btn = document.getElementById('desc-show-more-btn');
@@ -801,6 +854,21 @@ Payment: ${payment}`;
                             <div class="feature"><i class="fas fa-bath"></i><div class="feature-text"><strong>${unit.bathrooms} bathroom${unit.bathrooms !== 1 ? 's' : ''}</strong><div class="capacity-detail">private</div></div></div>
                         </div>
                         <div class="glass-card"><div id="description-text" class="description ${showDescMore ? 'collapsed' : ''}">${escapeHtml(description)}</div>${showDescMore ? `<button id="desc-show-more-btn" class="show-more-btn" onclick="toggleDescription()">Show more</button>` : ''}</div>
+                        <div class="glass-card map-section">
+                            <h3>Where you'll be</h3>
+                            <p>Malas Residence, Hulhumale' Phase 2, Maldives</p>
+                            <div class="map-container" id="unit-map"></div>
+                            <button class="map-overlay-btn" onclick="window.open('https://maps.google.com/?q=4.2363,73.5407', '_blank')">
+                                <i class="fas fa-directions"></i> Get Directions
+                            </button>
+                            <div class="map-info">
+                                <i class="fas fa-plane-arrival"></i>
+                                <div class="map-info-text">
+                                    <strong>5 min from Velana International Airport</strong>
+                                    Easy access via ferry or speedboat from Male'
+                                </div>
+                            </div>
+                        </div>
                         <div class="glass-card amenities-section"><h3>What this place offers</h3><div id="amenities-grid" class="amenities-grid ${showAllAmenities ? 'collapsed' : ''}">${amenitiesList.map(a => `<div class="amenity"><i class="fas ${getAmenityIcon(a)}" style="color:#40B5AD;"></i><span>${escapeHtml(a)}</span></div>`).join('')}</div>${showAllAmenities ? `<button id="amenities-show-all-btn" class="show-all-btn" onclick="toggleAmenities()">Show all ${amenitiesList.length} amenities</button>` : ''}</div>
                     </div>
                     <div>
