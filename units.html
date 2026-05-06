@@ -923,7 +923,7 @@
                 description: document.getElementById('unit-description').value,
                 featured_image: document.getElementById('unit-featured-image').value,
                 gallery_images: currentGalleryImages,
-                amenities: document.getElementById('unit-amenities').value.split(',').map(s => s.trim()).filter(s => s),
+                amenities: Array.from(document.querySelectorAll('#amenities-selector input:checked')).map(cb => cb.dataset.label).filter(Boolean),
                 airbnb_url: document.getElementById('unit-airbnb').value.trim() || null,
                 agoda_url: document.getElementById('unit-agoda').value.trim() || null,
                 trip_url: document.getElementById('unit-trip').value.trim() || null,
