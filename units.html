@@ -472,7 +472,8 @@
                 
                 <div class="form-group">
                     <label>Amenities (comma separated)</label>
-                    <input type="text" id="unit-amenities" placeholder="WiFi, AC, Kitchen, Smart TV, Hot Water">
+                    <div id="amenities-selector" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; max-height:320px; overflow-y:auto; border:1px solid #E5E5E5; border-radius:10px; padding:12px;"></div>
+                    <input type="hidden" id="unit-amenities">
                 </div>
                 
                 <h4 style="margin: 16px 0 12px;">External Booking Links</h4>
@@ -640,6 +641,7 @@
             document.getElementById('unit-description').value = '';
             document.getElementById('unit-featured-image').value = '';
             document.getElementById('unit-amenities').value = '';
+            renderAmenitiesSelector([]);
             document.getElementById('unit-airbnb').value = '';
             document.getElementById('unit-agoda').value = '';
             document.getElementById('unit-trip').value = '';
@@ -678,6 +680,9 @@
             // Featured image is auto-set from gallery
             
             currentGalleryImages = typeof unit.gallery_images === "string" ? JSON.parse(unit.gallery_images || "[]") : (unit.gallery_images || []);
+            const savedAmenities = typeof unit.amenities === 'string' ? unit.amenities.split(',').map(a=>a.trim()) : (unit.amenities || []);
+            renderAmenitiesSelector(savedAmenities);
+            document.getElementById('unit-amenities').value = savedAmenities.join(',');
             displayGalleryPreviews();
             
             document.getElementById('delete-unit-btn').style.display = 'inline-block';
@@ -819,6 +824,85 @@
             input.value = '';
         }
         
+        const HTM_AMENITIES = [
+            {id:'bed_linen',label:'Fresh Bed Linen',icon:'fa-bed'},
+            {id:'extra_pillows',label:'Extra Pillows',icon:'fa-moon'},
+            {id:'extra_blankets',label:'Extra Blankets',icon:'fa-cloud'},
+            {id:'wardrobe',label:'Wardrobe',icon:'fa-door-closed'},
+            {id:'bedside_lamp',label:'Bedside Lamp',icon:'fa-lightbulb'},
+            {id:'baby_crib',label:'Baby Crib',icon:'fa-baby'},
+            {id:'minibar_fridge',label:'Minibar Fridge',icon:'fa-box'},
+            {id:'blackout_curtains',label:'Blackout Curtains',icon:'fa-grip-lines'},
+            {id:'hot_shower',label:'Hot Shower',icon:'fa-shower'},
+            {id:'muslim_shower',label:'Muslim Shower / Hand Bidet',icon:'fa-hand-holding-water'},
+            {id:'fresh_towels',label:'Fresh Towels',icon:'fa-scroll'},
+            {id:'shampoo',label:'Shampoo',icon:'fa-pump-soap'},
+            {id:'conditioner',label:'Conditioner',icon:'fa-pump-soap'},
+            {id:'body_wash',label:'Body Wash',icon:'fa-pump-soap'},
+            {id:'hand_soap',label:'Hand Soap',icon:'fa-soap'},
+            {id:'toilet_paper',label:'Toilet Paper',icon:'fa-toilet-paper'},
+            {id:'hair_dryer',label:'Hair Dryer',icon:'fa-wind'},
+            {id:'air_conditioning',label:'Air Conditioning',icon:'fa-snowflake'},
+            {id:'ceiling_fan',label:'Ceiling Fan',icon:'fa-fan'},
+            {id:'widescreen_tv',label:'Widescreen Smart TV',icon:'fa-tv'},
+            {id:'free_wifi',label:'Free High-Speed WiFi',icon:'fa-wifi'},
+            {id:'sofa',label:'Sofa',icon:'fa-couch'},
+            {id:'coffee_table',label:'Coffee Table',icon:'fa-coffee'},
+            {id:'dining_table',label:'Dining Table',icon:'fa-utensils'},
+            {id:'balcony',label:'Balcony',icon:'fa-building'},
+            {id:'window_view',label:'Window View',icon:'fa-mountain'},
+            {id:'smoking_area',label:'Smoking Area',icon:'fa-smoking'},
+            {id:'refrigerator',label:'Refrigerator',icon:'fa-temperature-low'},
+            {id:'microwave',label:'Microwave',icon:'fa-broadcast-tower'},
+            {id:'regular_stove',label:'Regular Stove',icon:'fa-fire'},
+            {id:'electric_stove',label:'Electric Stove',icon:'fa-plug'},
+            {id:'electric_kettle',label:'Electric Kettle',icon:'fa-mug-hot'},
+            {id:'cooking_utensils',label:'Cooking Utensils',icon:'fa-utensils'},
+            {id:'plates_bowls',label:'Plates & Bowls',icon:'fa-circle'},
+            {id:'cutlery',label:'Cutlery',icon:'fa-utensils'},
+            {id:'glasses_mugs',label:'Glasses & Mugs',icon:'fa-glass-martini'},
+            {id:'dish_soap',label:'Dish Soap',icon:'fa-soap'},
+            {id:'detergent',label:'Detergent',icon:'fa-flask'},
+            {id:'washing_machine',label:'Washing Machine',icon:'fa-shirt'},
+            {id:'drying_rack',label:'Clothes Drying Rack',icon:'fa-grip-lines'},
+            {id:'iron',label:'Iron',icon:'fa-tshirt'},
+            {id:'ironing_board',label:'Ironing Board',icon:'fa-minus'},
+            {id:'storage_cabinet',label:'Storage Cabinet',icon:'fa-archive'},
+            {id:'first_aid',label:'First Aid Kit',icon:'fa-first-aid'},
+            {id:'airport_transfer',label:'Airport Transfer',icon:'fa-plane-arrival'},
+        ];
+
+        function renderAmenitiesSelector(selected = []) {
+            const container = document.getElementById('amenities-selector');
+            container.innerHTML = HTM_AMENITIES.map(a => {
+                const checked = selected.includes(a.label) || selected.includes(a.id);
+                return `<label style="display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:8px; cursor:pointer; border:1.5px solid ${checked ? '#40B5AD' : '#eee'}; background:${checked ? '#f0fafa' : 'white'}; transition:all 0.15s; user-select:none;" onclick="toggleAmenity(this, '${a.label}')">
+                    <input type="checkbox" ${checked ? 'checked' : ''} style="display:none;" data-label="${a.label}">
+                    <i class="fas ${a.icon}" style="color:${checked ? '#40B5AD' : '#ccc'}; width:16px; font-size:13px;"></i>
+                    <span style="font-size:13px; color:#0A2540; font-weight:${checked ? '600' : '400'};">${a.label}</span>
+                </label>`;
+            }).join('');
+        }
+
+        function toggleAmenity(label, name) {
+            const el = label;
+            const checkbox = el.querySelector('input[type=checkbox]');
+            const icon = el.querySelector('i');
+            const span = el.querySelector('span');
+            const checked = !checkbox.checked;
+            checkbox.checked = checked;
+            el.style.borderColor = checked ? '#40B5AD' : '#eee';
+            el.style.background = checked ? '#f0fafa' : 'white';
+            icon.style.color = checked ? '#40B5AD' : '#ccc';
+            span.style.fontWeight = checked ? '600' : '400';
+            updateAmenitiesHidden();
+        }
+
+        function updateAmenitiesHidden() {
+            const checked = Array.from(document.querySelectorAll('#amenities-selector input:checked')).map(cb => cb.dataset.label);
+            document.getElementById('unit-amenities').value = checked.join(',');
+        }
+
         async function saveUnit() {
             const id = document.getElementById('unit-id').value;
             const maxGuests = parseInt(document.getElementById('unit-guests').value) || 2;

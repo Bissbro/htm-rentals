@@ -101,7 +101,10 @@
         .description.collapsed { max-height: 100px; overflow: hidden; }
         .show-more-btn { background: none; border: none; color: var(--ocean); font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 12px; padding: 0; }
         .amenities-section h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 500; color: var(--navy); margin-bottom: 16px; }
-        .amenities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .amenities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .amenity { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #f8f9fa; border-radius: 10px; }
+        .amenity i { width: 18px; font-size: 15px; text-align: center; flex-shrink: 0; }
+        .amenity span { font-size: 13px; color: #0A2540; font-weight: 500; }
         .amenities-grid.collapsed { max-height: 200px; overflow: hidden; }
         .amenity { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
         .amenity i { width: 24px; color: var(--turquoise); font-size: 16px; }
@@ -658,6 +661,29 @@ Payment: ${payment}`;
             }
         }
 
+        const AMENITY_ICONS = {
+            'Fresh Bed Linen':'fa-bed','Extra Pillows':'fa-moon','Extra Blankets':'fa-cloud',
+            'Wardrobe':'fa-door-closed','Bedside Lamp':'fa-lightbulb','Baby Crib':'fa-baby',
+            'Minibar Fridge':'fa-box','Blackout Curtains':'fa-grip-lines',
+            'Hot Shower':'fa-shower','Muslim Shower / Hand Bidet':'fa-hand-holding-water',
+            'Fresh Towels':'fa-scroll','Shampoo':'fa-pump-soap','Conditioner':'fa-pump-soap',
+            'Body Wash':'fa-pump-soap','Hand Soap':'fa-soap','Toilet Paper':'fa-toilet-paper',
+            'Hair Dryer':'fa-wind','Air Conditioning':'fa-snowflake','Ceiling Fan':'fa-fan',
+            'Widescreen Smart TV':'fa-tv','Free High-Speed WiFi':'fa-wifi','Sofa':'fa-couch',
+            'Coffee Table':'fa-coffee','Dining Table':'fa-utensils','Balcony':'fa-building',
+            'Window View':'fa-mountain','Smoking Area':'fa-smoking','Refrigerator':'fa-temperature-low',
+            'Microwave':'fa-broadcast-tower','Regular Stove':'fa-fire','Electric Stove':'fa-plug',
+            'Electric Kettle':'fa-mug-hot','Cooking Utensils':'fa-utensils','Plates & Bowls':'fa-circle',
+            'Cutlery':'fa-utensils','Glasses & Mugs':'fa-glass-martini','Dish Soap':'fa-soap',
+            'Detergent':'fa-flask','Washing Machine':'fa-shirt','Clothes Drying Rack':'fa-grip-lines',
+            'Iron':'fa-tshirt','Ironing Board':'fa-minus','Storage Cabinet':'fa-archive',
+            'First Aid Kit':'fa-first-aid','Airport Transfer':'fa-plane-arrival',
+        };
+
+        function getAmenityIcon(name) {
+            return AMENITY_ICONS[name] || 'fa-check-circle';
+        }
+
         function toggleDescription() {
             const desc = document.getElementById('description-text');
             const btn = document.getElementById('desc-show-more-btn');
@@ -709,7 +735,7 @@ Payment: ${payment}`;
                             <div class="feature"><i class="fas fa-bath"></i><div class="feature-text"><strong>${unit.bathrooms} bathroom${unit.bathrooms !== 1 ? 's' : ''}</strong><div class="capacity-detail">private</div></div></div>
                         </div>
                         <div class="glass-card"><div id="description-text" class="description ${showDescMore ? 'collapsed' : ''}">${escapeHtml(description)}</div>${showDescMore ? `<button id="desc-show-more-btn" class="show-more-btn" onclick="toggleDescription()">Show more</button>` : ''}</div>
-                        <div class="glass-card amenities-section"><h3>What this place offers</h3><div id="amenities-grid" class="amenities-grid ${showAllAmenities ? 'collapsed' : ''}">${amenitiesList.map(a => `<div class="amenity"><i class="fas fa-check-circle"></i><span>${escapeHtml(a)}</span></div>`).join('')}</div>${showAllAmenities ? `<button id="amenities-show-all-btn" class="show-all-btn" onclick="toggleAmenities()">Show all ${amenitiesList.length} amenities</button>` : ''}</div>
+                        <div class="glass-card amenities-section"><h3>What this place offers</h3><div id="amenities-grid" class="amenities-grid ${showAllAmenities ? 'collapsed' : ''}">${amenitiesList.map(a => `<div class="amenity"><i class="fas ${getAmenityIcon(a)}" style="color:#40B5AD;"></i><span>${escapeHtml(a)}</span></div>`).join('')}</div>${showAllAmenities ? `<button id="amenities-show-all-btn" class="show-all-btn" onclick="toggleAmenities()">Show all ${amenitiesList.length} amenities</button>` : ''}</div>
                         <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};"><div class="external-buttons">${externalButtonsHtml || '<p style="color: var(--gray-text);">No external booking links available. Please contact us directly.</p>'}${foreignInquiryHtml}</div></div>
                     </div>
                     <div>
