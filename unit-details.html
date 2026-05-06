@@ -379,6 +379,29 @@
             }
         }
 
+        function selectPayment(type) {
+            const cashEl = document.getElementById('pay-cash');
+            const usdtEl = document.getElementById('pay-usdt');
+            const cashIcon = document.getElementById('pay-cash-icon');
+            const usdtIcon = document.getElementById('pay-usdt-icon');
+            document.getElementById('f-payment').value = type;
+            if (type === 'Cash on Arrival') {
+                cashEl.style.borderColor = '#40B5AD';
+                cashEl.style.background = '#f0fafa';
+                cashIcon.style.color = '#40B5AD';
+                usdtEl.style.borderColor = '#E5E5E5';
+                usdtEl.style.background = 'white';
+                usdtIcon.style.color = '#ccc';
+            } else {
+                usdtEl.style.borderColor = '#40B5AD';
+                usdtEl.style.background = '#f0fafa';
+                usdtIcon.style.color = '#40B5AD';
+                cashEl.style.borderColor = '#E5E5E5';
+                cashEl.style.background = 'white';
+                cashIcon.style.color = '#ccc';
+            }
+        }
+
         function sendForeignInquiry() {
             const name = document.getElementById('f-name').value.trim();
             if (!name) { alert('Please enter your name'); return; }
@@ -802,14 +825,21 @@ Payment: ${payment}`;
                                 <hr><p style="font-size: 12px; color: var(--gray-text); text-align: center; margin-top: 12px;"><i class="fas fa-lock"></i> You won't be charged yet</p>
                             </div>
                             <div id="foreign-message" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};">
-                                <div style="background:#f8f9fa; border-radius:12px; padding:16px; margin-bottom:16px;">
-                                    <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#006994; margin-bottom:8px;">Payment Options</div>
-                                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                                        <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; padding:10px 14px; font-size:13px; font-weight:600; color:#0A2540; display:flex; align-items:center; gap:8px;"><i class="fas fa-money-bill-wave" style="color:#40B5AD;"></i> Cash on Arrival</div>
-                                        <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; padding:10px 14px; font-size:13px; font-weight:600; color:#0A2540; display:flex; align-items:center; gap:8px;"><i class="fab fa-bitcoin" style="color:#40B5AD;"></i> USDT (Crypto)</div>
-                                    </div>
-                                </div>
                                 <form id="foreign-inquiry-form">
+                                    <div style="margin-bottom:14px;">
+                                        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999; margin-bottom:10px;">Payment Options</div>
+                                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                            <div id="pay-cash" onclick="selectPayment('Cash on Arrival')" style="background:white; border:2px solid #E5E5E5; border-radius:12px; padding:14px 10px; text-align:center; cursor:pointer; transition:all 0.2s;">
+                                                <i class="fas fa-money-bill-wave" id="pay-cash-icon" style="font-size:22px; color:#ccc; display:block; margin-bottom:6px;"></i>
+                                                <span style="font-size:12px; font-weight:600; color:#0A2540;">Cash on Arrival</span>
+                                            </div>
+                                            <div id="pay-usdt" onclick="selectPayment('USDT')" style="background:white; border:2px solid #E5E5E5; border-radius:12px; padding:14px 10px; text-align:center; cursor:pointer; transition:all 0.2s;">
+                                                <i class="fab fa-bitcoin" id="pay-usdt-icon" style="font-size:22px; color:#ccc; display:block; margin-bottom:6px;"></i>
+                                                <span style="font-size:12px; font-weight:600; color:#0A2540;">USDT (Crypto)</span>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="f-payment" value="">
+                                    </div>
                                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
                                         <div class="form-group" style="margin-bottom:0;">
                                             <label>Full Name</label>
@@ -830,19 +860,12 @@ Payment: ${payment}`;
                                             <select id="f-children"></select>
                                         </div>
                                     </div>
-                                    <div class="form-group" style="margin-bottom:10px;">
+                                    <div class="form-group" style="margin-bottom:14px;">
                                         <label>WhatsApp / Contact</label>
                                         <input type="text" id="f-contact" placeholder="+44 7700 900000">
                                     </div>
-                                    <div class="form-group" style="margin-bottom:10px;">
-                                        <label>Payment Preference</label>
-                                        <select id="f-payment">
-                                            <option value="USDT">USDT (Crypto)</option>
-                                            <option value="Cash">Cash on Arrival</option>
-                                        </select>
-                                    </div>
-                                    <button type="button" onclick="sendForeignInquiry()" style="width:100%; padding:14px; background:#25D366; color:white; border:none; border-radius:40px; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.2px; box-shadow:0 2px 8px rgba(37,211,102,0.3);">
-                                        <i class="fab fa-whatsapp" style="font-size:18px;"></i> Send Inquiry via WhatsApp
+                                    <button type="button" onclick="sendForeignInquiry()" style="width:100%; padding:14px; background:#128C7E; color:white; border:none; border-radius:40px; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.2px; box-shadow:0 2px 8px rgba(18,140,126,0.25);">
+                                        <i class="fab fa-whatsapp" style="font-size:20px;"></i> Send Inquiry via WhatsApp
                                     </button>
                                 </form>
                             </div>
