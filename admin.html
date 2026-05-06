@@ -317,6 +317,10 @@
                         <i class="fas fa-cog"></i>
                         <span>Settings</span>
                     </a>
+                    <div class="quick-link-card" onclick="syncIcal()" id="ical-sync-card" style="cursor:pointer;">
+                        <i class="fas fa-sync" id="ical-sync-icon"></i>
+                        <span>Sync iCal</span>
+                    </div>
                     <a href="unit-finance.html" class="quick-link-card">
                         <i class="fas fa-chart-line"></i>
                         <span>Finance</span>
@@ -500,5 +504,45 @@
             document.getElementById('admin-container').style.display = 'none';
         }
     </script>
+<div id="ical-toast" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#0A2540; color:white; padding:12px 24px; border-radius:40px; font-size:14px; font-weight:600; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,0.3);"></div>
+
+<script>
+async function syncIcal() {
+    const icon = document.getElementById('ical-sync-icon');
+    const card = document.getElementById('ical-sync-card');
+    const toast = document.getElementById('ical-toast');
+    
+    icon.classList.add('fa-spin');
+    card.style.opacity = '0.7';
+    
+    try {
+        const token = localStorage.getItem('adminToken');
+        const res = await fetch('https://api.htmrentals.com/api/admin/ical/sync', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+            const total = data.results.reduce((sum, r) => sum + (r.blocked || 0), 0);
+            showToast('iCal synced — ' + total + ' dates updated');
+        } else {
+            showToast('Sync failed — ' + (data.error || 'Unknown error'));
+        }
+    } catch(e) {
+        showToast('Sync error: ' + e.message);
+    } finally {
+        icon.classList.remove('fa-spin');
+        card.style.opacity = '1';
+    }
+}
+
+function showToast(msg) {
+    const toast = document.getElementById('ical-toast');
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 4000);
+}
+</script>
 </body>
 </html>
