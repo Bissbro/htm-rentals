@@ -431,6 +431,13 @@
                     </div>
                 </div>
                 
+                <div class="form-group">
+                    <label>Parent Unit <small style="color:#999; font-weight:400;">(optional — for rooms that are part of a larger unit)</small></label>
+                    <select id="unit-parent">
+                        <option value="">None (standalone unit)</option>
+                    </select>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label>Bedrooms</label>
@@ -635,6 +642,19 @@
             document.getElementById('unit-max-adults').value = '4';
             document.getElementById('unit-max-children').value = '2';
             document.getElementById('unit-bedrooms').value = '1';
+            document.getElementById('unit-parent').value = '';
+            // Populate parent unit dropdown
+            const parentSelect = document.getElementById('unit-parent');
+            parentSelect.innerHTML = '<option value="">None (standalone unit)</option>';
+            const allUnits = document.querySelectorAll('.unit-card');
+            // Fetch units from API to populate dropdown
+            fetch(`${API_BASE_URL}/units`, { headers: { 'Authorization': `Bearer ${getToken()}` } })
+                .then(r => r.json()).then(d => {
+                    (d.units || []).filter(u => !u.parent_unit_id).forEach(u => {
+                        const short = u.unit_name.match(/A-[\w-]+/)?.[0] || u.unit_name.slice(0,20);
+                        parentSelect.innerHTML += `<option value="${u.id}">${short} — ${u.unit_name.slice(0,30)}</option>`;
+                    });
+                });
             document.getElementById('unit-beds').value = '1';
             document.getElementById('unit-bathrooms').value = '1';
             document.getElementById('unit-bed-types').value = '';
@@ -666,6 +686,7 @@
             document.getElementById('unit-max-adults').value = unit.max_adults || unit.max_guests || 4;
             document.getElementById('unit-max-children').value = unit.max_children || 0;
             document.getElementById('unit-bedrooms').value = unit.bedrooms || 1;
+            document.getElementById('unit-parent').value = unit.parent_unit_id || '';
             document.getElementById('unit-beds').value = unit.beds || unit.bedrooms || 1;
             document.getElementById('unit-bathrooms').value = unit.bathrooms || 1;
             document.getElementById('unit-bed-types').value = unit.bed_types || '';
@@ -917,6 +938,7 @@
                 max_adults: maxAdults,
                 max_children: maxChildren,
                 bedrooms: parseInt(document.getElementById('unit-bedrooms').value) || 1,
+                parent_unit_id: document.getElementById('unit-parent').value || null,
                 beds: parseInt(document.getElementById('unit-beds').value) || 1,
                 bathrooms: parseFloat(document.getElementById('unit-bathrooms').value) || 1,
                 bed_types: document.getElementById('unit-bed-types').value || null,
