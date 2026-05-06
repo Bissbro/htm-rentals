@@ -971,5 +971,22 @@ Payment: ${payment}`;
     </div>
 </div>
 
+<script>
+window.addEventListener('load', function() {
+    var all = document.querySelectorAll('*');
+    var overflowing = [];
+    all.forEach(function(el) {
+        if (el.offsetWidth > document.body.offsetWidth) {
+            overflowing.push(el.tagName + ' ' + el.className + ' ' + el.id + ' w:' + el.offsetWidth);
+        }
+    });
+    if (overflowing.length) {
+        var msg = document.createElement('div');
+        msg.style = 'position:fixed;top:0;left:0;right:0;background:red;color:white;font-size:11px;z-index:99999;padding:4px;word-break:break-all;';
+        msg.textContent = overflowing.join(' | ');
+        document.body.appendChild(msg);
+    }
+});
+</script>
 </body>
 </html>
