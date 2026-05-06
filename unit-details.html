@@ -249,7 +249,15 @@
                         try { unit.gallery_images = JSON.parse(unit.gallery_images); } catch(e) { unit.gallery_images = []; }
                     }
                     if (typeof unit.amenities === 'string') {
-                        try { unit.amenities = JSON.parse(unit.amenities); } catch(e) { unit.amenities = []; }
+                        try {
+                            const parsed = JSON.parse(unit.amenities);
+                            // Clean quotes from each item
+                            unit.amenities = Array.isArray(parsed) ? parsed.map(a => a.replace(/^"|"$/g, '').trim()) : unit.amenities.split(',').map(a => a.trim()).filter(Boolean);
+                        } catch(e) {
+                            unit.amenities = unit.amenities.split(',').map(a => a.replace(/^"|"$/g, '').trim()).filter(Boolean);
+                        }
+                    } else if (Array.isArray(unit.amenities)) {
+                        unit.amenities = unit.amenities.map(a => String(a).replace(/^"|"$/g, '').trim());
                     }
                     
                     galleryImages = [];
