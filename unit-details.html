@@ -816,8 +816,8 @@ Payment: ${payment}`;
                         </div>
                         <div class="glass-card"><div id="description-text" class="description ${showDescMore ? 'collapsed' : ''}">${escapeHtml(description)}</div>${showDescMore ? `<button id="desc-show-more-btn" class="show-more-btn" onclick="toggleDescription()">Show more</button>` : ''}</div>
                         <div class="glass-card amenities-section"><h3>What this place offers</h3><div id="amenities-grid" class="amenities-grid ${showAllAmenities ? 'collapsed' : ''}">${amenitiesList.map(a => `<div class="amenity"><i class="fas ${getAmenityIcon(a)}" style="color:#40B5AD;"></i><span>${escapeHtml(a)}</span></div>`).join('')}</div>${showAllAmenities ? `<button id="amenities-show-all-btn" class="show-all-btn" onclick="toggleAmenities()">Show all ${amenitiesList.length} amenities</button>` : ''}</div>
-                    <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'}; margin-bottom: 0;">
-                        ${externalButtonsHtml ? `<div style="padding:16px 0;"><div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999; margin-bottom:12px;">Also available on</div><div class="external-buttons">${externalButtonsHtml}</div></div>` : ''}
+                    <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'}">
+                        ${externalButtonsHtml ? `<div class="external-buttons">${externalButtonsHtml}</div>` : ''}
                     </div>
                     </div>
                     <div>
