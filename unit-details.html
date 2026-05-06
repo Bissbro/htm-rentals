@@ -123,8 +123,8 @@
         .show-all-btn { background: none; border: none; color: var(--ocean); font-weight: 600; font-size: 13px; cursor: pointer; margin-top: 12px; padding: 0; }
 
         /* External Buttons */
-        .external-buttons { display: block; margin: 16px 0 8px; padding-top: 16px; border-top: 1px solid var(--gray-border); }
-        .ext-btn { flex: 1; min-width: 0; padding: 12px 16px; border: none; border-radius: 40px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; transition: all 0.2s ease; color: white; letter-spacing: 0.2px; }
+        .external-buttons { display: block; margin: 16px 0 8px; padding-top: 16px; border-top: 1px solid var(--gray-border); max-width: 100%; overflow: hidden; }
+        .ext-btn { flex: 1; min-width: 0; max-width: 100%; padding: 12px 8px; border: none; border-radius: 40px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; transition: all 0.2s ease; color: white; letter-spacing: 0.2px; overflow: hidden; }
         .ext-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .ext-btn.airbnb { background: #FF5A5F; }
         .ext-btn.agoda { background: #9B0D2A; }
@@ -751,9 +751,9 @@ Payment: ${payment}`;
                 unit.booking_url ? `<a href="${unit.booking_url}" target="_blank" class="ext-btn booking">${bookingSvg} Booking.com</a>` : '',
             ].filter(Boolean);
             if (links.length === 4) {
-                externalButtonsHtml = `<div style="display:flex;gap:8px;">${links[0]}${links[1]}${links[2]}</div><div style="display:flex;margin-top:8px;">${links[3]}</div>`;
+                externalButtonsHtml = `<div style="display:flex;gap:6px;width:100%;">${links[0]}${links[1]}${links[2]}</div><div style="display:flex;margin-top:8px;width:100%;">${links[3]}</div>`;
             } else {
-                externalButtonsHtml = links.join('');
+                externalButtonsHtml = `<div style="display:flex;gap:6px;width:100%;">${links.join('')}</div>`;
             }
             const foreignInquiryHtml = '';
             const usdRate = unit.rate_usd || (unit.rate_mvr / 15.42).toFixed(2);
