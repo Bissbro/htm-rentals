@@ -69,7 +69,7 @@
         .back-arrow svg { width: 28px; height: 28px; }
 
         /* Layout */
-        .unit-layout { display: grid; grid-template-columns: 1fr minmax(0, 380px); gap: 48px; margin-top: 8px; }
+        .unit-layout { display: grid; grid-template-columns: 1fr minmax(0, 380px); gap: 48px; margin-top: 8px; max-width: 100%; overflow: hidden; }
         @media (max-width: 900px) { .unit-layout { grid-template-columns: 1fr; gap: 32px; } .booking-card { position: static; margin-top: 24px; } }
 
         /* Gallery */
@@ -131,7 +131,7 @@
         .ext-btn.booking { background: #003580; }
 
         /* Booking Card */
-        .booking-card { background: white; border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-md); border: 1px solid var(--gray-border); position: sticky; top: 80px; }
+        .booking-card { background: white; border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-md); border: 1px solid var(--gray-border); position: sticky; top: 80px; max-width: 100%; overflow: hidden; }
         .price-display { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; margin-bottom: 16px; }
         .price-mvr { font-size: 1.75rem; font-weight: 600; color: var(--navy); }
         .price-nightly { font-size: 14px; color: var(--gray-text); }
@@ -783,7 +783,7 @@ Payment: ${payment}`;
                         <div class="booking-card" id="booking-card">
                             <div class="price-display" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
                                 <div><span class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span><span class="price-nightly">/ night</span></div>
-                                <span style="background:#f0fafa; border:1.5px solid #40B5AD; color:#40B5AD; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; letter-spacing:0.5px; white-space:nowrap;">DIRECT BOOKING</span>
+                                <span style="background:#f0fafa; border:1.5px solid #40B5AD; color:#40B5AD; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; letter-spacing:0.5px; ">DIRECT BOOKING</span>
                             </div>
                             <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};"><div class="external-buttons">${externalButtonsHtml || '<p style="color: var(--gray-text);">No external booking links available. Please contact us directly.</p>'}${foreignInquiryHtml}</div></div>
                             <div class="calendar-section"><div class="calendar-header"><h4 id="calendar-month-year">${monthNames[currentMonth]} ${currentYear}</h4><div class="calendar-nav"><button id="prev-month"><i class="fas fa-chevron-left"></i></button><button id="next-month"><i class="fas fa-chevron-right"></i></button></div></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-instruction"><i class="fas fa-info-circle"></i> Tap a date to start. Tap another date to end. Tap same date to clear.</div></div>
