@@ -695,13 +695,13 @@ Payment: ${payment}`;
         }
 
         function toggleAmenities() {
-            document.getElementById('amenities-overlay').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            const overlay = document.getElementById('amenities-overlay');
+            overlay.classList.add('active');
+            overlay.scrollTop = 0;
         }
 
         function closeAmenitiesOverlay() {
             document.getElementById('amenities-overlay').classList.remove('active');
-            document.body.style.overflow = '';
         }
 
         function populateAmenitiesOverlay(amenitiesList) {
