@@ -458,12 +458,7 @@
                 
                 <div class="form-group">
                     <label>Featured Image</label>
-                    <div class="image-upload-area" onclick="document.getElementById('featured-image-input').click()">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <p>Click to upload</p>
-                        <input type="file" id="featured-image-input" accept="image/*" style="display:none" onchange="uploadFeaturedImage(this)">
-                    </div>
-                    <div id="featured-image-preview" class="image-preview"></div>
+                    <div id="featured-image-preview" style="font-size:13px; color:#999; padding:8px 0;">First gallery photo will be used as cover.</div>
                     <input type="hidden" id="unit-featured-image">
                 </div>
                 
@@ -680,9 +675,7 @@
             document.getElementById('unit-trip').value = unit.trip_url || '';
             document.getElementById('unit-booking').value = unit.booking_url || '';
             
-            if (unit.featured_image) {
-                document.getElementById('featured-image-preview').innerHTML = `<div class="preview-img-container"><img src="${unit.featured_image}" class="preview-img"><div class="remove-img" onclick="removeFeaturedImage()">×</div></div>`;
-            }
+            // Featured image is auto-set from gallery
             
             currentGalleryImages = typeof unit.gallery_images === "string" ? JSON.parse(unit.gallery_images || "[]") : (unit.gallery_images || []);
             displayGalleryPreviews();
@@ -713,7 +706,7 @@
                     style="cursor:pointer;">
                     <img src="${url}" alt="Gallery ${idx+1}">
                     <div class="item-overlay">
-                        <span class="item-badge">${isFeatured ? '★ Cover' : 'Set cover'}</span>
+                        <span class="item-badge">${isFeatured ? '★ Cover' : 'Tap to set cover'}</span>
                         <button class="item-remove" onclick="event.stopPropagation(); removeGalleryImage(${idx})">×</button>
                     </div>
                     <div class="drag-handle">⠿ drag to reorder</div>
@@ -725,13 +718,23 @@
             </label></div>`;
             container.innerHTML = html;
             document.getElementById('unit-gallery').value = currentGalleryImages.join(',');
+            // Auto-set first photo as featured
+            if (currentGalleryImages.length > 0) {
+                document.getElementById('unit-featured-image').value = currentGalleryImages[0];
+            } else {
+                document.getElementById('unit-featured-image').value = '';
+            }
         }
 
         function setFeaturedFromGallery(url) {
-            document.getElementById('unit-featured-image').value = url;
-            document.getElementById('featured-image-preview').innerHTML = '<div class="preview-img-container"><img src="' + url + '" class="preview-img" style="object-fit:cover;"><div class="remove-img" onclick="removeFeaturedImage()">×</div></div>';
-            displayGalleryPreviews();
-            showMessage('Cover photo updated', 'success');
+            // Move tapped photo to first position (becomes cover)
+            const idx = currentGalleryImages.indexOf(url);
+            if (idx > 0) {
+                currentGalleryImages.splice(idx, 1);
+                currentGalleryImages.unshift(url);
+                displayGalleryPreviews();
+                showMessage('Cover photo updated', 'success');
+            }
         }
 
         function removeGalleryImage(idx) {
@@ -763,10 +766,7 @@
             dragSrcIdx = null;
         }
 
-        function removeFeaturedImage() {
-            document.getElementById('unit-featured-image').value = '';
-            document.getElementById('featured-image-preview').innerHTML = '';
-        }
+        function removeFeaturedImage() { /* handled by gallery */ }
         
         async function uploadFeaturedImage(input) {
             const file = input.files[0];
