@@ -695,23 +695,30 @@ Payment: ${payment}`;
         }
 
         function toggleAmenities() {
-            const grid = document.getElementById('amenities-grid');
-            const btn = document.getElementById('amenities-show-all-btn');
-            if (grid.classList.contains('collapsed')) {
-                grid.classList.remove('collapsed');
-                btn.textContent = 'Show less';
-            } else {
-                grid.classList.add('collapsed');
-                btn.textContent = `Show all ${unit.amenities?.length || 0} amenities`;
-                const amenitiesSection = document.querySelector('.amenities-section');
-                if (amenitiesSection) { const y = amenitiesSection.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({ top: y, behavior: 'smooth' }); }
-            }
+            document.getElementById('amenities-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAmenitiesOverlay() {
+            document.getElementById('amenities-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function populateAmenitiesOverlay(amenitiesList) {
+            const grid = document.getElementById('amenities-overlay-grid');
+            if (!grid) return;
+            grid.innerHTML = amenitiesList.map(a => `
+                <div class="amenity">
+                    <i class="fas ${getAmenityIcon(a)}" style="color:#40B5AD;"></i>
+                    <span>${escapeHtml(a)}</span>
+                </div>`).join('');
         }
 
         function renderUnitDetails() {
             const defaultAmenities = ['Free WiFi', 'Smart TV', 'Air Conditioning', 'Kitchen', 'Tea & Coffee', 'Hot Water'];
             const amenitiesList = (unit.amenities && unit.amenities.length) ? unit.amenities : defaultAmenities;
             const showAllAmenities = amenitiesList.length > 6;
+            setTimeout(() => populateAmenitiesOverlay(amenitiesList), 100);
             let slidesHtml = '', dotsHtml = '';
             if (galleryImages.length) {
                 slidesHtml = galleryImages.map((img, idx) => `<div class="gallery-slide ${idx === 0 ? 'active' : ''}"><img src="${img}" alt="${unit.unit_name} - Image ${idx+1}"></div>`).join('');
@@ -921,6 +928,17 @@ Payment: ${payment}`;
                 Need help? <a href="https://wa.me/9609373113" style="color:#006994; font-weight:600; text-decoration:none;">WhatsApp 9373113</a>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- AMENITIES OVERLAY -->
+<div id="amenities-overlay" class="amenities-overlay">
+    <div class="amenities-overlay-header">
+        <h2>What this place offers</h2>
+        <button class="amenities-overlay-close" onclick="closeAmenitiesOverlay()">&#x2715;</button>
+    </div>
+    <div class="amenities-overlay-body">
+        <div class="amenities-overlay-grid" id="amenities-overlay-grid"></div>
     </div>
 </div>
 
