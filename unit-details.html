@@ -102,6 +102,15 @@
         .show-more-btn { background: none; border: none; color: var(--ocean); font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 12px; padding: 0; }
         .amenities-section h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 500; color: var(--navy); margin-bottom: 16px; }
         .amenities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .amenities-overlay { display: none; position: fixed; inset: 0; background: white; z-index: 9000; overflow-y: auto; }
+        .amenities-overlay.active { display: block; animation: slideUp 0.25s ease; }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .amenities-overlay-header { position: sticky; top: 0; background: white; padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; z-index: 1; }
+        .amenities-overlay-header h2 { font-size: 1.1rem; font-weight: 700; color: #0A2540; }
+        .amenities-overlay-close { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #ddd; background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: #0A2540; }
+        .amenities-overlay-body { padding: 20px; }
+        .amenities-overlay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .amenities-overlay-grid .amenity { background: #f8f9fa; border-radius: 10px; padding: 12px 14px; }
         .amenity { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #f8f9fa; border-radius: 10px; }
         .amenity i { width: 18px; font-size: 15px; text-align: center; flex-shrink: 0; }
         .amenity span { font-size: 13px; color: #0A2540; font-weight: 500; }
