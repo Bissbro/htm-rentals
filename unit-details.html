@@ -791,7 +791,7 @@ Payment: ${payment}`;
                 if (hasTrip) topRowHtml += `<a href="${unit.trip_url}" target="_blank" class="ext-btn trip">${tripSvg} Trip.com</a>`;
             }
 
-            if (topRowHtml || bottomRowHtml) externalButtonsHtml = `<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:${bottomRowHtml ? '8px' : '0'};">${topRowHtml}</div>${bottomRowHtml ? `<div style="display:flex;">${bottomRowHtml}</div>` : ''}`;
+            if (topRowHtml || bottomRowHtml) externalButtonsHtml = `<div style="display:flex; gap:6px; margin-bottom:${bottomRowHtml ? '8px' : '0'}; overflow:hidden;">${topRowHtml}</div>${bottomRowHtml ? `<div style="display:flex;">${bottomRowHtml}</div>` : ``}`;
             const foreignInquiryHtml = '';
             const usdRate = unit.rate_usd || (unit.rate_mvr / 15.42).toFixed(2);
             const maxAdults = unit.max_adults || unit.max_guests;
