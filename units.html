@@ -695,7 +695,7 @@
             const featuredUrl = document.getElementById('unit-featured-image').value;
             let html = '<div class="gallery-grid">';
             currentGalleryImages.forEach((url, idx) => {
-                const isFeatured = url === featuredUrl;
+                const isFeatured = idx === 0;
                 html += `<div class="gallery-item ${isFeatured ? 'is-featured' : ''}" draggable="true"
                     ondragstart="onDragStart(event,${idx})"
                     ondragover="onDragOver(event,${idx})"
