@@ -237,7 +237,7 @@
             <h1 style="margin-top:4px;">Unit Finance</h1>
         </div>
         <div class="nav-links">
-            <a href="expenses.html"><i class="fas fa-receipt"></i> Expenses</a>
+
             <a href="staff-payroll.html"><i class="fas fa-user-tie"></i> Payroll</a>
             <a href="partners.html"><i class="fas fa-handshake"></i> Partners</a>
         </div>
@@ -768,7 +768,7 @@
             pill.className = 'unit-pill';
             pill.dataset.id = u.id;
             pill.onclick = function() { selectUnit(u.id, this); };
-            pill.textContent = u.unit_name.length > 30 ? u.unit_name.slice(0, 30) + '…' : u.unit_name;
+            pill.textContent = u.unit_number || u.unit_name.split('|')[1]?.trim() || u.unit_name.slice(0, 15);
             container.appendChild(pill);
         });
     }
@@ -777,7 +777,7 @@
         const selects = ['rev-unit-id', 'exp-unit-id', 'con-unit-id', 'ren-unit-id'];
         selects.forEach(id => {
             const sel = document.getElementById(id);
-            sel.innerHTML = allUnits.map(u => `<option value="${u.id}">${u.unit_name}</option>`).join('');
+            sel.innerHTML = allUnits.map(u => `<option value="${u.id}">${u.unit_number || u.unit_name.split('|')[1]?.trim() || u.unit_name.slice(0,20)}</option>`).join('');
         });
     }
 
