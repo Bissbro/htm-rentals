@@ -2,1057 +2,641 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTM Rentals | Units</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #F8F9FA;
-            padding: 20px;
-        }
-        :root {
-            --navy: #0A2540;
-            --ocean: #006994;
-            --turquoise: #40B5AD;
-            --gray-light: #F8F9FA;
-            --gray-border: #E5E5E5;
-            --gray-text: #6C757D;
-            --success: #28a745;
-            --danger: #dc3545;
-            --radius-lg: 20px;
-            --radius-md: 12px;
-            --radius-sm: 8px;
-        }
-        .container { max-width: 1200px; margin: 0 auto; }
+        body { font-family: 'Inter', sans-serif; background: #F4F7FB; color: #0A2540; min-height: 100vh; }
         
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--gray-border);
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); }
-        .back-link { color: var(--ocean); text-decoration: none; font-size: 1rem; }
-        
-        .card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .btn-primary { background: var(--turquoise); color: white; }
-        .btn-primary:hover { background: var(--ocean); }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-sm { padding: 6px 12px; font-size: 12px; }
-        
-        /* Desktop Table View */
-        .desktop-table {
-            display: block;
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 800px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--gray-border);
-        }
-        th {
-            font-weight: 600;
-            color: var(--gray-text);
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        td {
-            font-size: 14px;
-        }
-        
-        /* Mobile Card View */
-        .mobile-cards {
-            display: none;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .unit-card {
-            background: white;
-            border: 1px solid var(--gray-border);
-            border-radius: var(--radius-md);
-            padding: 16px;
-        }
-        .unit-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .unit-name {
-            font-weight: 700;
-            font-size: 16px;
-            color: var(--navy);
-        }
-        .unit-detail {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 0;
-            font-size: 14px;
-            color: var(--gray-text);
-            flex-wrap: wrap;
-        }
-        .unit-detail i {
-            width: 20px;
-            color: var(--turquoise);
-        }
-        .unit-detail strong {
-            color: var(--navy);
-            font-weight: 600;
-        }
-        .unit-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-        }
-        
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .modal-content {
-            background: white;
-            border-radius: var(--radius-lg);
-            max-width: 700px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--gray-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .modal-body {
-            padding: 20px;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--navy);
-        }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--gray-border);
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-        }
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 16px;
-        }
-        /* Gallery drag-drop styles */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-        .gallery-item {
-            position: relative;
-            aspect-ratio: 4/3;
-            border-radius: 10px;
-            overflow: hidden;
-            cursor: grab;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        .gallery-item:active { cursor: grabbing; }
-        .gallery-item.dragging { opacity: 0.4; border-color: var(--turquoise); }
-        .gallery-item.drag-over { border-color: var(--turquoise); transform: scale(1.03); }
-        .gallery-item img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            display: block;
-            pointer-events: none;
-        }
-        .gallery-item .item-overlay {
-            position: absolute; inset: 0;
-            background: rgba(0,0,0,0);
-            transition: background 0.2s;
-            display: flex; align-items: flex-start; justify-content: space-between;
-            padding: 6px;
-        }
-        .gallery-item:hover .item-overlay { background: rgba(0,0,0,0.35); }
-        .gallery-item .item-badge {
-            background: #40B5AD; color: white;
-            font-size: 10px; font-weight: 700;
-            padding: 2px 7px; border-radius: 20px;
-            opacity: 0; transition: opacity 0.2s;
-        }
-        .gallery-item.is-featured .item-badge { opacity: 1; background: #f59e0b; }
-        .gallery-item:hover .item-badge { opacity: 1; }
-        .gallery-item .item-remove {
-            background: rgba(220,53,69,0.9); color: white;
-            width: 22px; height: 22px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; cursor: pointer; opacity: 0;
-            transition: opacity 0.2s; border: none; line-height: 1;
-        }
-        .gallery-item:hover .item-remove { opacity: 1; }
-        .gallery-item .drag-handle {
-            position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
-            color: rgba(255,255,255,0.8); font-size: 12px; opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .gallery-item:hover .drag-handle { opacity: 1; }
-        .gallery-item.is-featured { border-color: #f59e0b; }
-        .gallery-upload-btn {
-            aspect-ratio: 4/3;
-            border: 2px dashed #D0D5DD;
-            border-radius: 10px;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            cursor: pointer; color: #666; font-size: 13px;
-            transition: all 0.2s; background: #fafafa;
-            gap: 6px;
-        }
-        .gallery-upload-btn:hover { border-color: var(--turquoise); color: var(--turquoise); background: #f0fafa; }
-        .gallery-upload-btn i { font-size: 22px; }
-        .gallery-hint { font-size: 12px; color: #999; margin-top: 4px; }
+        .header { background: #0A2540; color: white; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header a { color: white; text-decoration: none; font-size: 20px; }
+        .header h1 { font-size: 18px; font-weight: 600; }
+        .btn-add { background: #40B5AD; color: white; border: none; padding: 8px 16px; border-radius: 40px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
 
-        .gallery-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px; margin-bottom:12px; }
-        .gallery-item { position:relative; aspect-ratio:4/3; border-radius:10px; overflow:hidden; cursor:grab; border:2px solid transparent; transition:all 0.2s; }
-        .gallery-item:active { cursor:grabbing; }
-        .gallery-item.dragging { opacity:0.4; border-color:var(--turquoise); }
-        .gallery-item.drag-over { border-color:var(--turquoise); transform:scale(1.03); }
-        .gallery-item img { width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; }
-        .gallery-item .item-overlay { position:absolute; inset:0; background:rgba(0,0,0,0); transition:background 0.2s; display:flex; align-items:flex-start; justify-content:space-between; padding:6px; }
-        .gallery-item:hover .item-overlay { background:rgba(0,0,0,0.35); }
-        .gallery-item .item-badge { background:#40B5AD; color:white; font-size:10px; font-weight:700; padding:2px 7px; border-radius:20px; opacity:0; transition:opacity 0.2s; }
-        .gallery-item.is-featured .item-badge { opacity:1; background:#f59e0b; }
-        .gallery-item:hover .item-badge { opacity:1; }
-        .gallery-item .item-remove { background:rgba(220,53,69,0.9); color:white; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer; opacity:0; transition:opacity 0.2s; border:none; }
-        .gallery-item:hover .item-remove { opacity:1; }
-        .gallery-item .drag-handle { position:absolute; bottom:6px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.8); font-size:11px; opacity:0; transition:opacity 0.2s; }
-        .gallery-item:hover .drag-handle { opacity:1; }
-        .gallery-item.is-featured { border-color:#f59e0b; }
-        .gallery-upload-btn { aspect-ratio:4/3; border:2px dashed #D0D5DD; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; color:#666; font-size:13px; transition:all 0.2s; background:#fafafa; gap:6px; }
-        .gallery-upload-btn:hover { border-color:var(--turquoise); color:var(--turquoise); background:#f0fafa; }
-        .gallery-upload-btn i { font-size:22px; }
-        .image-upload-area {
-            border: 2px dashed var(--gray-border);
-            border-radius: var(--radius-sm);
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            background: var(--gray-light);
-        }
-        .image-preview {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .preview-img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--gray-border);
-        }
-        .preview-img-container {
-            position: relative;
-            display: inline-block;
-        }
-        .remove-img {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--danger);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px 16px; }
+
+        /* Building group */
+        .building-group { margin-bottom: 24px; }
+        .building-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .building-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #888; }
+
+        /* Unit card */
+        .unit-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1.5px solid #eee; transition: all 0.2s; }
+        .unit-card:hover { border-color: #40B5AD; box-shadow: 0 4px 16px rgba(64,181,173,0.1); }
+        .unit-card.child { margin-left: 20px; border-left: 3px solid #40B5AD; border-radius: 0 16px 16px 0; background: #fafcfc; }
         
-        .message {
-            padding: 14px;
-            border-radius: var(--radius-md);
-            margin-bottom: 16px;
-            display: none;
-        }
-        .message.success { background: #D4EDDA; color: #155724; display: block; }
-        .message.error { background: #F8D7DA; color: #721C24; display: block; }
-        
-        .loading { text-align: center; padding: 40px; color: var(--gray-text); }
-        .empty { text-align: center; padding: 40px; color: var(--gray-text); }
-        
-        @media (max-width: 768px) {
-            body { padding: 12px; }
-            .card { padding: 16px; }
-            .desktop-table { display: none; }
-            .mobile-cards { display: flex; }
-            .form-row { grid-template-columns: 1fr; }
-        }
-        
-        @media (min-width: 769px) {
-            .desktop-table { display: block; }
-            .mobile-cards { display: none; }
-        }
+        .unit-main { display: flex; align-items: center; gap: 12px; }
+        .unit-thumb { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; background: #f0f0f0; flex-shrink: 0; }
+        .unit-thumb-placeholder { width: 64px; height: 64px; border-radius: 10px; background: #E8F4F8; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #40B5AD; font-size: 22px; }
+        .unit-info { flex: 1; min-width: 0; }
+        .unit-number { font-size: 18px; font-weight: 800; color: #0A2540; }
+        .unit-type { font-size: 13px; color: #666; margin-bottom: 6px; }
+        .unit-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .unit-price { font-size: 13px; font-weight: 600; color: #006994; }
+        .unit-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
+        .badge-public { background: #e8f5e9; color: #2e7d32; }
+        .badge-admin { background: #fff3e0; color: #e65100; }
+        .badge-inactive { background: #f5f5f5; color: #999; }
+
+        .unit-actions { display: flex; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+        .action-btn { flex: 1; padding: 8px; border-radius: 8px; border: 1.5px solid #eee; background: white; font-size: 12px; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s; }
+        .action-btn:hover { border-color: #40B5AD; color: #40B5AD; background: #f0fafa; }
+        .action-btn.danger:hover { border-color: #dc3545; color: #dc3545; background: #fff5f5; }
+        .action-btn i { font-size: 12px; }
+
+        /* Child connector */
+        .child-connector { display: flex; align-items: center; gap: 8px; margin-left: 20px; margin-bottom: 6px; }
+        .child-connector-line { width: 20px; height: 1px; background: #40B5AD; }
+        .child-label { font-size: 11px; color: #40B5AD; font-weight: 600; }
+
+        /* Toggle switch */
+        .toggle-switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; inset: 0; background: #ccc; border-radius: 20px; transition: 0.3s; }
+        .toggle-slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+        input:checked + .toggle-slider { background: #40B5AD; }
+        input:checked + .toggle-slider:before { transform: translateX(16px); }
+
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,37,64,0.7); z-index: 9999; align-items: flex-end; justify-content: center; padding: 0; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: white; border-radius: 24px 24px 0 0; width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto; padding: 24px 20px; }
+        .modal-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 0 auto 20px; }
+        .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #0A2540; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 14px; border: 1.5px solid #E0E0E0; border-radius: 10px; font-size: 14px; outline: none; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus { border-color: #40B5AD; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .form-section { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #40B5AD; margin: 16px 0 10px; padding-bottom: 6px; border-bottom: 1.5px solid #f0fafa; }
+        .btn-save { width: 100%; padding: 14px; background: #0A2540; color: white; border: none; border-radius: 40px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+        .btn-save:hover { background: #006994; }
+
+        /* Gallery */
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px,1fr)); gap: 8px; margin-bottom: 10px; }
+        .gallery-item { position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; cursor: grab; border: 2px solid transparent; transition: all 0.2s; }
+        .gallery-item.is-featured { border-color: #f59e0b; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .gallery-item .item-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0); transition: background 0.2s; display: flex; align-items: flex-start; justify-content: space-between; padding: 4px; }
+        .gallery-item:hover .item-overlay { background: rgba(0,0,0,0.35); }
+        .gallery-item .item-badge { background: #f59e0b; color: white; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 20px; opacity: 0; transition: opacity 0.2s; }
+        .gallery-item.is-featured .item-badge { opacity: 1; }
+        .gallery-item:hover .item-badge { opacity: 1; }
+        .gallery-item .item-remove { background: rgba(220,53,69,0.9); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; opacity: 0; transition: opacity 0.2s; border: none; }
+        .gallery-item:hover .item-remove { opacity: 1; }
+        .gallery-upload-btn { aspect-ratio: 4/3; border: 2px dashed #D0D5DD; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: #666; font-size: 12px; transition: all 0.2s; background: #fafafa; gap: 4px; }
+        .gallery-upload-btn:hover { border-color: #40B5AD; color: #40B5AD; }
+
+        /* Amenities */
+        .amenities-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 280px; overflow-y: auto; border: 1px solid #E5E5E5; border-radius: 10px; padding: 10px; }
+        .amenity-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; cursor: pointer; border: 1.5px solid #eee; background: white; transition: all 0.15s; }
+        .amenity-item.checked { border-color: #40B5AD; background: #f0fafa; }
+        .amenity-item i { width: 16px; font-size: 13px; color: #ccc; }
+        .amenity-item.checked i { color: #40B5AD; }
+        .amenity-item span { font-size: 12px; color: #0A2540; }
+
+        /* Toast */
+        .toast { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #0A2540; color: white; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600; z-index: 99999; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .loading { text-align: center; padding: 40px; color: #888; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Units</h1>
-            <a href="admin.html" class="back-link">← Back to Admin</a>
-        </div>
-        
-        <div class="card">
-            <div class="card-header">
-                <h2>Property Units</h2>
-                <button class="btn btn-primary" onclick="openUnitModal()">+ Add Unit</button>
-            </div>
-            
-            <div id="message" class="message"></div>
-            
-            <!-- Desktop Table View -->
-            <div id="desktop-table" class="desktop-table">
-                <div id="units-container" class="loading">Loading units...</div>
-            </div>
-            
-            <!-- Mobile Card View -->
-            <div id="mobile-cards" class="mobile-cards">
-                <div class="loading">Loading units...</div>
-            </div>
-        </div>
+
+<div class="header">
+    <div class="header-left">
+        <a href="admin.html"><i class="fas fa-arrow-left"></i></a>
+        <h1>Properties</h1>
     </div>
+    <button class="btn-add" onclick="openAddModal()">
+        <i class="fas fa-plus"></i> Add Unit
+    </button>
+</div>
+
+<div class="container">
+    <div id="units-list"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
+</div>
+
+<!-- Unit Modal -->
+<div class="modal-overlay" id="unit-modal">
+    <div class="modal">
+        <div class="modal-handle"></div>
+        <div class="modal-title" id="modal-title">Add Unit</div>
+        <input type="hidden" id="unit-id">
+
+        <div class="form-section">Basic Info</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Building Name</label>
+                <input type="text" id="unit-building" placeholder="Malas Residence">
+            </div>
+            <div class="form-group">
+                <label>Unit Number</label>
+                <input type="text" id="unit-number" placeholder="A-207">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Unit Type</label>
+            <input type="text" id="unit-type-label" placeholder="One Room Apartment">
+        </div>
+        <div class="form-group">
+            <label>Parent Unit <small style="color:#999; font-weight:400;">(for child units only)</small></label>
+            <select id="unit-parent">
+                <option value="">None (standalone unit)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea id="unit-description" rows="3" placeholder="Describe the unit..."></textarea>
+        </div>
+
+        <div class="form-section">Capacity & Rooms</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Max Guests</label>
+                <input type="number" id="unit-guests" value="4" min="1">
+            </div>
+            <div class="form-group">
+                <label>Max Adults</label>
+                <input type="number" id="unit-max-adults" value="4" min="1">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Max Children</label>
+                <input type="number" id="unit-max-children" value="2" min="0">
+            </div>
+            <div class="form-group">
+                <label>Bedrooms</label>
+                <input type="number" id="unit-bedrooms" value="1" min="1">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Beds</label>
+                <input type="number" id="unit-beds" value="1" min="1">
+            </div>
+            <div class="form-group">
+                <label>Bathrooms</label>
+                <input type="number" id="unit-bathrooms" value="1" step="0.5" min="0.5">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Bed Types</label>
+            <input type="text" id="unit-bed-types" placeholder="1 double bed • 1 single bed">
+        </div>
+
+        <div class="form-section">Pricing</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Rate (MVR)</label>
+                <input type="number" id="unit-mvr" placeholder="850">
+            </div>
+            <div class="form-group">
+                <label>Rate (USD)</label>
+                <input type="number" id="unit-usd" placeholder="65">
+            </div>
+        </div>
+
+        <div class="form-section">Platform Links</div>
+        <div class="form-group">
+            <label>Airbnb URL</label>
+            <input type="text" id="unit-airbnb" placeholder="https://airbnb.com/rooms/...">
+        </div>
+        <div class="form-group">
+            <label>Agoda URL</label>
+            <input type="text" id="unit-agoda" placeholder="https://agoda.com/...">
+        </div>
+        <div class="form-group">
+            <label>Booking.com URL</label>
+            <input type="text" id="unit-booking" placeholder="https://booking.com/...">
+        </div>
+        <div class="form-group">
+            <label>Trip.com URL</label>
+            <input type="text" id="unit-trip" placeholder="https://trip.com/...">
+        </div>
+
+        <div class="form-section">Visibility</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0;">
+            <div>
+                <div style="font-size:14px; font-weight:600;">Show on Website</div>
+                <div style="font-size:12px; color:#888;">Guests can discover and book this unit</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="unit-show-website" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="form-section">Photos</div>
+        <p style="font-size:12px; color:#666; margin-bottom:8px;">First photo = cover · Drag to reorder · Tap to set cover</p>
+        <div id="gallery-images-preview"></div>
+        <input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)">
+        <input type="hidden" id="unit-gallery">
+        <input type="hidden" id="unit-featured-image">
+
+        <div class="form-section">Amenities</div>
+        <div class="amenities-selector" id="amenities-selector"></div>
+        <input type="hidden" id="unit-amenities">
+
+        <button class="btn-save" onclick="saveUnit()">Save Unit</button>
+        <button onclick="closeModal()" style="width:100%; padding:12px; background:none; border:none; color:#888; font-size:14px; cursor:pointer; margin-top:8px;">Cancel</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE_URL = 'https://api.htmrentals.com/api';
+let allUnits = [];
+let currentGalleryImages = [];
+let dragSrcIdx = null;
+
+function getToken() { return sessionStorage.getItem('adminToken'); }
+function authHeaders() { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }; }
+
+const HTM_AMENITIES = [
+    {id:'free_wifi',label:'Free High-Speed WiFi',icon:'fa-wifi'},
+    {id:'air_conditioning',label:'Air Conditioning',icon:'fa-snowflake'},
+    {id:'bed_linen',label:'Fresh Bed Linen',icon:'fa-bed'},
+    {id:'fresh_towels',label:'Fresh Towels',icon:'fa-scroll'},
+    {id:'hot_shower',label:'Hot Shower',icon:'fa-shower'},
+    {id:'widescreen_tv',label:'Widescreen Smart TV',icon:'fa-tv'},
+    {id:'refrigerator',label:'Refrigerator',icon:'fa-temperature-low'},
+    {id:'blackout_curtains',label:'Blackout Curtains',icon:'fa-grip-lines'},
+    {id:'muslim_shower',label:'Muslim Shower / Hand Bidet',icon:'fa-hand-holding-water'},
+    {id:'ceiling_fan',label:'Ceiling Fan',icon:'fa-fan'},
+    {id:'extra_pillows',label:'Extra Pillows',icon:'fa-moon'},
+    {id:'extra_blankets',label:'Extra Blankets',icon:'fa-cloud'},
+    {id:'wardrobe',label:'Wardrobe',icon:'fa-door-closed'},
+    {id:'bedside_lamp',label:'Bedside Lamp',icon:'fa-lightbulb'},
+    {id:'baby_crib',label:'Baby Crib',icon:'fa-baby'},
+    {id:'minibar_fridge',label:'Minibar Fridge',icon:'fa-box'},
+    {id:'shampoo',label:'Shampoo',icon:'fa-pump-soap'},
+    {id:'conditioner',label:'Conditioner',icon:'fa-pump-soap'},
+    {id:'body_wash',label:'Body Wash',icon:'fa-pump-soap'},
+    {id:'hand_soap',label:'Hand Soap',icon:'fa-soap'},
+    {id:'toilet_paper',label:'Toilet Paper',icon:'fa-toilet-paper'},
+    {id:'hair_dryer',label:'Hair Dryer',icon:'fa-wind'},
+    {id:'sofa',label:'Sofa',icon:'fa-couch'},
+    {id:'coffee_table',label:'Coffee Table',icon:'fa-coffee'},
+    {id:'dining_table',label:'Dining Table',icon:'fa-utensils'},
+    {id:'balcony',label:'Balcony',icon:'fa-building'},
+    {id:'window_view',label:'Window View',icon:'fa-mountain'},
+    {id:'smoking_area',label:'Smoking Area',icon:'fa-smoking'},
+    {id:'microwave',label:'Microwave',icon:'fa-broadcast-tower'},
+    {id:'regular_stove',label:'Regular Stove',icon:'fa-fire'},
+    {id:'electric_stove',label:'Electric Stove',icon:'fa-plug'},
+    {id:'electric_kettle',label:'Electric Kettle',icon:'fa-mug-hot'},
+    {id:'cooking_utensils',label:'Cooking Utensils',icon:'fa-utensils'},
+    {id:'plates_bowls',label:'Plates & Bowls',icon:'fa-circle'},
+    {id:'cutlery',label:'Cutlery',icon:'fa-utensils'},
+    {id:'glasses_mugs',label:'Glasses & Mugs',icon:'fa-glass-martini'},
+    {id:'dish_soap',label:'Dish Soap',icon:'fa-soap'},
+    {id:'detergent',label:'Detergent',icon:'fa-flask'},
+    {id:'washing_machine',label:'Washing Machine',icon:'fa-shirt'},
+    {id:'drying_rack',label:'Clothes Drying Rack',icon:'fa-grip-lines'},
+    {id:'iron',label:'Iron',icon:'fa-tshirt'},
+    {id:'ironing_board',label:'Ironing Board',icon:'fa-minus'},
+    {id:'storage_cabinet',label:'Storage Cabinet',icon:'fa-archive'},
+    {id:'first_aid',label:'First Aid Kit',icon:'fa-first-aid'},
+    {id:'airport_transfer',label:'Airport Transfer',icon:'fa-plane-arrival'},
+];
+
+async function init() {
+    if (!getToken()) { window.location.href = 'admin.html'; return; }
+    await loadUnits();
+}
+
+async function loadUnits() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/admin/units`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
+        const data = await res.json();
+        if (data.success) {
+            allUnits = data.units;
+            renderUnits();
+        }
+    } catch(e) { showToast('Error loading units'); }
+}
+
+function renderUnits() {
+    const container = document.getElementById('units-list');
     
-    <!-- Unit Modal -->
-    <div id="unit-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modal-title">Add Unit</h2>
-                <button onclick="closeUnitModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="unit-id">
-                
-                <div class="form-group">
-                    <label>Unit Name *</label>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-                        <div>
-                            <label style="font-size:12px; font-weight:600; color:#555;">Building Name</label>
-                            <input type="text" id="unit-building" placeholder="e.g., Malas Residence" style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
-                        </div>
-                        <div>
-                            <label style="font-size:12px; font-weight:600; color:#555;">Unit Number</label>
-                            <input type="text" id="unit-number" placeholder="e.g., A-207" style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
-                        </div>
-                    </div>
-                    <div style="margin-bottom:4px;">
-                        <label style="font-size:12px; font-weight:600; color:#555;">Unit Type</label>
-                        <input type="text" id="unit-type-label" placeholder="e.g., One Room Apartment" style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
-                    </div>
-                    <input type="hidden" id="unit-name">
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>USD Rate (per night)</label>
-                        <input type="number" id="unit-usd" step="0.01" placeholder="90">
-                    </div>
-                    <div class="form-group">
-                        <label>MVR Rate (per night)</label>
-                        <input type="number" id="unit-mvr" step="0.01" placeholder="1380">
-                    </div>
-                </div>
-                
-                <h4 style="margin: 16px 0 12px;">Guest Capacity</h4>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Max Total Guests</label>
-                        <input type="number" id="unit-guests" value="4">
-                        <small>Maximum humans allowed</small>
-                    </div>
-                    <div class="form-group">
-                        <label>Max Adults</label>
-                        <input type="number" id="unit-max-adults" value="4">
-                        <small>Maximum adults (18+)</small>
-                    </div>
-                    <div class="form-group">
-                        <label>Max Children</label>
-                        <input type="number" id="unit-max-children" value="2">
-                        <small>Maximum children (under 18)</small>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Parent Unit <small style="color:#999; font-weight:400;">(optional — for rooms that are part of a larger unit)</small></label>
-                    <select id="unit-parent">
-                        <option value="">None (standalone unit)</option>
-                    </select>
-                </div>
+    // Group by building
+    const buildings = {};
+    allUnits.forEach(u => {
+        const building = u.building_name || 'Other';
+        if (!buildings[building]) buildings[building] = [];
+        buildings[building].push(u);
+    });
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Bedrooms</label>
-                        <input type="number" id="unit-bedrooms" value="1">
-                    </div>
-                    <div class="form-group">
-                        <label>Beds</label>
-                        <input type="number" id="unit-beds" value="1">
-                    </div>
-                    <div class="form-group">
-                        <label>Bathrooms</label>
-                        <input type="number" id="unit-bathrooms" step="0.5" value="1">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Bed Types (e.g., 1 double bed • 1 single bed)</label>
-                    <input type="text" id="unit-bed-types" placeholder="1 double bed • 1 single bed">
-                </div>
-                
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="unit-description" rows="3"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Featured Image</label>
-                    <div id="featured-image-preview" style="font-size:13px; color:#999; padding:8px 0;">First gallery photo will be used as cover.</div>
-                    <input type="hidden" id="unit-featured-image">
-                </div>
-                
-                <div class="form-group">
-                    <label>Gallery Images</label>
-                    <p style="font-size:12px; color:#666; margin-bottom:8px;">Tap any photo to set as cover · Drag to reorder</p>
-                    <div id="gallery-images-preview"></div>
-                    <input type="file" id="gallery-image-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryImages(this)">
-                    <input type="hidden" id="unit-gallery">
-                </div>
-                
-                <div class="form-group">
-                    <label>Amenities (comma separated)</label>
-                    <div id="amenities-selector" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; max-height:320px; overflow-y:auto; border:1px solid #E5E5E5; border-radius:10px; padding:12px;"></div>
-                    <input type="hidden" id="unit-amenities">
-                </div>
-                
-                <h4 style="margin: 16px 0 12px;">External Booking Links</h4>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Airbnb URL</label>
-                        <input type="text" id="unit-airbnb" placeholder="https://airbnb.com/rooms/...">
-                    </div>
-                    <div class="form-group">
-                        <label>Agoda URL</label>
-                        <input type="text" id="unit-agoda" placeholder="https://agoda.com/...">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Trip.com URL</label>
-                        <input type="text" id="unit-trip" placeholder="https://trip.com/...">
-                    </div>
-                    <div class="form-group">
-                        <label>Booking.com URL</label>
-                        <input type="text" id="unit-booking" placeholder="https://booking.com/...">
-                    </div>
-                </div>
-                
-                <div style="display:flex; gap:12px; margin-top:20px;">
-                    <button class="btn btn-primary" onclick="saveUnit()">Save Unit</button>
-                    <button class="btn btn-danger" id="delete-unit-btn" style="display:none" onclick="deleteUnit()">Delete</button>
+    let html = '';
+    for (const [building, units] of Object.entries(buildings)) {
+        const parents = units.filter(u => !u.parent_unit_id);
+        const children = units.filter(u => u.parent_unit_id);
+
+        html += `<div class="building-group">
+            <div class="building-header">
+                <div class="building-name"><i class="fas fa-building" style="color:#40B5AD;"></i> ${building}</div>
+            </div>`;
+
+        parents.forEach(unit => {
+            html += renderUnitCard(unit, false);
+            // Render children
+            const unitChildren = children.filter(c => c.parent_unit_id == unit.id);
+            if (unitChildren.length) {
+                unitChildren.forEach(child => {
+                    html += `<div class="child-connector"><div class="child-connector-line"></div><div class="child-label">Room</div></div>`;
+                    html += renderUnitCard(child, true);
+                });
+            }
+        });
+
+        // Orphan children (parent not in same building)
+        const orphans = children.filter(c => !parents.find(p => p.id == c.parent_unit_id));
+        orphans.forEach(child => {
+            html += renderUnitCard(child, true);
+        });
+
+        html += '</div>';
+    }
+
+    container.innerHTML = html || '<div class="loading">No units found</div>';
+}
+
+function renderUnitCard(unit, isChild) {
+    const thumb = unit.featured_image 
+        ? `<img src="${unit.featured_image}" class="unit-thumb" onerror="this.style.display='none'">`
+        : `<div class="unit-thumb-placeholder"><i class="fas fa-building"></i></div>`;
+    
+    const badge = unit.show_on_website 
+        ? `<span class="unit-badge badge-public"><i class="fas fa-globe"></i> Public</span>`
+        : `<span class="unit-badge badge-admin"><i class="fas fa-lock"></i> Admin Only</span>`;
+
+    const mvr = unit.rate_mvr ? `MVR ${parseFloat(unit.rate_mvr).toLocaleString()}` : '';
+    const usd = unit.rate_usd ? `$${unit.rate_usd}` : '';
+    const price = [mvr, usd].filter(Boolean).join(' · ');
+
+    return `<div class="unit-card ${isChild ? 'child' : ''}">
+        <div class="unit-main">
+            ${thumb}
+            <div class="unit-info">
+                <div class="unit-number">${unit.unit_number || unit.unit_name}</div>
+                <div class="unit-type">${unit.unit_type_label || ''}</div>
+                <div class="unit-meta">
+                    ${price ? `<span class="unit-price">${price} / night</span>` : ''}
+                    ${badge}
                 </div>
             </div>
         </div>
-    </div>
+        <div class="unit-actions">
+            <button class="action-btn" onclick="editUnit(${unit.id})">
+                <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="action-btn" onclick="window.location.href='block-dates.html?unit=${unit.id}'">
+                <i class="fas fa-calendar-times"></i> Calendar
+            </button>
+            <button class="action-btn" onclick="window.location.href='unit-details.html?id=${unit.id}'" ${unit.show_on_website ? '' : 'style="opacity:0.5"'}>
+                <i class="fas fa-eye"></i> View
+            </button>
+            <button class="action-btn danger" onclick="deleteUnit(${unit.id})">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </div>`;
+}
 
-    <script>
-        // ==================== AUTHENTICATION CHECK ====================
-        if (!sessionStorage.getItem('adminToken')) {
-            window.location.href = 'admin.html';
-        }
-        // ============================================================
+function openAddModal() {
+    document.getElementById('modal-title').textContent = 'Add Unit';
+    document.getElementById('unit-id').value = '';
+    document.getElementById('unit-building').value = 'Malas Residence';
+    document.getElementById('unit-number').value = '';
+    document.getElementById('unit-type-label').value = '';
+    document.getElementById('unit-description').value = '';
+    document.getElementById('unit-guests').value = '4';
+    document.getElementById('unit-max-adults').value = '4';
+    document.getElementById('unit-max-children').value = '2';
+    document.getElementById('unit-bedrooms').value = '1';
+    document.getElementById('unit-beds').value = '1';
+    document.getElementById('unit-bathrooms').value = '1';
+    document.getElementById('unit-bed-types').value = '';
+    document.getElementById('unit-mvr').value = '';
+    document.getElementById('unit-usd').value = '';
+    document.getElementById('unit-airbnb').value = '';
+    document.getElementById('unit-agoda').value = '';
+    document.getElementById('unit-booking').value = '';
+    document.getElementById('unit-trip').value = '';
+    document.getElementById('unit-show-website').checked = true;
+    document.getElementById('unit-amenities').value = '';
+    document.getElementById('unit-featured-image').value = '';
+    currentGalleryImages = [];
+    displayGalleryPreviews();
+    renderAmenitiesSelector([]);
+    populateParentDropdown();
+    document.getElementById('unit-modal').classList.add('open');
+}
 
-        const API_BASE_URL = 'https://api.htmrentals.com/api';
-        function getToken() { return sessionStorage.getItem('adminToken'); }
-        function authHeaders(extra) { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json', ...extra }; }
-        function handleAuthError(res) { if (res && res.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = 'admin.html'; return true; } return false; }
-        
-        let allUnits = [];
-        let currentGalleryImages = [];
-        
-        async function loadUnits() {
-            const desktopContainer = document.getElementById('units-container');
-            const mobileContainer = document.getElementById('mobile-cards');
-            desktopContainer.innerHTML = '<div class="loading">Loading units...</div>';
-            mobileContainer.innerHTML = '<div class="loading">Loading units...</div>';
-            
-            try {
-                const res = await fetch(`${API_BASE_URL}/admin/units`, {
-                    headers: authHeaders()
-                });
-                if (handleAuthError(res)) return;
-                const data = await res.json();
-                
-                if (data.success) {
-                    allUnits = data.units;
-                    displayUnitsDesktop();
-                    displayUnitsMobile();
-                } else {
-                    desktopContainer.innerHTML = '<div class="empty">Failed to load units</div>';
-                    mobileContainer.innerHTML = '<div class="empty">Failed to load units</div>';
-                }
-            } catch(e) {
-                console.error(e);
-                desktopContainer.innerHTML = '<div class="empty">Error loading units</div>';
-                mobileContainer.innerHTML = '<div class="empty">Error loading units</div>';
-            }
-        }
-        
-        function displayUnitsDesktop() {
-            const container = document.getElementById('units-container');
-            
-            if (!allUnits || allUnits.length === 0) {
-                container.innerHTML = '<div class="empty">No units found. Click "Add Unit" to create one.</div>';
-                return;
-            }
-            
-            container.innerHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>USD</th>
-                            <th>MVR</th>
-                            <th>Guests</th>
-                            <th>Adults/Children</th>
-                            <th>Beds/Baths</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${allUnits.map(unit => `
-                            <tr>
-                                <td>${unit.id}</td>
-                                <td><strong>${escapeHtml(unit.unit_name)}</strong></td>
-                                <td>$${unit.rate_usd || '—'}</td>
-                                <td>MVR ${unit.rate_mvr || '—'}</td>
-                                <td>${unit.max_guests}</td>
-                                <td>${unit.max_adults || unit.max_guests} / ${unit.max_children || 0}</td>
-                                <td>${unit.beds || unit.bedrooms} / ${unit.bathrooms || 1}</td>
-                                <td>
-                                    <button class="btn btn-sm" style="background:var(--turquoise); color:white;" onclick="editUnit(${unit.id})">Edit</button>
-                                 </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-        
-        function displayUnitsMobile() {
-            const container = document.getElementById('mobile-cards');
-            
-            if (!allUnits || allUnits.length === 0) {
-                container.innerHTML = '<div class="empty">No units found. Click "Add Unit" to create one.</div>';
-                return;
-            }
-            
-            container.innerHTML = allUnits.map(unit => `
-                <div class="unit-card">
-                    <div class="unit-card-header">
-                        <span class="unit-name">${escapeHtml(unit.unit_name)}</span>
-                        <span style="font-size: 12px; color: var(--gray-text);">ID: ${unit.id}</span>
-                    </div>
-                    <div class="unit-detail">
-                        <i class="fas fa-dollar-sign"></i>
-                        <span><strong>$${unit.rate_usd || '—'}</strong> USD / <strong>MVR ${unit.rate_mvr || '—'}</strong> per night</span>
-                    </div>
-                    <div class="unit-detail">
-                        <i class="fas fa-user-friends"></i>
-                        <span><strong>${unit.max_guests}</strong> guests max</span>
-                        <span style="color: var(--gray-text);">(${unit.max_adults || unit.max_guests} adults / ${unit.max_children || 0} children)</span>
-                    </div>
-                    <div class="unit-detail">
-                        <i class="fas fa-bed"></i>
-                        <span><strong>${unit.bedrooms}</strong> bedrooms, <strong>${unit.beds || unit.bedrooms}</strong> beds, <strong>${unit.bathrooms || 1}</strong> bathrooms</span>
-                    </div>
-                    <div class="unit-actions">
-                        <button class="btn btn-sm" style="background:var(--turquoise); color:white;" onclick="editUnit(${unit.id})">Edit</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function openUnitModal() {
-            document.getElementById('modal-title').textContent = 'Add Unit';
-            document.getElementById('unit-id').value = '';
-            document.getElementById('unit-name').value = '';
-            document.getElementById('unit-building').value = 'Malas Residence';
-            document.getElementById('unit-number').value = '';
-            document.getElementById('unit-type-label').value = '';
-            document.getElementById('unit-usd').value = '';
-            document.getElementById('unit-mvr').value = '';
-            document.getElementById('unit-guests').value = '4';
-            document.getElementById('unit-max-adults').value = '4';
-            document.getElementById('unit-max-children').value = '2';
-            document.getElementById('unit-bedrooms').value = '1';
-            document.getElementById('unit-parent').value = '';
-            // Populate parent unit dropdown
-            const parentSelect = document.getElementById('unit-parent');
-            parentSelect.innerHTML = '<option value="">None (standalone unit)</option>';
-            const allUnits = document.querySelectorAll('.unit-card');
-            // Fetch units from API to populate dropdown
-            fetch(`${API_BASE_URL}/units`, { headers: { 'Authorization': `Bearer ${getToken()}` } })
-                .then(r => r.json()).then(d => {
-                    (d.units || []).filter(u => !u.parent_unit_id).forEach(u => {
-                        const short = u.unit_name.match(/A-[\w-]+/)?.[0] || u.unit_name.slice(0,20);
-                        parentSelect.innerHTML += `<option value="${u.id}">${short} — ${u.unit_name.slice(0,30)}</option>`;
-                    });
-                });
-            document.getElementById('unit-beds').value = '1';
-            document.getElementById('unit-bathrooms').value = '1';
-            document.getElementById('unit-bed-types').value = '';
-            document.getElementById('unit-description').value = '';
-            document.getElementById('unit-featured-image').value = '';
-            document.getElementById('unit-amenities').value = '';
-            renderAmenitiesSelector([]);
-            document.getElementById('unit-airbnb').value = '';
-            document.getElementById('unit-agoda').value = '';
-            document.getElementById('unit-trip').value = '';
-            document.getElementById('unit-booking').value = '';
-            document.getElementById('featured-image-preview').innerHTML = '';
-            currentGalleryImages = [];
-            displayGalleryPreviews();
-            document.getElementById('delete-unit-btn').style.display = 'none';
-            document.getElementById('unit-modal').style.display = 'flex';
-        }
-        
-        function editUnit(id) { console.log("editUnit called", id, allUnits.length);
-            const unit = allUnits.find(u => u.id == id);
-            if (!unit) return;
-            
-            document.getElementById('modal-title').textContent = 'Edit Unit';
-            document.getElementById('unit-id').value = unit.id;
-            document.getElementById('unit-building').value = unit.building_name || 'Malas Residence';
-            document.getElementById('unit-number').value = unit.unit_number || '';
-            document.getElementById('unit-type-label').value = unit.unit_type_label || '';
-            document.getElementById('unit-name').value = unit.unit_name || '';
-            document.getElementById('unit-usd').value = unit.rate_usd || '';
-            document.getElementById('unit-mvr').value = unit.rate_mvr || '';
-            document.getElementById('unit-guests').value = unit.max_guests || 4;
-            document.getElementById('unit-max-adults').value = unit.max_adults || unit.max_guests || 4;
-            document.getElementById('unit-max-children').value = unit.max_children || 0;
-            document.getElementById('unit-bedrooms').value = unit.bedrooms || 1;
-            document.getElementById('unit-parent').value = unit.parent_unit_id || '';
-            document.getElementById('unit-beds').value = unit.beds || unit.bedrooms || 1;
-            document.getElementById('unit-bathrooms').value = unit.bathrooms || 1;
-            document.getElementById('unit-bed-types').value = unit.bed_types || '';
-            document.getElementById('unit-description').value = unit.description || '';
-            document.getElementById('unit-featured-image').value = unit.featured_image || '';
-            const amenitiesArr = typeof unit.amenities === 'string' ? unit.amenities.split(',').map(a => a.replace(/^"|"$/g,'').trim()).filter(Boolean) : (unit.amenities || []); document.getElementById('unit-amenities').value = amenitiesArr.join(',');
-            document.getElementById('unit-airbnb').value = unit.airbnb_url || '';
-            document.getElementById('unit-agoda').value = unit.agoda_url || '';
-            document.getElementById('unit-trip').value = unit.trip_url || '';
-            document.getElementById('unit-booking').value = unit.booking_url || '';
-            
-            // Featured image is auto-set from gallery
-            
-            currentGalleryImages = typeof unit.gallery_images === "string" ? JSON.parse(unit.gallery_images || "[]") : (unit.gallery_images || []);
-            const savedAmenities = typeof unit.amenities === 'string' ? unit.amenities.split(',').map(a=>a.trim()) : (unit.amenities || []);
-            renderAmenitiesSelector(savedAmenities);
-            document.getElementById('unit-amenities').value = savedAmenities.join(',');
-            displayGalleryPreviews();
-            
-            document.getElementById('delete-unit-btn').style.display = 'inline-block';
-            document.getElementById('unit-modal').style.display = 'flex';
-        }
-        
-        function closeUnitModal() {
-            document.getElementById('unit-modal').style.display = 'none';
-        }
-        
-        let dragSrcIdx = null;
+async function editUnit(id) {
+    const unit = allUnits.find(u => u.id == id);
+    if (!unit) return;
+    
+    document.getElementById('modal-title').textContent = `Edit ${unit.unit_number || unit.unit_name}`;
+    document.getElementById('unit-id').value = unit.id;
+    document.getElementById('unit-building').value = unit.building_name || 'Malas Residence';
+    document.getElementById('unit-number').value = unit.unit_number || '';
+    document.getElementById('unit-type-label').value = unit.unit_type_label || '';
+    document.getElementById('unit-description').value = unit.description || '';
+    document.getElementById('unit-guests').value = unit.max_guests || 4;
+    document.getElementById('unit-max-adults').value = unit.max_adults || 4;
+    document.getElementById('unit-max-children').value = unit.max_children || 2;
+    document.getElementById('unit-bedrooms').value = unit.bedrooms || 1;
+    document.getElementById('unit-beds').value = unit.beds || 1;
+    document.getElementById('unit-bathrooms').value = unit.bathrooms || 1;
+    document.getElementById('unit-bed-types').value = unit.bed_types || '';
+    document.getElementById('unit-mvr').value = unit.rate_mvr || '';
+    document.getElementById('unit-usd').value = unit.rate_usd || '';
+    document.getElementById('unit-airbnb').value = unit.airbnb_url || '';
+    document.getElementById('unit-agoda').value = unit.agoda_url || '';
+    document.getElementById('unit-booking').value = unit.booking_url || '';
+    document.getElementById('unit-trip').value = unit.trip_url || '';
+    document.getElementById('unit-show-website').checked = unit.show_on_website == 1;
+    document.getElementById('unit-featured-image').value = unit.featured_image || '';
+    
+    // Gallery
+    currentGalleryImages = typeof unit.gallery_images === 'string' 
+        ? JSON.parse(unit.gallery_images || '[]') 
+        : (unit.gallery_images || []);
+    displayGalleryPreviews();
+    
+    // Amenities
+    const savedAmenities = typeof unit.amenities === 'string' 
+        ? unit.amenities.split(',').map(a => a.trim()).filter(Boolean)
+        : (unit.amenities || []);
+    renderAmenitiesSelector(savedAmenities);
+    document.getElementById('unit-amenities').value = savedAmenities.join(',');
+    
+    populateParentDropdown(unit.parent_unit_id);
+    document.getElementById('unit-modal').classList.add('open');
+}
 
-        function displayGalleryPreviews() {
-            const container = document.getElementById('gallery-images-preview');
-            const featuredUrl = document.getElementById('unit-featured-image').value;
-            let html = '<div class="gallery-grid">';
-            currentGalleryImages.forEach((url, idx) => {
-                const isFeatured = idx === 0;
-                html += `<div class="gallery-item ${isFeatured ? 'is-featured' : ''}" draggable="true"
-                    ondragstart="onDragStart(event,${idx})"
-                    ondragover="onDragOver(event,${idx})"
-                    ondragleave="onDragLeave(event)"
-                    ondrop="onDrop(event,${idx})"
-                    ondragend="onDragEnd(event)"
-                    onclick="setFeaturedFromGallery('${url}')"
-                    style="cursor:pointer;">
-                    <img src="${url}" alt="Gallery ${idx+1}">
-                    <div class="item-overlay">
-                        <span class="item-badge">${isFeatured ? '★ Cover' : 'Tap to set cover'}</span>
-                        <button class="item-remove" onclick="event.stopPropagation(); removeGalleryImage(${idx})">×</button>
-                    </div>
-                    <div class="drag-handle">⠿ drag to reorder</div>
-                </div>`;
-            });
-            html += `<label class="gallery-upload-btn" for="gallery-image-input">
-                <i class="fas fa-plus"></i>
-                <span>Add Photos</span>
-            </label></div>`;
-            container.innerHTML = html;
-            document.getElementById('unit-gallery').value = currentGalleryImages.join(',');
-            // Auto-set first photo as featured
-            if (currentGalleryImages.length > 0) {
-                document.getElementById('unit-featured-image').value = currentGalleryImages[0];
-            } else {
-                document.getElementById('unit-featured-image').value = '';
-            }
-        }
+function closeModal() {
+    document.getElementById('unit-modal').classList.remove('open');
+}
 
-        function setFeaturedFromGallery(url) {
-            // Move tapped photo to first position (becomes cover)
-            const idx = currentGalleryImages.indexOf(url);
-            if (idx > 0) {
-                currentGalleryImages.splice(idx, 1);
-                currentGalleryImages.unshift(url);
-                displayGalleryPreviews();
-                showMessage('Cover photo updated', 'success');
-            }
-        }
+function populateParentDropdown(selectedId = null) {
+    const select = document.getElementById('unit-parent');
+    select.innerHTML = '<option value="">None (standalone unit)</option>';
+    allUnits.filter(u => !u.parent_unit_id).forEach(u => {
+        const label = u.unit_number || u.unit_name.slice(0, 20);
+        const type = u.unit_type_label ? ` — ${u.unit_type_label}` : '';
+        select.innerHTML += `<option value="${u.id}" ${selectedId == u.id ? 'selected' : ''}>${label}${type}</option>`;
+    });
+}
 
-        function removeGalleryImage(idx) {
-            currentGalleryImages.splice(idx, 1);
-            displayGalleryPreviews();
-        }
+async function saveUnit() {
+    const id = document.getElementById('unit-id').value;
+    const building = document.getElementById('unit-building').value.trim();
+    const number = document.getElementById('unit-number').value.trim();
+    const typeLabel = document.getElementById('unit-type-label').value.trim();
+    
+    if (!number) { showToast('Unit number is required'); return; }
 
-        function onDragStart(e, idx) {
-            dragSrcIdx = idx;
-            e.dataTransfer.effectAllowed = 'move';
-            e.currentTarget.classList.add('dragging');
-        }
-        function onDragOver(e, idx) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            if (idx !== dragSrcIdx) e.currentTarget.classList.add('drag-over');
-        }
-        function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-        function onDrop(e, idx) {
-            e.preventDefault();
-            e.currentTarget.classList.remove('drag-over');
-            if (dragSrcIdx === null || dragSrcIdx === idx) return;
-            const moved = currentGalleryImages.splice(dragSrcIdx, 1)[0];
-            currentGalleryImages.splice(idx, 0, moved);
-            displayGalleryPreviews();
-        }
-        function onDragEnd(e) {
-            e.currentTarget.classList.remove('dragging');
-            dragSrcIdx = null;
-        }
+    const unitName = building && typeLabel ? `${building} - ${typeLabel} | ${number}` : number;
+    
+    const unitData = {
+        unit_name: unitName,
+        building_name: building,
+        unit_number: number,
+        unit_type_label: typeLabel,
+        description: document.getElementById('unit-description').value,
+        max_guests: parseInt(document.getElementById('unit-guests').value) || 4,
+        max_adults: parseInt(document.getElementById('unit-max-adults').value) || 4,
+        max_children: parseInt(document.getElementById('unit-max-children').value) || 2,
+        bedrooms: parseInt(document.getElementById('unit-bedrooms').value) || 1,
+        beds: parseInt(document.getElementById('unit-beds').value) || 1,
+        bathrooms: parseFloat(document.getElementById('unit-bathrooms').value) || 1,
+        bed_types: document.getElementById('unit-bed-types').value || null,
+        rate_mvr: parseFloat(document.getElementById('unit-mvr').value) || 0,
+        rate_usd: parseFloat(document.getElementById('unit-usd').value) || 0,
+        airbnb_url: document.getElementById('unit-airbnb').value.trim() || null,
+        agoda_url: document.getElementById('unit-agoda').value.trim() || null,
+        booking_url: document.getElementById('unit-booking').value.trim() || null,
+        trip_url: document.getElementById('unit-trip').value.trim() || null,
+        parent_unit_id: document.getElementById('unit-parent').value || null,
+        show_on_website: document.getElementById('unit-show-website').checked ? 1 : 0,
+        featured_image: currentGalleryImages[0] || document.getElementById('unit-featured-image').value || null,
+        gallery_images: currentGalleryImages,
+        amenities: Array.from(document.querySelectorAll('#amenities-selector .amenity-item.checked')).map(el => el.dataset.label).filter(Boolean),
+    };
 
-        function removeFeaturedImage() { /* handled by gallery */ }
-        
-        async function uploadFeaturedImage(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const formData = new FormData();
-            formData.append('image', file);
-            
-            try {
-                const res = await fetch(`${API_BASE_URL}/admin/upload`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${getToken()}` },
-                    body: formData
-                });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById('unit-featured-image').value = data.url;
-                    document.getElementById('featured-image-preview').innerHTML = `<div class="preview-img-container"><img src="${data.url}" class="preview-img"><div class="remove-img" onclick="removeFeaturedImage()">×</div></div>`;
-                    showMessage('Image uploaded', 'success');
-                } else {
-                    showMessage('Upload failed', 'error');
-                }
-            } catch(e) {
-                showMessage('Error uploading', 'error');
-            }
-            input.value = '';
+    try {
+        const url = id ? `${API_BASE_URL}/admin/units/${id}` : `${API_BASE_URL}/admin/units`;
+        const method = id ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(unitData) });
+        const data = await res.json();
+        if (data.success) {
+            showToast(id ? 'Unit updated!' : 'Unit created!');
+            closeModal();
+            await loadUnits();
+        } else {
+            showToast('Error: ' + (data.error || 'Failed to save'));
         }
-        
-        async function uploadGalleryImages(input) {
-            const files = Array.from(input.files);
-            for (const file of files) {
-                const formData = new FormData();
-                formData.append('image', file);
-                
-                try {
-                    const res = await fetch(`${API_BASE_URL}/admin/upload`, {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${getToken()}` },
-                        body: formData
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        currentGalleryImages.push(data.url);
-                        displayGalleryPreviews();
-                        showMessage('Image uploaded', 'success');
-                    }
-                } catch(e) {
-                    showMessage('Upload failed', 'error');
-                }
-            }
-            input.value = '';
-        }
-        
-        const HTM_AMENITIES = [
-            {id:'free_wifi',label:'Free High-Speed WiFi',icon:'fa-wifi'},
-            {id:'air_conditioning',label:'Air Conditioning',icon:'fa-snowflake'},
-            {id:'bed_linen',label:'Fresh Bed Linen',icon:'fa-bed'},
-            {id:'fresh_towels',label:'Fresh Towels',icon:'fa-scroll'},
-            {id:'hot_shower',label:'Hot Shower',icon:'fa-shower'},
-            {id:'widescreen_tv',label:'Widescreen Smart TV',icon:'fa-tv'},
-            {id:'refrigerator',label:'Refrigerator',icon:'fa-temperature-low'},
-            {id:'blackout_curtains',label:'Blackout Curtains',icon:'fa-grip-lines'},
-            {id:'muslim_shower',label:'Muslim Shower / Hand Bidet',icon:'fa-hand-holding-water'},
-            {id:'ceiling_fan',label:'Ceiling Fan',icon:'fa-fan'},
-            {id:'extra_pillows',label:'Extra Pillows',icon:'fa-moon'},
-            {id:'extra_blankets',label:'Extra Blankets',icon:'fa-cloud'},
-            {id:'wardrobe',label:'Wardrobe',icon:'fa-door-closed'},
-            {id:'bedside_lamp',label:'Bedside Lamp',icon:'fa-lightbulb'},
-            {id:'baby_crib',label:'Baby Crib',icon:'fa-baby'},
-            {id:'minibar_fridge',label:'Minibar Fridge',icon:'fa-box'},
-            {id:'shampoo',label:'Shampoo',icon:'fa-pump-soap'},
-            {id:'conditioner',label:'Conditioner',icon:'fa-pump-soap'},
-            {id:'body_wash',label:'Body Wash',icon:'fa-pump-soap'},
-            {id:'hand_soap',label:'Hand Soap',icon:'fa-soap'},
-            {id:'toilet_paper',label:'Toilet Paper',icon:'fa-toilet-paper'},
-            {id:'hair_dryer',label:'Hair Dryer',icon:'fa-wind'},
-            {id:'sofa',label:'Sofa',icon:'fa-couch'},
-            {id:'coffee_table',label:'Coffee Table',icon:'fa-coffee'},
-            {id:'dining_table',label:'Dining Table',icon:'fa-utensils'},
-            {id:'balcony',label:'Balcony',icon:'fa-building'},
-            {id:'window_view',label:'Window View',icon:'fa-mountain'},
-            {id:'smoking_area',label:'Smoking Area',icon:'fa-smoking'},
-            {id:'microwave',label:'Microwave',icon:'fa-broadcast-tower'},
-            {id:'regular_stove',label:'Regular Stove',icon:'fa-fire'},
-            {id:'electric_stove',label:'Electric Stove',icon:'fa-plug'},
-            {id:'electric_kettle',label:'Electric Kettle',icon:'fa-mug-hot'},
-            {id:'cooking_utensils',label:'Cooking Utensils',icon:'fa-utensils'},
-            {id:'plates_bowls',label:'Plates & Bowls',icon:'fa-circle'},
-            {id:'cutlery',label:'Cutlery',icon:'fa-utensils'},
-            {id:'glasses_mugs',label:'Glasses & Mugs',icon:'fa-glass-martini'},
-            {id:'dish_soap',label:'Dish Soap',icon:'fa-soap'},
-            {id:'detergent',label:'Detergent',icon:'fa-flask'},
-            {id:'washing_machine',label:'Washing Machine',icon:'fa-shirt'},
-            {id:'drying_rack',label:'Clothes Drying Rack',icon:'fa-grip-lines'},
-            {id:'iron',label:'Iron',icon:'fa-tshirt'},
-            {id:'ironing_board',label:'Ironing Board',icon:'fa-minus'},
-            {id:'storage_cabinet',label:'Storage Cabinet',icon:'fa-archive'},
-            {id:'first_aid',label:'First Aid Kit',icon:'fa-first-aid'},
-            {id:'airport_transfer',label:'Airport Transfer',icon:'fa-plane-arrival'},
-        ];
+    } catch(e) {
+        showToast('Error saving unit');
+    }
+}
 
-        function renderAmenitiesSelector(selected = []) {
-            const container = document.getElementById('amenities-selector');
-            container.innerHTML = HTM_AMENITIES.map(a => {
-                const checked = selected.includes(a.label) || selected.includes(a.id);
-                return `<label style="display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:8px; cursor:pointer; border:1.5px solid ${checked ? '#40B5AD' : '#eee'}; background:${checked ? '#f0fafa' : 'white'}; transition:all 0.15s; user-select:none;" onclick="toggleAmenity(this, '${a.label}')">
-                    <input type="checkbox" ${checked ? 'checked' : ''} style="display:none;" data-label="${a.label}">
-                    <i class="fas ${a.icon}" style="color:${checked ? '#40B5AD' : '#ccc'}; width:16px; font-size:13px;"></i>
-                    <span style="font-size:13px; color:#0A2540; font-weight:${checked ? '600' : '400'};">${a.label}</span>
-                </label>`;
-            }).join('');
-        }
+async function deleteUnit(id) {
+    const unit = allUnits.find(u => u.id == id);
+    if (!confirm(`Delete ${unit?.unit_number || 'this unit'}? This cannot be undone.`)) return;
+    try {
+        const res = await fetch(`${API_BASE_URL}/admin/units/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${getToken()}` } });
+        const data = await res.json();
+        if (data.success) { showToast('Unit deleted'); await loadUnits(); }
+    } catch(e) { showToast('Error deleting unit'); }
+}
 
-        function toggleAmenity(label, name) {
-            const el = label;
-            const checkbox = el.querySelector('input[type=checkbox]');
-            const icon = el.querySelector('i');
-            const span = el.querySelector('span');
-            const checked = !checkbox.checked;
-            checkbox.checked = checked;
-            el.style.borderColor = checked ? '#40B5AD' : '#eee';
-            el.style.background = checked ? '#f0fafa' : 'white';
-            icon.style.color = checked ? '#40B5AD' : '#ccc';
-            span.style.fontWeight = checked ? '600' : '400';
-            updateAmenitiesHidden();
-        }
+// Gallery functions
+function displayGalleryPreviews() {
+    const container = document.getElementById('gallery-images-preview');
+    let html = '<div class="gallery-grid">';
+    currentGalleryImages.forEach((url, idx) => {
+        const isFeatured = idx === 0;
+        html += `<div class="gallery-item ${isFeatured ? 'is-featured' : ''}" draggable="true"
+            ondragstart="onDragStart(event,${idx})" ondragover="onDragOver(event,${idx})"
+            ondragleave="onDragLeave(event)" ondrop="onDrop(event,${idx})" ondragend="onDragEnd(event)"
+            onclick="setFeaturedFromGallery('${url}')">
+            <img src="${url}" alt="Gallery ${idx+1}">
+            <div class="item-overlay">
+                <span class="item-badge">${isFeatured ? '★ Cover' : 'Set cover'}</span>
+                <button class="item-remove" onclick="event.stopPropagation(); removeGalleryImage(${idx})">×</button>
+            </div>
+        </div>`;
+    });
+    html += `<label class="gallery-upload-btn" for="gallery-image-input"><i class="fas fa-plus"></i><span>Add</span></label></div>`;
+    container.innerHTML = html;
+    document.getElementById('unit-gallery').value = currentGalleryImages.join(',');
+    if (currentGalleryImages.length > 0) document.getElementById('unit-featured-image').value = currentGalleryImages[0];
+}
 
-        function updateAmenitiesHidden() {
-            const checked = Array.from(document.querySelectorAll('#amenities-selector input:checked')).map(cb => cb.dataset.label);
-            document.getElementById('unit-amenities').value = checked.join(',');
-        }
+function setFeaturedFromGallery(url) {
+    const idx = currentGalleryImages.indexOf(url);
+    if (idx > 0) { currentGalleryImages.splice(idx, 1); currentGalleryImages.unshift(url); displayGalleryPreviews(); showToast('Cover photo updated'); }
+}
+function removeGalleryImage(idx) { currentGalleryImages.splice(idx, 1); displayGalleryPreviews(); }
+function onDragStart(e, idx) { dragSrcIdx = idx; e.currentTarget.style.opacity = '0.4'; }
+function onDragOver(e, idx) { e.preventDefault(); if (idx !== dragSrcIdx) e.currentTarget.style.borderColor = '#40B5AD'; }
+function onDragLeave(e) { e.currentTarget.style.borderColor = ''; }
+function onDrop(e, idx) { e.preventDefault(); e.currentTarget.style.borderColor = ''; if (dragSrcIdx === null || dragSrcIdx === idx) return; const moved = currentGalleryImages.splice(dragSrcIdx, 1)[0]; currentGalleryImages.splice(idx, 0, moved); displayGalleryPreviews(); }
+function onDragEnd(e) { e.currentTarget.style.opacity = '1'; dragSrcIdx = null; }
 
-        async function saveUnit() {
-            const id = document.getElementById('unit-id').value;
-            const maxGuests = parseInt(document.getElementById('unit-guests').value) || 2;
-            const maxAdults = parseInt(document.getElementById('unit-max-adults').value) || maxGuests;
-            const maxChildren = parseInt(document.getElementById('unit-max-children').value) || 0;
-            
-            const unitData = {
-                unit_name: (() => {
-                    const b = document.getElementById('unit-building').value.trim();
-                    const t = document.getElementById('unit-type-label').value.trim();
-                    const n = document.getElementById('unit-number').value.trim();
-                    return [b, t, n].filter(Boolean).join(' - ').replace(' - ' + n, ' | ' + n);
-                })(),
-                building_name: document.getElementById('unit-building').value.trim(),
-                unit_number: document.getElementById('unit-number').value.trim(),
-                unit_type_label: document.getElementById('unit-type-label').value.trim(),
-                rate_usd: parseFloat(document.getElementById('unit-usd').value) || 0,
-                rate_mvr: parseFloat(document.getElementById('unit-mvr').value) || 0,
-                max_guests: maxGuests,
-                max_adults: maxAdults,
-                max_children: maxChildren,
-                bedrooms: parseInt(document.getElementById('unit-bedrooms').value) || 1,
-                parent_unit_id: document.getElementById('unit-parent').value || null,
-                beds: parseInt(document.getElementById('unit-beds').value) || 1,
-                bathrooms: parseFloat(document.getElementById('unit-bathrooms').value) || 1,
-                bed_types: document.getElementById('unit-bed-types').value || null,
-                description: document.getElementById('unit-description').value,
-                featured_image: document.getElementById('unit-featured-image').value,
-                gallery_images: currentGalleryImages,
-                amenities: Array.from(document.querySelectorAll('#amenities-selector input:checked')).map(cb => cb.dataset.label).filter(Boolean),
-                airbnb_url: document.getElementById('unit-airbnb').value.trim() || null,
-                agoda_url: document.getElementById('unit-agoda').value.trim() || null,
-                trip_url: document.getElementById('unit-trip').value.trim() || null,
-                booking_url: document.getElementById('unit-booking').value.trim() || null
-            };
-            
-            if (!unitData.unit_number && !unitData.unit_name) {
-                showMessage('Unit name required', 'error');
-                return;
-            }
-            
-            try {
-                let url, method;
-                if (id) {
-                    url = `${API_BASE_URL}/admin/units/${id}`;
-                    method = 'PUT';
-                } else {
-                    url = `${API_BASE_URL}/admin/units`;
-                    method = 'POST';
-                }
-                
-                const res = await fetch(url, {
-                    method,
-                    headers: authHeaders(),
-                    body: JSON.stringify(unitData)
-                });
-                const data = await res.json();
-                
-                if (data.success) {
-                    showMessage(id ? 'Unit updated' : 'Unit created', 'success');
-                    closeUnitModal();
-                    loadUnits();
-                } else {
-                    showMessage(data.error || 'Failed to save', 'error');
-                }
-            } catch(e) {
-                showMessage('Error saving unit', 'error');
-            }
-        }
-        
-        async function deleteUnit() {
-            const id = document.getElementById('unit-id').value;
-            if (!id || !confirm('Delete this unit permanently? This cannot be undone.')) return;
-            
-            try {
-                const res = await fetch(`${API_BASE_URL}/admin/units/${id}`, {
-                    method: 'DELETE',
-                    headers: authHeaders()
-                });
-                const data = await res.json();
-                
-                if (data.success) {
-                    showMessage('Unit deleted', 'success');
-                    closeUnitModal();
-                    loadUnits();
-                } else {
-                    showMessage(data.error || 'Failed to delete', 'error');
-                }
-            } catch(e) {
-                showMessage('Error deleting unit', 'error');
-            }
-        }
-        
-        function showMessage(msg, type) {
-            const el = document.getElementById('message');
-            el.textContent = msg;
-            el.className = `message ${type}`;
-            setTimeout(() => {
-                el.style.display = 'none';
-                el.className = 'message';
-            }, 3000);
-        }
-        
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-        }
-        
-        loadUnits();
-    </script>
+async function uploadGalleryImages(input) {
+    const files = Array.from(input.files);
+    for (const file of files) {
+        const formData = new FormData();
+        formData.append('image', file);
+        try {
+            const res = await fetch(`${API_BASE_URL}/admin/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${getToken()}` }, body: formData });
+            const data = await res.json();
+            if (data.success) { currentGalleryImages.push(data.url); displayGalleryPreviews(); }
+        } catch(e) { showToast('Upload failed'); }
+    }
+    input.value = '';
+}
+
+// Amenities
+function renderAmenitiesSelector(selected = []) {
+    const container = document.getElementById('amenities-selector');
+    container.innerHTML = HTM_AMENITIES.map(a => {
+        const checked = selected.includes(a.label) || selected.includes(a.id);
+        return `<div class="amenity-item ${checked ? 'checked' : ''}" data-label="${a.label}" onclick="toggleAmenity(this)">
+            <i class="fas ${a.icon}"></i>
+            <span>${a.label}</span>
+        </div>`;
+    }).join('');
+}
+
+function toggleAmenity(el) {
+    el.classList.toggle('checked');
+    const checked = Array.from(document.querySelectorAll('#amenities-selector .amenity-item.checked')).map(e => e.dataset.label);
+    document.getElementById('unit-amenities').value = checked.join(',');
+}
+
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 3500);
+}
+
+// Close modal on overlay click
+document.getElementById('unit-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+init();
+</script>
 </body>
 </html>
