@@ -44,14 +44,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
+            padding: 12px 16px;
             margin-bottom: 16px;
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             background: white;
-            z-index: 100;
+            z-index: 1000;
             border-bottom: 1px solid var(--gray-border);
         }
+        .header-spacer { height: 56px; }
 
         /* Toggle - Foreign first, Local second */
         .currency-toggle { display: flex; gap: 8px; }
@@ -194,6 +197,7 @@
 </head>
 <body>
     <div class="container">
+        <div class="header-spacer"></div>
         <div class="header">
             <div class="currency-toggle">
                 <button id="toggle-foreign" class="toggle-option foreign-active" onclick="setMode('foreign')">
@@ -275,6 +279,21 @@
                     await fetchAvailability();
                     renderUnitDetails();
                     setTimeout(() => { generateCalendar(currentMonth, currentYear); }, 100);
+            // Populate foreign dropdowns on initial load
+            if (unit) {
+                const maxAdults = unit.max_adults || unit.max_guests || 4;
+                const maxChildren = unit.max_children || 2;
+                const fAdults = document.getElementById('f-adults');
+                const fChildren = document.getElementById('f-children');
+                if (fAdults) {
+                    fAdults.innerHTML = '';
+                    for (let i = 1; i <= maxAdults; i++) fAdults.innerHTML += `<option value="${i}">${i} adult${i > 1 ? 's' : ''}</option>`;
+                }
+                if (fChildren) {
+                    fChildren.innerHTML = '<option value="0">0 children</option>';
+                    for (let i = 1; i <= maxChildren; i++) fChildren.innerHTML += `<option value="${i}">${i} child${i > 1 ? 'ren' : ''}</option>`;
+                }
+            }
             setTimeout(() => { initMap(); }, 500);
                     setupGallery();
                     
