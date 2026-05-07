@@ -827,7 +827,7 @@
         } else {
             tbody.innerHTML = s.unit_profits.map(u => `
                 <tr>
-                    <td><strong>${u.unit_name}</strong></td>
+                    <td><strong>${u.unit_number || u.unit_name.split('|')[1]?.trim() || u.unit_name.slice(0,15)}</strong><br><span style='font-size:11px;color:#888;'>${u.unit_type_label || ''}</span></td>
                     <td>MVR ${fmt(u.revenue_mvr)}</td>
                     <td>MVR ${fmt(u.expenses_mvr)}</td>
                     <td class="${u.net_mvr >= 0 ? 'positive' : 'negative'}"><strong>MVR ${fmt(u.net_mvr)}</strong></td>
@@ -857,7 +857,7 @@
         tbody.innerHTML = data.transactions.map(r => `
             <tr>
                 <td>${formatDate(r.transaction_date)}</td>
-                <td style="font-size:12px;">${r.unit_name}</td>
+                <td style="font-size:12px;">${r.unit_number || r.unit_name.split('|')[1]?.trim() || r.unit_name.slice(0,15)}</td>
                 <td>${r.description || '—'}</td>
                 <td><span class="badge badge-info">${r.currency}</span></td>
                 <td><strong>${r.currency === 'MVR' ? 'MVR' : r.currency === 'USD' ? '$' : 'USDT'} ${fmt(r.amount)}</strong></td>
@@ -977,7 +977,7 @@
             return `
             <tr>
                 <td>${e.expense_month?.slice(0,7)}</td>
-                <td style="font-size:12px;">${e.unit_name}</td>
+                <td style="font-size:12px;">${e.unit_number || e.unit_name.split('|')[1]?.trim() || e.unit_name.slice(0,15)}</td>
                 <td><span class="badge badge-secondary">${e.category}</span></td>
                 <td><strong>MVR ${fmt(e.total_amount_mvr)}</strong></td>
                 <td style="font-size:12px;">${e.notes || '—'}</td>
@@ -1172,7 +1172,7 @@
         tbody.innerHTML = data.costs.map(r => `
             <tr>
                 <td>${formatDate(r.date_incurred)}</td>
-                <td style="font-size:12px;">${r.unit_name}</td>
+                <td style="font-size:12px;">${r.unit_number || r.unit_name.split('|')[1]?.trim() || r.unit_name.slice(0,15)}</td>
                 <td>${r.description}</td>
                 <td><strong>MVR ${fmt(r.amount_mvr)}</strong></td>
                 <td style="font-size:12px;">${r.receipt_note || '—'}</td>
