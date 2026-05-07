@@ -3,134 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTM Rentals | Loan Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>HTM Rentals | Loan & Savings Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #F4F7FB; color: #0A2540; min-height: 100vh; }
-        .header { background: #0A2540; color: white; padding: 16px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+        body { font-family: 'Inter', sans-serif; background: #F0F4F8; color: #0A2540; min-height: 100vh; }
+        .header { background: #0A2540; color: white; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
         .header a { color: white; text-decoration: none; font-size: 20px; }
         .header h1 { font-size: 18px; font-weight: 600; }
+        .btn-add-loan { background: #40B5AD; color: white; border: none; padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
         .container { max-width: 700px; margin: 0 auto; padding: 20px 16px 100px; }
 
+        /* Loan cards */
+        .loan-card { border-radius: 20px; padding: 24px; margin-bottom: 16px; color: white; position: relative; overflow: hidden; }
+        .loan-card.primary { background: linear-gradient(135deg, #0A2540, #006994); }
+        .loan-card.secondary { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+        .loan-tag { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.15); font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; }
+        .loan-name { font-size: 13px; opacity: 0.7; margin-bottom: 4px; }
+        .loan-balance { font-size: 28px; font-weight: 800; margin-bottom: 14px; }
+        .loan-progress-bar { background: rgba(255,255,255,0.2); border-radius: 10px; height: 6px; margin-bottom: 6px; }
+        .loan-progress-fill { background: #40B5AD; border-radius: 10px; height: 100%; transition: width 0.5s; }
+        .loan-meta { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.65; margin-bottom: 14px; }
+        .loan-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .loan-stat { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; }
+        .loan-stat-label { font-size: 10px; opacity: 0.7; margin-bottom: 3px; }
+        .loan-stat-value { font-size: 14px; font-weight: 700; }
+        .loan-actions { display: flex; gap: 8px; margin-top: 14px; }
+        .loan-action-btn { flex: 1; background: rgba(255,255,255,0.15); border: none; color: white; padding: 8px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .loan-action-btn:hover { background: rgba(255,255,255,0.25); }
+
+        /* Cards */
         .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .card-title { font-size: 15px; font-weight: 700; color: #0A2540; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .card-title { font-size: 14px; font-weight: 700; color: #0A2540; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
         .card-title i { color: #40B5AD; }
 
-        /* Loan summary */
-        .loan-summary { background: linear-gradient(135deg, #0A2540, #006994); border-radius: 16px; padding: 24px; margin-bottom: 16px; color: white; }
-        .loan-name { font-size: 13px; opacity: 0.7; margin-bottom: 4px; }
-        .loan-balance { font-size: 32px; font-weight: 800; margin-bottom: 16px; }
-        .loan-progress-bar { background: rgba(255,255,255,0.2); border-radius: 10px; height: 8px; margin-bottom: 8px; }
-        .loan-progress-fill { background: #40B5AD; border-radius: 10px; height: 100%; transition: width 0.5s; }
-        .loan-meta { display: flex; justify-content: space-between; font-size: 12px; opacity: 0.7; }
-        .loan-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
-        .loan-stat { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; }
-        .loan-stat-label { font-size: 11px; opacity: 0.7; margin-bottom: 4px; }
-        .loan-stat-value { font-size: 16px; font-weight: 700; }
-
         /* Partner savings */
-        .partner-savings { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .partner-saving-card { background: #f8f9fa; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
-        .partner-saving-name { font-size: 14px; font-weight: 700; color: #0A2540; margin-bottom: 2px; }
-        .partner-saving-detail { font-size: 12px; color: #888; }
-        .partner-saving-balance { text-align: right; }
-        .partner-saving-amount { font-size: 18px; font-weight: 800; color: #40B5AD; }
-        .partner-saving-label { font-size: 11px; color: #888; }
-        .withdraw-btn { background: white; border: 1.5px solid #40B5AD; color: #40B5AD; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+        .partner-saving-card { background: #f8f9fa; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .partner-saving-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+        .partner-saving-detail { font-size: 11px; color: #888; }
+        .partner-saving-amount { font-size: 20px; font-weight: 800; color: #40B5AD; text-align: right; }
+        .partner-saving-label { font-size: 10px; color: #888; text-align: right; }
+        .withdraw-btn { background: white; border: 1.5px solid #40B5AD; color: #40B5AD; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 6px; display: block; }
 
-        /* Payment log */
-        .payment-item { padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+        /* Payment items */
+        .payment-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
         .payment-item:last-child { border-bottom: none; }
-        .payment-date { font-size: 12px; color: #888; margin-bottom: 4px; }
-        .payment-amount { font-size: 16px; font-weight: 700; color: #0A2540; margin-bottom: 6px; }
-        .payment-contributions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .contribution-tag { background: #f0fafa; color: #006994; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; border: 1px solid #40B5AD; }
-        .delete-payment { float: right; background: none; border: none; color: #ddd; cursor: pointer; font-size: 14px; }
-        .delete-payment:hover { color: #dc3545; }
+        .payment-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+        .payment-date { font-size: 12px; color: #888; }
+        .payment-amount { font-size: 15px; font-weight: 700; }
+        .payment-loan { font-size: 11px; color: #40B5AD; font-weight: 600; }
+        .payment-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+        .tag { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+        .tag-partner { background: #f0fafa; color: #006994; border: 1px solid #40B5AD; }
+        .tag-company { background: #f0f8f0; color: #2e7d32; border: 1px solid #28a745; }
+        .tag-notes { background: #f5f5f5; color: #666; }
+        .delete-btn { background: none; border: none; color: #ddd; cursor: pointer; font-size: 13px; }
+        .delete-btn:hover { color: #dc3545; }
 
-        /* Buttons */
+        /* Tabs */
+        .tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; }
+        .tab { padding: 8px 16px; border-radius: 40px; border: 1.5px solid #eee; background: white; font-size: 13px; font-weight: 600; color: #666; cursor: pointer; white-space: nowrap; }
+        .tab.active { border-color: #40B5AD; background: #40B5AD; color: white; }
+
+        /* FAB */
         .fab { position: fixed; bottom: 24px; right: 20px; background: #40B5AD; color: white; border: none; width: 56px; height: 56px; border-radius: 50%; font-size: 22px; cursor: pointer; box-shadow: 0 4px 20px rgba(64,181,173,0.4); display: flex; align-items: center; justify-content: center; z-index: 99; }
-        .btn { padding: 11px 20px; border-radius: 40px; border: none; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
-        .btn-primary { background: #0A2540; color: white; width: 100%; padding: 14px; border-radius: 40px; font-size: 15px; margin-top: 8px; }
-        .btn-outline { background: white; color: #006994; border: 1.5px solid #006994; }
 
         /* Modal */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,37,64,0.7); z-index: 9999; align-items: flex-end; justify-content: center; }
         .modal-overlay.open { display: flex; }
-        .modal { background: white; border-radius: 24px 24px 0 0; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; padding: 24px 20px; }
+        .modal { background: white; border-radius: 24px 24px 0 0; width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto; padding: 24px 20px; }
         .modal-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 0 auto 20px; }
         .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-group input, .form-group select { width: 100%; padding: 11px 14px; border: 1.5px solid #E0E0E0; border-radius: 10px; font-size: 14px; outline: none; }
-        .form-group input:focus { border-color: #40B5AD; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 14px; border: 1.5px solid #E0E0E0; border-radius: 10px; font-size: 14px; outline: none; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus { border-color: #40B5AD; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-primary { width: 100%; padding: 14px; background: #0A2540; color: white; border: none; border-radius: 40px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px; font-family: inherit; }
+        .btn-cancel { width: 100%; padding: 12px; background: none; border: none; color: #888; font-size: 14px; cursor: pointer; margin-top: 8px; font-family: inherit; }
+
+        /* Source toggle */
+        .source-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+        .source-option { padding: 12px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .source-option.selected { border-color: #40B5AD; background: #f0fafa; }
+        .source-option i { font-size: 20px; display: block; margin-bottom: 4px; color: #ccc; }
+        .source-option.selected i { color: #40B5AD; }
+        .source-option span { font-size: 12px; font-weight: 600; color: #555; }
+
+        /* Contribution rows */
         .contribution-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
         .contribution-name { font-size: 14px; font-weight: 600; }
-        .contribution-input { width: 130px; padding: 8px 12px; border: 1.5px solid #E0E0E0; border-radius: 8px; font-size: 14px; text-align: right; }
-        .total-row { display: flex; justify-content: space-between; padding: 12px 0; font-weight: 700; color: #0A2540; border-top: 2px solid #0A2540; margin-top: 8px; }
-        .remaining-label { font-size: 13px; color: #888; text-align: center; margin-bottom: 12px; }
-        
-        .toast { display: none; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #0A2540; color: white; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600; z-index: 99999; }
-        .empty { text-align: center; padding: 24px; color: #aaa; font-size: 14px; }
-        .section-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-        .tab { padding: 8px 16px; border-radius: 40px; border: 1.5px solid #eee; background: white; font-size: 13px; font-weight: 600; color: #666; cursor: pointer; }
-        .tab.active { border-color: #40B5AD; background: #40B5AD; color: white; }
+        .contribution-input { width: 130px; padding: 8px 12px; border: 1.5px solid #E0E0E0; border-radius: 8px; font-size: 14px; text-align: right; font-family: inherit; }
+        .total-row { display: flex; justify-content: space-between; padding: 12px 0; font-weight: 700; border-top: 2px solid #0A2540; margin-top: 4px; }
+        .hint { font-size: 12px; color: #888; text-align: center; margin-bottom: 8px; }
+
+        .toast { display: none; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #0A2540; color: white; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600; z-index: 99999; white-space: nowrap; }
+        .empty { text-align: center; padding: 24px; color: #aaa; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <a href="partners.html"><i class="fas fa-arrow-left"></i></a>
-    <h1>Loan & Savings Tracker</h1>
+    <div class="header-left">
+        <a href="admin.html"><i class="fas fa-arrow-left"></i></a>
+        <h1>Loan & Savings</h1>
+    </div>
+    <button class="btn-add-loan" onclick="openAddLoanModal()">
+        <i class="fas fa-plus"></i> Add Loan
+    </button>
 </div>
 
-<div class="container">
-    <!-- Loan Summary -->
-    <div class="loan-summary" id="loan-summary">
-        <div class="loan-name">Business Refinance Loan</div>
-        <div class="loan-balance" id="loan-balance">Loading...</div>
-        <div class="loan-progress-bar"><div class="loan-progress-fill" id="loan-progress"></div></div>
-        <div class="loan-meta">
-            <span id="loan-paid">MVR 0 paid</span>
-            <span id="loan-total">of MVR 196,000</span>
-        </div>
-        <div class="loan-stats">
-            <div class="loan-stat">
-                <div class="loan-stat-label">Monthly Payment</div>
-                <div class="loan-stat-value">MVR 9,700</div>
-            </div>
-            <div class="loan-stat">
-                <div class="loan-stat-label">Months Remaining</div>
-                <div class="loan-stat-value" id="months-remaining">—</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Partner Savings -->
-    <div class="card">
-        <div class="card-title"><i class="fas fa-piggy-bank"></i> Partner Savings</div>
-        <div class="partner-savings" id="partner-savings">Loading...</div>
-    </div>
-
-    <!-- Tabs -->
-    <div class="section-tabs">
-        <div class="tab active" onclick="showTab('payments')">Payment Log</div>
-        <div class="tab" onclick="showTab('withdrawals')">Withdrawals</div>
-    </div>
-
-    <!-- Payment Log -->
-    <div class="card" id="payments-section">
-        <div class="card-title"><i class="fas fa-receipt"></i> Payment History</div>
-        <div id="payment-list"></div>
-    </div>
-
-    <!-- Withdrawals -->
-    <div class="card" id="withdrawals-section" style="display:none;">
-        <div class="card-title"><i class="fas fa-hand-holding-usd"></i> Withdrawals</div>
-        <div id="withdrawal-list"></div>
-    </div>
+<div class="container" id="main-container">
+    <div class="empty"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
 </div>
 
 <button class="fab" onclick="openPaymentModal()"><i class="fas fa-plus"></i></button>
@@ -140,6 +126,11 @@
     <div class="modal">
         <div class="modal-handle"></div>
         <div class="modal-title">Record Payment</div>
+
+        <div class="form-group">
+            <label>Loan</label>
+            <select id="pay-loan-id" onchange="updatePaymentUI()"></select>
+        </div>
         <div class="form-group">
             <label>Payment Date</label>
             <input type="date" id="pay-date">
@@ -148,17 +139,45 @@
             <label>Notes (optional)</label>
             <input type="text" id="pay-notes" placeholder="e.g., May 2026 payment">
         </div>
+
         <div class="form-group">
-            <label>Contributions</label>
-            <div id="contribution-rows"></div>
-            <div class="total-row">
-                <span>Total</span>
-                <span id="contribution-total">MVR 0</span>
+            <label>Payment Source</label>
+            <div class="source-toggle">
+                <div class="source-option selected" id="src-partners" onclick="selectSource('partners')">
+                    <i class="fas fa-users"></i>
+                    <span>Partner Investment</span>
+                </div>
+                <div class="source-option" id="src-company" onclick="selectSource('company')">
+                    <i class="fas fa-building"></i>
+                    <span>Company Revenue</span>
+                </div>
             </div>
-            <div class="remaining-label" id="remaining-label"></div>
         </div>
-        <button class="btn btn-primary" onclick="savePayment()">Record Payment</button>
-        <button onclick="closePaymentModal()" style="width:100%;padding:12px;background:none;border:none;color:#888;font-size:14px;cursor:pointer;margin-top:8px;">Cancel</button>
+
+        <!-- Partner contributions -->
+        <div id="partner-contributions-section">
+            <div class="form-group">
+                <label>Contributions</label>
+                <div id="contribution-rows"></div>
+                <div class="total-row">
+                    <span>Total</span>
+                    <span id="contribution-total">MVR 0</span>
+                </div>
+                <div class="hint" id="payment-hint"></div>
+            </div>
+        </div>
+
+        <!-- Company payment -->
+        <div id="company-payment-section" style="display:none;">
+            <div class="form-group">
+                <label>Amount (MVR)</label>
+                <input type="number" id="company-amount" placeholder="0" oninput="updateCompanyTotal()">
+            </div>
+            <div class="hint">This will be recorded as a company revenue expense</div>
+        </div>
+
+        <button class="btn-primary" onclick="savePayment()">Record Payment</button>
+        <button class="btn-cancel" onclick="closeModal('payment-modal')">Cancel</button>
     </div>
 </div>
 
@@ -171,20 +190,54 @@
             <label>Partner</label>
             <select id="w-partner"></select>
         </div>
-        <div class="form-group">
-            <label>Amount (MVR)</label>
-            <input type="number" id="w-amount" placeholder="0">
-        </div>
-        <div class="form-group">
-            <label>Date</label>
-            <input type="date" id="w-date">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Amount (MVR)</label>
+                <input type="number" id="w-amount" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="w-date">
+            </div>
         </div>
         <div class="form-group">
             <label>Notes</label>
             <input type="text" id="w-notes" placeholder="Reason for withdrawal">
         </div>
-        <button class="btn btn-primary" onclick="saveWithdrawal()">Record Withdrawal</button>
-        <button onclick="closeWithdrawalModal()" style="width:100%;padding:12px;background:none;border:none;color:#888;font-size:14px;cursor:pointer;margin-top:8px;">Cancel</button>
+        <button class="btn-primary" onclick="saveWithdrawal()">Record Withdrawal</button>
+        <button class="btn-cancel" onclick="closeModal('withdrawal-modal')">Cancel</button>
+    </div>
+</div>
+
+<!-- Add Loan Modal -->
+<div class="modal-overlay" id="add-loan-modal">
+    <div class="modal">
+        <div class="modal-handle"></div>
+        <div class="modal-title">Add New Loan</div>
+        <div class="form-group">
+            <label>Loan Name</label>
+            <input type="text" id="new-loan-name" placeholder="e.g., Equipment Loan">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Total Amount (MVR)</label>
+                <input type="number" id="new-loan-amount" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label>Monthly Payment (MVR)</label>
+                <input type="number" id="new-loan-monthly" placeholder="0 if flexible">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Lender / Source</label>
+            <input type="text" id="new-loan-lender" placeholder="e.g., Bank, Partner name">
+        </div>
+        <div class="form-group">
+            <label>Notes</label>
+            <textarea id="new-loan-notes" rows="2" placeholder="Payment plan, terms, etc."></textarea>
+        </div>
+        <button class="btn-primary" onclick="saveLoan()">Add Loan</button>
+        <button class="btn-cancel" onclick="closeModal('add-loan-modal')">Cancel</button>
     </div>
 </div>
 
@@ -193,6 +246,8 @@
 <script>
 const API = 'https://api.htmrentals.com/api';
 let data = {};
+let paymentSource = 'partners';
+let activeTab = 'payments';
 
 function getToken() { return sessionStorage.getItem('adminToken'); }
 function authHeaders() { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }; }
@@ -206,158 +261,269 @@ async function loadData() {
     try {
         const res = await fetch(`${API}/admin/loans`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
         data = await res.json();
-        if (data.success) {
-            renderLoanSummary();
-            renderPartnerSavings();
-            renderPayments();
-            renderWithdrawals();
-        }
+        if (data.success) renderAll();
     } catch(e) { showToast('Error loading data'); }
 }
 
-function renderLoanSummary() {
-    const loan = data.loans[0];
-    if (!loan) return;
-    const remaining = parseFloat(loan.remaining_balance);
-    const total = parseFloat(loan.total_amount);
-    const paid = total - remaining;
-    const pct = (paid / total * 100).toFixed(1);
-    const monthsLeft = Math.ceil(remaining / loan.monthly_payment);
+function renderAll() {
+    const container = document.getElementById('main-container');
+    let html = '';
 
-    document.getElementById('loan-balance').textContent = `MVR ${remaining.toLocaleString('en-US', {minimumFractionDigits:2})} remaining`;
-    document.getElementById('loan-progress').style.width = pct + '%';
-    document.getElementById('loan-paid').textContent = `MVR ${paid.toLocaleString('en-US', {minimumFractionDigits:0})} paid (${pct}%)`;
-    document.getElementById('loan-total').textContent = `of MVR ${total.toLocaleString('en-US', {minimumFractionDigits:0})}`;
-    document.getElementById('months-remaining').textContent = monthsLeft + ' months';
-}
+    // Loan cards
+    data.loans.forEach((loan, idx) => {
+        const remaining = parseFloat(loan.remaining_balance);
+        const total = parseFloat(loan.total_amount);
+        const paid = total - remaining;
+        const pct = total > 0 ? (paid / total * 100).toFixed(1) : 0;
+        const monthsLeft = loan.monthly_payment > 0 ? Math.ceil(remaining / loan.monthly_payment) : '—';
+        const colorClass = idx === 0 ? 'primary' : 'secondary';
+        const isPartnerLoan = idx === 0;
 
-function renderPartnerSavings() {
-    const container = document.getElementById('partner-savings');
-    if (!data.savings || !data.savings.length) {
-        container.innerHTML = '<div class="empty">No partner data</div>';
-        return;
-    }
-    container.innerHTML = data.savings.map(s => `
-        <div class="partner-saving-card">
-            <div>
-                <div class="partner-saving-name">${s.name}</div>
-                <div class="partner-saving-detail">Injected: MVR ${s.total_injected.toLocaleString('en-US', {minimumFractionDigits:2})}</div>
-                <div class="partner-saving-detail">Withdrawn: MVR ${s.total_withdrawn.toLocaleString('en-US', {minimumFractionDigits:2})}</div>
-                <button class="withdraw-btn" onclick="openWithdrawalModal(${s.partner_id}, '${s.name}', ${s.balance})">
-                    <i class="fas fa-arrow-down"></i> Withdraw
+        html += `<div class="loan-card ${colorClass}">
+            <div class="loan-tag">${isPartnerLoan ? 'PARTNER INVESTMENT' : 'COMPANY REVENUE'}</div>
+            <div class="loan-name">${loan.loan_name}</div>
+            <div class="loan-balance">MVR ${remaining.toLocaleString('en-US', {minimumFractionDigits:2})}</div>
+            <div class="loan-progress-bar"><div class="loan-progress-fill" style="width:${pct}%"></div></div>
+            <div class="loan-meta">
+                <span>MVR ${paid.toLocaleString('en-US', {minimumFractionDigits:0})} paid (${pct}%)</span>
+                <span>of MVR ${total.toLocaleString('en-US', {minimumFractionDigits:0})}</span>
+            </div>
+            <div class="loan-stats">
+                <div class="loan-stat">
+                    <div class="loan-stat-label">Monthly</div>
+                    <div class="loan-stat-value">${loan.monthly_payment > 0 ? 'MVR ' + parseFloat(loan.monthly_payment).toLocaleString() : 'Flexible'}</div>
+                </div>
+                <div class="loan-stat">
+                    <div class="loan-stat-label">Months Left</div>
+                    <div class="loan-stat-value">${monthsLeft}</div>
+                </div>
+                <div class="loan-stat">
+                    <div class="loan-stat-label">Paid %</div>
+                    <div class="loan-stat-value">${pct}%</div>
+                </div>
+            </div>
+            <div class="loan-actions">
+                <button class="loan-action-btn" onclick="openPaymentModalForLoan(${loan.id})">
+                    <i class="fas fa-plus"></i> Record Payment
                 </button>
             </div>
-            <div class="partner-saving-balance">
-                <div class="partner-saving-amount">MVR ${s.balance.toLocaleString('en-US', {minimumFractionDigits:2})}</div>
-                <div class="partner-saving-label">Available</div>
-            </div>
-        </div>
-    `).join('');
-}
-
-function renderPayments() {
-    const container = document.getElementById('payment-list');
-    if (!data.payments || !data.payments.length) {
-        container.innerHTML = '<div class="empty">No payments recorded yet</div>';
-        return;
-    }
-    container.innerHTML = data.payments.map(p => {
-        const contribs = data.contributions.filter(c => c.loan_payment_id == p.id);
-        const date = new Date(p.payment_date).toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
-        return `<div class="payment-item">
-            <button class="delete-payment" onclick="deletePayment(${p.id})"><i class="fas fa-trash"></i></button>
-            <div class="payment-date">${date} ${p.notes ? '· ' + p.notes : ''}</div>
-            <div class="payment-amount">MVR ${parseFloat(p.total_amount).toLocaleString('en-US', {minimumFractionDigits:2})}</div>
-            <div class="payment-contributions">
-                ${contribs.map(c => `<span class="contribution-tag">${c.partner_name}: MVR ${parseFloat(c.amount).toLocaleString('en-US', {minimumFractionDigits:0})}</span>`).join('')}
-            </div>
         </div>`;
-    }).join('');
-}
+    });
 
-function renderWithdrawals() {
-    const container = document.getElementById('withdrawal-list');
-    if (!data.withdrawals || !data.withdrawals.length) {
-        container.innerHTML = '<div class="empty">No withdrawals yet</div>';
-        return;
-    }
-    container.innerHTML = data.withdrawals.map(w => {
-        const date = new Date(w.withdrawal_date).toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
-        return `<div class="payment-item">
-            <div class="payment-date">${date}</div>
-            <div class="payment-amount" style="color:#dc3545;">- MVR ${parseFloat(w.amount).toLocaleString('en-US', {minimumFractionDigits:2})}</div>
-            <div class="payment-contributions"><span class="contribution-tag">${w.partner_name} ${w.notes ? '· ' + w.notes : ''}</span></div>
+    // Partner savings (only show for partner investment loan)
+    if (data.savings && data.savings.some(s => s.total_injected > 0)) {
+        html += `<div class="card">
+            <div class="card-title"><i class="fas fa-piggy-bank"></i> Partner Savings</div>
+            ${data.savings.map(s => `
+                <div class="partner-saving-card">
+                    <div>
+                        <div class="partner-saving-name">${s.name}</div>
+                        <div class="partner-saving-detail">Injected: MVR ${s.total_injected.toLocaleString('en-US', {minimumFractionDigits:2})}</div>
+                        <div class="partner-saving-detail">Withdrawn: MVR ${s.total_withdrawn.toLocaleString('en-US', {minimumFractionDigits:2})}</div>
+                        ${s.balance > 0 ? `<button class="withdraw-btn" onclick="openWithdrawalModal(${s.partner_id}, '${s.name}', ${s.balance})"><i class="fas fa-arrow-down"></i> Withdraw</button>` : ''}
+                    </div>
+                    <div>
+                        <div class="partner-saving-amount">MVR ${s.balance.toLocaleString('en-US', {minimumFractionDigits:2})}</div>
+                        <div class="partner-saving-label">Available</div>
+                    </div>
+                </div>
+            `).join('')}
         </div>`;
-    }).join('');
+    }
+
+    // Tabs
+    html += `<div class="tabs">
+        <div class="tab ${activeTab==='payments'?'active':''}" onclick="switchTab('payments')">Payment Log</div>
+        <div class="tab ${activeTab==='withdrawals'?'active':''}" onclick="switchTab('withdrawals')">Withdrawals</div>
+    </div>`;
+
+    // Payment log
+    if (activeTab === 'payments') {
+        html += `<div class="card">
+            <div class="card-title"><i class="fas fa-receipt"></i> Payment History</div>`;
+        if (!data.payments || !data.payments.length) {
+            html += '<div class="empty">No payments recorded yet</div>';
+        } else {
+            data.payments.forEach(p => {
+                const contribs = data.contributions.filter(c => c.loan_payment_id == p.id);
+                const loan = data.loans.find(l => l.id == p.loan_id);
+                const date = new Date(p.payment_date).toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+                html += `<div class="payment-item">
+                    <div class="payment-header">
+                        <div>
+                            <div class="payment-date">${date}</div>
+                            <div class="payment-loan">${loan?.loan_name || ''}</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div class="payment-amount">MVR ${parseFloat(p.total_amount).toLocaleString('en-US', {minimumFractionDigits:2})}</div>
+                            <button class="delete-btn" onclick="deletePayment(${p.id})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="payment-tags">
+                        ${p.source === 'company' 
+                            ? `<span class="tag tag-company"><i class="fas fa-building"></i> Company Revenue</span>`
+                            : contribs.map(c => `<span class="tag tag-partner">${c.partner_name}: MVR ${parseFloat(c.amount).toLocaleString('en-US', {minimumFractionDigits:0})}</span>`).join('')
+                        }
+                        ${p.notes ? `<span class="tag tag-notes">${p.notes}</span>` : ''}
+                    </div>
+                </div>`;
+            });
+        }
+        html += '</div>';
+    }
+
+    // Withdrawals
+    if (activeTab === 'withdrawals') {
+        html += `<div class="card">
+            <div class="card-title"><i class="fas fa-hand-holding-usd"></i> Withdrawals</div>`;
+        if (!data.withdrawals || !data.withdrawals.length) {
+            html += '<div class="empty">No withdrawals yet</div>';
+        } else {
+            data.withdrawals.forEach(w => {
+                const date = new Date(w.withdrawal_date).toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+                html += `<div class="payment-item">
+                    <div class="payment-header">
+                        <div>
+                            <div class="payment-date">${date}</div>
+                            <div class="payment-loan">${w.partner_name}</div>
+                        </div>
+                        <div class="payment-amount" style="color:#dc3545;">- MVR ${parseFloat(w.amount).toLocaleString('en-US', {minimumFractionDigits:2})}</div>
+                    </div>
+                    ${w.notes ? `<div class="payment-tags"><span class="tag tag-notes">${w.notes}</span></div>` : ''}
+                </div>`;
+            });
+        }
+        html += '</div>';
+    }
+
+    container.innerHTML = html;
 }
 
-function showTab(tab) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('payments-section').style.display = tab === 'payments' ? 'block' : 'none';
-    document.getElementById('withdrawals-section').style.display = tab === 'withdrawals' ? 'block' : 'none';
+function switchTab(tab) {
+    activeTab = tab;
+    renderAll();
 }
 
 function openPaymentModal() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('pay-date').value = today;
     document.getElementById('pay-notes').value = '';
+    
+    // Populate loan select
+    const loanSel = document.getElementById('pay-loan-id');
+    loanSel.innerHTML = data.loans.map(l => `<option value="${l.id}">${l.loan_name}</option>`).join('');
+    
+    selectSource('partners');
+    updatePaymentUI();
+    document.getElementById('payment-modal').classList.add('open');
+}
 
-    // Build contribution rows
+function openPaymentModalForLoan(loanId) {
+    openPaymentModal();
+    document.getElementById('pay-loan-id').value = loanId;
+    updatePaymentUI();
+}
+
+function updatePaymentUI() {
+    const loanId = parseInt(document.getElementById('pay-loan-id').value);
+    const loan = data.loans.find(l => l.id === loanId);
+    const isPartnerLoan = loan && data.loans.indexOf(loan) === 0;
+    
+    // Auto-select source based on loan type
+    if (!isPartnerLoan) {
+        selectSource('company');
+    }
+    
+    if (paymentSource === 'partners') {
+        buildContributionRows(loan);
+    }
+}
+
+function buildContributionRows(loan) {
     const rows = document.getElementById('contribution-rows');
     rows.innerHTML = data.partners.map(p => `
         <div class="contribution-row">
             <div class="contribution-name">${p.name}</div>
             <input type="number" class="contribution-input" id="contrib-${p.id}" 
-                placeholder="0" min="0" step="100" oninput="updateTotal()">
+                placeholder="0" min="0" step="100" oninput="updateContribTotal()">
         </div>
     `).join('');
-    updateTotal();
-    document.getElementById('payment-modal').classList.add('open');
+    
+    // Pre-fill Sunain with 7100 for main loan
+    if (loan && loan.monthly_payment > 0) {
+        const sunain = data.partners.find(p => p.name.toLowerCase().includes('sunain'));
+        if (sunain) {
+            const el = document.getElementById(`contrib-${sunain.id}`);
+            if (el) el.value = 7100;
+        }
+        updateContribTotal();
+        document.getElementById('payment-hint').textContent = `Monthly target: MVR ${parseFloat(loan.monthly_payment).toLocaleString()}`;
+    }
 }
 
-function updateTotal() {
+function updateContribTotal() {
     let total = 0;
     data.partners.forEach(p => {
-        const val = parseFloat(document.getElementById(`contrib-${p.id}`)?.value) || 0;
-        total += val;
+        total += parseFloat(document.getElementById(`contrib-${p.id}`)?.value) || 0;
     });
     document.getElementById('contribution-total').textContent = `MVR ${total.toLocaleString('en-US', {minimumFractionDigits:2})}`;
-    const diff = 9700 - total;
-    if (diff > 0) document.getElementById('remaining-label').textContent = `MVR ${diff.toLocaleString()} still needed to reach MVR 9,700`;
-    else if (diff < 0) document.getElementById('remaining-label').textContent = `MVR ${Math.abs(diff).toLocaleString()} over monthly target`;
-    else document.getElementById('remaining-label').textContent = '✓ Exactly covers monthly payment';
+    const loan = data.loans.find(l => l.id === parseInt(document.getElementById('pay-loan-id').value));
+    if (loan && loan.monthly_payment > 0) {
+        const diff = parseFloat(loan.monthly_payment) - total;
+        const hint = document.getElementById('payment-hint');
+        if (diff > 0) hint.textContent = `MVR ${diff.toLocaleString()} still needed to reach MVR ${parseFloat(loan.monthly_payment).toLocaleString()}`;
+        else if (diff < 0) hint.textContent = `MVR ${Math.abs(diff).toLocaleString()} over monthly target`;
+        else hint.textContent = '✓ Exactly covers monthly payment';
+    }
 }
 
-function closePaymentModal() { document.getElementById('payment-modal').classList.remove('open'); }
+function updateCompanyTotal() {}
+
+function selectSource(source) {
+    paymentSource = source;
+    document.getElementById('src-partners').classList.toggle('selected', source === 'partners');
+    document.getElementById('src-company').classList.toggle('selected', source === 'company');
+    document.getElementById('partner-contributions-section').style.display = source === 'partners' ? 'block' : 'none';
+    document.getElementById('company-payment-section').style.display = source === 'company' ? 'block' : 'none';
+    
+    if (source === 'partners') {
+        const loan = data.loans.find(l => l.id === parseInt(document.getElementById('pay-loan-id').value));
+        buildContributionRows(loan);
+    }
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
 async function savePayment() {
-    const contributions = data.partners.map(p => ({
-        partner_id: p.id,
-        amount: parseFloat(document.getElementById(`contrib-${p.id}`)?.value) || 0
-    })).filter(c => c.amount > 0);
+    const loanId = document.getElementById('pay-loan-id').value;
+    const date = document.getElementById('pay-date').value;
+    const notes = document.getElementById('pay-notes').value;
+    
+    let totalAmount = 0;
+    let contributions = [];
+    let source = paymentSource;
 
-    const total = contributions.reduce((sum, c) => sum + c.amount, 0);
-    if (total <= 0) { showToast('Please enter at least one contribution'); return; }
+    if (paymentSource === 'partners') {
+        contributions = data.partners.map(p => ({
+            partner_id: p.id,
+            amount: parseFloat(document.getElementById(`contrib-${p.id}`)?.value) || 0
+        })).filter(c => c.amount > 0);
+        totalAmount = contributions.reduce((s, c) => s + c.amount, 0);
+    } else {
+        totalAmount = parseFloat(document.getElementById('company-amount').value) || 0;
+    }
+
+    if (totalAmount <= 0) { showToast('Please enter an amount'); return; }
 
     try {
         const res = await fetch(`${API}/admin/loans/payment`, {
             method: 'POST',
             headers: authHeaders(),
-            body: JSON.stringify({
-                loan_id: data.loans[0].id,
-                payment_date: document.getElementById('pay-date').value,
-                total_amount: total,
-                notes: document.getElementById('pay-notes').value,
-                contributions
-            })
+            body: JSON.stringify({ loan_id: loanId, payment_date: date, total_amount: totalAmount, notes, contributions, source })
         });
         const result = await res.json();
-        if (result.success) {
-            showToast('Payment recorded!');
-            closePaymentModal();
-            await loadData();
-        } else { showToast('Error: ' + result.error); }
+        if (result.success) { showToast('Payment recorded!'); closeModal('payment-modal'); await loadData(); }
+        else showToast('Error: ' + result.error);
     } catch(e) { showToast('Error saving payment'); }
 }
 
@@ -367,7 +533,7 @@ async function deletePayment(id) {
         const res = await fetch(`${API}/admin/loans/payment/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${getToken()}` } });
         const result = await res.json();
         if (result.success) { showToast('Payment deleted'); await loadData(); }
-    } catch(e) { showToast('Error deleting payment'); }
+    } catch(e) { showToast('Error'); }
 }
 
 function openWithdrawalModal(partnerId, name, balance) {
@@ -375,28 +541,57 @@ function openWithdrawalModal(partnerId, name, balance) {
     document.getElementById('w-date').value = today;
     document.getElementById('w-amount').value = '';
     document.getElementById('w-notes').value = '';
-    const select = document.getElementById('w-partner');
-    select.innerHTML = data.partners.map(p => `<option value="${p.id}" ${p.id == partnerId ? 'selected' : ''}>${p.name} (Available: MVR ${data.savings.find(s=>s.partner_id==p.id)?.balance.toLocaleString('en-US',{minimumFractionDigits:2})||0})</option>`).join('');
+    document.getElementById('w-partner').innerHTML = data.partners.map(p => {
+        const s = data.savings.find(sv => sv.partner_id == p.id);
+        return `<option value="${p.id}" ${p.id == partnerId ? 'selected' : ''}>${p.name} — Available: MVR ${s?.balance.toLocaleString('en-US',{minimumFractionDigits:2}) || '0.00'}</option>`;
+    }).join('');
     document.getElementById('withdrawal-modal').classList.add('open');
 }
-
-function closeWithdrawalModal() { document.getElementById('withdrawal-modal').classList.remove('open'); }
 
 async function saveWithdrawal() {
     const partner_id = document.getElementById('w-partner').value;
     const amount = parseFloat(document.getElementById('w-amount').value);
     if (!amount || amount <= 0) { showToast('Please enter a valid amount'); return; }
     const savings = data.savings.find(s => s.partner_id == partner_id);
-    if (savings && amount > savings.balance) { showToast(`Cannot withdraw more than MVR ${savings.balance.toLocaleString()}`); return; }
+    if (savings && amount > savings.balance) { showToast(`Cannot exceed MVR ${savings.balance.toLocaleString()}`); return; }
     try {
         const res = await fetch(`${API}/admin/loans/withdrawal`, {
-            method: 'POST',
-            headers: authHeaders(),
+            method: 'POST', headers: authHeaders(),
             body: JSON.stringify({ partner_id, amount, withdrawal_date: document.getElementById('w-date').value, notes: document.getElementById('w-notes').value })
         });
         const result = await res.json();
-        if (result.success) { showToast('Withdrawal recorded!'); closeWithdrawalModal(); await loadData(); }
-    } catch(e) { showToast('Error recording withdrawal'); }
+        if (result.success) { showToast('Withdrawal recorded!'); closeModal('withdrawal-modal'); await loadData(); }
+    } catch(e) { showToast('Error'); }
+}
+
+function openAddLoanModal() {
+    document.getElementById('new-loan-name').value = '';
+    document.getElementById('new-loan-amount').value = '';
+    document.getElementById('new-loan-monthly').value = '';
+    document.getElementById('new-loan-lender').value = '';
+    document.getElementById('new-loan-notes').value = '';
+    document.getElementById('add-loan-modal').classList.add('open');
+}
+
+async function saveLoan() {
+    const name = document.getElementById('new-loan-name').value.trim();
+    const amount = parseFloat(document.getElementById('new-loan-amount').value);
+    if (!name || !amount) { showToast('Name and amount required'); return; }
+    try {
+        const res = await fetch(`${API}/admin/loans/add`, {
+            method: 'POST', headers: authHeaders(),
+            body: JSON.stringify({
+                loan_name: name,
+                total_amount: amount,
+                monthly_payment: parseFloat(document.getElementById('new-loan-monthly').value) || 0,
+                lender_name: document.getElementById('new-loan-lender').value,
+                notes: document.getElementById('new-loan-notes').value
+            })
+        });
+        const result = await res.json();
+        if (result.success) { showToast('Loan added!'); closeModal('add-loan-modal'); await loadData(); }
+        else showToast('Error: ' + result.error);
+    } catch(e) { showToast('Error adding loan'); }
 }
 
 function showToast(msg) {
