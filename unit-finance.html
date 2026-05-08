@@ -422,28 +422,32 @@
 
     <!-- PER UNIT SUMMARY TAB -->
     <div class="tab-content" id="tab-rent">
-        <div class="section-header">
-            <h3>Rent Tracker</h3>
-            <button class="btn btn-primary btn-sm" onclick="openModal('rent-modal')">+ Record Payment</button>
-        </div>
-        <div id="rent-setup-cards"></div>
-        <div class="table-wrap" style="margin-top:16px;">
-            <table>
-                <thead><tr><th>Unit</th><th>Month</th><th>Full Rent</th><th>Deduction</th><th>Actual Paid</th><th>Date</th><th>Notes</th><th></th></tr></thead>
-                <tbody id="rent-payments-body"><tr><td colspan="8" class="loading">Loading...</td></tr></tbody>
-            </table>
+        <div class="card">
+            <div class="card-header">
+                <h2>Rent Tracker</h2>
+                <button class="btn btn-primary btn-sm" onclick="openModal('rent-modal')">+ Record Payment</button>
+            </div>
+            <div id="rent-setup-cards"></div>
+            <div class="table-wrap" style="margin-top:16px;">
+                <table>
+                    <thead><tr><th>Unit</th><th>Month</th><th>Full Rent</th><th>Deduction</th><th>Actual Paid</th><th>Date</th><th>Notes</th><th></th></tr></thead>
+                    <tbody id="rent-payments-body"><tr><td colspan="8" class="loading">Loading...</td></tr></tbody>
+                </table>
+            </div>
         </div>
     </div>
     <div class="tab-content" id="tab-monthly-exp">
-        <div class="section-header">
-            <h3>Monthly Expenses</h3>
-            <button class="btn btn-primary btn-sm" onclick="openModal('monthly-exp-modal')">+ Add Expense</button>
-        </div>
-        <div class="table-wrap">
-            <table>
-                <thead><tr><th>Unit</th><th>Month</th><th>Category</th><th>Amount</th><th>Notes</th><th></th></tr></thead>
-                <tbody id="monthly-exp-body"><tr><td colspan="6" class="loading">Loading...</td></tr></tbody>
-            </table>
+        <div class="card">
+            <div class="card-header">
+                <h2>Monthly Expenses</h2>
+                <button class="btn btn-primary btn-sm" onclick="openModal('monthly-exp-modal')">+ Add Expense</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Unit</th><th>Month</th><th>Category</th><th>Amount</th><th>Notes</th><th></th></tr></thead>
+                    <tbody id="monthly-exp-body"><tr><td colspan="6" class="loading">Loading...</td></tr></tbody>
+                </table>
+            </div>
         </div>
     </div>
     <div class="tab-content" id="tab-unit-summary">
