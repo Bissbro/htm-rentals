@@ -726,10 +726,11 @@
     }
 
     function populateUnitSelects() {
-        const selects = ['rev-unit-id', 'exp-unit-id', 'con-unit-id', 'ren-unit-id', 'rent-unit-id', 'me-unit-id'];
+        const selects = ['rev-unit-id', 'con-unit-id', 'ren-unit-id', 'rent-unit-id', 'me-unit-id'];
         selects.forEach(id => {
             const sel = document.getElementById(id);
-            sel.innerHTML = allUnits.map(u => `<option value="${u.id}">${u.unit_number || u.unit_name.split('|')[1]?.trim() || u.unit_name.slice(0,20)}</option>`).join('');
+            if (!sel) return;
+            sel.innerHTML = allUnits.map(u => '<option value="' + u.id + '">' + (u.unit_number || u.unit_name.split('|')[1]?.trim() || u.unit_name.slice(0,20)) + '</option>').join('');
         });
     }
 
