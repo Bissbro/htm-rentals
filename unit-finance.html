@@ -466,19 +466,19 @@
             <div class="table-wrap">
                 <table>
                     <thead>
+                    <thead>
                         <tr>
                             <th>Unit</th>
-                            <th>Revenue (MVR)</th>
-                            <th>Expenses (MVR)</th>
-                            <th>Net (MVR)</th>
+                            <th>Revenue</th>
+                            <th>Rent</th>
+                            <th>Monthly Exp</th>
+                            <th>Salary Share</th>
+                            <th>Other Exp</th>
+                            <th>Net Profit</th>
                         </tr>
                     </thead>
                     <tbody id="unit-summary-body">
-                        <tr><td colspan="4" class="loading">Loading...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                        <tr><td colspan="7" class="loading">Loading...</td></tr>
     </div>
 
 </div>
@@ -868,18 +868,18 @@
         // Unit summary tab
         const tbody = document.getElementById('unit-summary-body');
         if (s.unit_profits.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="empty">No data</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="empty">No data</td></tr>`;
         } else {
             tbody.innerHTML = s.unit_profits.map(u => `
                 <tr>
                     <td><strong>${u.unit_number || u.unit_name.split('|')[1]?.trim() || u.unit_name.slice(0,15)}</strong><br><span style='font-size:11px;color:#888;'>${u.unit_type_label || ''}</span></td>
                     <td>MVR ${fmt(u.revenue_mvr)}</td>
-                    <td>MVR ${fmt(u.expenses_mvr)}</td>
+                    <td>${u.rent_mvr > 0 ? 'MVR ' + fmt(u.rent_mvr) : '—'}</td>
+                    <td>${u.monthly_exp_mvr > 0 ? 'MVR ' + fmt(u.monthly_exp_mvr) : '—'}</td>
+                    <td>${u.salary_share_mvr > 0 ? 'MVR ' + fmt(u.salary_share_mvr) : '—'}</td>
+                    <td>${u.legacy_expenses_mvr > 0 ? 'MVR ' + fmt(u.legacy_expenses_mvr) : '—'}</td>
                     <td class="${u.net_mvr >= 0 ? 'positive' : 'negative'}"><strong>MVR ${fmt(u.net_mvr)}</strong></td>
                 </tr>
-            `).join('');
-        }
-    }
 
     // ==================== REVENUE ====================
     async function loadRevenue() {
