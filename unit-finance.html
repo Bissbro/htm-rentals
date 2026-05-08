@@ -287,6 +287,8 @@
         <button class="tab" onclick="switchTab('contracts', this)"><i class="fas fa-file-contract"></i> Contracts</button>
         <button class="tab" onclick="switchTab('renovation', this)"><i class="fas fa-hammer"></i> Renovation</button>
         <button class="tab" onclick="switchTab('deposits', this)"><i class="fas fa-shield-alt"></i> Deposits</button>
+        <button class="tab" onclick="switchTab('rent', this)"><i class="fas fa-home"></i> Rent</button>
+        <button class="tab" onclick="switchTab('monthly-exp', this)"><i class="fas fa-list-alt"></i> Monthly Exp</button>
         <button class="tab" onclick="switchTab('unit-summary', this)"><i class="fas fa-chart-bar"></i> Per Unit</button>
     </div>
 
@@ -419,6 +421,43 @@
     </div>
 
     <!-- PER UNIT SUMMARY TAB -->
+    <!-- RENT TAB -->
+    <div class="tab-content" id="tab-rent">
+        <div class="section-header">
+            <h3>Rent Tracker</h3>
+            <button class="btn btn-primary btn-sm" onclick="openModal('rent-modal')">+ Record Payment</button>
+        </div>
+
+        <!-- Rent setup per unit -->
+        <div id="rent-setup-cards"></div>
+
+        <!-- Payment history -->
+        <div class="table-wrap" style="margin-top:16px;">
+            <table>
+                <thead><tr>
+                    <th>Unit</th><th>Month</th><th>Full Rent</th><th>Deduction</th><th>Actual Paid</th><th>Date</th><th>Notes</th><th></th>
+                </tr></thead>
+                <tbody id="rent-payments-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MONTHLY EXPENSES TAB -->
+    <div class="tab-content" id="tab-monthly-exp">
+        <div class="section-header">
+            <h3>Monthly Expenses</h3>
+            <button class="btn btn-primary btn-sm" onclick="openModal('monthly-exp-modal')">+ Add Expense</button>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr>
+                    <th>Unit</th><th>Month</th><th>Category</th><th>Amount</th><th>Notes</th><th></th>
+                </tr></thead>
+                <tbody id="monthly-exp-body"></tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="tab-content" id="tab-unit-summary">
         <div class="card">
             <div class="card-header">
@@ -778,7 +817,7 @@
     }
 
     function populateUnitSelects() {
-        const selects = ['rev-unit-id', 'exp-unit-id', 'con-unit-id', 'ren-unit-id'];
+        const selects = ['rev-unit-id', 'exp-unit-id', 'con-unit-id', 'ren-unit-id', 'rent-unit-id', 'me-unit-id'];
         selects.forEach(id => {
             const sel = document.getElementById(id);
             sel.innerHTML = allUnits.map(u => `<option value="${u.id}">${u.unit_number || u.unit_name.split('|')[1]?.trim() || u.unit_name.slice(0,20)}</option>`).join('');
@@ -803,6 +842,8 @@
         else if (activeTab === 'renovation') loadRenovation();
         else if (activeTab === 'deposits') loadDeposits();
         else if (activeTab === 'unit-summary') loadUnitSummary();
+        else if (activeTab === 'rent') loadRent();
+        else if (activeTab === 'monthly-exp') loadMonthlyExpenses();
     }
 
     // ==================== SUMMARY ====================
@@ -1321,5 +1362,98 @@
 
     init();
 </script>
+<!-- RENT PAYMENT MODAL -->
+<div class="modal" id="rent-modal">
+    <div class="modal-header">
+        <h3>Record Rent Payment</h3>
+        <button onclick="closeModal('rent-modal')" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Unit</label>
+            <select id="rent-unit-id"></select>
+        </div>
+        <div class="form-group">
+            <label>Payment Month</label>
+            <input type="month" id="rent-month">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Full Rent (MVR)</label>
+                <input type="number" id="rent-full" placeholder="0" step="0.01" oninput="calcActualRent()">
+            </div>
+            <div class="form-group">
+                <label>Deduction Applied (MVR)</label>
+                <input type="number" id="rent-deduction" placeholder="0" step="0.01" value="0" oninput="calcActualRent()">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Actual Paid (MVR)</label>
+            <input type="number" id="rent-actual" placeholder="0" step="0.01" style="background:#f0fafa; font-weight:700;">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Payment Date</label>
+                <input type="date" id="rent-date">
+            </div>
+            <div class="form-group">
+                <label>Notes</label>
+                <input type="text" id="rent-notes" placeholder="Optional">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('rent-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveRentPayment()">Save</button>
+    </div>
+</div>
+
+<!-- MONTHLY EXPENSE MODAL -->
+<div class="modal" id="monthly-exp-modal">
+    <div class="modal-header">
+        <h3>Add Monthly Expense</h3>
+        <button onclick="closeModal('monthly-exp-modal')" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Unit</label>
+                <select id="me-unit-id"></select>
+            </div>
+            <div class="form-group">
+                <label>Month</label>
+                <input type="month" id="me-month">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Category</label>
+                <select id="me-category">
+                    <option value="electricity">Electricity</option>
+                    <option value="water">Water</option>
+                    <option value="phone">Phone Bill</option>
+                    <option value="wifi">WiFi</option>
+                    <option value="laundry">Laundry</option>
+                    <option value="petty_cash">Petty Cash Contribution</option>
+                    <option value="salary_share">Salary Share</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Amount (MVR)</label>
+                <input type="number" id="me-amount" placeholder="0" step="0.01">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Description / Notes</label>
+            <input type="text" id="me-notes" placeholder="Optional">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('monthly-exp-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveMonthlyExpense()">Save</button>
+    </div>
+</div>
+
 </body>
 </html>
