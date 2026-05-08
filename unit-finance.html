@@ -421,28 +421,19 @@
     </div>
 
     <!-- PER UNIT SUMMARY TAB -->
-    <!-- RENT TAB -->
     <div class="tab-content" id="tab-rent">
         <div class="section-header">
             <h3>Rent Tracker</h3>
             <button class="btn btn-primary btn-sm" onclick="openModal('rent-modal')">+ Record Payment</button>
         </div>
-
-        <!-- Rent setup per unit -->
         <div id="rent-setup-cards"></div>
-
-        <!-- Payment history -->
         <div class="table-wrap" style="margin-top:16px;">
             <table>
-                <thead><tr>
-                    <th>Unit</th><th>Month</th><th>Full Rent</th><th>Deduction</th><th>Actual Paid</th><th>Date</th><th>Notes</th><th></th>
-                </tr></thead>
-                <tbody id="rent-payments-body"></tbody>
+                <thead><tr><th>Unit</th><th>Month</th><th>Full Rent</th><th>Deduction</th><th>Actual Paid</th><th>Date</th><th>Notes</th><th></th></tr></thead>
+                <tbody id="rent-payments-body"><tr><td colspan="8" class="loading">Loading...</td></tr></tbody>
             </table>
         </div>
     </div>
-
-    <!-- MONTHLY EXPENSES TAB -->
     <div class="tab-content" id="tab-monthly-exp">
         <div class="section-header">
             <h3>Monthly Expenses</h3>
@@ -450,31 +441,24 @@
         </div>
         <div class="table-wrap">
             <table>
-                <thead><tr>
-                    <th>Unit</th><th>Month</th><th>Category</th><th>Amount</th><th>Notes</th><th></th>
-                </tr></thead>
-                <tbody id="monthly-exp-body"></tbody>
+                <thead><tr><th>Unit</th><th>Month</th><th>Category</th><th>Amount</th><th>Notes</th><th></th></tr></thead>
+                <tbody id="monthly-exp-body"><tr><td colspan="6" class="loading">Loading...</td></tr></tbody>
             </table>
         </div>
     </div>
-
     <div class="tab-content" id="tab-unit-summary">
         <div class="card">
             <div class="card-header">
                 <h2>Profit / Loss Per Unit</h2>
-            </div>
             </div>
             <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
                             <th>Unit</th>
-                            <th>Revenue</th>
-                            <th>Rent</th>
-                            <th>Monthly Exp</th>
-                            <th>Salary Share</th>
-                            <th>Other Exp</th>
-                            <th>Net Profit</th>
+                            <th>Revenue (MVR)</th>
+                            <th>Expenses (MVR)</th>
+                            <th>Net (MVR)</th>
                         </tr>
                     </thead>
                     <tbody id="unit-summary-body">
@@ -484,6 +468,10 @@
             </div>
         </div>
     </div>
+
+</div>
+
+<!-- REVENUE MODAL -->
 <div class="modal" id="revenue-modal">
     <div class="modal-box">
         <div class="modal-title">Add Payment</div>
@@ -834,147 +822,6 @@
     function getMonth() { return document.getElementById('month-select').value; }
     function getUnitParam() { return selectedUnitId !== 'all' ? `&unit_id=${selectedUnitId}` : ''; }
 
-    // ========== RENT TRACKER ==========
-    async function loadRent() {
-        const rentBody = document.getElementById('rent-payments-body');
-        const setupCards = document.getElementById('rent-setup-cards');
-        if (!rentBody || !setupCards) return;
-        try {
-            let allPayments = [];
-            let setupHtml = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:16px;">';
-            for (const unit of allUnits) {
-                const res = await fetch(`${API}/admin/rent/${unit.id}`, { headers: authHeaders() });
-                const data = await res.json();
-                if (!data.success) continue;
-                const label = unit.unit_number || unit.unit_name.slice(0,15);
-                const deduction = data.deductions[0];
-                setupHtml += '<div style="background:white;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">' +
-                    '<div style="font-size:13px;font-weight:700;color:#0A2540;margin-bottom:8px;">' + label + '</div>' +
-                    (data.rent ? '<div style="font-size:12px;color:#555;">Full Rent: <strong>MVR ' + parseFloat(data.rent.full_rent_amount).toLocaleString('en-US',{minimumFractionDigits:2}) + '</strong></div>' : '<div style="font-size:12px;color:#aaa;">No rent setup yet</div>') +
-                    (deduction ? '<div style="font-size:12px;color:#40B5AD;margin-top:4px;">Deduction: MVR ' + parseFloat(deduction.monthly_deduction).toLocaleString() + ' /mo · Remaining: MVR ' + parseFloat(deduction.remaining_balance).toLocaleString() + '</div>' : '') +
-                    '<button onclick="openRentSetup(' + unit.id + ')" style="margin-top:8px;background:none;border:1px solid #40B5AD;color:#40B5AD;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;">Record Payment</button>' +
-                    '</div>';
-                data.payments.forEach(p => allPayments.push({ ...p, unit_label: label }));
-            }
-            setupHtml += '</div>';
-            setupCards.innerHTML = setupHtml;
-            if (!allPayments.length) {
-                rentBody.innerHTML = '<tr><td colspan="8" class="empty">No rent payments recorded yet</td></tr>';
-            } else {
-                rentBody.innerHTML = allPayments.sort((a,b) => new Date(b.payment_month) - new Date(a.payment_month)).map(p =>
-                    '<tr><td>' + p.unit_label + '</td>' +
-                    '<td>' + (p.payment_month ? p.payment_month.slice(0,7) : '') + '</td>' +
-                    '<td>MVR ' + parseFloat(p.full_rent).toLocaleString('en-US',{minimumFractionDigits:2}) + '</td>' +
-                    '<td>' + (p.deduction_applied > 0 ? 'MVR ' + parseFloat(p.deduction_applied).toLocaleString('en-US',{minimumFractionDigits:2}) : '—') + '</td>' +
-                    '<td><strong>MVR ' + parseFloat(p.actual_paid).toLocaleString('en-US',{minimumFractionDigits:2}) + '</strong></td>' +
-                    '<td>' + (p.payment_date ? new Date(p.payment_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—') + '</td>' +
-                    '<td>' + (p.notes || '—') + '</td>' +
-                    '<td><button onclick="deleteRentPayment(' + p.id + ')" class="btn btn-danger btn-sm">Del</button></td></tr>'
-                ).join('');
-            }
-        } catch(e) { console.error('loadRent error:', e); }
-    }
-
-    function calcActualRent() {
-        const full = parseFloat(document.getElementById('rent-full').value) || 0;
-        const ded = parseFloat(document.getElementById('rent-deduction').value) || 0;
-        document.getElementById('rent-actual').value = (full - ded).toFixed(2);
-    }
-
-    function openRentSetup(unitId) {
-        document.getElementById('rent-unit-id').value = unitId;
-        document.getElementById('rent-month').value = new Date().toISOString().slice(0,7);
-        document.getElementById('rent-date').value = new Date().toISOString().split('T')[0];
-        document.getElementById('rent-full').value = '';
-        document.getElementById('rent-deduction').value = '0';
-        document.getElementById('rent-actual').value = '';
-        document.getElementById('rent-notes').value = '';
-        openModal('rent-modal');
-    }
-
-    async function saveRentPayment() {
-        const body = {
-            unit_id: document.getElementById('rent-unit-id').value,
-            payment_month: document.getElementById('rent-month').value + '-01',
-            full_rent: parseFloat(document.getElementById('rent-full').value),
-            deduction_applied: parseFloat(document.getElementById('rent-deduction').value) || 0,
-            actual_paid: parseFloat(document.getElementById('rent-actual').value),
-            payment_date: document.getElementById('rent-date').value,
-            notes: document.getElementById('rent-notes').value
-        };
-        if (!body.full_rent) { alert('Please enter full rent amount'); return; }
-        const res = await fetch(`${API}/admin/rent/payment`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) });
-        const data = await res.json();
-        if (data.success) { closeModal('rent-modal'); loadRent(); }
-        else alert(data.error || 'Failed to save');
-    }
-
-    async function deleteRentPayment(id) {
-        if (!confirm('Delete this rent payment?')) return;
-        const res = await fetch(`${API}/admin/rent/payment/${id}`, { method: 'DELETE', headers: authHeaders() });
-        const data = await res.json();
-        if (data.success) loadRent();
-    }
-
-    // ========== MONTHLY EXPENSES ==========
-    async function loadMonthlyExpenses() {
-        const month = getMonth();
-        const unit = selectedUnitId !== 'all' ? '&unit_id=' + selectedUnitId : '';
-        const res = await fetch(`${API}/admin/monthly-expenses?` + (month ? 'month='+month : '') + unit, { headers: authHeaders() });
-        const data = await res.json();
-        const tbody = document.getElementById('monthly-exp-body');
-        if (!tbody) return;
-        const catLabels = { electricity:'Electricity', water:'Water', phone:'Phone Bill', wifi:'WiFi', laundry:'Laundry', petty_cash:'Petty Cash', salary_share:'Salary Share', other:'Other' };
-        if (!data.success || !data.expenses.length) {
-            tbody.innerHTML = '<tr><td colspan="6" class="empty">No monthly expenses yet.</td></tr>';
-            return;
-        }
-        tbody.innerHTML = data.expenses.map(e =>
-            '<tr><td>' + (e.unit_number || e.unit_name.slice(0,15)) + '</td>' +
-            '<td>' + (e.expense_month ? e.expense_month.slice(0,7) : '') + '</td>' +
-            '<td><span class="badge badge-secondary">' + (catLabels[e.category] || e.category) + '</span></td>' +
-            '<td>MVR ' + parseFloat(e.amount).toLocaleString('en-US',{minimumFractionDigits:2}) + '</td>' +
-            '<td>' + (e.description || '—') + '</td>' +
-            '<td><button onclick="deleteMonthlyExpense(' + e.id + ')" class="btn btn-danger btn-sm">Del</button></td></tr>'
-        ).join('');
-    }
-
-    async function saveMonthlyExpense() {
-        const body = {
-            unit_id: document.getElementById('me-unit-id').value,
-            expense_month: document.getElementById('me-month').value + '-01',
-            category: document.getElementById('me-category').value,
-            amount: parseFloat(document.getElementById('me-amount').value),
-            description: document.getElementById('me-notes').value
-        };
-        if (!body.amount) { alert('Please enter an amount'); return; }
-        const res = await fetch(`${API}/admin/monthly-expenses`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) });
-        const data = await res.json();
-        if (data.success) {
-            if (body.category === 'petty_cash') {
-                const unit = allUnits.find(u => u.id == body.unit_id);
-                await fetch(`${API}/admin/petty-cash`, {
-                    method: 'POST', headers: authHeaders(),
-                    body: JSON.stringify({
-                        transaction_date: body.expense_month,
-                        type: 'in', amount: body.amount,
-                        description: 'Contribution from ' + (unit ? unit.unit_number || 'Unit' : 'Unit') + ' — ' + document.getElementById('me-month').value,
-                        unit_id: body.unit_id
-                    })
-                });
-            }
-            closeModal('monthly-exp-modal');
-            loadMonthlyExpenses();
-        } else alert(data.error || 'Failed');
-    }
-
-    async function deleteMonthlyExpense(id) {
-        if (!confirm('Delete this expense?')) return;
-        const res = await fetch(`${API}/admin/monthly-expenses/${id}`, { method: 'DELETE', headers: authHeaders() });
-        const data = await res.json();
-        if (data.success) loadMonthlyExpenses();
-    }
-
     function loadAll() {
         loadSummary();
         if (activeTab === 'revenue') loadRevenue();
@@ -1009,18 +856,18 @@
         // Unit summary tab
         const tbody = document.getElementById('unit-summary-body');
         if (s.unit_profits.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="empty">No data</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" class="empty">No data</td></tr>`;
         } else {
             tbody.innerHTML = s.unit_profits.map(u => `
                 <tr>
                     <td><strong>${u.unit_number || u.unit_name.split('|')[1]?.trim() || u.unit_name.slice(0,15)}</strong><br><span style='font-size:11px;color:#888;'>${u.unit_type_label || ''}</span></td>
                     <td>MVR ${fmt(u.revenue_mvr)}</td>
-                    <td>${u.rent_mvr > 0 ? 'MVR ' + fmt(u.rent_mvr) : '—'}</td>
-                    <td>${u.monthly_exp_mvr > 0 ? 'MVR ' + fmt(u.monthly_exp_mvr) : '—'}</td>
-                    <td>${u.salary_share_mvr > 0 ? 'MVR ' + fmt(u.salary_share_mvr) : '—'}</td>
-                    <td>${u.legacy_expenses_mvr > 0 ? 'MVR ' + fmt(u.legacy_expenses_mvr) : '—'}</td>
+                    <td>MVR ${fmt(u.expenses_mvr)}</td>
                     <td class="${u.net_mvr >= 0 ? 'positive' : 'negative'}"><strong>MVR ${fmt(u.net_mvr)}</strong></td>
                 </tr>
+            `).join('');
+        }
+    }
 
     // ==================== REVENUE ====================
     async function loadRevenue() {
@@ -1501,22 +1348,152 @@
         m.addEventListener('click', e => { if (e.target === m) m.style.display = 'none'; });
     });
 
+    // ========== RENT TRACKER ==========
+    async function loadRent() {
+        const rentBody = document.getElementById('rent-payments-body');
+        const setupCards = document.getElementById('rent-setup-cards');
+        if (!rentBody || !setupCards) return;
+        try {
+            let allPayments = [];
+            let setupHtml = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:16px;">';
+            for (const unit of allUnits) {
+                const res = await fetch(API + '/admin/rent/' + unit.id, { headers: authHeaders() });
+                const data = await res.json();
+                if (!data.success) continue;
+                const label = unit.unit_number || unit.unit_name.slice(0,15);
+                const ded = data.deductions[0];
+                setupHtml += '<div style="background:white;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">';
+                setupHtml += '<div style="font-size:13px;font-weight:700;color:#0A2540;margin-bottom:8px;">' + label + '</div>';
+                setupHtml += data.rent ? '<div style="font-size:12px;color:#555;">Full Rent: <strong>MVR ' + parseFloat(data.rent.full_rent_amount).toLocaleString('en-US',{minimumFractionDigits:2}) + '</strong></div>' : '<div style="font-size:12px;color:#aaa;">No rent setup yet</div>';
+                if (ded) setupHtml += '<div style="font-size:12px;color:#40B5AD;margin-top:4px;">Deduction: MVR ' + parseFloat(ded.monthly_deduction).toLocaleString() + '/mo - Remaining: MVR ' + parseFloat(ded.remaining_balance).toLocaleString() + '</div>';
+                setupHtml += '<button onclick="openRentSetup(' + unit.id + ')" style="margin-top:8px;background:none;border:1px solid #40B5AD;color:#40B5AD;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;">Record Payment</button>';
+                setupHtml += '</div>';
+                data.payments.forEach(function(p) { allPayments.push(Object.assign({}, p, {unit_label: label})); });
+            }
+            setupHtml += '</div>';
+            setupCards.innerHTML = setupHtml;
+            if (!allPayments.length) {
+                rentBody.innerHTML = '<tr><td colspan="8" class="empty">No rent payments recorded yet</td></tr>';
+            } else {
+                allPayments.sort(function(a,b){ return new Date(b.payment_month) - new Date(a.payment_month); });
+                rentBody.innerHTML = allPayments.map(function(p) {
+                    return '<tr><td>' + p.unit_label + '</td><td>' + (p.payment_month ? p.payment_month.slice(0,7) : '') + '</td><td>MVR ' + parseFloat(p.full_rent).toLocaleString('en-US',{minimumFractionDigits:2}) + '</td><td>' + (p.deduction_applied > 0 ? 'MVR ' + parseFloat(p.deduction_applied).toLocaleString('en-US',{minimumFractionDigits:2}) : '-') + '</td><td><strong>MVR ' + parseFloat(p.actual_paid).toLocaleString('en-US',{minimumFractionDigits:2}) + '</strong></td><td>' + (p.payment_date ? new Date(p.payment_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '-') + '</td><td>' + (p.notes || '-') + '</td><td><button onclick="deleteRentPayment(' + p.id + ')" class="btn btn-danger btn-sm">Del</button></td></tr>';
+                }).join('');
+            }
+        } catch(e) { console.error('loadRent error:', e); }
+    }
+
+    function calcActualRent() {
+        var full = parseFloat(document.getElementById('rent-full').value) || 0;
+        var ded = parseFloat(document.getElementById('rent-deduction').value) || 0;
+        document.getElementById('rent-actual').value = (full - ded).toFixed(2);
+    }
+
+    function openRentSetup(unitId) {
+        document.getElementById('rent-unit-id').value = unitId;
+        document.getElementById('rent-month').value = new Date().toISOString().slice(0,7);
+        document.getElementById('rent-date').value = new Date().toISOString().split('T')[0];
+        document.getElementById('rent-full').value = '';
+        document.getElementById('rent-deduction').value = '0';
+        document.getElementById('rent-actual').value = '';
+        document.getElementById('rent-notes').value = '';
+        openModal('rent-modal');
+    }
+
+    async function saveRentPayment() {
+        var body = {
+            unit_id: document.getElementById('rent-unit-id').value,
+            payment_month: document.getElementById('rent-month').value + '-01',
+            full_rent: parseFloat(document.getElementById('rent-full').value),
+            deduction_applied: parseFloat(document.getElementById('rent-deduction').value) || 0,
+            actual_paid: parseFloat(document.getElementById('rent-actual').value),
+            payment_date: document.getElementById('rent-date').value,
+            notes: document.getElementById('rent-notes').value
+        };
+        if (!body.full_rent) { alert('Please enter full rent amount'); return; }
+        var res = await fetch(API + '/admin/rent/payment', { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) });
+        var data = await res.json();
+        if (data.success) { closeModal('rent-modal'); loadRent(); }
+        else alert(data.error || 'Failed to save');
+    }
+
+    async function deleteRentPayment(id) {
+        if (!confirm('Delete this rent payment?')) return;
+        var res = await fetch(API + '/admin/rent/payment/' + id, { method: 'DELETE', headers: authHeaders() });
+        var data = await res.json();
+        if (data.success) loadRent();
+    }
+
+    // ========== MONTHLY EXPENSES ==========
+    async function loadMonthlyExpenses() {
+        var month = getMonth();
+        var unit = selectedUnitId !== 'all' ? '&unit_id=' + selectedUnitId : '';
+        var res = await fetch(API + '/admin/monthly-expenses?' + (month ? 'month='+month : '') + unit, { headers: authHeaders() });
+        var data = await res.json();
+        var tbody = document.getElementById('monthly-exp-body');
+        if (!tbody) return;
+        var catLabels = { electricity:'Electricity', water:'Water', phone:'Phone Bill', wifi:'WiFi', laundry:'Laundry', petty_cash:'Petty Cash', salary_share:'Salary Share', other:'Other' };
+        if (!data.success || !data.expenses.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="empty">No monthly expenses yet.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = data.expenses.map(function(e) {
+            return '<tr><td>' + (e.unit_number || e.unit_name.slice(0,15)) + '</td><td>' + (e.expense_month ? e.expense_month.slice(0,7) : '') + '</td><td><span class="badge badge-secondary">' + (catLabels[e.category] || e.category) + '</span></td><td>MVR ' + parseFloat(e.amount).toLocaleString('en-US',{minimumFractionDigits:2}) + '</td><td>' + (e.description || '-') + '</td><td><button onclick="deleteMonthlyExpense(' + e.id + ')" class="btn btn-danger btn-sm">Del</button></td></tr>';
+        }).join('');
+    }
+
+    async function saveMonthlyExpense() {
+        var body = {
+            unit_id: document.getElementById('me-unit-id').value,
+            expense_month: document.getElementById('me-month').value + '-01',
+            category: document.getElementById('me-category').value,
+            amount: parseFloat(document.getElementById('me-amount').value),
+            description: document.getElementById('me-notes').value
+        };
+        if (!body.amount) { alert('Please enter an amount'); return; }
+        var res = await fetch(API + '/admin/monthly-expenses', { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) });
+        var data = await res.json();
+        if (data.success) {
+            if (body.category === 'petty_cash') {
+                var unit = allUnits.find(function(u){ return u.id == body.unit_id; });
+                await fetch(API + '/admin/petty-cash', {
+                    method: 'POST', headers: authHeaders(),
+                    body: JSON.stringify({
+                        transaction_date: body.expense_month,
+                        type: 'in', amount: body.amount,
+                        description: 'Contribution from ' + (unit ? unit.unit_number || 'Unit' : 'Unit') + ' - ' + document.getElementById('me-month').value,
+                        unit_id: body.unit_id
+                    })
+                });
+            }
+            closeModal('monthly-exp-modal');
+            loadMonthlyExpenses();
+        } else alert(data.error || 'Failed');
+    }
+
+    async function deleteMonthlyExpense(id) {
+        if (!confirm('Delete this expense?')) return;
+        var res = await fetch(API + '/admin/monthly-expenses/' + id, { method: 'DELETE', headers: authHeaders() });
+        var data = await res.json();
+        if (data.success) loadMonthlyExpenses();
+    }
+
     init();
 </script>
 <!-- RENT PAYMENT MODAL -->
 <div class="modal" id="rent-modal">
-    <div class="modal-header">
-        <h3>Record Rent Payment</h3>
-        <button onclick="closeModal('rent-modal')" class="close-btn">&times;</button>
-    </div>
-    <div class="modal-body">
-        <div class="form-group">
-            <label>Unit</label>
-            <select id="rent-unit-id"></select>
-        </div>
-        <div class="form-group">
-            <label>Payment Month</label>
-            <input type="month" id="rent-month">
+    <div class="modal-box">
+        <div class="modal-title">Record Rent Payment</div>
+        <input type="hidden" id="rent-id">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Unit</label>
+                <select id="rent-unit-id"></select>
+            </div>
+            <div class="form-group">
+                <label>Payment Month</label>
+                <input type="month" id="rent-month">
+            </div>
         </div>
         <div class="form-row">
             <div class="form-group">
@@ -1524,13 +1501,13 @@
                 <input type="number" id="rent-full" placeholder="0" step="0.01" oninput="calcActualRent()">
             </div>
             <div class="form-group">
-                <label>Deduction Applied (MVR)</label>
+                <label>Deduction (MVR)</label>
                 <input type="number" id="rent-deduction" placeholder="0" step="0.01" value="0" oninput="calcActualRent()">
             </div>
         </div>
         <div class="form-group">
             <label>Actual Paid (MVR)</label>
-            <input type="number" id="rent-actual" placeholder="0" step="0.01" style="background:#f0fafa; font-weight:700;">
+            <input type="number" id="rent-actual" placeholder="Auto calculated" step="0.01">
         </div>
         <div class="form-row">
             <div class="form-group">
@@ -1542,20 +1519,17 @@
                 <input type="text" id="rent-notes" placeholder="Optional">
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal('rent-modal')">Cancel</button>
-        <button class="btn btn-primary" onclick="saveRentPayment()">Save</button>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('rent-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveRentPayment()">Save</button>
+        </div>
     </div>
 </div>
 
 <!-- MONTHLY EXPENSE MODAL -->
 <div class="modal" id="monthly-exp-modal">
-    <div class="modal-header">
-        <h3>Add Monthly Expense</h3>
-        <button onclick="closeModal('monthly-exp-modal')" class="close-btn">&times;</button>
-    </div>
-    <div class="modal-body">
+    <div class="modal-box">
+        <div class="modal-title">Add Monthly Expense</div>
         <div class="form-row">
             <div class="form-group">
                 <label>Unit</label>
@@ -1586,13 +1560,13 @@
             </div>
         </div>
         <div class="form-group">
-            <label>Description / Notes</label>
+            <label>Notes</label>
             <input type="text" id="me-notes" placeholder="Optional">
         </div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal('monthly-exp-modal')">Cancel</button>
-        <button class="btn btn-primary" onclick="saveMonthlyExpense()">Save</button>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('monthly-exp-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveMonthlyExpense()">Save</button>
+        </div>
     </div>
 </div>
 
