@@ -299,22 +299,23 @@
                 <button class="btn btn-primary btn-sm" onclick="openRevenueModal()">+ Add Payment</button>
             </div>
             <!-- Currency breakdown -->
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:20px;">
-                <div style="background:var(--gray-light); border-radius:var(--radius-md); padding:14px;">
-                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray-text); margin-bottom:6px;">MVR Direct</div>
-                    <div style="font-size:1.1rem; font-weight:700; color:var(--navy);" id="rev-mvr-direct">MVR 0</div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; margin-bottom:20px;">
+                <div style="background:white; border-radius:var(--radius-md); padding:16px; border-left:4px solid var(--ocean); box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                    <div style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--gray-text); margin-bottom:8px;">MVR Received</div>
+                    <div style="font-size:1.2rem; font-weight:700; color:var(--ocean);" id="rev-mvr-direct">MVR 0</div>
                 </div>
-                <div style="background:var(--gray-light); border-radius:var(--radius-md); padding:14px;">
-                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray-text); margin-bottom:6px;">USD Received</div>
-                    <div style="font-size:1.1rem; font-weight:700; color:var(--navy);" id="rev-usd">$ 0</div>
+                <div style="background:white; border-radius:var(--radius-md); padding:16px; border-left:4px solid var(--success); box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                    <div style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--gray-text); margin-bottom:8px;">USD Received</div>
+                    <div style="font-size:1.2rem; font-weight:700; color:var(--success);" id="rev-usd">$ 0</div>
                 </div>
-                <div style="background:var(--gray-light); border-radius:var(--radius-md); padding:14px;">
-                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray-text); margin-bottom:6px;">USDT Received</div>
-                    <div style="font-size:1.1rem; font-weight:700; color:var(--navy);" id="rev-usdt">USDT 0</div>
+                <div style="background:white; border-radius:var(--radius-md); padding:16px; border-left:4px solid var(--warning); box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                    <div style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--gray-text); margin-bottom:8px;">USDT Received</div>
+                    <div style="font-size:1.2rem; font-weight:700; color:var(--warning);" id="rev-usdt">USDT 0</div>
                 </div>
-                <div style="background:var(--gray-light); border-radius:var(--radius-md); padding:14px;">
-                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray-text); margin-bottom:6px;">Total in MVR</div>
-                    <div style="font-size:1.1rem; font-weight:700; color:var(--success);" id="rev-total-mvr">MVR 0</div>
+                <div style="background:white; border-radius:var(--radius-md); padding:16px; border-left:4px solid var(--turquoise); box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                    <div style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--gray-text); margin-bottom:8px;">Approx. Net Profit</div>
+                    <div style="font-size:1.2rem; font-weight:700; color:var(--turquoise);" id="rev-total-mvr">MVR 0</div>
+                    <div style="font-size:10px; color:var(--gray-text); margin-top:4px;">Based on admin exchange rate</div>
                 </div>
             </div>
             <div class="table-wrap">
@@ -326,14 +327,12 @@
                             <th>Description</th>
                             <th>Currency</th>
                             <th>Amount</th>
-                            <th>MVR Equiv.</th>
-                            <th>Method</th>
                             <th>Status</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody id="revenue-table-body">
-                        <tr><td colspan="9" class="loading">Loading...</td></tr>
+                        <tr><td colspan="7" class="loading">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -808,18 +807,16 @@
         document.getElementById('rev-total-mvr').textContent = `MVR ${fmt(t.total_mvr_equivalent)}`;
         const tbody = document.getElementById('revenue-table-body');
         if (data.transactions.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="9" class="empty">No transactions yet. Click "+ Add Payment" to record one.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="empty">No transactions yet. Click "+ Add Payment" to record one.</td></tr>`;
             return;
         }
         tbody.innerHTML = data.transactions.map(r => `
             <tr>
-                <td>${formatDate(r.transaction_date)}</td>
-                <td style="font-size:12px;">${r.unit_number || r.unit_name.split('|')[1]?.trim() || r.unit_name.slice(0,15)}</td>
+                <td style="white-space:nowrap;"><span style="font-weight:600;color:var(--navy);">${formatDate(r.transaction_date)}</span></td>
+                <td><span style="background:var(--gray-light);color:var(--navy);padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;">${r.unit_number || r.unit_name.split('|')[1]?.trim() || r.unit_name.slice(0,15)}</span></td>
                 <td>${r.description || '—'}</td>
                 <td><span class="badge badge-info">${r.currency}</span></td>
-                <td><strong>${r.currency === 'MVR' ? 'MVR' : r.currency === 'USD' ? '$' : 'USDT'} ${fmt(r.amount)}</strong></td>
-                <td>MVR ${fmt(r.amount_mvr)}</td>
-                <td>${r.payment_method}</td>
+                <td><strong style="color:${r.currency === 'MVR' ? 'var(--ocean)' : r.currency === 'USD' ? 'var(--success)' : 'var(--warning)'}">${r.currency === 'MVR' ? 'MVR' : r.currency === 'USD' ? '$' : 'USDT'} ${fmt(r.amount)}</strong></td>
                 <td>${statusBadge(r.status)}</td>
                 <td><button class="btn btn-sm btn-secondary" onclick="editRevenue(${JSON.stringify(r).replace(/"/g, '&quot;')})">Edit</button></td>
             </tr>
@@ -1162,7 +1159,7 @@
         tbody.innerHTML = data.costs.map(r => `
             <tr>
                 <td>${formatDate(r.date_incurred)}</td>
-                <td style="font-size:12px;">${r.unit_number || r.unit_name.split('|')[1]?.trim() || r.unit_name.slice(0,15)}</td>
+                <td><span style="background:var(--gray-light);color:var(--navy);padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;">${r.unit_number || r.unit_name.split('|')[1]?.trim() || r.unit_name.slice(0,15)}</span></td>
                 <td>${r.description}</td>
                 <td><strong>MVR ${fmt(r.amount_mvr)}</strong></td>
                 <td style="font-size:12px;">${r.receipt_note || '—'}</td>
