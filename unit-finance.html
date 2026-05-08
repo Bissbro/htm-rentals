@@ -246,7 +246,7 @@
     <!-- Controls -->
     <div class="controls">
         <select id="month-select" onchange="loadAll()">
-            <option value="">All Time</option>
+            
         </select>
         <span style="font-size:13px; color:var(--gray-text);">Filter by unit:</span>
     </div>
@@ -283,11 +283,11 @@
     <!-- Tabs -->
     <div class="tabs">
         <button class="tab active" onclick="switchTab('revenue', this)"><i class="fas fa-arrow-down"></i> Revenue</button>
-        <button class="tab" onclick="switchTab('contracts', this)"><i class="fas fa-file-contract"></i> Contracts</button>
-        <button class="tab" onclick="switchTab('renovation', this)"><i class="fas fa-hammer"></i> Renovation</button>
-        <button class="tab" onclick="switchTab('deposits', this)"><i class="fas fa-shield-alt"></i> Deposits</button>
-        <button class="tab" onclick="switchTab('rent', this)"><i class="fas fa-home"></i> Rent</button>
         <button class="tab" onclick="switchTab('monthly-exp', this)"><i class="fas fa-list-alt"></i> Monthly Exp</button>
+        <button class="tab" onclick="switchTab('rent', this)"><i class="fas fa-home"></i> Rent</button>
+        <button class="tab" onclick="switchTab('renovation', this)"><i class="fas fa-hammer"></i> Renovation</button>
+        <button class="tab" onclick="switchTab('contracts', this)"><i class="fas fa-file-contract"></i> Contracts</button>
+        <button class="tab" onclick="switchTab('deposits', this)"><i class="fas fa-shield-alt"></i> Deposits</button>
         <button class="tab" onclick="switchTab('unit-summary', this)"><i class="fas fa-chart-bar"></i> Per Unit</button>
     </div>
 
@@ -695,7 +695,7 @@
             const opt = document.createElement('option');
             opt.value = val;
             opt.textContent = label;
-            if (i === 0) opt.selected = true;
+            if (i === 0) { opt.selected = true; opt.textContent = 'This Month (' + d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) + ')'; }
             sel.appendChild(opt);
         }
     }
@@ -1040,27 +1040,42 @@
             return;
         }
         const filtered = selectedUnitId !== 'all' ? data.contracts.filter(c => c.unit_id == selectedUnitId) : data.contracts;
-        container.innerHTML = filtered.map(c => `
-            <div style="border:1px solid var(--gray-border); border-radius:var(--radius-md); padding:20px; margin-bottom:16px;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
-                    <div>
-                        <div style="font-size:1rem; font-weight:700; color:var(--navy);">${c.unit_name}</div>
-                        <div style="font-size:13px; color:var(--gray-text);">Owner: ${c.owner_name} ${c.owner_contact ? `· ${c.owner_contact}` : ''}</div>
-                    </div>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                        ${statusBadge(c.status)}
-                        <button class="btn btn-sm btn-secondary" onclick="editContract(${JSON.stringify(c).replace(/"/g, '&quot;')})">Edit</button>
-                    </div>
-                </div>
-                <div class="contract-info">
-                    <div class="info-item"><div class="info-label">Monthly Rent</div><div class="info-value">MVR ${fmt(c.monthly_rent_mvr)}</div></div>
-                    <div class="info-item"><div class="info-label">Security Deposit</div><div class="info-value">MVR ${fmt(c.security_deposit_mvr)}</div></div>
-                    <div class="info-item"><div class="info-label">Start Date</div><div class="info-value">${formatDate(c.contract_start)}</div></div>
-                    <div class="info-item"><div class="info-label">End Date</div><div class="info-value">${c.contract_end ? formatDate(c.contract_end) : 'Ongoing'}</div></div>
-                </div>
-                ${c.notes ? `<div style="margin-top:12px; font-size:13px; color:var(--gray-text); background:var(--gray-light); padding:10px; border-radius:var(--radius-sm);">${c.notes}</div>` : ''}
-            </div>
-        `).join('');
+        container.innerHTML = filtered.map(c => {
+            const unitLabel = c.unit_number || c.unit_name.split('|')[1]?.trim() || c.unit_name.slice(0,15);
+            const unitType = c.unit_type_label || '';
+            return '<div style="background:white;border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #eee;">' +
+                '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">' +
+                    '<div>' +
+                        '<div style="font-size:18px;font-weight:800;color:#0A2540;">' + unitLabel + '</div>' +
+                        (unitType ? '<div style="font-size:12px;color:#888;margin-bottom:4px;">' + unitType + '</div>' : '') +
+                        '<div style="font-size:13px;color:#555;font-weight:600;">' + c.owner_name + (c.owner_contact ? ' · ' + c.owner_contact : '') + '</div>' +
+                    '</div>' +
+                    '<div style="display:flex;gap:8px;align-items:center;">' +
+                        statusBadge(c.status) +
+                        '<button class="btn btn-sm btn-secondary" onclick="editContract(' + JSON.stringify(c).replace(/"/g, '&quot;') + ')">Edit</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">' +
+                    '<div style="background:#f8f9fa;border-radius:10px;padding:12px;">' +
+                        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:4px;">Monthly Rent</div>' +
+                        '<div style="font-size:18px;font-weight:800;color:#0A2540;">MVR ' + fmt(c.monthly_rent_mvr) + '</div>' +
+                    '</div>' +
+                    '<div style="background:#f8f9fa;border-radius:10px;padding:12px;">' +
+                        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:4px;">Security Deposit</div>' +
+                        '<div style="font-size:18px;font-weight:800;color:#0A2540;">MVR ' + fmt(c.security_deposit_mvr) + '</div>' +
+                    '</div>' +
+                    '<div style="background:#f8f9fa;border-radius:10px;padding:12px;">' +
+                        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:4px;">Start Date</div>' +
+                        '<div style="font-size:14px;font-weight:700;color:#0A2540;">' + formatDate(c.contract_start) + '</div>' +
+                    '</div>' +
+                    '<div style="background:#f8f9fa;border-radius:10px;padding:12px;">' +
+                        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:4px;">End Date</div>' +
+                        '<div style="font-size:14px;font-weight:700;color:#0A2540;">' + (c.contract_end ? formatDate(c.contract_end) : 'Ongoing') + '</div>' +
+                    '</div>' +
+                '</div>' +
+                (c.notes ? '<div style="font-size:13px;color:#666;background:#f8f9fa;padding:10px 14px;border-radius:10px;border-left:3px solid #40B5AD;">' + c.notes + '</div>' : '') +
+            '</div>';
+        }).join('');
     }
 
     function openContractModal() {
