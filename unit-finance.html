@@ -548,7 +548,11 @@
                     <option value="rent">Monthly Rent</option>
                     <option value="electricity">Electricity</option>
                     <option value="water">Water</option>
+                    <option value="phone">Phone Bill</option>
+                    <option value="wifi">WiFi</option>
                     <option value="laundry">Laundry</option>
+                    <option value="petty_cash">Petty Cash Contribution</option>
+                    <option value="salary_share">Salary Share</option>
                     <option value="cleaning">Cleaning</option>
                     <option value="maintenance">Maintenance</option>
                     <option value="other">Other</option>
@@ -1046,7 +1050,25 @@
         const method = id ? 'PUT' : 'POST';
         const res = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(body) });
         const data = await res.json();
-        if (data.success) { closeModal('expense-modal'); loadExpenses(); loadSummary(); }
+        if (data.success) {
+            // Auto-inject into petty cash ledger if category is petty_cash
+            if (body.category === 'petty_cash' && !id) {
+                const unit = allUnits.find(u => u.id == body.unit_id);
+                const unitLabel = unit ? (unit.unit_number || unit.unit_name.slice(0,15)) : 'Unit';
+                const monthLabel = document.getElementById('exp-month').value;
+                await fetch(`${API}/admin/petty-cash`, {
+                    method: 'POST', headers: authHeaders(),
+                    body: JSON.stringify({
+                        transaction_date: body.expense_month,
+                        type: 'in',
+                        amount: body.total_amount_mvr,
+                        description: `Contribution from ${unitLabel} — ${monthLabel}`,
+                        unit_id: body.unit_id
+                    })
+                });
+            }
+            closeModal('expense-modal'); loadExpenses(); loadSummary();
+        }
         else alert(data.error || 'Failed to save');
     }
 
