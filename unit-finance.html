@@ -1329,6 +1329,7 @@
     }
 
     // ==================== HELPERS ====================
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     function fmt(n) { return parseFloat(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
     function today() { return new Date().toISOString().slice(0,10); }
