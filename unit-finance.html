@@ -283,7 +283,6 @@
     <!-- Tabs -->
     <div class="tabs">
         <button class="tab active" onclick="switchTab('revenue', this)"><i class="fas fa-arrow-down"></i> Revenue</button>
-        <button class="tab" onclick="switchTab('expenses', this)"><i class="fas fa-arrow-up"></i> Expenses</button>
         <button class="tab" onclick="switchTab('contracts', this)"><i class="fas fa-file-contract"></i> Contracts</button>
         <button class="tab" onclick="switchTab('renovation', this)"><i class="fas fa-hammer"></i> Renovation</button>
         <button class="tab" onclick="switchTab('deposits', this)"><i class="fas fa-shield-alt"></i> Deposits</button>
@@ -342,34 +341,6 @@
     </div>
 
     <!-- EXPENSES TAB -->
-    <div class="tab-content" id="tab-expenses">
-        <div class="card">
-            <div class="card-header">
-                <h2>Unit Expenses</h2>
-                <button class="btn btn-primary btn-sm" onclick="openExpenseModal()">+ Add Expense</button>
-            </div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Month</th>
-                            <th>Unit</th>
-                            <th>Category</th>
-                            <th>Amount (MVR)</th>
-                            <th>Notes</th>
-                            <th>Items</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="expenses-table-body">
-                        <tr><td colspan="7" class="loading">Loading...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- CONTRACTS TAB -->
     <div class="tab-content" id="tab-contracts">
         <div class="card">
             <div class="card-header">
@@ -553,60 +524,6 @@
             <button class="btn btn-secondary" onclick="closeModal('revenue-modal')">Cancel</button>
             <button class="btn btn-danger btn-sm" id="rev-delete-btn" style="display:none;" onclick="deleteRevenue()">Delete</button>
             <button class="btn btn-primary" onclick="saveRevenue()">Save Payment</button>
-        </div>
-    </div>
-</div>
-
-<!-- EXPENSE MODAL -->
-<div class="modal" id="expense-modal">
-    <div class="modal-box">
-        <div class="modal-title">Add Expense</div>
-        <input type="hidden" id="exp-id">
-        <div class="form-row">
-            <div class="form-group">
-                <label>Unit</label>
-                <select id="exp-unit-id"></select>
-            </div>
-            <div class="form-group">
-                <label>Month</label>
-                <input type="month" id="exp-month">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Category</label>
-                <select id="exp-category">
-                    <option value="rent">Monthly Rent</option>
-                    <option value="electricity">Electricity</option>
-                    <option value="water">Water</option>
-                    <option value="phone">Phone Bill</option>
-                    <option value="wifi">WiFi</option>
-                    <option value="laundry">Laundry</option>
-                    <option value="petty_cash">Petty Cash Contribution</option>
-                    <option value="salary_share">Salary Share</option>
-                    <option value="cleaning">Cleaning</option>
-                    <option value="maintenance">Maintenance</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Total Amount (MVR)</label>
-                <input type="number" id="exp-total" step="0.01" placeholder="0.00">
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Notes</label>
-            <textarea id="exp-notes" rows="2" placeholder="Optional notes..."></textarea>
-        </div>
-        <div class="form-group">
-            <label>Itemized Breakdown (optional)</label>
-            <div class="expense-items-list" id="expense-items-list"></div>
-            <button class="add-item-btn" onclick="addExpenseItem()">+ Add Item</button>
-        </div>
-        <div class="modal-actions">
-            <button class="btn btn-secondary" onclick="closeModal('expense-modal')">Cancel</button>
-            <button class="btn btn-danger btn-sm" id="exp-delete-btn" style="display:none;" onclick="deleteExpense()">Delete</button>
-            <button class="btn btn-primary" onclick="saveExpense()">Save Expense</button>
         </div>
     </div>
 </div>
@@ -829,7 +746,6 @@
     function loadAll() {
         loadSummary();
         if (activeTab === 'revenue') loadRevenue();
-        else if (activeTab === 'expenses') loadExpenses();
         else if (activeTab === 'contracts') loadContracts();
         else if (activeTab === 'renovation') loadRenovation();
         else if (activeTab === 'deposits') loadDeposits();
@@ -849,7 +765,6 @@
         document.getElementById('sum-revenue').textContent = `MVR ${fmt(s.revenue.total_mvr)}`;
         document.getElementById('sum-revenue-sub').textContent = `USD ${fmt(s.revenue.usd)} · USDT ${fmt(s.revenue.usdt)}`;
         document.getElementById('sum-expenses').textContent = `MVR ${fmt(s.total_expenses_mvr)}`;
-        document.getElementById('sum-expense-sub').textContent = `Staff: MVR ${fmt(s.staff_salary_mvr)}`;
         const profit = s.net_profit_mvr;
         const profitEl = document.getElementById('sum-profit');
         profitEl.textContent = `MVR ${fmt(profit)}`;
