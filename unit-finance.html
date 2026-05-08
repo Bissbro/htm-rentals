@@ -687,6 +687,11 @@
 
     function populateMonthSelect() {
         const sel = document.getElementById('month-select');
+        const allOpt = document.createElement('option');
+        allOpt.value = '';
+        allOpt.textContent = 'All Time';
+        allOpt.selected = true;
+        sel.appendChild(allOpt);
         const now = new Date();
         for (let i = 0; i < 24; i++) {
             const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -695,7 +700,6 @@
             const opt = document.createElement('option');
             opt.value = val;
             opt.textContent = label;
-            if (i === 0) { opt.selected = true; opt.textContent = 'This Month (' + d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) + ')'; }
             sel.appendChild(opt);
         }
     }
