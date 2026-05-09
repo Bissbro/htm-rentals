@@ -874,7 +874,7 @@
         document.getElementById('sum-profit-mvr-direct').textContent = `MVR ${fmt(cf.mvr || 0)}`;
         document.getElementById('sum-profit-usd').textContent = `$ ${fmt(cf.usd || 0)}`;
         document.getElementById('sum-profit-usdt').textContent = `USDT ${fmt(cf.usdt || 0)}`;
-        document.getElementById('sum-profit-sub').textContent = `Approx. based on rate ${adminRate}`;
+        document.getElementById('sum-profit-sub').textContent = `Total Revenue MVR ${fmt(s.revenue.total_mvr)} - Expenses MVR ${fmt(s.total_expenses_mvr)}`;
 
         // Unit summary tab
         const tbody = document.getElementById('unit-summary-body');
