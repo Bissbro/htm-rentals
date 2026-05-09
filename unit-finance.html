@@ -262,6 +262,10 @@
             <div class="label">Total Revenue</div>
             <div class="value" id="sum-revenue">MVR —</div>
             <div class="sub" id="sum-revenue-sub"></div>
+            <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+                <span style="font-size:11px;background:rgba(40,167,69,0.1);color:var(--success);padding:2px 8px;border-radius:20px;" id="sum-usd">$ —</span>
+                <span style="font-size:11px;background:rgba(255,193,7,0.1);color:var(--warning);padding:2px 8px;border-radius:20px;" id="sum-usdt">USDT —</span>
+            </div>
         </div>
         <div class="summary-card expense">
             <div class="label">Total Expenses</div>
@@ -271,17 +275,12 @@
         <div class="summary-card profit">
             <div class="label">Net Profit</div>
             <div class="value" id="sum-profit">MVR —</div>
-            <div class="sub" id="sum-profit-sub"></div>
-        </div>
-        <div class="summary-card invested">
-            <div class="label">USD Received</div>
-            <div class="value" id="sum-usd">$ —</div>
-            <div class="sub" id="sum-usdt">USDT —</div>
+            <div class="sub" id="sum-profit-sub" style="font-size:11px;color:var(--gray-text);margin-top:4px;"></div>
         </div>
     </div>
 
     <!-- Tabs -->
-    <div class="tabs">
+    <div class="tabs" style="overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;">
         <button class="tab active" onclick="switchTab('revenue', this)"><i class="fas fa-arrow-down"></i> Revenue</button>
         <button class="tab" onclick="switchTab('monthly-exp', this)"><i class="fas fa-list-alt"></i> Monthly Exp</button>
         <button class="tab" onclick="switchTab('rent', this)"><i class="fas fa-home"></i> Rent</button>
@@ -299,8 +298,8 @@
                 <h2>Revenue Transactions</h2>
                 <button class="btn btn-primary btn-sm" onclick="openRevenueModal()">+ Add Payment</button>
             </div>
-            <!-- Currency breakdown -->
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; margin-bottom:20px;">
+            <!-- Currency breakdown hidden - shown in top summary -->
+            <div style="display:none;">
                 <div style="background:white; border-radius:var(--radius-md); padding:16px; border-left:4px solid var(--ocean); box-shadow:0 2px 8px rgba(0,0,0,0.06);">
                     <div style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--gray-text); margin-bottom:8px;">MVR Received</div>
                     <div style="font-size:1.2rem; font-weight:700; color:var(--ocean);" id="rev-mvr-direct">MVR 0</div>
@@ -834,15 +833,17 @@
         const data = await res.json();
         if (!data.success) return;
         const s = data.summary;
+        const adminRate = s.admin_rate || 20;
         document.getElementById('sum-revenue').textContent = `MVR ${fmt(s.revenue.total_mvr)}`;
-        document.getElementById('sum-revenue-sub').textContent = `USD ${fmt(s.revenue.usd)} · USDT ${fmt(s.revenue.usdt)}`;
+        document.getElementById('sum-revenue-sub').textContent = `Rate: ${adminRate} · USD ${fmt(s.revenue.usd)} · USDT ${fmt(s.revenue.usdt)}`;
+        document.getElementById('sum-usd').textContent = `$ ${fmt(s.revenue.usd_net ?? s.revenue.usd)}`;
+        document.getElementById('sum-usdt').textContent = `USDT ${fmt(s.revenue.usdt_net ?? s.revenue.usdt)}`;
         document.getElementById('sum-expenses').textContent = `MVR ${fmt(s.total_expenses_mvr)}`;
         const profit = s.net_profit_mvr;
         const profitEl = document.getElementById('sum-profit');
         profitEl.textContent = `MVR ${fmt(profit)}`;
         profitEl.className = `value ${profit >= 0 ? 'positive' : 'negative'}`;
-        document.getElementById('sum-usd').textContent = `$ ${fmt(s.revenue.usd)}`;
-        document.getElementById('sum-usdt').textContent = `USDT ${fmt(s.revenue.usdt)}`;
+        document.getElementById('sum-profit-sub').textContent = `USD ${fmt(s.net_profit_usd || 0)} · USDT ${fmt(s.net_profit_usdt || 0)} remaining`;
 
         // Unit summary tab
         const tbody = document.getElementById('unit-summary-body');
