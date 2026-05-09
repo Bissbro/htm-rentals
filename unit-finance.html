@@ -245,7 +245,7 @@
 
     <!-- Controls -->
     <div class="controls">
-        <select id="month-select" onchange="loadAll()">
+        <select id="month-select">
             
         </select>
         <span style="font-size:13px; color:var(--gray-text);">Filter by unit:</span>
@@ -750,6 +750,7 @@
         populateMonthSelect();
         await loadUnits();
         loadAll();
+        document.getElementById('month-select').addEventListener('change', loadAll);
     }
 
     function populateMonthSelect() {
@@ -896,7 +897,6 @@
         const month = getMonth();
         const unit = getUnitParam();
         const url = `${API}/admin/revenue?${month ? 'month='+month : 'all=1'}${unit ? unit : ''}`;
-        document.getElementById('revenue-table-body').innerHTML = '<tr><td colspan="7" style="color:red">URL: ' + url + '</td></tr>';
         const res = await fetch(url, { headers: authHeaders() });
         if (await handleAuthError(res)) return;
         const data = await res.json();
