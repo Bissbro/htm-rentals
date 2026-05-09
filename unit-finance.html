@@ -895,7 +895,9 @@
     async function loadRevenue() {
         const month = getMonth();
         const unit = getUnitParam();
-        const res = await fetch(`${API}/admin/revenue?${month ? 'month='+month : 'all=1'}${unit ? unit : ''}`, { headers: authHeaders() });
+        const url = `${API}/admin/revenue?${month ? 'month='+month : 'all=1'}${unit ? unit : ''}`;
+        console.log('REVENUE URL:', url);
+        const res = await fetch(url, { headers: authHeaders() });
         if (await handleAuthError(res)) return;
         const data = await res.json();
         if (!data.success) return;
