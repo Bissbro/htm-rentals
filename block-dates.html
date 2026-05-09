@@ -47,7 +47,7 @@
         .cal-nav button:hover { background: var(--turquoise); color: white; }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
         .cal-weekday { text-align: center; font-weight: 600; font-size: 11px; color: var(--gray-text); padding: 8px 0; text-transform: uppercase; letter-spacing: 0.5px; }
-        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.15s; }
+        .cal-day { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.15s; position: relative; }
         .cal-day.empty { cursor: default; }
         .cal-day.available:hover { background: rgba(64,181,173,0.15); color: var(--turquoise); }
         .cal-day.booked { background: #FEE2E2; color: #DC2626; text-decoration: line-through; cursor: not-allowed; font-size: 11px; }
