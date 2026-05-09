@@ -261,19 +261,27 @@
         <div class="summary-card revenue">
             <div class="label">Total Revenue</div>
             <div class="value" id="sum-revenue">MVR —</div>
-            <div class="sub" id="sum-revenue-sub"></div>
             <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
                 <span style="font-size:11px;background:rgba(40,167,69,0.1);color:var(--success);padding:2px 8px;border-radius:20px;" id="sum-usd">$ —</span>
                 <span style="font-size:11px;background:rgba(255,193,7,0.1);color:var(--warning);padding:2px 8px;border-radius:20px;" id="sum-usdt">USDT —</span>
             </div>
+            <div class="sub" id="sum-revenue-sub" style="margin-top:6px;"></div>
         </div>
         <div class="summary-card expense">
             <div class="label">Total Expenses</div>
             <div class="value" id="sum-expenses">MVR —</div>
             <div class="sub" id="sum-expense-sub"></div>
         </div>
+        <div class="summary-card invested">
+            <div class="label">Cash Flow</div>
+            <div class="value" id="sum-cashflow-mvr">MVR —</div>
+            <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+                <span style="font-size:11px;background:rgba(40,167,69,0.1);color:var(--success);padding:2px 8px;border-radius:20px;" id="sum-cashflow-usd">$ —</span>
+                <span style="font-size:11px;background:rgba(255,193,7,0.1);color:var(--warning);padding:2px 8px;border-radius:20px;" id="sum-cashflow-usdt">USDT —</span>
+            </div>
+        </div>
         <div class="summary-card profit">
-            <div class="label">Net Profit</div>
+            <div class="label">Approx. Net Profit</div>
             <div class="value" id="sum-profit">MVR —</div>
             <div class="sub" id="sum-profit-sub" style="font-size:11px;color:var(--gray-text);margin-top:4px;"></div>
         </div>
@@ -834,16 +842,26 @@
         if (!data.success) return;
         const s = data.summary;
         const adminRate = s.admin_rate || 20;
+        // Revenue card
         document.getElementById('sum-revenue').textContent = `MVR ${fmt(s.revenue.total_mvr)}`;
-        document.getElementById('sum-revenue-sub').textContent = `Rate: ${adminRate} · USD ${fmt(s.revenue.usd)} · USDT ${fmt(s.revenue.usdt)}`;
-        document.getElementById('sum-usd').textContent = `$ ${fmt(s.revenue.usd_net ?? s.revenue.usd)}`;
-        document.getElementById('sum-usdt').textContent = `USDT ${fmt(s.revenue.usdt_net ?? s.revenue.usdt)}`;
+        document.getElementById('sum-revenue-sub').textContent = `Approx. based on rate ${adminRate}`;
+        document.getElementById('sum-usd').textContent = `$ ${fmt(s.revenue.usd)}`;
+        document.getElementById('sum-usdt').textContent = `USDT ${fmt(s.revenue.usdt)}`;
+        // Expenses card
         document.getElementById('sum-expenses').textContent = `MVR ${fmt(s.total_expenses_mvr)}`;
+        // Cash flow card
+        const cf = s.cash_flow || {};
+        const cfMvrEl = document.getElementById('sum-cashflow-mvr');
+        cfMvrEl.textContent = `MVR ${fmt(cf.mvr || 0)}`;
+        cfMvrEl.className = `value ${(cf.mvr || 0) >= 0 ? 'positive' : 'negative'}`;
+        document.getElementById('sum-cashflow-usd').textContent = `$ ${fmt(cf.usd || 0)}`;
+        document.getElementById('sum-cashflow-usdt').textContent = `USDT ${fmt(cf.usdt || 0)}`;
+        // Net profit card
         const profit = s.net_profit_mvr;
         const profitEl = document.getElementById('sum-profit');
         profitEl.textContent = `MVR ${fmt(profit)}`;
         profitEl.className = `value ${profit >= 0 ? 'positive' : 'negative'}`;
-        document.getElementById('sum-profit-sub').textContent = `USD ${fmt(s.net_profit_usd || 0)} · USDT ${fmt(s.net_profit_usdt || 0)} remaining`;
+        document.getElementById('sum-profit-sub').textContent = `Rate ${adminRate} · USD ${fmt(cf.usd||0)} + USDT ${fmt(cf.usdt||0)} included`;
 
         // Unit summary tab
         const tbody = document.getElementById('unit-summary-body');
