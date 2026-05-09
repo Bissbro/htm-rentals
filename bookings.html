@@ -308,8 +308,8 @@
         let f = allBookings.filter(b => {
             if (status && b.booking_status !== status) return false;
             if (unit && b.unit_id != unit) return false;
-            if (from && b.check_in_date?.slice(0,10) < from) return false;
-            if (to && b.check_in_date?.slice(0,10) > to) return false;
+            if (from && (b.check_in_date||'').slice(0,10) < from) return false;
+            if (to && (b.check_in_date||'').slice(0,10) > to) return false;
             if (search && !b.guest_name?.toLowerCase().includes(search) && !(b.guest_phone||'').includes(search)) return false;
             return true;
         });
@@ -322,7 +322,7 @@
         applyFilters();
     }
 
-    function fmt(d) { if (!d) return '—'; return new Date(d+'T12:00:00').toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'}); }
+    function fmt(d) { if (!d) return '—'; const ds = d.slice(0,10); return new Date(ds+'T12:00:00').toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'}); }
     function esc(s) { return (s||'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
     function srcBadge(src) {
