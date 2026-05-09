@@ -838,7 +838,7 @@
     // ==================== SUMMARY ====================
     async function loadSummary() {
         const month = getMonth();
-        const res = await fetch(`${API}/admin/finance/summary${month ? `?month=${month}` : ''}`, { headers: authHeaders() });
+        const res = await fetch(`${API}/admin/finance/summary${month ? `?month=${month}&_=${Date.now()}` : `?_=${Date.now()}`}`, { headers: authHeaders() });
         if (await handleAuthError(res)) return;
         const data = await res.json();
         if (!data.success) return;
@@ -894,9 +894,8 @@
     // ==================== REVENUE ====================
     async function loadRevenue() {
         const month = getMonth();
-        document.getElementById('revenue-table-body').innerHTML = '<tr><td colspan="7">Loading month: ' + (month || 'ALL') + '...</td></tr>';
         const unit = getUnitParam();
-        const res = await fetch(`${API}/admin/revenue?${month ? `month=${month}` : ''}${unit}`, { headers: authHeaders() });
+        const res = await fetch(`${API}/admin/revenue?${month ? `month=${month}` : ''}${unit}&_=${Date.now()}`, { headers: authHeaders() });
         if (await handleAuthError(res)) return;
         const data = await res.json();
         if (!data.success) return;
