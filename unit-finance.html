@@ -749,6 +749,7 @@
     async function init() {
         populateMonthSelect();
         await loadUnits();
+        await new Promise(r => setTimeout(r, 100));
         loadAll();
         document.getElementById('month-select').addEventListener('change', loadAll);
     }
