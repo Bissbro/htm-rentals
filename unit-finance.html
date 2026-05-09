@@ -759,7 +759,6 @@
         const allOpt = document.createElement('option');
         allOpt.value = '';
         allOpt.textContent = 'All Time';
-        allOpt.selected = true;
         sel.appendChild(allOpt);
         const now = new Date();
         for (let i = 0; i < 24; i++) {
@@ -769,6 +768,7 @@
             const opt = document.createElement('option');
             opt.value = val;
             opt.textContent = label;
+            if (i === 0) opt.selected = true;
             sel.appendChild(opt);
         }
     }
