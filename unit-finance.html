@@ -897,13 +897,11 @@
     async function loadRevenue() {
         const month = getMonth();
         const unit = getUnitParam();
-        const month2 = document.getElementById('month-select').value;
-        const url = `${API}/admin/revenue?${month2 ? 'month='+month2 : 'all=1'}${unit ? unit : ''}`;
-        document.title = 'month='+month2;
+        const url = `${API}/admin/revenue?${month ? 'month='+month : 'all=1'}${unit ? unit : ''}`;
         const res = await fetch(url, { headers: authHeaders() });
         if (await handleAuthError(res)) return;
         const data = await res.json();
-        if (!data.success) { document.getElementById('revenue-table-body').innerHTML = '<tr><td colspan="7">Error: ' + data.error + '</td></tr>'; return; }
+        if (!data.success) return;
         const t = data.totals;
         document.getElementById('rev-mvr-direct').textContent = `MVR ${fmt(t.total_mvr_direct + (t.mvr_from_exchanges || 0))}`;
         document.getElementById('rev-usd').textContent = `$ ${fmt(t.usd_net ?? t.total_usd)}`;
