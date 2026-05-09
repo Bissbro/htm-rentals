@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTM Rentals | Block Dates</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,11 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #F8F9FA;
-            padding: 20px;
-        }
         :root {
             --navy: #0A2540;
             --ocean: #006994;
@@ -23,551 +18,296 @@
             --gray-border: #E5E5E5;
             --gray-text: #6C757D;
             --danger: #dc3545;
+            --success: #28a745;
             --radius-lg: 20px;
             --radius-md: 12px;
             --radius-sm: 8px;
+            --shadow: 0 2px 12px rgba(0,0,0,0.06);
         }
-        .container { max-width: 800px; margin: 0 auto; }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--gray-border);
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); }
-        .back-link { color: var(--ocean); text-decoration: none; font-size: 1rem; }
-        
-        .card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        
-        .form-group { margin-bottom: 20px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--navy);
-        }
-        select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--gray-border);
-            border-radius: var(--radius-md);
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            background: white;
-        }
-        
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .calendar-nav button {
-            background: var(--gray-light);
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .calendar-nav button:hover { background: var(--turquoise); color: white; }
-        
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            text-align: center;
-        }
-        .calendar-weekday {
-            font-weight: 600;
-            padding: 10px 0;
-            font-size: 12px;
-            color: var(--gray-text);
-        }
-        .calendar-day {
-            padding: 10px 5px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .calendar-day.available:hover { background: var(--turquoise); color: white; }
-        .calendar-day.booked {
-            background: var(--gray-light);
-            color: var(--gray-text);
-            text-decoration: line-through;
-            cursor: not-allowed;
-        }
-        .calendar-day.selected {
-            background: var(--ocean);
-            color: white;
-        }
-        .calendar-day.today {
-            border: 2px solid var(--turquoise);
-            font-weight: 600;
-        }
-        .calendar-day.empty { cursor: default; background: transparent; }
-        
-        .legend {
-            display: flex;
-            gap: 20px;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid var(--gray-border);
-            font-size: 12px;
-        }
-        .legend-color {
-            width: 14px;
-            height: 14px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-right: 6px;
-        }
-        
-        .selected-preview {
-            background: var(--gray-light);
-            padding: 16px;
-            border-radius: var(--radius-md);
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-            flex: 1;
-        }
-        .btn-primary { background: var(--turquoise); color: white; }
+        body { font-family: 'Inter', sans-serif; background: #F0F2F5; min-height: 100vh; }
+        .header { background: white; border-bottom: 1px solid var(--gray-border); padding: 0 24px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+        .header-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 60px; }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--navy); }
+        .back-link { display: flex; align-items: center; gap: 6px; color: var(--ocean); text-decoration: none; font-size: 0.85rem; font-weight: 500; padding: 6px 14px; border: 1px solid var(--ocean); border-radius: 40px; transition: all 0.2s; }
+        .back-link:hover { background: var(--ocean); color: white; }
+        .main { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
+        .unit-selector { background: white; border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 20px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .unit-selector label { font-weight: 600; font-size: 13px; color: var(--navy); white-space: nowrap; }
+        .unit-selector select { flex: 1; min-width: 200px; padding: 10px 16px; border: 1.5px solid var(--gray-border); border-radius: var(--radius-md); font-size: 14px; font-family: 'Inter', sans-serif; color: var(--navy); background: var(--gray-light); cursor: pointer; transition: border-color 0.2s; }
+        .unit-selector select:focus { outline: none; border-color: var(--turquoise); background: white; }
+        .content-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+        @media (max-width: 768px) { .content-grid { grid-template-columns: 1fr; } }
+        .card { background: white; border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); }
+        .card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--navy); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .card-title i { color: var(--turquoise); font-size: 1rem; }
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .cal-month { font-weight: 700; font-size: 1rem; color: var(--navy); }
+        .cal-nav { display: flex; gap: 8px; }
+        .cal-nav button { background: var(--gray-light); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 13px; color: var(--navy); transition: all 0.2s; }
+        .cal-nav button:hover { background: var(--turquoise); color: white; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+        .cal-weekday { text-align: center; font-weight: 600; font-size: 11px; color: var(--gray-text); padding: 8px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.15s; }
+        .cal-day.empty { cursor: default; }
+        .cal-day.available:hover { background: rgba(64,181,173,0.15); color: var(--turquoise); }
+        .cal-day.booked { background: #FEE2E2; color: #DC2626; text-decoration: line-through; cursor: not-allowed; font-size: 11px; }
+        .cal-day.ical-blocked { background: #FEF3C7; color: #D97706; cursor: not-allowed; font-size: 11px; }
+        .cal-day.manual-blocked { background: #EDE9FE; color: #7C3AED; cursor: pointer; }
+        .cal-day.selected { background: var(--ocean); color: white; font-weight: 700; }
+        .cal-day.in-range { background: rgba(0,105,148,0.15); color: var(--ocean); border-radius: 0; }
+        .cal-day.range-start { border-radius: 50% 0 0 50%; }
+        .cal-day.range-end { border-radius: 0 50% 50% 0; }
+        .cal-day.range-start.range-end { border-radius: 50%; }
+        .cal-day.today { box-shadow: inset 0 0 0 2px var(--turquoise); }
+        .cal-day.past { opacity: 0.35; cursor: not-allowed; }
+        .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-border); }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--gray-text); }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .selection-preview { background: linear-gradient(135deg, rgba(0,105,148,0.08), rgba(64,181,173,0.08)); border: 1px solid rgba(64,181,173,0.3); border-radius: var(--radius-md); padding: 14px 18px; margin-top: 16px; display: none; }
+        .selection-preview.show { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .selection-preview .dates { font-weight: 600; color: var(--navy); font-size: 14px; }
+        .selection-preview .nights { font-size: 12px; color: var(--gray-text); margin-top: 2px; }
+        .action-row { display: flex; gap: 10px; margin-top: 16px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 13px; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+        .btn-primary { background: var(--turquoise); color: white; flex: 1; justify-content: center; }
         .btn-primary:hover { background: var(--ocean); }
-        .btn-danger { background: #dc3545; color: white; }
-        .btn-danger:hover { background: #c82333; }
-        
-        .blocked-list { margin-top: 20px; }
-        .blocked-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid var(--gray-border);
-        }
-        
-        .message {
-            padding: 14px;
-            border-radius: var(--radius-md);
-            margin-bottom: 16px;
-            display: none;
-        }
-        .message.success { background: #D4EDDA; color: #155724; display: block; }
-        .message.error { background: #F8D7DA; color: #721C24; display: block; }
-        
-        .loading { text-align: center; padding: 40px; color: var(--gray-text); }
-        .empty { text-align: center; padding: 40px; color: var(--gray-text); }
-        
-        @media (max-width: 600px) {
-            body { padding: 12px; }
-            .card { padding: 16px; }
-            .calendar-day { padding: 8px 3px; font-size: 12px; }
-        }
+        .btn-primary:disabled { background: var(--gray-border); color: var(--gray-text); cursor: not-allowed; }
+        .btn-outline { background: transparent; border: 1.5px solid var(--gray-border); color: var(--gray-text); }
+        .btn-outline:hover { border-color: var(--danger); color: var(--danger); }
+        .reason-input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--gray-border); border-radius: var(--radius-md); font-size: 13px; font-family: 'Inter', sans-serif; margin-top: 12px; transition: border-color 0.2s; }
+        .reason-input:focus { outline: none; border-color: var(--turquoise); }
+        .blocked-list { display: flex; flex-direction: column; gap: 8px; }
+        .blocked-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: var(--radius-md); background: var(--gray-light); transition: all 0.2s; }
+        .blocked-item:hover { background: #EDE9FE; }
+        .blocked-item .item-dates { font-weight: 600; font-size: 13px; color: var(--navy); }
+        .blocked-item .item-reason { font-size: 11px; color: var(--gray-text); margin-top: 2px; }
+        .blocked-item .item-source { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600; margin-top: 4px; display: inline-block; }
+        .source-manual { background: #EDE9FE; color: #7C3AED; }
+        .source-ical { background: #FEF3C7; color: #D97706; }
+        .source-booking { background: #FEE2E2; color: #DC2626; }
+        .btn-unblock { background: transparent; border: 1px solid var(--gray-border); color: var(--gray-text); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .btn-unblock:hover { background: var(--danger); color: white; border-color: var(--danger); }
+        .btn-unblock.ical-block { opacity: 0.5; cursor: not-allowed; }
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--navy); color: white; padding: 12px 24px; border-radius: 40px; font-size: 13px; font-weight: 500; transition: transform 0.3s ease; z-index: 1000; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--gray-text); }
+        .empty-state i { font-size: 2rem; margin-bottom: 12px; opacity: 0.4; display: block; }
+        .empty-state p { font-size: 13px; }
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+        .stat-item { background: var(--gray-light); border-radius: var(--radius-md); padding: 12px; text-align: center; }
+        .stat-item .stat-val { font-size: 1.3rem; font-weight: 700; color: var(--navy); }
+        .stat-item .stat-lbl { font-size: 10px; color: var(--gray-text); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Block Dates</h1>
-            <a href="admin.html" class="back-link">← Back to Admin</a>
-        </div>
-        
-        <div class="card">
-            <div class="form-group">
-                <label>Select Unit</label>
-                <select id="unit-select">
-                    <option value="">-- Select Unit --</option>
-                </select>
-            </div>
-        </div>
-        
-        <div id="calendar-card" class="card" style="display: none;">
-            <div class="calendar-header">
-                <h3 id="calendar-month-year">January 2026</h3>
-                <div class="calendar-nav">
-                    <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
-                    <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+<div class="header">
+    <div class="header-inner">
+        <h1><i class="fas fa-calendar-times" style="color:var(--turquoise);margin-right:8px;"></i>Block Dates</h1>
+        <a href="admin.html" class="back-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
+    </div>
+</div>
+<div class="main">
+    <div class="unit-selector">
+        <label><i class="fas fa-building" style="color:var(--turquoise);margin-right:6px;"></i>Unit</label>
+        <select id="unit-select"><option value="">— Select a unit to manage —</option></select>
+    </div>
+    <div class="content-grid" id="content-grid" style="display:none;">
+        <div>
+            <div class="card">
+                <div class="cal-header">
+                    <div class="cal-month" id="cal-month-year">May 2026</div>
+                    <div class="cal-nav">
+                        <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                        <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="cal-grid" id="cal-grid"></div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-dot" style="background:#EDE9FE;"></div> Manually blocked</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#FEE2E2;"></div> Booking</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#FEF3C7;"></div> iCal sync</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--ocean);"></div> Selected</div>
+                </div>
+                <div class="selection-preview" id="selection-preview">
+                    <div><div class="dates" id="preview-dates">—</div><div class="nights" id="preview-nights"></div></div>
+                </div>
+                <input type="text" class="reason-input" id="block-reason" placeholder="Reason (optional, e.g. Owner stay, Maintenance...)">
+                <div class="action-row">
+                    <button class="btn btn-primary" id="block-btn" disabled onclick="blockSelected()"><i class="fas fa-lock"></i> Block Dates</button>
+                    <button class="btn btn-outline" onclick="clearSelection()"><i class="fas fa-times"></i> Clear</button>
                 </div>
             </div>
-            <div id="calendar-grid" class="calendar-grid"></div>
-            <div class="legend">
-                <div><span class="legend-color" style="background:white; border:2px solid var(--turquoise);"></span> Available</div>
-                <div><span class="legend-color" style="background:var(--gray-light);"></span> Booked/Blocked</div>
-                <div><span class="legend-color" style="background:var(--ocean);"></span> Selected</div>
+        </div>
+        <div>
+            <div class="card" style="margin-bottom:16px;">
+                <div class="stats-row">
+                    <div class="stat-item"><div class="stat-val" id="stat-blocked">—</div><div class="stat-lbl">Blocked</div></div>
+                    <div class="stat-item"><div class="stat-val" id="stat-booked">—</div><div class="stat-lbl">Booked</div></div>
+                    <div class="stat-item"><div class="stat-val" id="stat-available">—</div><div class="stat-lbl">Available</div></div>
+                </div>
             </div>
-            <div id="selected-preview" class="selected-preview" style="display: none;">
-                <strong>Selected to block:</strong> <span id="selected-dates-text"></span>
-            </div>
-            <div class="action-buttons">
-                <button id="block-btn" class="btn btn-primary">Block Selected Dates</button>
-                <button id="clear-btn" class="btn btn-danger">Clear Selection</button>
+            <div class="card">
+                <div class="card-title"><i class="fas fa-list"></i> Blocked Periods</div>
+                <div id="blocked-list"><div class="empty-state"><i class="fas fa-calendar-check"></i><p>No blocked dates</p></div></div>
             </div>
         </div>
-        
-        <div id="blocked-card" class="card" style="display: none;">
-            <h3>Currently Blocked Dates</h3>
-            <div id="blocked-list" class="blocked-list"><div class="loading">Select a unit to view blocked dates</div></div>
-        </div>
-        
-        <div id="message" class="message"></div>
     </div>
-
-    <script>
-        // ==================== AUTHENTICATION CHECK ====================
-        if (!sessionStorage.getItem('adminToken')) {
-            window.location.href = 'admin.html';
+</div>
+<div class="toast" id="toast"></div>
+<script>
+    if (!sessionStorage.getItem('adminToken')) window.location.href = 'admin.html';
+    const API = 'https://api.htmrentals.com/api';
+    const tkn = () => sessionStorage.getItem('adminToken');
+    const hdrs = () => ({ 'Authorization': `Bearer ${tkn()}`, 'Content-Type': 'application/json' });
+    let selectedUnitId = null, bookedDates = [], blockedDatesData = [];
+    let selStart = null, selEnd = null;
+    let curMonth = new Date().getMonth(), curYear = new Date().getFullYear();
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    function fmt(d) { const dt = new Date(d + 'T12:00:00'); return dt.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }); }
+    function nights(a, b) { return Math.round((new Date(b) - new Date(a)) / 86400000) + 1; }
+    async function loadUnits() {
+        const res = await fetch(`${API}/admin/units`, { headers: hdrs() });
+        const data = await res.json();
+        if (data.success) {
+            const sel = document.getElementById('unit-select');
+            sel.innerHTML = '<option value="">— Select a unit to manage —</option>' + data.units.map(u => `<option value="${u.id}">${u.unit_name}</option>`).join('');
         }
-        // ============================================================
-
-        const API_BASE_URL = 'https://api.htmrentals.com/api';
-        function getToken() { return sessionStorage.getItem('adminToken'); }
-        function authHeaders(extra) { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json', ...extra }; }
-        function handleAuthError(res) { if (res && res.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = 'admin.html'; return true; } return false; }
-        
-        let allUnits = [];
-        let selectedUnitId = null;
-        let bookedDates = [];
-        let blockedDates = [];
-        let selectedStartDate = null;
-        let selectedEndDate = null;
-        let currentMonth = new Date().getMonth();
-        let currentYear = new Date().getFullYear();
-        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        const shortMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        
-        function formatDateShort(dateStr) {
-            const d = new Date(dateStr);
-            const day = d.getDate();
-            const month = shortMonthNames[d.getMonth()];
-            const year = d.getFullYear().toString().slice(-2);
-            return `${day} ${month} ${year}`;
-        }
-        
-        async function loadUnits() {
-            try {
-                const res = await fetch(`${API_BASE_URL}/admin/units`, { headers: authHeaders() });
-                if (handleAuthError(res)) return;
-                const data = await res.json();
-                if (data.success) {
-                    allUnits = data.units;
-                    const select = document.getElementById('unit-select');
-                    select.innerHTML = '<option value="">-- Select Unit --</option>' + 
-                        allUnits.map(u => `<option value="${u.id}">${escapeHtml(u.unit_name)}</option>`).join('');
-                }
-            } catch(e) {
-                showMessage('Failed to load units', 'error');
-            }
-        }
-        
-        async function loadAvailability(unitId) {
-            if (!unitId) return;
-            try {
-                const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${unitId}`, { headers: authHeaders() });
-                const data = await res.json();
-                if (data.success) {
-                    bookedDates = [];
-                    if (data.bookings) {
-                        data.bookings.forEach(booking => {
-                            const start = new Date(booking.check_in_date);
-                            const end = new Date(booking.check_out_date);
-                            for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
-                                bookedDates.push(d.toISOString().split('T')[0]);
-                            }
-                        });
-                    }
-                    
-                    blockedDates = [];
-                    if (data.blocked_dates) {
-                        blockedDates = data.blocked_dates.map(b => {
-                            const date = b.blocked_date || b.date;
-                            return date ? date.split('T')[0] : null;
-                        }).filter(d => d);
-                    }
-                    
-                    renderCalendar();
-                    renderBlockedList(data.blocked_dates);
-                }
-            } catch(e) {
-                console.error(e);
-                showMessage('Failed to load availability', 'error');
-            }
-        }
-        
-        function renderCalendar() {
-            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            let html = '';
-            const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-            weekdays.forEach(day => html += `<div class="calendar-weekday">${day}</div>`);
-            
-            for (let i = 0; i < firstDay; i++) html += '<div class="calendar-day empty"></div>';
-            
-            const today = new Date();
-            const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-            
-            for (let d = 1; d <= daysInMonth; d++) {
-                const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                const isBooked = bookedDates.includes(dateStr);
-                const isBlocked = blockedDates.includes(dateStr);
-                const isUnavailable = isBooked || isBlocked;
-                const isToday = dateStr === todayStr;
-                
-                let isSelected = false;
-                if (selectedStartDate && selectedEndDate) {
-                    if (dateStr >= selectedStartDate && dateStr <= selectedEndDate) isSelected = true;
-                } else if (selectedStartDate && dateStr === selectedStartDate) isSelected = true;
-                
-                let classes = 'calendar-day';
-                if (isUnavailable) classes += ' booked';
-                else classes += ' available';
-                if (isToday) classes += ' today';
-                if (isSelected) classes += ' selected';
-                
-                html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isUnavailable})">${d}</div>`;
-            }
-            
-            document.getElementById('calendar-grid').innerHTML = html;
-            document.getElementById('calendar-month-year').textContent = `${monthNames[currentMonth]} ${currentYear}`;
-            updateSelectedPreview();
-        }
-        
-        function selectDate(dateStr, isUnavailable) {
-            if (isUnavailable) {
-                showMessage('This date is already booked or blocked', 'error');
-                return;
-            }
-            
-            if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-                selectedStartDate = dateStr;
-                selectedEndDate = null;
-            } else if (selectedStartDate && !selectedEndDate) {
-                if (dateStr < selectedStartDate) {
-                    selectedStartDate = dateStr;
-                } else {
-                    selectedEndDate = dateStr;
-                }
-            }
-            renderCalendar();
-        }
-        
-        function updateSelectedPreview() {
-            const preview = document.getElementById('selected-preview');
-            const textSpan = document.getElementById('selected-dates-text');
-            if (!selectedStartDate) {
-                preview.style.display = 'none';
-                return;
-            }
-            if (selectedStartDate && !selectedEndDate) {
-                preview.style.display = 'block';
-                textSpan.textContent = formatDateShort(selectedStartDate) + ' (1 night)';
-            } else if (selectedStartDate && selectedEndDate) {
-                const nights = Math.ceil((new Date(selectedEndDate) - new Date(selectedStartDate)) / (1000 * 60 * 60 * 24)) + 1;
-                preview.style.display = 'block';
-                textSpan.textContent = `${formatDateShort(selectedStartDate)} to ${formatDateShort(selectedEndDate)} (${nights} nights)`;
-            }
-        }
-        
-        function clearSelection() {
-            selectedStartDate = null;
-            selectedEndDate = null;
-            renderCalendar();
-        }
-        
-        async function blockSelected() {
-            if (!selectedUnitId) { showMessage('Please select a unit', 'error'); return; }
-            if (!selectedStartDate) { showMessage('Please select dates to block', 'error'); return; }
-            
-            const blockStart = selectedStartDate;
-            const blockEnd = selectedEndDate ? selectedEndDate : selectedStartDate;
-            
-            try {
-                const res = await fetch(`${API_BASE_URL}/admin/block-dates`, {
-                    method: 'POST',
-                    headers: authHeaders(),
-                    body: JSON.stringify({ start_date: blockStart, end_date: blockEnd, reason: 'Manually blocked', unit_id: selectedUnitId })
-                });
-                const result = await res.json();
-                if (result.success) {
-                    const nights = Math.ceil((new Date(blockEnd) - new Date(blockStart)) / (1000 * 60 * 60 * 24)) + 1;
-                    showMessage(`✓ Blocked ${formatDateShort(blockStart)} to ${formatDateShort(blockEnd)} (${nights} nights)`, 'success');
-                    selectedStartDate = null;
-                    selectedEndDate = null;
-                    await loadAvailability(selectedUnitId);
-                } else {
-                    showMessage(result.error || 'Failed to block dates', 'error');
-                }
-            } catch(e) { showMessage('Error: ' + e.message, 'error'); }
-        }
-        
-        async function unblockRange(startDate, endDate, firstEntryId) {
-            if (!confirm(`Unblock ${formatDateShort(startDate)} to ${formatDateShort(endDate)}?`)) return;
-            
-            try {
-                const res = await fetch(`${API_BASE_URL}/bookings/availability?unit_id=${selectedUnitId}`, { headers: authHeaders() });
-                const data = await res.json();
-                if (data.success && data.blocked_dates) {
-                    const rangeDates = [];
-                    const current = new Date(startDate);
-                    const end = new Date(endDate);
-                    while (current <= end) {
-                        rangeDates.push(current.toISOString().split('T')[0]);
-                        current.setDate(current.getDate() + 1);
-                    }
-                    
-                    const idsToDelete = data.blocked_dates
-                        .filter(b => {
-                            const date = (b.blocked_date || b.date).split('T')[0];
-                            return rangeDates.includes(date);
-                        })
-                        .map(b => b.id);
-                    
-                    let deletedCount = 0;
-                    for (const id of idsToDelete) {
-                        const deleteRes = await fetch(`${API_BASE_URL}/admin/unblock-date/${id}`, {
-                            method: 'DELETE',
-                            headers: authHeaders()
-                        });
-                        if (deleteRes.ok) deletedCount++;
-                    }
-                    
-                    if (deletedCount > 0) {
-                        showMessage(`✓ Unblocked ${formatDateShort(startDate)} to ${formatDateShort(endDate)}`, 'success');
-                        await loadAvailability(selectedUnitId);
-                    } else {
-                        showMessage('Failed to unblock', 'error');
-                    }
-                }
-            } catch(e) {
-                showMessage('Error', 'error');
-            }
-        }
-        
-        async function renderBlockedList(blockedDatesData) {
-            const container = document.getElementById('blocked-list');
-            if (!selectedUnitId) {
-                container.innerHTML = '<div class="loading">Select a unit to view blocked dates</div>';
-                return;
-            }
-            
-            if (!blockedDatesData || blockedDatesData.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
-                return;
-            }
-            
-            const unitBlocked = blockedDatesData.filter(b => b.unit_id == selectedUnitId);
-            if (unitBlocked.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color: var(--gray-text);">No blocked dates for this unit</p>';
-                return;
-            }
-            
-            const dates = unitBlocked.map(b => (b.blocked_date || b.date).split('T')[0]).sort();
-            
-            const ranges = [];
-            let rangeStart = dates[0];
-            let rangeEnd = dates[0];
-            
-            for (let i = 1; i < dates.length; i++) {
-                const prev = new Date(dates[i-1]);
-                const curr = new Date(dates[i]);
-                const diffDays = (curr - prev) / (1000 * 60 * 60 * 24);
-                if (diffDays === 1) {
-                    rangeEnd = dates[i];
-                } else {
-                    ranges.push({ start: rangeStart, end: rangeEnd });
-                    rangeStart = dates[i];
-                    rangeEnd = dates[i];
-                }
-            }
-            ranges.push({ start: rangeStart, end: rangeEnd });
-            
-            container.innerHTML = ranges.map(range => {
-                const displayStart = formatDateShort(range.start);
-                const displayEnd = formatDateShort(range.end);
-                const isSingle = range.start === range.end;
-                const displayText = isSingle ? displayStart : `${displayStart} to ${displayEnd}`;
-                const firstEntry = unitBlocked.find(b => (b.blocked_date || b.date).split('T')[0] === range.start);
-                
-                return `
-                    <div class="blocked-item">
-                        <div><strong>${displayText}</strong></div>
-                        <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="unblockRange('${range.start}', '${range.end}', ${firstEntry.id})">Unblock</button>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function showMessage(msg, type) {
-            const el = document.getElementById('message');
-            el.textContent = msg;
-            el.className = `message ${type}`;
-            setTimeout(() => { el.style.display = 'none'; el.className = 'message'; }, 3000);
-        }
-        
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-        }
-        
-        document.getElementById('unit-select').addEventListener('change', async (e) => {
-            selectedUnitId = e.target.value;
-            if (selectedUnitId) {
-                document.getElementById('calendar-card').style.display = 'block';
-                document.getElementById('blocked-card').style.display = 'block';
-                selectedStartDate = null;
-                selectedEndDate = null;
-                await loadAvailability(selectedUnitId);
-            } else {
-                document.getElementById('calendar-card').style.display = 'none';
-                document.getElementById('blocked-card').style.display = 'none';
-            }
+    }
+    async function loadAvailability() {
+        if (!selectedUnitId) return;
+        const res = await fetch(`${API}/bookings/availability?unit_id=${selectedUnitId}`, { headers: hdrs() });
+        const data = await res.json();
+        if (!data.success) return;
+        bookedDates = [];
+        (data.bookings || []).forEach(b => {
+            let d = new Date(b.check_in_date); const end = new Date(b.check_out_date);
+            while (d < end) { bookedDates.push(d.toISOString().split('T')[0]); d.setDate(d.getDate() + 1); }
         });
-        
-        document.getElementById('prev-month').addEventListener('click', () => {
-            currentMonth--;
-            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-            renderCalendar();
-        });
-        
-        document.getElementById('next-month').addEventListener('click', () => {
-            currentMonth++;
-            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-            renderCalendar();
-        });
-        
-        document.getElementById('block-btn').addEventListener('click', blockSelected);
-        document.getElementById('clear-btn').addEventListener('click', clearSelection);
-        
-        window.unblockRange = unblockRange;
-        
-        loadUnits();
-    </script>
+        blockedDatesData = (data.blocked_dates || []).map(b => ({ id: b.id, date: (b.blocked_date || b.date || '').split('T')[0], reason: b.reason || '', unit_id: b.unit_id })).filter(b => b.date);
+        updateStats(); renderCalendar(); renderBlockedList();
+    }
+    function updateStats() {
+        const dim = new Date(curYear, curMonth + 1, 0).getDate();
+        const mDates = Array.from({length: dim}, (_, i) => `${curYear}-${String(curMonth+1).padStart(2,'0')}-${String(i+1).padStart(2,'0')}`);
+        const blocked = mDates.filter(d => blockedDatesData.some(b => b.date === d)).length;
+        const booked = mDates.filter(d => bookedDates.includes(d)).length;
+        document.getElementById('stat-blocked').textContent = blocked;
+        document.getElementById('stat-booked').textContent = booked;
+        document.getElementById('stat-available').textContent = Math.max(0, dim - blocked - booked);
+    }
+    function renderCalendar() {
+        const firstDay = new Date(curYear, curMonth, 1).getDay();
+        const dim = new Date(curYear, curMonth + 1, 0).getDate();
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+        let html = ['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => `<div class="cal-weekday">${d}</div>`).join('');
+        for (let i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+        for (let d = 1; d <= dim; d++) {
+            const ds = `${curYear}-${String(curMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const isBooked = bookedDates.includes(ds);
+            const bEntry = blockedDatesData.find(b => b.date === ds);
+            const isIcal = bEntry && bEntry.reason.startsWith('iCal:');
+            const isManual = bEntry && !isIcal;
+            const isPast = ds < todayStr;
+            const isToday = ds === todayStr;
+            let inSel = false, isStart = false, isEnd = false;
+            if (selStart && selEnd) {
+                const lo = selStart < selEnd ? selStart : selEnd, hi = selStart < selEnd ? selEnd : selStart;
+                if (ds >= lo && ds <= hi) inSel = true;
+                if (ds === lo) isStart = true;
+                if (ds === hi) isEnd = true;
+            } else if (selStart && ds === selStart) { inSel = true; isStart = true; isEnd = true; }
+            let cls = 'cal-day';
+            if (isBooked) cls += ' booked';
+            else if (isIcal) cls += ' ical-blocked';
+            else if (isManual) cls += ' manual-blocked';
+            else if (isPast) cls += ' past';
+            else cls += ' available';
+            if (isToday) cls += ' today';
+            if (inSel && !isBooked && !isIcal && !isPast) {
+                if (isStart && isEnd) cls += ' selected';
+                else { cls += ' in-range'; if (isStart) cls += ' range-start'; if (isEnd) cls += ' range-end'; }
+            }
+            const clickable = !isBooked && !isIcal && !isPast;
+            html += `<div class="${cls}" ${clickable ? `onclick="selectDate('${ds}')"` : ''}>${d}</div>`;
+        }
+        document.getElementById('cal-grid').innerHTML = html;
+        document.getElementById('cal-month-year').textContent = `${MONTHS[curMonth]} ${curYear}`;
+        updatePreview(); updateStats();
+    }
+    function selectDate(ds) {
+        if (!selStart || (selStart && selEnd)) { selStart = ds; selEnd = null; }
+        else { selEnd = ds; }
+        renderCalendar();
+    }
+    function updatePreview() {
+        const el = document.getElementById('selection-preview');
+        const btn = document.getElementById('block-btn');
+        if (!selStart) { el.classList.remove('show'); btn.disabled = true; return; }
+        el.classList.add('show'); btn.disabled = false;
+        if (!selEnd) {
+            document.getElementById('preview-dates').textContent = fmt(selStart);
+            document.getElementById('preview-nights').textContent = '1 night selected';
+        } else {
+            const lo = selStart < selEnd ? selStart : selEnd, hi = selStart < selEnd ? selEnd : selStart;
+            document.getElementById('preview-dates').textContent = `${fmt(lo)} → ${fmt(hi)}`;
+            document.getElementById('preview-nights').textContent = `${nights(lo, hi)} nights selected`;
+        }
+    }
+    function clearSelection() { selStart = null; selEnd = null; document.getElementById('block-reason').value = ''; renderCalendar(); }
+    async function blockSelected() {
+        if (!selStart) return;
+        const lo = selEnd ? (selStart < selEnd ? selStart : selEnd) : selStart;
+        const hi = selEnd ? (selStart < selEnd ? selEnd : selStart) : selStart;
+        const reason = document.getElementById('block-reason').value.trim() || 'Manually blocked';
+        const res = await fetch(`${API}/admin/block-dates`, { method: 'POST', headers: hdrs(), body: JSON.stringify({ start_date: lo, end_date: hi, reason, unit_id: selectedUnitId }) });
+        const data = await res.json();
+        if (data.success) { showToast(`Blocked ${fmt(lo)} → ${fmt(hi)}`, 'success'); clearSelection(); await loadAvailability(); }
+        else showToast(data.error || 'Failed', 'error');
+    }
+    async function unblock(start, end) {
+        if (!confirm(`Unblock ${fmt(start)} to ${fmt(end)}?`)) return;
+        const rangeDates = [];
+        let d = new Date(start + 'T12:00:00'); const endD = new Date(end + 'T12:00:00');
+        while (d <= endD) { rangeDates.push(d.toISOString().split('T')[0]); d.setDate(d.getDate() + 1); }
+        const ids = blockedDatesData.filter(b => rangeDates.includes(b.date) && !b.reason.startsWith('iCal:')).map(b => b.id);
+        let ok = 0;
+        for (const id of ids) { const r = await fetch(`${API}/admin/unblock-date/${id}`, { method: 'DELETE', headers: hdrs() }); if (r.ok) ok++; }
+        if (ok > 0) { showToast('Unblocked successfully', 'success'); await loadAvailability(); }
+        else showToast('Nothing to unblock', 'error');
+    }
+    function renderBlockedList() {
+        const container = document.getElementById('blocked-list');
+        const unitBlocked = blockedDatesData.filter(b => b.unit_id == selectedUnitId);
+        if (!unitBlocked.length) { container.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-check"></i><p>No blocked dates for this unit</p></div>'; return; }
+        const sorted = [...unitBlocked].sort((a, b) => a.date.localeCompare(b.date));
+        const ranges = [];
+        let rs = sorted[0].date, re = sorted[0].date, rr = sorted[0].reason;
+        for (let i = 1; i < sorted.length; i++) {
+            const prev = new Date(re + 'T12:00:00'); prev.setDate(prev.getDate() + 1);
+            if (sorted[i].date === prev.toISOString().split('T')[0] && sorted[i].reason === rr) { re = sorted[i].date; }
+            else { ranges.push({ start: rs, end: re, reason: rr }); rs = sorted[i].date; re = sorted[i].date; rr = sorted[i].reason; }
+        }
+        ranges.push({ start: rs, end: re, reason: rr });
+        container.innerHTML = ranges.map(r => {
+            const isIcal = r.reason.startsWith('iCal:'), isSync = r.reason.startsWith('Sync:');
+            const srcCls = isIcal ? 'source-ical' : isSync ? 'source-booking' : 'source-manual';
+            const srcLbl = isIcal ? r.reason.replace('iCal:','') + ' sync' : isSync ? 'Booking sync' : 'Manual';
+            const n = nights(r.start, r.end);
+            return `<div class="blocked-item"><div><div class="item-dates">${fmt(r.start)}${r.start!==r.end?' → '+fmt(r.end):''}</div><div class="item-reason">${!isIcal&&!isSync?r.reason+' · ':''} ${n} night${n>1?'s':''}</div><span class="item-source ${srcCls}">${srcLbl}</span></div>${!isIcal&&!isSync?`<button class="btn-unblock" onclick="unblock('${r.start}','${r.end}')">Unblock</button>`:'<span class="btn-unblock ical-block">Auto</span>'}</div>`;
+        }).join('');
+    }
+    function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = `toast ${type} show`; setTimeout(() => t.className = 'toast', 3000); }
+    document.getElementById('unit-select').addEventListener('change', e => {
+        selectedUnitId = e.target.value; selStart = null; selEnd = null;
+        document.getElementById('content-grid').style.display = selectedUnitId ? 'grid' : 'none';
+        if (selectedUnitId) loadAvailability();
+    });
+    document.getElementById('prev-month').addEventListener('click', () => { curMonth--; if (curMonth < 0) { curMonth = 11; curYear--; } renderCalendar(); });
+    document.getElementById('next-month').addEventListener('click', () => { curMonth++; if (curMonth > 11) { curMonth = 0; curYear++; } renderCalendar(); });
+    loadUnits();
+</script>
 </body>
 </html>
