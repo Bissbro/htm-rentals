@@ -189,13 +189,15 @@
             <div class="form-row">
                 <div class="form-group"><label>Unit *</label><select id="f-unit"></select></div>
                 <div class="form-group"><label>Source *</label>
-                    <select id="f-source">
+                    <select id="f-source" onchange="toggleCustomSource()">
                         <option value="Direct">Direct</option>
                         <option value="WhatsApp">WhatsApp</option>
                         <option value="Walk-in">Walk-in</option>
                         <option value="Airbnb">Airbnb</option>
                         <option value="Booking.com">Booking.com</option>
                         <option value="Agoda">Agoda</option>
+                        <option value="Trip.com">Trip.com</option>
+                        <option value="Other">Other (custom)</option>
                     </select>
                 </div>
             </div>
@@ -223,6 +225,16 @@
                         <option value="USDT">USDT</option>
                     </select>
                 </div>
+                <div class="form-group"><label>Payment Method</label>
+                    <select id="f-payment-method">
+                        <option value="cash">Cash</option>
+                        <option value="transfer">Transfer</option>
+                        <option value="card">Card</option>
+                        <option value="crypto">Crypto</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
                 <div class="form-group"><label>Status</label>
                     <select id="f-status">
                         <option value="confirmed">Confirmed</option>
@@ -231,6 +243,10 @@
                         <option value="cancelled">Cancelled</option>
                     </select>
                 </div>
+                <div class="form-group"><label>Reference / Lead</label><input type="text" id="f-reference" placeholder="Link, booking ref, lead source..."></div>
+            </div>
+            <div id="custom-source-group" class="form-row single" style="display:none;">
+                <div class="form-group"><label>Custom Source Name</label><input type="text" id="f-custom-source" placeholder="e.g. Instagram, Friend referral..."></div>
             </div>
             <div class="form-row single">
                 <div class="form-group"><label>Notes</label><textarea id="f-notes" placeholder="Special requests, notes..."></textarea></div>
@@ -343,6 +359,11 @@
         return s;
     }
 
+    function toggleCustomSource() {
+        const src = document.getElementById('f-source').value;
+        document.getElementById('custom-source-group').style.display = src === 'Other' ? 'grid' : 'none';
+    }
+
     function calcNights() {
         const ci = document.getElementById('f-checkin').value;
         const co = document.getElementById('f-checkout').value;
@@ -368,6 +389,10 @@
         document.getElementById('f-currency').value = 'USD';
         document.getElementById('f-status').value = 'confirmed';
         document.getElementById('f-notes').value = '';
+        document.getElementById('f-payment-method').value = 'cash';
+        document.getElementById('f-reference').value = '';
+        document.getElementById('f-custom-source').value = '';
+        document.getElementById('custom-source-group').style.display = 'none';
         document.getElementById('nights-preview').textContent = 'Select check-in and check-out dates';
         document.getElementById('booking-modal').classList.add('open');
     }
@@ -389,6 +414,10 @@
         document.getElementById('f-currency').value = b.currency||'USD';
         document.getElementById('f-status').value = b.booking_status||'confirmed';
         document.getElementById('f-notes').value = b.special_requests||'';
+        document.getElementById('f-payment-method').value = b.payment_method||'cash';
+        document.getElementById('f-reference').value = b.booking_reference||'';
+        document.getElementById('f-custom-source').value = '';
+        toggleCustomSource();
         calcNights();
         document.getElementById('booking-modal').classList.add('open');
     }
@@ -405,7 +434,9 @@
         if (!ci||!co||!name||!phone||!amount) { showToast('Please fill all required fields','error'); return; }
         const nights = Math.round((new Date(co)-new Date(ci))/86400000);
         if (nights<=0) { showToast('Check-out must be after check-in','error'); return; }
-        const body = { unit_id: document.getElementById('f-unit').value, booking_source: document.getElementById('f-source').value, check_in_date: ci, check_out_date: co, guest_name: name, guest_phone: phone, guest_nid: document.getElementById('f-nid').value||null, number_of_guests: parseInt(document.getElementById('f-guests').value)||1, total_nights: nights, total_amount: parseFloat(amount), currency: document.getElementById('f-currency').value, booking_status: document.getElementById('f-status').value, special_requests: document.getElementById('f-notes').value||null };
+        const src = document.getElementById('f-source').value;
+        const finalSource = src === 'Other' ? (document.getElementById('f-custom-source').value.trim() || 'Other') : src;
+        const body = { unit_id: document.getElementById('f-unit').value, booking_source: finalSource, payment_method: document.getElementById('f-payment-method').value, booking_reference: document.getElementById('f-reference').value||null, check_in_date: ci, check_out_date: co, guest_name: name, guest_phone: phone, guest_nid: document.getElementById('f-nid').value||null, number_of_guests: parseInt(document.getElementById('f-guests').value)||1, total_nights: nights, total_amount: parseFloat(amount), currency: document.getElementById('f-currency').value, booking_status: document.getElementById('f-status').value, special_requests: document.getElementById('f-notes').value||null };
         const url = id ? `${API}/admin/bookings/${id}` : `${API}/admin/bookings`;
         const method = id ? 'PUT' : 'POST';
         try {
