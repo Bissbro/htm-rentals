@@ -51,8 +51,12 @@
         .cal-day.empty { cursor: default; }
         .cal-day.available:hover { background: rgba(64,181,173,0.15); color: var(--turquoise); }
         .cal-day.booked { background: #FEE2E2; color: #DC2626; text-decoration: line-through; cursor: not-allowed; font-size: 11px; }
+        .cal-day.ical-airbnb { background: #FF5A5F22; color: #FF5A5F; cursor: not-allowed; font-size: 11px; }
+        .cal-day.ical-agoda { background: #9B0D2A22; color: #9B0D2A; cursor: not-allowed; font-size: 11px; }
+        .cal-day.ical-booking { background: #00358022; color: #003580; cursor: not-allowed; font-size: 11px; }
         .cal-day.ical-blocked { background: #FEF3C7; color: #D97706; cursor: not-allowed; font-size: 11px; }
         .cal-day.manual-blocked { background: #EDE9FE; color: #7C3AED; cursor: pointer; }
+        .cal-badge { font-size: 8px; font-weight: 700; display: block; line-height: 1; margin-top: 1px; }
         .cal-day.selected { background: var(--ocean); color: white; font-weight: 700; }
         .cal-day.in-range { background: rgba(0,105,148,0.15); color: var(--ocean); border-radius: 0; }
         .cal-day.range-start { border-radius: 50% 0 0 50%; }
@@ -125,9 +129,11 @@
                 </div>
                 <div class="cal-grid" id="cal-grid"></div>
                 <div class="legend">
-                    <div class="legend-item"><div class="legend-dot" style="background:#EDE9FE;"></div> Manually blocked</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#FEE2E2;"></div> Booking</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#FEF3C7;"></div> iCal sync</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#EDE9FE;border:1px solid #7C3AED44;"></div> Manual</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#FEE2E2;"></div> HTM Booking</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#FF5A5F33;border:1px solid #FF5A5F44;"></div> Airbnb</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#9B0D2A22;border:1px solid #9B0D2A44;"></div> Agoda</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#00358022;border:1px solid #00358044;"></div> Booking.com</div>
                     <div class="legend-item"><div class="legend-dot" style="background:var(--ocean);"></div> Selected</div>
                 </div>
                 <div class="selection-preview" id="selection-preview">
@@ -171,8 +177,24 @@
         const res = await fetch(`${API}/admin/units`, { headers: hdrs() });
         const data = await res.json();
         if (data.success) {
+            const units = data.units.filter(u => !u.parent_unit_id);
             const sel = document.getElementById('unit-select');
-            sel.innerHTML = '<option value="">— Select a unit to manage —</option>' + data.units.map(u => `<option value="${u.id}">${u.unit_name}</option>`).join('');
+            sel.innerHTML = units.map(u => {
+                const label = u.unit_number || u.unit_name.split('|')[1]?.trim() || u.unit_name.slice(0,15);
+                return `<option value="${u.id}">${label}</option>`;
+            }).join('');
+            // Check URL param first
+            const urlUnit = new URLSearchParams(window.location.search).get('unit');
+            if (urlUnit && units.find(u => u.id == urlUnit)) {
+                sel.value = urlUnit;
+            } else {
+                sel.value = units[0]?.id || '';
+            }
+            selectedUnitId = sel.value;
+            if (selectedUnitId) {
+                document.getElementById('content-grid').style.display = 'grid';
+                await loadAvailability();
+            }
         }
     }
     async function loadAvailability() {
@@ -210,6 +232,8 @@
             const bEntry = blockedDatesData.find(b => b.date === ds);
             const isIcal = bEntry && bEntry.reason.startsWith('iCal:');
             const isManual = bEntry && !isIcal;
+            const platform = isIcal ? bEntry.reason.replace('iCal:','').toLowerCase() : null;
+            const badge = platform === 'airbnb' ? 'Air' : platform === 'agoda' ? 'Ago' : platform === 'booking.com' ? 'Bkg' : null;
             const isPast = ds < todayStr;
             const isToday = ds === todayStr;
             let inSel = false, isStart = false, isEnd = false;
@@ -221,7 +245,12 @@
             } else if (selStart && ds === selStart) { inSel = true; isStart = true; isEnd = true; }
             let cls = 'cal-day';
             if (isBooked) cls += ' booked';
-            else if (isIcal) cls += ' ical-blocked';
+            else if (isIcal) {
+                if (platform === 'airbnb') cls += ' ical-airbnb';
+                else if (platform === 'agoda') cls += ' ical-agoda';
+                else if (platform === 'booking.com') cls += ' ical-booking';
+                else cls += ' ical-blocked';
+            }
             else if (isManual) cls += ' manual-blocked';
             else if (isPast) cls += ' past';
             else cls += ' available';
@@ -231,7 +260,8 @@
                 else { cls += ' in-range'; if (isStart) cls += ' range-start'; if (isEnd) cls += ' range-end'; }
             }
             const clickable = !isBooked && !isIcal && !isPast;
-            html += `<div class="${cls}" ${clickable ? `onclick="selectDate('${ds}')"` : ''}>${d}</div>`;
+            const badgeHtml = badge ? `<span class="cal-badge">${badge}</span>` : '';
+            html += `<div class="${cls}" ${clickable ? `onclick="selectDate('${ds}')"` : ''}>${d}${badgeHtml}</div>`;
         }
         document.getElementById('cal-grid').innerHTML = html;
         document.getElementById('cal-month-year').textContent = `${MONTHS[curMonth]} ${curYear}`;
@@ -304,6 +334,10 @@
         selectedUnitId = e.target.value; selStart = null; selEnd = null;
         document.getElementById('content-grid').style.display = selectedUnitId ? 'grid' : 'none';
         if (selectedUnitId) loadAvailability();
+        // Update URL param
+        const url = new URL(window.location);
+        url.searchParams.set('unit', selectedUnitId);
+        window.history.replaceState({}, '', url);
     });
     document.getElementById('prev-month').addEventListener('click', () => { curMonth--; if (curMonth < 0) { curMonth = 11; curYear--; } renderCalendar(); });
     document.getElementById('next-month').addEventListener('click', () => { curMonth++; if (curMonth > 11) { curMonth = 0; curYear++; } renderCalendar(); });
