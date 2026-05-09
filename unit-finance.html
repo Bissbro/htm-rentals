@@ -894,6 +894,7 @@
     // ==================== REVENUE ====================
     async function loadRevenue() {
         const month = getMonth();
+        document.getElementById('revenue-table-body').innerHTML = '<tr><td colspan="7">Loading month: ' + (month || 'ALL') + '...</td></tr>';
         const unit = getUnitParam();
         const res = await fetch(`${API}/admin/revenue?${month ? `month=${month}` : ''}${unit}`, { headers: authHeaders() });
         if (await handleAuthError(res)) return;
