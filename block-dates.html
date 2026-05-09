@@ -177,7 +177,7 @@
         const res = await fetch(`${API}/admin/units`, { headers: hdrs() });
         const data = await res.json();
         if (data.success) {
-            const units = data.units.filter(u => !u.parent_unit_id);
+            const units = data.units;
             const sel = document.getElementById('unit-select');
             sel.innerHTML = units.map(u => {
                 const label = u.unit_number || u.unit_name.split('|')[1]?.trim() || u.unit_name.slice(0,15);
