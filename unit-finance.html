@@ -289,6 +289,7 @@
         <button class="tab" onclick="switchTab('contracts', this)"><i class="fas fa-file-contract"></i> Contracts</button>
         <button class="tab" onclick="switchTab('deposits', this)"><i class="fas fa-shield-alt"></i> Deposits</button>
         <button class="tab" onclick="switchTab('unit-summary', this)"><i class="fas fa-chart-bar"></i> Per Unit</button>
+        <button class="tab" onclick="switchTab('exchange', this)"><i class="fas fa-exchange-alt"></i> Exchange</button>
     </div>
 
     <!-- REVENUE TAB -->
@@ -444,6 +445,64 @@
     </div>
 
 </div>
+
+    <!-- EXCHANGE TAB -->
+    <div class="tab-content" id="tab-exchange">
+        <div class="card">
+            <div class="card-header">
+                <h2>Currency Exchange</h2>
+            </div>
+            <div style="background:var(--gray-light); border-radius:var(--radius-md); padding:16px; margin-bottom:20px;">
+                <div style="font-size:12px; font-weight:600; color:var(--navy); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">Record Exchange Transaction</div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:12px; align-items:end;">
+                    <div>
+                        <label style="font-size:11px;color:var(--gray-text);display:block;margin-bottom:4px;">Date</label>
+                        <input type="date" id="exc-date" style="width:100%;padding:8px;border:1px solid var(--gray-border);border-radius:8px;font-size:13px;">
+                    </div>
+                    <div>
+                        <label style="font-size:11px;color:var(--gray-text);display:block;margin-bottom:4px;">From Currency</label>
+                        <select id="exc-currency" style="width:100%;padding:8px;border:1px solid var(--gray-border);border-radius:8px;font-size:13px;">
+                            <option value="USD">USD</option>
+                            <option value="USDT">USDT</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:11px;color:var(--gray-text);display:block;margin-bottom:4px;">Amount</label>
+                        <input type="number" id="exc-amount" step="0.01" placeholder="0.00" style="width:100%;padding:8px;border:1px solid var(--gray-border);border-radius:8px;font-size:13px;">
+                    </div>
+                    <div>
+                        <label style="font-size:11px;color:var(--gray-text);display:block;margin-bottom:4px;">Exchange Rate</label>
+                        <input type="number" id="exc-rate" step="0.0001" placeholder="e.g. 19.5" style="width:100%;padding:8px;border:1px solid var(--gray-border);border-radius:8px;font-size:13px;">
+                    </div>
+                    <div>
+                        <label style="font-size:11px;color:var(--gray-text);display:block;margin-bottom:4px;">Notes</label>
+                        <input type="text" id="exc-notes" placeholder="Optional" style="width:100%;padding:8px;border:1px solid var(--gray-border);border-radius:8px;font-size:13px;">
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="saveExchange()" style="width:100%;padding:9px;">+ Add Exchange</button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Currency</th>
+                            <th>Amount</th>
+                            <th>MVR Received</th>
+                            <th>Rate Used</th>
+                            <th>Notes</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="exchange-table-body">
+                        <tr><td colspan="7" class="loading">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
 <!-- REVENUE MODAL -->
 <div class="modal" id="revenue-modal">
@@ -756,6 +815,15 @@
         else if (activeTab === 'unit-summary') loadUnitSummary();
         else if (activeTab === 'rent') loadRent();
         else if (activeTab === 'monthly-exp') loadMonthlyExpenses();
+        else if (activeTab === 'exchange') {
+            loadExchanges();
+            document.getElementById('exc-date').value = today();
+            fetch(`${API}/admin/settings`, { headers: authHeaders() })
+                .then(r => r.json()).then(d => {
+                    if (d.success && d.settings.exchange_rate)
+                        document.getElementById('exc-rate').value = d.settings.exchange_rate;
+                }).catch(() => {});
+        }
     }
 
     // ==================== SUMMARY ====================
@@ -801,10 +869,10 @@
         const data = await res.json();
         if (!data.success) return;
         const t = data.totals;
-        document.getElementById('rev-mvr-direct').textContent = `MVR ${fmt(t.total_mvr_direct)}`;
-        document.getElementById('rev-usd').textContent = `$ ${fmt(t.total_usd)}`;
-        document.getElementById('rev-usdt').textContent = `USDT ${fmt(t.total_usdt)}`;
-        document.getElementById('rev-total-mvr').textContent = `MVR ${fmt(t.total_mvr_equivalent)}`;
+        document.getElementById('rev-mvr-direct').textContent = `MVR ${fmt(t.total_mvr_direct + (t.mvr_from_exchanges || 0))}`;
+        document.getElementById('rev-usd').textContent = `$ ${fmt(t.usd_net ?? t.total_usd)}`;
+        document.getElementById('rev-usdt').textContent = `USDT ${fmt(t.usdt_net ?? t.total_usdt)}`;
+        document.getElementById('rev-total-mvr').textContent = `MVR ${fmt(t.approx_net_mvr ?? t.total_mvr_equivalent)}`;
         const tbody = document.getElementById('revenue-table-body');
         if (data.transactions.length === 0) {
             tbody.innerHTML = `<tr><td colspan="7" class="empty">No transactions yet. Click "+ Add Payment" to record one.</td></tr>`;
@@ -831,7 +899,14 @@
         document.getElementById('rev-description').value = '';
         document.getElementById('rev-currency').value = 'MVR';
         document.getElementById('rev-amount').value = '';
-        document.getElementById('rev-exchange-rate').value = '';
+        // Auto-fill exchange rate from settings
+        fetch(`${API}/admin/settings`, { headers: authHeaders() })
+            .then(r => r.json()).then(d => {
+                if (d.success && d.settings.exchange_rate) {
+                    document.getElementById('rev-exchange-rate').value = d.settings.exchange_rate;
+                    calcMVR();
+                }
+            }).catch(() => {});
         document.getElementById('rev-payment-type').value = 'full';
         document.getElementById('rev-payment-method').value = 'cash';
         document.getElementById('rev-status').value = 'received';
@@ -1255,6 +1330,61 @@
     }
 
     // ==================== TABS ====================
+    // ==================== EXCHANGE ====================
+    async function loadExchanges() {
+        const res = await fetch(`${API}/admin/currency-exchanges`, { headers: authHeaders() });
+        if (await handleAuthError(res)) return;
+        const data = await res.json();
+        if (!data.success) return;
+        const tbody = document.getElementById('exchange-table-body');
+        if (!data.exchanges.length) {
+            tbody.innerHTML = `<tr><td colspan="6" class="empty">No exchange transactions yet.</td></tr>`;
+            return;
+        }
+        let usdTotal = 0, usdtTotal = 0, mvrTotal = 0;
+        tbody.innerHTML = data.exchanges.map(e => {
+            if (e.from_currency === 'USD') usdTotal += parseFloat(e.from_amount);
+            else usdtTotal += parseFloat(e.from_amount);
+            mvrTotal += parseFloat(e.to_amount_mvr);
+            return `<tr>
+                <td style="white-space:nowrap;"><span style="font-weight:600;color:var(--navy);">${formatDate(e.exchange_date)}</span></td>
+                <td><span style="background:${e.from_currency==='USD'?'rgba(40,167,69,0.1)':'rgba(255,193,7,0.1)'};color:${e.from_currency==='USD'?'var(--success)':'var(--warning)'};padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;">${e.from_currency}</span></td>
+                <td><strong style="color:${e.from_currency==='USD'?'var(--success)':'var(--warning)'};">${e.from_currency==='USD'?'$':'USDT'} ${fmt(e.from_amount)}</strong></td>
+                <td><strong style="color:var(--ocean);">MVR ${fmt(e.to_amount_mvr)}</strong></td>
+                <td style="font-size:12px;color:var(--gray-text);">${fmt(e.exchange_rate)}</td>
+                <td style="font-size:12px;color:var(--gray-text);">${e.notes||'—'}</td>
+                <td><button class="btn btn-sm btn-danger" onclick="deleteExchange(${e.id})">Delete</button></td>
+            </tr>`;
+        }).join('');
+    }
+
+    async function saveExchange() {
+        const from_currency = document.getElementById('exc-currency').value;
+        const from_amount = parseFloat(document.getElementById('exc-amount').value);
+        const exchange_rate = parseFloat(document.getElementById('exc-rate').value);
+        const exchange_date = document.getElementById('exc-date').value;
+        const notes = document.getElementById('exc-notes').value;
+        if (!from_amount || !exchange_rate || !exchange_date) { alert('Please fill all fields'); return; }
+        const to_amount_mvr = from_amount * exchange_rate;
+        const res = await fetch(`${API}/admin/currency-exchanges`, {
+            method: 'POST', headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ from_currency, from_amount, exchange_rate, to_amount_mvr, exchange_date, notes })
+        });
+        const data = await res.json();
+        if (data.success) {
+            document.getElementById('exc-amount').value = '';
+            document.getElementById('exc-notes').value = '';
+            loadExchanges(); loadSummary(); loadRevenue();
+        } else { alert('Failed: ' + data.error); }
+    }
+
+    async function deleteExchange(id) {
+        if (!confirm('Delete this exchange transaction?')) return;
+        const res = await fetch(`${API}/admin/currency-exchanges/${id}`, { method: 'DELETE', headers: authHeaders() });
+        const data = await res.json();
+        if (data.success) { loadExchanges(); loadSummary(); loadRevenue(); }
+    }
+
     function switchTab(tab, el) {
         activeTab = tab;
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
