@@ -901,7 +901,7 @@
         const res = await fetch(url, { headers: authHeaders() });
         if (await handleAuthError(res)) return;
         const data = await res.json();
-        if (!data.success) return;
+        if (!data.success) { document.getElementById('revenue-table-body').innerHTML = '<tr><td colspan="7">Error: ' + data.error + '</td></tr>'; return; }
         const t = data.totals;
         document.getElementById('rev-mvr-direct').textContent = `MVR ${fmt(t.total_mvr_direct + (t.mvr_from_exchanges || 0))}`;
         document.getElementById('rev-usd').textContent = `$ ${fmt(t.usd_net ?? t.total_usd)}`;
