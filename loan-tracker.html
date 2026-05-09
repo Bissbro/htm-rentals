@@ -306,7 +306,7 @@ function renderAll() {
                 <button class="loan-action-btn" onclick="openPaymentModalForLoan(${loan.id})">
                     <i class="fas fa-plus"></i> Record Payment
                 </button>
-                <button class="loan-action-btn" style="background:rgba(220,53,69,0.1);color:#dc3545;" onclick="deleteLoan(${loan.id}, `${loan.loan_name}`)">
+                <button class="loan-action-btn" style="background:rgba(220,53,69,0.1);color:#dc3545;" onclick="deleteLoan(${loan.id}, '${loan.loan_name.replace(/'/g, \"\")}')">
                     <i class="fas fa-trash"></i> Delete Loan
                 </button>
             </div>
