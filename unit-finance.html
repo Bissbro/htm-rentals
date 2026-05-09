@@ -838,7 +838,7 @@
     // ==================== SUMMARY ====================
     async function loadSummary() {
         const month = getMonth();
-        const res = await fetch(`${API}/admin/finance/summary${month ? `?month=${month}&_=${Date.now()}` : `?_=${Date.now()}`}`, { headers: authHeaders() });
+        const res = await fetch(`${API}/admin/finance/summary${month ? '?month='+month : ''}`, { headers: authHeaders() });
         if (await handleAuthError(res)) return;
         const data = await res.json();
         if (!data.success) return;
@@ -895,8 +895,7 @@
     async function loadRevenue() {
         const month = getMonth();
         const unit = getUnitParam();
-        const params = new URLSearchParams(); if(month) params.append('month',month); if(unit) params.append('unit_id', selectedUnitId); params.append('_', Date.now());
-        const res = await fetch(`${API}/admin/revenue?${params.toString()}`, { headers: authHeaders() });
+        const res = await fetch(`${API}/admin/revenue?${month ? 'month='+month : 'all=1'}${unit ? unit : ''}`, { headers: authHeaders() });
         if (await handleAuthError(res)) return;
         const data = await res.json();
         if (!data.success) return;
@@ -1023,8 +1022,7 @@
     async function loadExpenses() {
         const month = getMonth();
         const unit = getUnitParam();
-        const expParams = new URLSearchParams(); if(month) expParams.append('month',month); if(selectedUnitId !== 'all') expParams.append('unit_id', selectedUnitId); expParams.append('_', Date.now());
-        const res = await fetch(`${API}/admin/expenses?${expParams.toString()}`, { headers: authHeaders() });
+        const res = await fetch(`${API}/admin/expenses?${month ? 'month='+month : 'all=1'}${unit ? unit : ''}`, { headers: authHeaders() });
         if (await handleAuthError(res)) return;
         const data = await res.json();
         const tbody = document.getElementById('expenses-table-body');
@@ -1528,8 +1526,7 @@
     async function loadMonthlyExpenses() {
         var month = getMonth();
         var unit = selectedUnitId !== 'all' ? '&unit_id=' + selectedUnitId : '';
-        const meParams = new URLSearchParams(); if(month) meParams.append('month',month); if(selectedUnitId !== 'all') meParams.append('unit_id', selectedUnitId); meParams.append('_', Date.now());
-        var res = await fetch(`${API}/admin/monthly-expenses?${meParams.toString()}`, { headers: authHeaders() });
+        var res = await fetch(`${API}/admin/monthly-expenses?${month ? 'month='+month : 'all=1'}${unit ? unit : ''}`, { headers: authHeaders() });
         var data = await res.json();
         var tbody = document.getElementById('monthly-exp-body');
         if (!tbody) return;
