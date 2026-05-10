@@ -293,7 +293,7 @@
             if (!data.success) { showToast(data.error||'Failed','error'); return; }
             currentData = data;
             renderReport(data);
-        } catch(e) { showToast('Failed to load report','error'); }
+        } catch(e) { showToast('Error: ' + e.message + ' | ' + e.stack?.slice(0,100), 'error'); }
     }
 
     function renderReport(data) {
