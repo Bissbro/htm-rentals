@@ -281,7 +281,7 @@
         return p.toString();
     }
 
-    async function generateReport() {
+    async function generateReport() { showToast('Generate called!', 'success');
         const params = getParams();
         try {
             const token = tkn();
