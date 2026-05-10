@@ -358,12 +358,20 @@
                 </div>
                 <div class="partner-stats">
                     <div class="pstat">
-                        <div class="ps-label">Invested</div>
+                        <div class="ps-label">Total Invested</div>
                         <div class="ps-value">MVR ${fmt(invested)}</div>
                     </div>
                     <div class="pstat">
-                        <div class="ps-label">Received</div>
+                        <div class="ps-label">Profit Received</div>
                         <div class="ps-value">MVR ${fmt(received)}</div>
+                    </div>
+                </div>
+                <div style="margin-top:8px;padding:8px 12px;background:rgba(255,255,255,0.1);border-radius:8px;font-size:11px;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                        <span>Direct Cash</span><span>MVR ${fmt(parseFloat(p.direct_investment||0))}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;">
+                        <span>Loan Payments</span><span>MVR ${fmt(parseFloat(p.loan_contributions||0))}</span>
                     </div>
                 </div>
                 <div class="partner-actions">
