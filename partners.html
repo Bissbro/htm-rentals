@@ -377,7 +377,7 @@
             const initials = p.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
             const invested = parseFloat(p.total_invested);
             const received = parseFloat(p.total_received);
-            const shareOfPool = totalInvested > 0 ? ((invested / totalInvested) * 100).toFixed(1) : 0;
+            const shareOfPool = partnerInvested > 0 ? ((invested / partnerInvested) * 100).toFixed(1) : 0;
             return `
             <div class="partner-card">
                 <div class="partner-top">
