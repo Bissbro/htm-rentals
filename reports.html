@@ -58,6 +58,26 @@
         .toast.show{transform:translateX(-50%) translateY(0)}
         .toast.ok{background:var(--success)}
         .toast.err{background:var(--danger)}
+
+        @media print {
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            body { background: white !important; }
+            .header, .tabs, .card:first-of-type, .toast { display: none !important; }
+            .main { padding: 0 !important; max-width: 100% !important; }
+            .print-header { display: block !important; }
+            .card { box-shadow: none !important; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px; break-inside: avoid; }
+            .sum-grid { grid-template-columns: repeat(4,1fr) !important; }
+            .sum-card { border-radius: 6px !important; }
+            table { font-size: 11px !important; }
+            th, td { padding: 7px 10px !important; }
+            .btn, button { display: none !important; }
+            .prog { print-color-adjust: exact; }
+        }
+        .print-header { display: none; padding: 20px 0 16px; border-bottom: 2px solid var(--navy); margin-bottom: 20px; }
+        .print-header .ph-logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--navy); font-weight: 700; }
+        .print-header .ph-logo span { color: var(--turquoise); }
+        .print-header .ph-meta { font-size: 12px; color: var(--gray-text); margin-top: 4px; }
+        .print-header .ph-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -95,7 +115,12 @@
             <button class="btn btn-secondary" onclick="window.print()"><i class="fas fa-print"></i> Print/PDF</button>
         </div>
     </div>
-    <div id="report-content"><div class="loading-state"><i class="fas fa-spinner fa-spin" style="font-size:2rem;display:block;margin-bottom:12px;opacity:.3"></i>Loading...</div></div>
+    <div class="print-header" id="print-header">
+    <div class="ph-logo">HTM<span>Rentals</span></div>
+    <div class="ph-title" id="ph-title">Report</div>
+    <div class="ph-meta" id="ph-meta"></div>
+</div>
+<div id="report-content"><div class="loading-state"><i class="fas fa-spinner fa-spin" style="font-size:2rem;display:block;margin-bottom:12px;opacity:.3"></i>Loading...</div></div>
 </div>
 <div class="toast" id="toast"></div>
 <script>
@@ -159,6 +184,11 @@ function generate(){
         if(!data)return;
         if(!data.success){toast(data.error||'Failed','err');return}
         reportData=data;
+        var from=document.getElementById('f-from').value;
+        var to=document.getElementById('f-to').value;
+        var period=from&&to?from+' to '+to:from?'From '+from:to?'To '+to:'All Time';
+        document.getElementById('ph-title').textContent=currentTab.charAt(0).toUpperCase()+currentTab.slice(1)+' Report';
+        document.getElementById('ph-meta').textContent='Period: '+period+' · Generated: '+new Date().toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
         render(data);
     })
     .catch(function(e){toast('Error: '+e.message,'err')});
