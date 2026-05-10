@@ -283,6 +283,7 @@
 
     async function generateReport() {
         const params = getParams();
+        document.querySelector('.report-section.active').innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div>';
         try {
             const res = await fetch(`${API}/admin/reports/${currentReport}?${params}`, { headers: hdrs() });
             if (res.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = 'admin.html'; return; }
