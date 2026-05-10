@@ -62,7 +62,7 @@
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             body { background: white !important; }
-            .header, .tabs, .card:first-of-type, .toast { display: none !important; }
+            .header, .tabs, #filters-card, .toast, .back-link { display: none !important; }
             .main { padding: 0 !important; max-width: 100% !important; }
             .print-header { display: block !important; }
             .card { box-shadow: none !important; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px; break-inside: avoid; }
@@ -98,7 +98,7 @@
         <button class="tab" onclick="switchTab('partners',this)">Partners</button>
         <button class="tab" onclick="switchTab('loans',this)">Loans</button>
     </div>
-    <div class="card">
+    <div class="card" id="filters-card">
         <div class="presets">
             <button class="preset" onclick="setPreset('today',this)">Today</button>
             <button class="preset" onclick="setPreset('week',this)">This Week</button>
