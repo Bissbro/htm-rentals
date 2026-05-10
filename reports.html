@@ -286,6 +286,7 @@
         try {
             const token = tkn();
             if (!token) { showToast('Not logged in', 'error'); return; }
+            console.log('Fetching:', `${API}/admin/reports/${currentReport}?${params}`);
             const res = await fetch(`${API}/admin/reports/${currentReport}?${params}`, { headers: hdrs() });
             if (res.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = 'admin.html'; return; }
             const data = await res.json();
