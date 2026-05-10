@@ -326,10 +326,24 @@ function renderBookings(d){
 }
 
 function renderPartners(d){
-    var html='<div class="card"><div class="table-wrap"><table><thead><tr><th>Partner</th><th>Invested</th><th>Received</th><th>Withdrawn</th><th>Balance</th></tr></thead><tbody>';
+    var totalInv=d.partners.reduce(function(s,p){return s+p.total_invested},0);
+    var totalRec=d.partners.reduce(function(s,p){return s+p.total_received},0);
+    var totalWith=d.partners.reduce(function(s,p){return s+p.total_withdrawn},0);
+    var html='<div class="sum-grid">';
+    html+='<div class="sum-card blue"><div class="sum-val">MVR '+fmt(totalInv)+'</div><div class="sum-lbl">Total Invested</div></div>';
+    html+='<div class="sum-card green"><div class="sum-val">MVR '+fmt(totalRec)+'</div><div class="sum-lbl">Profit Distributed</div></div>';
+    html+='<div class="sum-card orange"><div class="sum-val">MVR '+fmt(totalWith)+'</div><div class="sum-lbl">Total Withdrawn</div></div>';
+    html+='</div>';
+    html+='<div class="card"><div class="table-wrap"><table><thead><tr><th>Partner</th><th>Direct</th><th>Loan Contrib.</th><th>Total Invested</th><th>Profit Received</th><th>Withdrawn</th><th>Net Balance</th></tr></thead><tbody>';
     d.partners.forEach(function(p){
-        var bal=p.total_invested-p.total_received+p.total_withdrawn;
-        html+='<tr><td><strong>'+esc(p.name)+'</strong></td><td>MVR '+fmt(p.total_invested)+'</td><td>MVR '+fmt(p.total_received)+'</td><td>MVR '+fmt(p.total_withdrawn)+'</td><td style="color:'+(bal>=0?'var(--success)':'var(--danger)')+'"><strong>MVR '+fmt(bal)+'</strong></td></tr>';
+        var bal=p.total_invested-p.total_received-p.total_withdrawn;
+        html+='<tr><td><strong>'+esc(p.name)+'</strong></td>';
+        html+='<td>MVR '+fmt(p.direct_investment)+'</td>';
+        html+='<td>MVR '+fmt(p.loan_contributions)+'</td>';
+        html+='<td><strong>MVR '+fmt(p.total_invested)+'</strong></td>';
+        html+='<td>MVR '+fmt(p.total_received)+'</td>';
+        html+='<td>MVR '+fmt(p.total_withdrawn)+'</td>';
+        html+='<td style="color:'+(bal>=0?'var(--success)':'var(--danger)')+'"><strong>MVR '+fmt(bal)+'</strong></td></tr>';
     });
     html+='</tbody></table></div></div>';
     document.getElementById('report-content').innerHTML=html;
