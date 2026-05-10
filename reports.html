@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTM Rentals | Reports</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --navy: #0A2540; --ocean: #006994; --turquoise: #40B5AD; --gray-light: #F8F9FA; --gray-border: #E5E5E5; --gray-text: #6C757D; --success: #28a745; --warning: #ffc107; --danger: #dc3545; --radius-lg: 20px; --radius-md: 12px; --radius-sm: 8px; --shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        body { font-family: 'Inter', sans-serif; background: #F0F2F5; min-height: 100vh; }
+        .header { background: white; border-bottom: 1px solid var(--gray-border); padding: 0 24px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 60px; gap: 12px; }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--navy); }
+        .back-link { display: flex; align-items: center; gap: 6px; color: var(--ocean); text-decoration: none; font-size: 0.85rem; font-weight: 500; padding: 6px 14px; border: 1px solid var(--ocean); border-radius: 40px; transition: all 0.2s; }
+        .back-link:hover { background: var(--ocean); color: white; }
+        .main { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
+
+        /* REPORT TABS */
+        .report-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+        .report-tab { padding: 8px 16px; border: 1.5px solid var(--gray-border); border-radius: 40px; font-size: 12px; font-weight: 600; cursor: pointer; background: white; color: var(--gray-text); transition: all 0.2s; }
+        .report-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
+        .report-tab:hover:not(.active) { border-color: var(--turquoise); color: var(--turquoise); }
+
+        /* FILTERS */
+        .filters-card { background: white; border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
+        .filters-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+        .filter-group { flex: 1; min-width: 120px; }
+        .filter-group label { display: block; font-size: 11px; font-weight: 600; color: var(--gray-text); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .filter-group input, .filter-group select { width: 100%; padding: 8px 12px; border: 1.5px solid var(--gray-border); border-radius: var(--radius-sm); font-size: 13px; font-family: 'Inter', sans-serif; }
+        .filter-group input:focus, .filter-group select:focus { outline: none; border-color: var(--turquoise); }
+        .preset-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+        .preset-btn { padding: 5px 12px; border: 1px solid var(--gray-border); border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; background: white; color: var(--gray-text); transition: all 0.2s; }
+        .preset-btn:hover, .preset-btn.active { background: var(--turquoise); color: white; border-color: var(--turquoise); }
+        .btn-generate { padding: 9px 20px; background: var(--turquoise); color: white; border: none; border-radius: 40px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s; align-self: flex-end; }
+        .btn-generate:hover { background: var(--ocean); }
+        .btn-export { padding: 9px 16px; background: var(--gray-light); color: var(--navy); border: 1px solid var(--gray-border); border-radius: 40px; font-weight: 600; font-size: 13px; cursor: pointer; align-self: flex-end; }
+        .btn-export:hover { background: var(--navy); color: white; }
+
+        /* REPORT CONTENT */
+        .report-section { display: none; }
+        .report-section.active { display: block; }
+        .card { background: white; border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); margin-bottom: 16px; }
+        .card-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .card-title i { color: var(--turquoise); }
+
+        /* SUMMARY CARDS */
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 12px; margin-bottom: 20px; }
+        .sum-card { background: white; border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow); border-left: 4px solid var(--turquoise); }
+        .sum-card.green { border-left-color: var(--success); }
+        .sum-card.red { border-left-color: var(--danger); }
+        .sum-card.blue { border-left-color: var(--ocean); }
+        .sum-card.orange { border-left-color: var(--warning); }
+        .sum-val { font-size: 1.3rem; font-weight: 700; color: var(--navy); }
+        .sum-lbl { font-size: 10px; color: var(--gray-text); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+        /* TABLE */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 600; color: var(--gray-text); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--gray-border); background: var(--gray-light); }
+        td { padding: 11px 12px; font-size: 13px; border-bottom: 1px solid var(--gray-border); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(64,181,173,0.03); }
+        .total-row td { font-weight: 700; background: var(--gray-light); border-top: 2px solid var(--gray-border); }
+
+        /* PROGRESS BAR */
+        .progress-bar { background: var(--gray-light); border-radius: 10px; height: 8px; overflow: hidden; margin-top: 4px; }
+        .progress-fill { height: 100%; border-radius: 10px; background: var(--turquoise); transition: width 0.5s; }
+
+        /* BADGE */
+        .badge { display: inline-flex; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; }
+        .src-airbnb { background: #FF5A5F22; color: #FF5A5F; }
+        .src-booking { background: #00358022; color: #003580; }
+        .src-agoda { background: #FF6B3522; color: #E55A00; }
+        .src-direct { background: #40B5AD22; color: #40B5AD; }
+        .src-walkin { background: #7C3AED22; color: #7C3AED; }
+
+        /* TOAST */
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--navy); color: white; padding: 12px 24px; border-radius: 40px; font-size: 13px; font-weight: 500; transition: transform 0.3s; z-index: 2000; white-space: nowrap; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+
+        .empty-state { text-align: center; padding: 40px; color: var(--gray-text); }
+        .empty-state i { font-size: 2rem; opacity: 0.3; display: block; margin-bottom: 8px; }
+
+        @media (max-width: 768px) { .filters-row { flex-direction: column; } .summary-grid { grid-template-columns: repeat(2,1fr); } }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="header-inner">
+        <h1><i class="fas fa-chart-bar" style="color:var(--turquoise);margin-right:8px;font-size:1rem;"></i>Reports</h1>
+        <a href="admin.html" class="back-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
+    </div>
+</div>
+<div class="main">
+    <!-- Report Type Tabs -->
+    <div class="report-tabs">
+        <button class="report-tab active" onclick="switchReport('revenue',this)"><i class="fas fa-dollar-sign"></i> Revenue</button>
+        <button class="report-tab" onclick="switchReport('expenses',this)"><i class="fas fa-receipt"></i> Expenses</button>
+        <button class="report-tab" onclick="switchReport('cashflow',this)"><i class="fas fa-exchange-alt"></i> Cash Flow</button>
+        <button class="report-tab" onclick="switchReport('occupancy',this)"><i class="fas fa-bed"></i> Occupancy</button>
+        <button class="report-tab" onclick="switchReport('arrivals',this)"><i class="fas fa-plane-arrival"></i> Arrivals</button>
+        <button class="report-tab" onclick="switchReport('bookings',this)"><i class="fas fa-calendar-check"></i> Bookings</button>
+        <button class="report-tab" onclick="switchReport('partners',this)"><i class="fas fa-users"></i> Partners</button>
+        <button class="report-tab" onclick="switchReport('loans',this)"><i class="fas fa-hand-holding-usd"></i> Loans</button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-card">
+        <div class="filters-row">
+            <div class="filter-group">
+                <label>From Date</label>
+                <input type="date" id="f-from">
+            </div>
+            <div class="filter-group">
+                <label>To Date</label>
+                <input type="date" id="f-to">
+            </div>
+            <button class="btn-generate" onclick="generateReport()"><i class="fas fa-sync"></i> Generate</button>
+            <button class="btn-export" onclick="exportCSV()"><i class="fas fa-download"></i> Export CSV</button>
+        </div>
+        <div class="preset-btns">
+            <button class="preset-btn" onclick="setPreset('today')">Today</button>
+            <button class="preset-btn" onclick="setPreset('week')">This Week</button>
+            <button class="preset-btn active" onclick="setPreset('month')">This Month</button>
+            <button class="preset-btn" onclick="setPreset('quarter')">This Quarter</button>
+            <button class="preset-btn" onclick="setPreset('year')">This Year</button>
+            <button class="preset-btn" onclick="setPreset('all')">All Time</button>
+        </div>
+    </div>
+
+    <!-- REVENUE REPORT -->
+    <div class="report-section active" id="report-revenue">
+        <div class="summary-grid" id="rev-summary"></div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-building"></i> Revenue by Unit</div>
+            <div class="table-wrap"><table id="rev-unit-table"><thead><tr><th>Unit</th><th>Currency</th><th>Amount</th><th>Transactions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-calendar"></i> Revenue by Month</div>
+            <div class="table-wrap"><table id="rev-month-table"><thead><tr><th>Month</th><th>MVR</th><th>USD</th><th>USDT</th></tr></thead><tbody></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- EXPENSES REPORT -->
+    <div class="report-section" id="report-expenses">
+        <div class="summary-grid" id="exp-summary"></div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-list"></i> Expenses by Category</div>
+            <div class="table-wrap"><table id="exp-cat-table"><thead><tr><th>Category</th><th>Amount (MVR)</th><th>Count</th><th>% of Total</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-building"></i> Expenses by Unit</div>
+            <div class="table-wrap"><table id="exp-unit-table"><thead><tr><th>Unit</th><th>Monthly Exp</th><th>Rent</th><th>Renovation</th><th>Total</th></tr></thead><tbody></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- CASH FLOW REPORT -->
+    <div class="report-section" id="report-cashflow">
+        <div class="summary-grid" id="cf-summary"></div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-info-circle"></i> Cash Flow Breakdown</div>
+            <div id="cf-breakdown"></div>
+        </div>
+    </div>
+
+    <!-- OCCUPANCY REPORT -->
+    <div class="report-section" id="report-occupancy">
+        <div class="summary-grid" id="occ-summary"></div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-bed"></i> Occupancy by Unit</div>
+            <div class="table-wrap"><table id="occ-table"><thead><tr><th>Unit</th><th>Occupied Nights</th><th>Available Nights</th><th>Occupancy Rate</th></tr></thead><tbody></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- ARRIVALS REPORT -->
+    <div class="report-section" id="report-arrivals">
+        <div class="card">
+            <div class="card-title"><i class="fas fa-plane-arrival"></i> Arrivals</div>
+            <div class="table-wrap"><table id="arr-table"><thead><tr><th>Check In</th><th>Guest</th><th>Unit</th><th>Nights</th><th>Guests</th><th>Source</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-plane-departure"></i> Departures</div>
+            <div class="table-wrap"><table id="dep-table"><thead><tr><th>Check Out</th><th>Guest</th><th>Unit</th><th>Nights</th><th>Phone</th></tr></thead><tbody></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- BOOKINGS REPORT -->
+    <div class="report-section" id="report-bookings">
+        <div class="summary-grid" id="bk-summary"></div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-chart-pie"></i> Bookings by Source</div>
+            <div class="table-wrap"><table id="bk-src-table"><thead><tr><th>Source</th><th>Bookings</th><th>Total Nights</th><th>Total Guests</th><th>Avg Nights</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-building"></i> Bookings by Unit</div>
+            <div class="table-wrap"><table id="bk-unit-table"><thead><tr><th>Unit</th><th>Bookings</th><th>Nights</th><th>Avg Nights</th><th>Guests</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-calendar"></i> Bookings by Month</div>
+            <div class="table-wrap"><table id="bk-month-table"><thead><tr><th>Month</th><th>Bookings</th><th>Nights</th></tr></thead><tbody></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- PARTNERS REPORT -->
+    <div class="report-section" id="report-partners">
+        <div class="card">
+            <div class="card-title"><i class="fas fa-users"></i> Partner Summary</div>
+            <div class="table-wrap"><table id="partner-table"><thead><tr><th>Partner</th><th>Invested</th><th>Received</th><th>Withdrawn</th><th>Balance</th></tr></thead><tbody></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- LOANS REPORT -->
+    <div class="report-section" id="report-loans">
+        <div class="card">
+            <div class="card-title"><i class="fas fa-hand-holding-usd"></i> Loan Summary</div>
+            <div class="table-wrap"><table id="loan-table"><thead><tr><th>Loan</th><th>Total</th><th>Paid</th><th>Remaining</th><th>Progress</th><th>Payments</th></tr></thead><tbody></tbody></table></div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    if (!sessionStorage.getItem('adminToken')) window.location.href = 'admin.html';
+    const API = 'https://api.htmrentals.com/api';
+    const tkn = () => sessionStorage.getItem('adminToken');
+    const hdrs = () => ({ 'Authorization': `Bearer ${tkn()}`, 'Content-Type': 'application/json' });
+
+    let currentReport = 'revenue';
+    let currentData = null;
+
+    function fmt(n) { return parseFloat(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+    function fmtD(d) { if (!d) return '—'; return new Date(d.slice(0,10)+'T12:00:00').toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'}); }
+    function esc(s) { return (s||'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+    function srcBadge(src) {
+        if (!src) return '<span class="badge src-direct">Direct</span>';
+        const cls = src==='Airbnb'?'src-airbnb':src==='Booking.com'?'src-booking':src==='Agoda'?'src-agoda':src==='Walk-in'?'src-walkin':'src-direct';
+        return `<span class="badge ${cls}">${src}</span>`;
+    }
+
+    // Date presets
+    function setPreset(type) {
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        const now = new Date();
+        const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+        let from, to;
+        if (type === 'today') { from = to = new Date(y,m,d).toISOString().slice(0,10); }
+        else if (type === 'week') { const day = now.getDay(); from = new Date(y,m,d-day).toISOString().slice(0,10); to = new Date(y,m,d-day+6).toISOString().slice(0,10); }
+        else if (type === 'month') { from = new Date(y,m,1).toISOString().slice(0,10); to = new Date(y,m+1,0).toISOString().slice(0,10); }
+        else if (type === 'quarter') { const q = Math.floor(m/3); from = new Date(y,q*3,1).toISOString().slice(0,10); to = new Date(y,q*3+3,0).toISOString().slice(0,10); }
+        else if (type === 'year') { from = `${y}-01-01`; to = `${y}-12-31`; }
+        else if (type === 'all') { from = ''; to = ''; }
+        document.getElementById('f-from').value = from||'';
+        document.getElementById('f-to').value = to||'';
+        generateReport();
+    }
+
+    function switchReport(name, el) {
+        currentReport = name;
+        document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.querySelectorAll('.report-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`report-${name}`).classList.add('active');
+        generateReport();
+    }
+
+    function getParams() {
+        const from = document.getElementById('f-from').value;
+        const to = document.getElementById('f-to').value;
+        const p = new URLSearchParams();
+        if (from) p.append('from', from);
+        if (to) p.append('to', to);
+        return p.toString();
+    }
+
+    async function generateReport() {
+        const params = getParams();
+        try {
+            const res = await fetch(`${API}/admin/reports/${currentReport}?${params}`, { headers: hdrs() });
+            if (res.status === 401) { sessionStorage.removeItem('adminToken'); window.location.href = 'admin.html'; return; }
+            const data = await res.json();
+            if (!data.success) { showToast(data.error||'Failed','error'); return; }
+            currentData = data;
+            renderReport(data);
+        } catch(e) { showToast('Failed to load report','error'); }
+    }
+
+    function renderReport(data) {
+        if (currentReport === 'revenue') renderRevenue(data);
+        else if (currentReport === 'expenses') renderExpenses(data);
+        else if (currentReport === 'cashflow') renderCashflow(data);
+        else if (currentReport === 'occupancy') renderOccupancy(data);
+        else if (currentReport === 'arrivals') renderArrivals(data);
+        else if (currentReport === 'bookings') renderBookings(data);
+        else if (currentReport === 'partners') renderPartners(data);
+        else if (currentReport === 'loans') renderLoans(data);
+    }
+
+    function renderRevenue(d) {
+        const rate = d.rate || 20;
+        const mvr = parseFloat(d.totals.find(t=>t.currency==='MVR')?.total||0);
+        const usd = parseFloat(d.totals.find(t=>t.currency==='USD')?.total||0);
+        const usdt = parseFloat(d.totals.find(t=>t.currency==='USDT')?.total||0);
+        const approx = mvr + (usd*rate) + (usdt*rate);
+        document.getElementById('rev-summary').innerHTML = `
+            <div class="sum-card blue"><div class="sum-val">MVR ${fmt(mvr)}</div><div class="sum-lbl">MVR Received</div></div>
+            <div class="sum-card green"><div class="sum-val">$ ${fmt(usd)}</div><div class="sum-lbl">USD Received</div></div>
+            <div class="sum-card orange"><div class="sum-val">USDT ${fmt(usdt)}</div><div class="sum-lbl">USDT Received</div></div>
+            <div class="sum-card"><div class="sum-val">MVR ${fmt(approx)}</div><div class="sum-lbl">Approx Total (Rate: ${rate})</div></div>`;
+
+        // By unit table
+        const unitTbody = document.querySelector('#rev-unit-table tbody');
+        unitTbody.innerHTML = d.byUnit.length ? d.byUnit.map(u => `<tr>
+            <td><strong>${esc(u.unit_number||u.unit_name.split('|')[1]?.trim()||'—')}</strong></td>
+            <td><span class="badge src-direct">${u.currency}</span></td>
+            <td><strong>${u.currency==='MVR'?'MVR':u.currency==='USD'?'$':'USDT'} ${fmt(u.total)}</strong></td>
+            <td>${u.count}</td></tr>`).join('') : '<tr><td colspan="4" class="empty-state">No data</td></tr>';
+
+        // By month table
+        const months = {};
+        d.byMonth.forEach(m => {
+            if (!months[m.month]) months[m.month] = {MVR:0,USD:0,USDT:0};
+            months[m.month][m.currency] = parseFloat(m.total);
+        });
+        const monthTbody = document.querySelector('#rev-month-table tbody');
+        monthTbody.innerHTML = Object.keys(months).length ? Object.entries(months).map(([mo,v]) => `<tr>
+            <td>${mo}</td><td>MVR ${fmt(v.MVR)}</td><td>$ ${fmt(v.USD)}</td><td>USDT ${fmt(v.USDT)}</td></tr>`).join('') 
+            + `<tr class="total-row"><td>TOTAL</td><td>MVR ${fmt(mvr)}</td><td>$ ${fmt(usd)}</td><td>USDT ${fmt(usdt)}</td></tr>`
+            : '<tr><td colspan="4" class="empty-state">No data</td></tr>';
+    }
+
+    function renderExpenses(d) {
+        document.getElementById('exp-summary').innerHTML = `
+            <div class="sum-card red"><div class="sum-val">MVR ${fmt(d.grandTotal)}</div><div class="sum-lbl">Total Expenses</div></div>
+            ${d.categories.map(c=>`<div class="sum-card"><div class="sum-val">MVR ${fmt(c.total)}</div><div class="sum-lbl">${c.name}</div></div>`).join('')}`;
+
+        const catTbody = document.querySelector('#exp-cat-table tbody');
+        catTbody.innerHTML = d.categories.filter(c=>c.total>0).map(c => {
+            const pct = d.grandTotal > 0 ? ((c.total/d.grandTotal)*100).toFixed(1) : 0;
+            return `<tr><td>${c.name}</td><td>MVR ${fmt(c.total)}</td><td>${c.count}</td>
+                <td><div style="display:flex;align-items:center;gap:8px;">${pct}%<div class="progress-bar" style="flex:1;"><div class="progress-fill" style="width:${pct}%;background:var(--danger);"></div></div></div></td></tr>`;
+        }).join('') + `<tr class="total-row"><td>TOTAL</td><td>MVR ${fmt(d.grandTotal)}</td><td></td><td>100%</td></tr>`;
+
+        const unitTbody = document.querySelector('#exp-unit-table tbody');
+        unitTbody.innerHTML = d.byUnit.map(u => {
+            const total = parseFloat(u.monthly||0)+parseFloat(u.rent||0)+parseFloat(u.renovation||0);
+            return `<tr><td><strong>${esc(u.unit_number||u.unit_name.split('|')[1]?.trim()||'—')}</strong></td>
+                <td>MVR ${fmt(u.monthly)}</td><td>MVR ${fmt(u.rent)}</td><td>MVR ${fmt(u.renovation)}</td>
+                <td><strong>MVR ${fmt(total)}</strong></td></tr>`;
+        }).join('');
+    }
+
+    function renderCashflow(d) {
+        document.getElementById('cf-summary').innerHTML = `
+            <div class="sum-card blue"><div class="sum-val">MVR ${fmt(d.mvrCash)}</div><div class="sum-lbl">MVR Cash</div></div>
+            <div class="sum-card green"><div class="sum-val">$ ${fmt(d.usdCash)}</div><div class="sum-lbl">USD Cash</div></div>
+            <div class="sum-card orange"><div class="sum-val">USDT ${fmt(d.usdtCash)}</div><div class="sum-lbl">USDT Cash</div></div>
+            <div class="sum-card ${d.approxTotal>=0?'green':'red'}"><div class="sum-val">MVR ${fmt(d.approxTotal)}</div><div class="sum-lbl">Approx Net (Rate: ${d.rate})</div></div>`;
+
+        document.getElementById('cf-breakdown').innerHTML = `
+            <table style="width:100%;border-collapse:collapse;">
+                <tr style="border-bottom:1px solid var(--gray-border);"><td style="padding:10px 0;font-weight:600;color:var(--navy);">MVR Revenue</td><td style="text-align:right;padding:10px 0;">MVR ${fmt(d.mvrRevenue)}</td></tr>
+                <tr style="border-bottom:1px solid var(--gray-border);"><td style="padding:10px 0;color:var(--success);">+ MVR from Exchanges</td><td style="text-align:right;padding:10px 0;color:var(--success);">MVR ${fmt(d.mvrFromExchanges)}</td></tr>
+                <tr style="border-bottom:1px solid var(--gray-border);"><td style="padding:10px 0;color:var(--danger);">- Total Expenses</td><td style="text-align:right;padding:10px 0;color:var(--danger);">MVR ${fmt(d.totalExpenses)}</td></tr>
+                <tr style="border-bottom:2px solid var(--navy);font-weight:700;"><td style="padding:10px 0;">= MVR Cash Flow</td><td style="text-align:right;padding:10px 0;color:${d.mvrCash>=0?'var(--success)':'var(--danger)'};">MVR ${fmt(d.mvrCash)}</td></tr>
+                <tr style="border-bottom:1px solid var(--gray-border);"><td style="padding:10px 0;">USD Revenue</td><td style="text-align:right;padding:10px 0;">$ ${fmt(d.usdRevenue)}</td></tr>
+                <tr style="border-bottom:1px solid var(--gray-border);"><td style="padding:10px 0;color:var(--danger);">- USD Exchanged Out</td><td style="text-align:right;padding:10px 0;color:var(--danger);">$ ${fmt(d.usdExchanged)}</td></tr>
+                <tr style="border-bottom:2px solid var(--navy);font-weight:700;"><td style="padding:10px 0;">= USD Cash Flow</td><td style="text-align:right;padding:10px 0;">$ ${fmt(d.usdCash)}</td></tr>
+                <tr style="border-bottom:1px solid var(--gray-border);"><td style="padding:10px 0;">USDT Revenue</td><td style="text-align:right;padding:10px 0;">USDT ${fmt(d.usdtRevenue)}</td></tr>
+                <tr style="border-bottom:1px solid var(--gray-border);"><td style="padding:10px 0;color:var(--danger);">- USDT Exchanged Out</td><td style="text-align:right;padding:10px 0;color:var(--danger);">USDT ${fmt(d.usdtExchanged)}</td></tr>
+                <tr style="border-bottom:2px solid var(--navy);font-weight:700;"><td style="padding:10px 0;">= USDT Cash Flow</td><td style="text-align:right;padding:10px 0;">USDT ${fmt(d.usdtCash)}</td></tr>
+            </table>`;
+    }
+
+    function renderOccupancy(d) {
+        const avgRate = d.occupancy.length ? (d.occupancy.reduce((s,u)=>s+parseFloat(u.occupancy_rate),0)/d.occupancy.length).toFixed(1) : 0;
+        const totalOcc = d.occupancy.reduce((s,u)=>s+u.occupied_days,0);
+        document.getElementById('occ-summary').innerHTML = `
+            <div class="sum-card blue"><div class="sum-val">${d.total_days}</div><div class="sum-lbl">Total Days</div></div>
+            <div class="sum-card green"><div class="sum-val">${totalOcc}</div><div class="sum-lbl">Occupied Nights</div></div>
+            <div class="sum-card"><div class="sum-val">${avgRate}%</div><div class="sum-lbl">Avg Occupancy</div></div>`;
+
+        const tbody = document.querySelector('#occ-table tbody');
+        tbody.innerHTML = d.occupancy.map(u => `<tr>
+            <td><strong>${esc(u.unit_number||'—')}</strong></td>
+            <td>${u.occupied_days}</td><td>${u.available_days}</td>
+            <td><div style="display:flex;align-items:center;gap:8px;">${u.occupancy_rate}%
+                <div class="progress-bar" style="flex:1;"><div class="progress-fill" style="width:${u.occupancy_rate}%;"></div></div></div></td></tr>`).join('');
+    }
+
+    function renderArrivals(d) {
+        const arrTbody = document.querySelector('#arr-table tbody');
+        arrTbody.innerHTML = d.arrivals.length ? d.arrivals.map(b => `<tr>
+            <td><strong>${fmtD(b.check_in_date)}</strong></td>
+            <td>${esc(b.guest_name)}<br><small style="color:var(--gray-text);">${esc(b.guest_phone||'')}</small></td>
+            <td>${esc(b.unit_number||'—')}</td><td>${b.total_nights}n</td>
+            <td>${b.number_of_guests}</td><td>${srcBadge(b.booking_source)}</td></tr>`).join('')
+            : '<tr><td colspan="6" class="empty-state"><i class="fas fa-check"></i> No arrivals in period</td></tr>';
+
+        const depTbody = document.querySelector('#dep-table tbody');
+        depTbody.innerHTML = d.departures.length ? d.departures.map(b => `<tr>
+            <td><strong>${fmtD(b.check_out_date)}</strong></td>
+            <td>${esc(b.guest_name)}<br><small style="color:var(--gray-text);">${esc(b.guest_phone||'')}</small></td>
+            <td>${esc(b.unit_number||'—')}</td><td>${b.total_nights}n</td>
+            <td>${esc(b.guest_phone||'—')}</td></tr>`).join('')
+            : '<tr><td colspan="5" class="empty-state"><i class="fas fa-check"></i> No departures in period</td></tr>';
+    }
+
+    function renderBookings(d) {
+        const t = d.totals;
+        document.getElementById('bk-summary').innerHTML = `
+            <div class="sum-card blue"><div class="sum-val">${t.total_bookings||0}</div><div class="sum-lbl">Total Bookings</div></div>
+            <div class="sum-card green"><div class="sum-val">${t.total_nights||0}</div><div class="sum-lbl">Total Nights</div></div>
+            <div class="sum-card"><div class="sum-val">${parseFloat(t.avg_nights||0).toFixed(1)}</div><div class="sum-lbl">Avg Nights</div></div>
+            <div class="sum-card orange"><div class="sum-val">${t.total_guests||0}</div><div class="sum-lbl">Total Guests</div></div>`;
+
+        document.querySelector('#bk-src-table tbody').innerHTML = d.bySource.map(s => `<tr>
+            <td>${srcBadge(s.source)}</td><td>${s.count}</td><td>${s.total_nights||0}</td>
+            <td>${s.total_guests||0}</td><td>${s.count>0?(parseFloat(s.total_nights||0)/s.count).toFixed(1):0}</td></tr>`).join('');
+
+        document.querySelector('#bk-unit-table tbody').innerHTML = d.byUnit.map(u => `<tr>
+            <td><strong>${esc(u.unit_number||u.unit_name?.split('|')[1]?.trim()||'—')}</strong></td>
+            <td>${u.bookings}</td><td>${u.nights||0}</td>
+            <td>${parseFloat(u.avg_nights||0).toFixed(1)}</td><td>${u.guests||0}</td></tr>`).join('');
+
+        document.querySelector('#bk-month-table tbody').innerHTML = d.byMonth.map(m => `<tr>
+            <td>${m.month}</td><td>${m.bookings}</td><td>${m.nights||0}</td></tr>`).join('');
+    }
+
+    function renderPartners(d) {
+        document.querySelector('#partner-table tbody').innerHTML = d.partners.map(p => {
+            const balance = p.total_invested - p.total_received + p.total_withdrawn;
+            return `<tr>
+                <td><strong>${esc(p.name)}</strong></td>
+                <td>MVR ${fmt(p.total_invested)}</td>
+                <td>MVR ${fmt(p.total_received)}</td>
+                <td>MVR ${fmt(p.total_withdrawn)}</td>
+                <td style="color:${balance>=0?'var(--success)':'var(--danger)'}"><strong>MVR ${fmt(balance)}</strong></td></tr>`;
+        }).join('');
+    }
+
+    function renderLoans(d) {
+        document.querySelector('#loan-table tbody').innerHTML = d.loans.map(l => `<tr>
+            <td><strong>${esc(l.loan_name)}</strong><br><small style="color:var(--gray-text);">${esc(l.lender_name||'')}</small></td>
+            <td>MVR ${fmt(l.total_amount)}</td>
+            <td>MVR ${fmt(l.total_paid)}</td>
+            <td>MVR ${fmt(l.remaining)}</td>
+            <td><div style="display:flex;align-items:center;gap:8px;">${l.progress}%
+                <div class="progress-bar" style="flex:1;"><div class="progress-fill" style="width:${l.progress}%;background:var(--success);"></div></div></div></td>
+            <td>${l.payment_count}</td></tr>`).join('');
+    }
+
+    // CSV Export
+    function exportCSV() {
+        if (!currentData) { showToast('Generate a report first','error'); return; }
+        let csv = '';
+        const from = document.getElementById('f-from').value || 'All Time';
+        const to = document.getElementById('f-to').value || '';
+        csv += `HTM Rentals - ${currentReport.toUpperCase()} Report\n`;
+        csv += `Period: ${from}${to?' to '+to:''}\n\n`;
+
+        if (currentReport === 'revenue') {
+            csv += 'Unit,Currency,Amount,Count\n';
+            currentData.byUnit.forEach(u => {
+                csv += `${u.unit_number||''},${u.currency},${u.total},${u.count}\n`;
+            });
+        } else if (currentReport === 'expenses') {
+            csv += 'Category,Amount MVR,Count\n';
+            currentData.categories.forEach(c => {
+                csv += `${c.name},${c.total},${c.count}\n`;
+            });
+        } else if (currentReport === 'occupancy') {
+            csv += 'Unit,Occupied Nights,Available Nights,Occupancy Rate\n';
+            currentData.occupancy.forEach(u => {
+                csv += `${u.unit_number},${u.occupied_days},${u.available_days},${u.occupancy_rate}%\n`;
+            });
+        } else if (currentReport === 'arrivals') {
+            csv += 'Date,Guest,Phone,Unit,Nights,Guests,Source\n';
+            currentData.arrivals.forEach(b => {
+                csv += `${b.check_in_date?.slice(0,10)},${b.guest_name},${b.guest_phone||''},${b.unit_number||''},${b.total_nights},${b.number_of_guests},${b.booking_source||'Direct'}\n`;
+            });
+        } else if (currentReport === 'bookings') {
+            csv += 'Source,Bookings,Total Nights,Total Guests\n';
+            currentData.bySource.forEach(s => {
+                csv += `${s.source},${s.count},${s.total_nights||0},${s.total_guests||0}\n`;
+            });
+        } else if (currentReport === 'loans') {
+            csv += 'Loan,Total,Paid,Remaining,Progress\n';
+            currentData.loans.forEach(l => {
+                csv += `${l.loan_name},${l.total_amount},${l.total_paid},${l.remaining},${l.progress}%\n`;
+            });
+        }
+
+        const blob = new Blob([csv], {type:'text/csv'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `htm-${currentReport}-report-${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('CSV exported','success');
+    }
+
+    function showToast(msg, type='') { const t=document.getElementById('toast'); t.textContent=msg; t.className=`toast ${type} show`; setTimeout(()=>t.className='toast',3000); }
+
+    // Init - set this month and generate
+    setPreset('month');
+</script>
+</body>
+</html>
