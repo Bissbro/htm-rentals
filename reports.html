@@ -512,7 +512,10 @@
     function showToast(msg, type='') { const t=document.getElementById('toast'); t.textContent=msg; t.className=`toast ${type} show`; setTimeout(()=>t.className='toast',3000); }
 
     // Init - set this month and generate
-    setPreset('month');
+    const now2 = new Date();
+    document.getElementById('f-from').value = new Date(now2.getFullYear(), now2.getMonth(), 1).toISOString().slice(0,10);
+    document.getElementById('f-to').value = new Date(now2.getFullYear(), now2.getMonth()+1, 0).toISOString().slice(0,10);
+    generateReport();
 </script>
 </body>
 </html>
