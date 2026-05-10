@@ -366,16 +366,6 @@
             document.getElementById('total-capital-note').textContent = `MVR ${fmt(totalCapital - totalRecovered)} remaining to recover all capital including loans.`;
         }
 
-        if (totalInvested === 0) {
-            document.getElementById('pool-note').textContent = 'No investments recorded yet.';
-        } else if (netProfit <= 0) {
-            document.getElementById('pool-note').textContent = 'No profit recorded yet. Keep going!';
-        } else if (recovered >= totalInvested) {
-            document.getElementById('pool-note').textContent = '🎉 Investment fully recovered! All profits are distributable.';
-        } else {
-            document.getElementById('pool-note').textContent = `MVR ${fmt(remaining)} remaining to recover before full profit sharing.`;
-        }
-
         // Render partner cards
         const grid = document.getElementById('partners-grid');
         if (allPartners.length === 0) {
