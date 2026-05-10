@@ -131,31 +131,41 @@
         <div class="pool-title"><i class="fas fa-piggy-bank"></i> Investment Pool</div>
         <div class="pool-grid">
             <div class="pool-item">
-                <div class="p-label">Total Invested</div>
+                <div class="p-label">Partner Investment</div>
                 <div class="p-value" id="pool-invested">MVR —</div>
+            </div>
+            <div class="pool-item">
+                <div class="p-label">Company Loans</div>
+                <div class="p-value" id="pool-loans">MVR —</div>
             </div>
             <div class="pool-item">
                 <div class="p-label">Net Profit to Date</div>
                 <div class="p-value" id="pool-profit">MVR —</div>
             </div>
             <div class="pool-item">
-                <div class="p-label">Pool Recovered</div>
-                <div class="p-value highlight" id="pool-recovered">MVR —</div>
-            </div>
-            <div class="pool-item">
-                <div class="p-label">Remaining to Recover</div>
-                <div class="p-value" id="pool-remaining">MVR —</div>
+                <div class="p-label">Total Capital</div>
+                <div class="p-value" id="pool-total-capital">MVR —</div>
             </div>
         </div>
         <div class="progress-section">
             <div class="progress-label">
-                <span>Recovery Progress</span>
+                <span>Partner Pool Recovery</span>
                 <span id="pool-pct">0%</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill" style="width:0%"></div>
             </div>
             <div class="progress-note" id="pool-note">Loading...</div>
+        </div>
+        <div class="progress-section" style="margin-top:12px;">
+            <div class="progress-label">
+                <span>Total Capital Recovery (incl. Loans)</span>
+                <span id="total-capital-pct">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="total-capital-fill" style="width:0%;background:var(--ocean);"></div>
+            </div>
+            <div class="progress-note" id="total-capital-note">Loading...</div>
         </div>
     </div>
 
@@ -311,19 +321,50 @@
         const pool = data.pool;
 
         // Update pool card
-        const totalInvested = parseFloat(pool.total_invested);
+        const partnerInvested = parseFloat(pool.total_invested);
+        const totalLoans = parseFloat(pool.total_loans || 0);
+        const totalCapital = partnerInvested + totalLoans;
         const netProfit = parseFloat(pool.net_profit);
-        const recovered = parseFloat(pool.pool_recovered);
-        const remaining = Math.max(0, totalInvested - recovered);
-        const pct = Math.min(pool.recovery_percentage, 100).toFixed(1);
 
-        document.getElementById('pool-invested').textContent = `MVR ${fmt(totalInvested)}`;
+        // Partner pool recovery
+        const partnerRecovered = Math.min(Math.max(netProfit, 0), partnerInvested);
+        const partnerPct = partnerInvested > 0 ? Math.min((netProfit / partnerInvested) * 100, 100).toFixed(1) : 0;
+
+        // Total capital recovery
+        const totalRecovered = Math.min(Math.max(netProfit, 0), totalCapital);
+        const totalPct = totalCapital > 0 ? Math.min((netProfit / totalCapital) * 100, 100).toFixed(1) : 0;
+
+        document.getElementById('pool-invested').textContent = `MVR ${fmt(partnerInvested)}`;
+        document.getElementById('pool-loans').textContent = `MVR ${fmt(totalLoans)}`;
         document.getElementById('pool-profit').textContent = `MVR ${fmt(netProfit)}`;
         document.getElementById('pool-profit').className = `p-value ${netProfit >= 0 ? 'positive' : 'negative'}`;
-        document.getElementById('pool-recovered').textContent = `MVR ${fmt(recovered)}`;
-        document.getElementById('pool-remaining').textContent = `MVR ${fmt(remaining)}`;
-        document.getElementById('pool-pct').textContent = `${pct}%`;
-        document.getElementById('progress-fill').style.width = `${pct}%`;
+        document.getElementById('pool-total-capital').textContent = `MVR ${fmt(totalCapital)}`;
+
+        // Partner progress bar
+        document.getElementById('pool-pct').textContent = `${partnerPct}%`;
+        document.getElementById('progress-fill').style.width = `${partnerPct}%`;
+        if (partnerInvested === 0) {
+            document.getElementById('pool-note').textContent = 'No partner investments recorded yet.';
+        } else if (netProfit <= 0) {
+            document.getElementById('pool-note').textContent = 'No profit yet. Keep going!';
+        } else if (partnerRecovered >= partnerInvested) {
+            document.getElementById('pool-note').textContent = '🎉 Partner investment fully recovered!';
+        } else {
+            document.getElementById('pool-note').textContent = `MVR ${fmt(partnerInvested - partnerRecovered)} remaining to recover partner investment.`;
+        }
+
+        // Total capital progress bar
+        document.getElementById('total-capital-pct').textContent = `${totalPct}%`;
+        document.getElementById('total-capital-fill').style.width = `${totalPct}%`;
+        if (totalCapital === 0) {
+            document.getElementById('total-capital-note').textContent = 'No capital recorded.';
+        } else if (netProfit <= 0) {
+            document.getElementById('total-capital-note').textContent = `MVR ${fmt(totalCapital)} total capital not yet recovered.`;
+        } else if (totalRecovered >= totalCapital) {
+            document.getElementById('total-capital-note').textContent = '🎉 Total capital fully recovered!';
+        } else {
+            document.getElementById('total-capital-note').textContent = `MVR ${fmt(totalCapital - totalRecovered)} remaining to recover all capital including loans.`;
+        }
 
         if (totalInvested === 0) {
             document.getElementById('pool-note').textContent = 'No investments recorded yet.';
