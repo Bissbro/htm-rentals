@@ -691,7 +691,7 @@ Payment: ${payment}`;
                     await fetchAvailability();
                     generateCalendar(currentMonth, currentYear);
                 } else { showMessage(data.error || 'Booking failed', 'error'); }
-            } catch(error) { console.error('Booking error:', error); showMessage('Network error. Please try again.', 'error'); }
+            } catch(error) { console.error('Booking error:', error); showMessage('Error: ' + (error.message || 'Network error. Please try again.'), 'error'); }
             finally { submitBtn.innerHTML = originalText; submitBtn.disabled = false; }
         }
 
