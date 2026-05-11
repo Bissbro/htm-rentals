@@ -488,11 +488,40 @@ Payment: ${payment}`;
             const slipLabel = document.getElementById('slip-label');
             if (slipLabel) slipLabel.innerHTML = '<div style="font-size:24px; margin-bottom:8px;">&#x1F4CE;</div><div style="font-size:14px; font-weight:600; color:#0A2540; margin-bottom:4px;">Choose file or tap to browse</div><div style="font-size:12px; color:#999;">Screenshot or photo of your transfer confirmation</div>';
         }
+        async function compressImage(file, maxSizeMB = 2) {
+            return new Promise((resolve) => {
+                if (file.size <= maxSizeMB * 1024 * 1024) { resolve(file); return; }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width, h = img.height;
+                        const maxDim = 1920;
+                        if (w > maxDim || h > maxDim) {
+                            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+                            else { w = Math.round(w * maxDim / h); h = maxDim; }
+                        }
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        canvas.toBlob((blob) => resolve(new File([blob], file.name, { type: 'image/jpeg' })), 'image/jpeg', 0.8);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
         async function uploadSlip() {
             const bookingId = document.getElementById('pay-booking-id-hidden').value;
             const fileInput = document.getElementById('slip-file');
-            const file = fileInput.files[0];
+            let file = fileInput.files[0];
             if (!file) { alert('Please select your payment slip'); return; }
+
+            // Compress image if too large
+            if (file.type.startsWith('image/')) {
+                file = await compressImage(file);
+            }
 
             const formData = new FormData();
             formData.append('slip', file);
