@@ -659,10 +659,9 @@ Payment: ${payment}`;
             const phone = document.getElementById('phone').value;
             if (!validateGuests(adults, children)) return;
             if (!name || !phone) { showMessage('Please fill all required fields', 'error'); return; }
-            const submitBtn = e.target.querySelector('.submit-btn');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            submitBtn.disabled = true;
+            const submitBtn = e.target ? e.target.querySelector('.submit-btn') : null;
+            const originalText = submitBtn ? submitBtn.innerHTML : '';
+            if (submitBtn) { submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...'; submitBtn.disabled = true; }
             try {
                 const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
                 const total = nights * parseFloat(unit.rate_mvr);
