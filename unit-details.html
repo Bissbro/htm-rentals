@@ -302,7 +302,8 @@
                     refreshInterval = setInterval(async () => {
                         if (unit && document.getElementById('calendar-grid')) {
                             await fetchAvailability();
-                            generateCalendar(currentMonth, currentYear);
+                            await fetchAvailability();
+                    generateCalendar(currentMonth, currentYear);
                         }
                     }, 10000);
                 } else {
@@ -687,6 +688,7 @@ Payment: ${payment}`;
                     document.getElementById('name').value = '';
                     document.getElementById('phone').value = '';
                     document.getElementById('nid').value = '';
+                    await fetchAvailability();
                     generateCalendar(currentMonth, currentYear);
                 } else { showMessage(data.error || 'Booking failed', 'error'); }
             } catch(error) { console.error('Booking error:', error); showMessage('Network error. Please try again.', 'error'); }
