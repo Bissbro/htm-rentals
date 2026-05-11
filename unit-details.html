@@ -517,7 +517,7 @@ Payment: ${payment}`;
                     alert(data.error || "Upload failed. Please try WhatsApp instead.");
                 }
             } catch(e) {
-                alert('Upload failed. Please send your slip via WhatsApp: 9373113');
+                alert('Upload error: ' + e.message);
             } finally {
                 btn.textContent = 'Upload Slip';
                 btn.disabled = false;
