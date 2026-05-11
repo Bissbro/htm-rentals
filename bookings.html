@@ -355,7 +355,7 @@
         let s = `<button class="action-btn btn-edit" onclick="editBooking(${b.id})"><i class="fas fa-pen"></i> Edit</button>`;
         if (b.booking_status==='pending') s += `<button class="action-btn btn-confirm" onclick="changeStatus(${b.id},'confirmed')">Confirm</button>`;
         if (b.booking_status==='confirmed') s += `<button class="action-btn btn-cancel" onclick="changeStatus(${b.id},'cancelled')">Cancel</button>`;
-        if (['cancelled','completed'].includes(b.booking_status)) s += `<button class="action-btn btn-delete" onclick="delBooking(${b.id})">Delete</button>`;
+        s += `<button class="action-btn btn-delete" onclick="delBooking(${b.id})">Delete</button>`;
         return s;
     }
 
