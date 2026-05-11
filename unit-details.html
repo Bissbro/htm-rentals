@@ -477,6 +477,12 @@ Payment: ${payment}`;
             modal.style.display = 'flex';
         }
 
+        function closePaymentModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+            document.getElementById('slip-success-screen').style.display = 'none';
+            const formWrap = document.querySelector('#payment-modal > div:not(#slip-success-screen)');
+            if (formWrap) formWrap.style.display = 'flex';
+        }
         async function uploadSlip() {
             const bookingId = document.getElementById('pay-booking-id-hidden').value;
             const fileInput = document.getElementById('slip-file');
@@ -498,21 +504,12 @@ Payment: ${payment}`;
                 const data = await res.json();
                 if (data.success) {
                     // Show thank you screen
-                    const bookingIdVal = document.getElementById('pay-booking-id-hidden').value;
-                    document.getElementById('payment-modal').innerHTML = `
-                        <div style="background:white; border-radius:24px; width:100%; max-width:460px; padding:40px 28px; text-align:center; box-shadow:0 24px 60px rgba(0,0,0,0.3);">
-                            <div style="width:72px; height:72px; background:linear-gradient(135deg,#006994,#40B5AD); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:2rem;">✅</div>
-                            <h2 style="font-size:1.4rem; font-weight:800; color:#0A2540; margin-bottom:8px;">Payment Slip Received!</h2>
-                            <p style="color:#6C757D; font-size:14px; line-height:1.6; margin-bottom:20px;">We'll review your payment and confirm your booking shortly.<br>You'll be notified via <strong>Telegram</strong> or <strong>WhatsApp</strong>.</p>
-                            <div style="background:#F8F9FA; border-radius:12px; padding:14px; margin-bottom:24px;">
-                                <div style="font-size:11px; color:#999; margin-bottom:4px; text-transform:uppercase; letter-spacing:1px;">Booking ID</div>
-                                <div style="font-size:1.2rem; font-weight:800; color:#006994;">#${bookingIdVal}</div>
-                            </div>
-                            <div style="font-size:13px; color:#999; margin-bottom:20px;">Questions? <a href="https://wa.me/9609373113" style="color:#006994; font-weight:600; text-decoration:none;">WhatsApp 9373113</a></div>
-                            <button onclick="document.getElementById('payment-modal').style.display='none'" style="background:#0A2540; color:white; border:none; border-radius:40px; padding:12px 32px; font-weight:700; font-size:14px; cursor:pointer;">Done</button>
-                        </div>`;
+                    const bookingIdVal = document.getElementById("pay-booking-id-hidden").value;
+                    document.getElementById("success-booking-id").textContent = "#" + bookingIdVal;
+                    document.querySelector("#payment-modal > div:not(#slip-success-screen)").style.display = "none";
+                    document.getElementById("slip-success-screen").style.display = "block";
                 } else {
-                    alert(data.error || 'Upload failed. Please try WhatsApp instead.');
+                    alert(data.error || "Upload failed. Please try WhatsApp instead.");
                 }
             } catch(e) {
                 alert('Upload failed. Please send your slip via WhatsApp: 9373113');
@@ -1071,6 +1068,17 @@ Payment: ${payment}`;
                 Need help? <a href="https://wa.me/9609373113" style="color:#006994; font-weight:600; text-decoration:none;">WhatsApp 9373113</a>
             </div>
         </div>
+    </div>
+    <div id="slip-success-screen" style="display:none; background:white; border-radius:24px; width:100%; max-width:460px; padding:40px 28px; text-align:center; box-shadow:0 24px 60px rgba(0,0,0,0.3);">
+        <div style="width:72px; height:72px; background:linear-gradient(135deg,#006994,#40B5AD); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:2rem;">&#x2705;</div>
+        <h2 style="font-size:1.4rem; font-weight:800; color:#0A2540; margin-bottom:8px;">Payment Slip Received!</h2>
+        <p style="color:#6C757D; font-size:14px; line-height:1.6; margin-bottom:20px;">We'll review your payment and confirm your booking shortly.<br>You'll be notified via <strong>Telegram</strong> or <strong>WhatsApp</strong>.</p>
+        <div style="background:#F8F9FA; border-radius:12px; padding:14px; margin-bottom:24px;">
+            <div style="font-size:11px; color:#999; margin-bottom:4px; text-transform:uppercase; letter-spacing:1px;">Booking ID</div>
+            <div id="success-booking-id" style="font-size:1.2rem; font-weight:800; color:#006994;"></div>
+        </div>
+        <div style="font-size:13px; color:#999; margin-bottom:20px;">Questions? <a href="https://wa.me/9609373113" style="color:#006994; font-weight:600; text-decoration:none;">WhatsApp 9373113</a></div>
+        <button onclick="closePaymentModal()" style="background:#0A2540; color:white; border:none; border-radius:40px; padding:12px 32px; font-weight:700; font-size:14px; cursor:pointer;">Done</button>
     </div>
 </div>
 
