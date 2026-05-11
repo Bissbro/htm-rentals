@@ -460,16 +460,21 @@ Payment: ${payment}`;
         }
 
         function showPaymentPage(bookingId, guestName, phone, nights, total, checkIn, checkOut) {
-            document.getElementById('pay-booking-id').textContent = '#' + bookingId;
-            document.getElementById('pay-guest-name').textContent = guestName;
-            document.getElementById('pay-nights').textContent = nights + ' night' + (nights > 1 ? 's' : '');
-            document.getElementById('pay-checkin').textContent = formatDate(checkIn);
-            document.getElementById('pay-checkout').textContent = formatDate(checkOut);
-            document.getElementById('pay-total').textContent = 'MVR ' + total.toFixed(2);
-            document.getElementById('pay-booking-id-hidden').value = bookingId;
-            document.getElementById('telegram-booking-id-display').textContent = 'Your Booking ID: ' + bookingId;
-            document.getElementById('telegram-bot-link').href = 'https://t.me/htmrentals_bot?start=' + bookingId;
-            document.getElementById('payment-modal').style.display = 'flex';
+            const modal = document.getElementById('payment-modal');
+            if (!modal) { console.error('Payment modal not found'); return; }
+            const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+            const setHref = (id, val) => { const el = document.getElementById(id); if (el) el.href = val; };
+            setText('pay-booking-id', '#' + bookingId);
+            setText('pay-guest-name', guestName);
+            setText('pay-nights', nights + ' night' + (nights > 1 ? 's' : ''));
+            setText('pay-checkin', formatDate(checkIn));
+            setText('pay-checkout', formatDate(checkOut));
+            setText('pay-total', 'MVR ' + total.toFixed(2));
+            setVal('pay-booking-id-hidden', bookingId);
+            setText('telegram-booking-id-display', 'Your Booking ID: ' + bookingId);
+            setHref('telegram-bot-link', 'https://t.me/htmrentals_bot?start=' + bookingId);
+            modal.style.display = 'flex';
         }
 
         async function uploadSlip() {
