@@ -488,7 +488,7 @@
                 <div class="inv-payment-grid" id="doc-payment-details"></div>
             </div>
             <div class="inv-footer">
-                Thank you for choosing HTM Rentals<br>
+                Thank you for choosing HTM Rentals • htmrentals.com<br>
                 <span id="doc-company-phone"></span> • <span id="doc-company-email"></span><br>
                 <span id="doc-company-address"></span>
             </div>
@@ -906,7 +906,7 @@
         // Payment details
         const paymentDetails = inv.invoice_type === 'minibar' || true ? `
             <div class="inv-payment-item"><div class="pi-label">MVR Payments</div><div class="pi-value">BML 7730000770586 (HTM)</div></div>
-            <div class="inv-payment-item"><div class="pi-label">USD Payments</div><div class="pi-value">BML 7730000770587 (HTM)</div></div>
+            <div class="inv-payment-item"><div class="pi-label">MIB MVR</div><div class="pi-value">90501400052311000</div></div>
         ` : '';
         document.getElementById('doc-payment-details').innerHTML = paymentDetails;
 
