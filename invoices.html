@@ -905,8 +905,7 @@
 
         // Payment details
         const paymentDetails = inv.invoice_type === 'minibar' || true ? `
-            <div class="inv-payment-item"><div class="pi-label">MVR Payments</div><div class="pi-value">BML 7730000770586 (HTM)</div></div>
-            <div class="inv-payment-item"><div class="pi-label">MIB MVR</div><div class="pi-value">90501400052311000</div></div>
+            <div class="inv-payment-item"><div class="pi-label">MVR Payments</div><div class="pi-value">BML 7730000770586 (HTM)<br><br>MIB 90501400052311000</div></div>
         ` : '';
         document.getElementById('doc-payment-details').innerHTML = paymentDetails;
 
