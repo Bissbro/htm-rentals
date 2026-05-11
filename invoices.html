@@ -488,7 +488,9 @@
                 <div class="inv-payment-grid" id="doc-payment-details"></div>
             </div>
             <div class="inv-footer">
-                Thank you for choosing HTM Rentals • htmrentals.com
+                Thank you for choosing HTM Rentals<br>
+                <span id="doc-company-phone"></span> • <span id="doc-company-email"></span><br>
+                <span id="doc-company-address"></span>
             </div>
         </div>
     </div>
@@ -863,6 +865,13 @@
         document.getElementById('doc-guest-name').textContent = inv.guest_name || '—';
         document.getElementById('doc-guest-phone').textContent = inv.guest_phone || '';
         document.getElementById('doc-guest-email').textContent = inv.guest_email || '';
+
+        // Company footer
+        if (data.company) {
+            document.getElementById('doc-company-phone').textContent = data.company.whatsapp_number || '';
+            document.getElementById('doc-company-email').textContent = data.company.email_address || '';
+            document.getElementById('doc-company-address').textContent = data.company.address || '';
+        }
 
         // Booking strip
         const strip = document.getElementById('doc-booking-strip');
