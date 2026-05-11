@@ -480,7 +480,7 @@ Payment: ${payment}`;
         function closePaymentModal() {
             document.getElementById('payment-modal').style.display = 'none';
             document.getElementById('slip-success-screen').style.display = 'none';
-            const formWrap = document.querySelector('#payment-modal > div:not(#slip-success-screen)');
+            const formWrap = document.getElementById('payment-form-wrap');
             if (formWrap) formWrap.style.display = 'flex';
             // Reset slip file input and label
             const slipFile = document.getElementById('slip-file');
@@ -986,7 +986,7 @@ Payment: ${payment}`;
 
 <!-- PAYMENT MODAL -->
 <div id="payment-modal" style="display:none; position:fixed; inset:0; background:rgba(10,37,64,0.85); z-index:9999; align-items:flex-start; justify-content:center; padding:12px; overflow-y:auto; font-family:'Inter',sans-serif; backdrop-filter:blur(4px);">
-    <div style="background:white; border-radius:24px; width:100%; max-width:460px; max-height:92vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,0.3);">
+    <div id="payment-form-wrap" style="background:white; border-radius:24px; width:100%; max-width:460px; max-height:92vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,0.3);">
         <div style="background:linear-gradient(135deg,#0A2540 0%,#006994 100%); padding:28px 28px 24px; border-radius:24px 24px 0 0; color:white; position:relative;">
             <div style="font-size:11px; text-transform:uppercase; letter-spacing:2px; opacity:0.6; margin-bottom:6px;">HTM Rentals</div>
             <div style="font-size:1.4rem; font-weight:800; letter-spacing:-0.5px;">Complete Payment</div>
