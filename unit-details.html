@@ -966,7 +966,8 @@ Payment: ${payment}`;
                 adultsSelect.addEventListener('change', (e) => updateChildrenOptions(parseInt(e.target.value) || 1));
                 updateChildrenOptions(parseInt(adultsSelect.value) || 1);
             }
-            document.getElementById('booking-form')?.addEventListener('submit', submitBooking);
+            const bookingForm = document.getElementById('booking-form');
+            if (bookingForm) { bookingForm.onsubmit = submitBooking; }
             window.nextImage = nextImage; window.prevImage = prevImage; window.goToImage = goToImage;
             window.toggleDescription = toggleDescription; window.toggleAmenities = toggleAmenities;
             window.scrollToBookingCard = scrollToBookingCard;
