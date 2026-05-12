@@ -405,7 +405,7 @@
             if (input.files && input.files[0]) {
                 label.style.borderColor = '#40B5AD';
                 label.style.background = '#f0fafa';
-                label.innerHTML = '<div style="font-size:24px; margin-bottom:8px;">✅</div><div style="font-size:14px; font-weight:600; color:#0A2540; margin-bottom:4px;">' + input.files[0].name + '</div><div style="font-size:12px; color:#40B5AD;">Ready to upload</div>';
+                label.innerHTML = '<div style="margin-bottom:10px; display:flex; justify-content:center;"><div style="width:44px; height:44px; background:linear-gradient(135deg,#40B5AD,#2d9e97); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(64,181,173,0.35);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div style="font-size:14px; font-weight:600; color:#0A2540; margin-bottom:4px;">' + input.files[0].name + '</div><div style="font-size:12px; color:#40B5AD; font-weight:500;">Ready to upload</div>';
             }
         }
 
@@ -474,8 +474,28 @@ Payment: ${payment}`;
             setVal('pay-booking-id-hidden', bookingId);
             setText('telegram-booking-id-display', 'Your Booking ID: ' + bookingId);
             setHref('telegram-bot-link', 'https://t.me/htmrentals_bot?start=' + bookingId);
-            setHref('whatsapp-slip-link', 'https://wa.me/9609373113?text=' + encodeURIComponent('Hi HTM Rentals, I would like to submit my payment slip for Booking #' + bookingId + '. Please find my slip attached.'));
+            const waMsg = 'Hi HTM Rentals, please find my payment slip below.' +
+                '\n\nBooking ID: #' + bookingId +
+                '\nGuest: ' + (document.getElementById('pay-guest-name')?.textContent || '') +
+                '\nCheck-in: ' + (document.getElementById('pay-checkin')?.textContent || '') +
+                '\nCheck-out: ' + (document.getElementById('pay-checkout')?.textContent || '') +
+                '\nNights: ' + (document.getElementById('pay-nights')?.textContent || '') +
+                '\nTotal: ' + (document.getElementById('pay-total')?.textContent || '') +
+                '\n\nPlease attach the transfer slip and press send.';
+            setHref('whatsapp-slip-link', 'https://wa.me/9609373113?text=' + encodeURIComponent(waMsg));
             modal.style.display = 'flex';
+        }
+
+        function disconnectTelegram() {
+            document.getElementById('tg-connected-msg').style.display = 'none';
+            document.getElementById('tg-widget-wrap').style.display = 'flex';
+            // Clear from backend
+            const bookingId = document.getElementById('pay-booking-id-hidden').value;
+            if (bookingId) {
+                fetch(`${API_BASE_URL}/bookings/${bookingId}/link-telegram`, {
+                    method: 'DELETE'
+                }).catch(e => console.error('Disconnect error:', e));
+            }
         }
 
         async function onTelegramAuth(user) {
@@ -1035,7 +1055,6 @@ Payment: ${payment}`;
 <div id="payment-modal" style="display:none; position:fixed; inset:0; background:rgba(10,37,64,0.85); z-index:9999; align-items:flex-start; justify-content:center; padding:12px; overflow-y:auto; font-family:'Inter',sans-serif; backdrop-filter:blur(4px);">
     <div id="payment-form-wrap" style="background:white; border-radius:24px; width:100%; max-width:460px; max-height:92vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,0.3);">
         <div style="background:linear-gradient(135deg,#0A2540 0%,#006994 100%); padding:28px 28px 24px; border-radius:24px 24px 0 0; color:white; position:relative;">
-            <div style="font-size:11px; text-transform:uppercase; letter-spacing:2px; opacity:0.6; margin-bottom:6px;">HTM Rentals</div>
             <div style="font-size:1.4rem; font-weight:800; letter-spacing:-0.5px;">Complete Payment</div>
             <div style="font-size:13px; opacity:0.7; margin-top:4px;">Transfer & upload slip to confirm your booking</div>
             <div style="margin-top:12px; display:inline-block; background:rgba(64,181,173,0.25); border:1px solid rgba(64,181,173,0.5); border-radius:40px; padding:6px 18px;">
@@ -1106,9 +1125,12 @@ Payment: ${payment}`;
                     
                     <!-- Connected state -->
                     <div id="tg-connected-msg" style="display:none; position:relative;">
-                        <div style="width:52px; height:52px; background:rgba(64,181,173,0.15); border:2px solid #40B5AD; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:22px;">&#x2705;</div>
-                        <div style="font-size:15px; font-weight:700; color:#ffffff; margin-bottom:4px;">Telegram Connected</div>
-                        <div style="font-size:12px; color:rgba(255,255,255,0.6);">Your confirmation card will be sent automatically once confirmed.</div>
+                        <div style="width:56px; height:56px; background:linear-gradient(135deg,#40B5AD,#2d9e97); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; box-shadow:0 4px 16px rgba(64,181,173,0.4);">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <div style="font-size:16px; font-weight:700; color:#ffffff; margin-bottom:6px;">Telegram Connected</div>
+                        <div style="font-size:12px; color:rgba(255,255,255,0.55); line-height:1.5;">Your booking card will be delivered<br>automatically once confirmed.</div>
+                        <button onclick="disconnectTelegram()" style="margin-top:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.45); font-size:11px; padding:4px 12px; border-radius:20px; cursor:pointer;">Not you? Disconnect</button>
                     </div>
 
                     <!-- Widget state -->
@@ -1135,30 +1157,17 @@ Payment: ${payment}`;
                 </div>
             </div>
 
-            <!-- Step 4: WhatsApp fallback -->
-            <div style="margin-bottom:20px;">
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
-                    <div style="width:28px; height:28px; background:#0A2540; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:700; flex-shrink:0;">4</div>
-                    <div style="font-size:14px; font-weight:700; color:#0A2540;">No Telegram? <span style="font-size:11px; font-weight:500; color:#888;">Alternative</span></div>
-                </div>
-                <div style="background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:14px; padding:16px; display:flex; align-items:center; gap:14px;">
-                    <div style="width:44px; height:44px; background:#25D366; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                    </div>
-                    <div style="flex:1; min-width:0;">
-                        <div style="font-size:13px; font-weight:600; color:#0A2540; margin-bottom:3px;">Send slip via WhatsApp</div>
-                        <div style="font-size:11px; color:#888; line-height:1.4;">We'll confirm your booking manually within a few hours.</div>
-                    </div>
-                    <a id="whatsapp-slip-link" href="https://wa.me/9609373113" target="_blank" style="background:#25D366; color:white; text-decoration:none; border-radius:10px; padding:8px 14px; font-size:12px; font-weight:700; flex-shrink:0; white-space:nowrap;">Open</a>
-                </div>
-            </div>
-
             <input type="hidden" id="pay-booking-id-hidden">
-            <button id="upload-slip-btn" onclick="uploadSlip()" style="width:100%; padding:16px; background:linear-gradient(135deg,#006994,#40B5AD); color:white; border:none; border-radius:40px; font-weight:700; font-size:15px; cursor:pointer; margin-bottom:16px; box-shadow:0 4px 15px rgba(0,105,148,0.3);">
+            <button id="upload-slip-btn" onclick="uploadSlip()" style="width:100%; padding:16px; background:linear-gradient(135deg,#006994,#40B5AD); color:white; border:none; border-radius:40px; font-weight:700; font-size:15px; cursor:pointer; margin-bottom:12px; box-shadow:0 4px 15px rgba(0,105,148,0.3);">
                 Submit Payment Slip ✓
             </button>
+            <div style="text-align:center; margin-bottom:16px;">
+                <a id="whatsapp-slip-link" href="https://wa.me/9609373113" target="_blank" style="font-size:12px; color:#888; text-decoration:none;">
+                    No Telegram? <span style="color:#25D366; font-weight:600;">Send slip via WhatsApp instead →</span>
+                </a>
+            </div>
             <div style="text-align:center; font-size:13px; color:#999;">
-                Need help? <a href="https://wa.me/9609373113" style="color:#006994; font-weight:600; text-decoration:none;">WhatsApp 9373113</a>
+                Need help? <a href="tel:+9609373113" style="color:#006994; font-weight:600; text-decoration:none;">Call us: 9373113</a>
             </div>
         </div>
     </div>
