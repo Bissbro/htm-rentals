@@ -405,7 +405,7 @@
             if (input.files && input.files[0]) {
                 label.style.borderColor = '#40B5AD';
                 label.style.background = '#f0fafa';
-                label.innerHTML = '<div style="margin-bottom:10px; display:flex; justify-content:center;"><div style="width:44px; height:44px; background:linear-gradient(135deg,#40B5AD,#2d9e97); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(64,181,173,0.35);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div style="font-size:14px; font-weight:600; color:#0A2540; margin-bottom:4px;">' + input.files[0].name + '</div><div style="font-size:12px; color:#40B5AD; font-weight:500;">Ready to upload</div>';
+                label.innerHTML = '<div style="margin-bottom:10px; display:flex; justify-content:center;"><div style="width:44px; height:44px; background:linear-gradient(135deg,#40B5AD,#2d9e97); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(64,181,173,0.35);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div style="font-size:14px; font-weight:600; color:#0A2540; margin-bottom:4px;">' + input.files[0].name.substring(0,30) + (input.files[0].name.length > 30 ? '...' : '') + '</div><div style="font-size:12px; color:#40B5AD; font-weight:500;">Ready to upload</div>';
             }
         }
 
@@ -414,7 +414,7 @@
             if (input.files && input.files[0]) {
                 label.style.borderColor = '#40B5AD';
                 label.style.background = '#f0fafa';
-                label.innerHTML = '<div style="margin-bottom:10px; display:flex; justify-content:center;"><div style="width:44px; height:44px; background:linear-gradient(135deg,#40B5AD,#2d9e97); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(64,181,173,0.35);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div style="font-size:14px; font-weight:600; color:#0A2540; margin-bottom:4px;">' + input.files[0].name + '</div><div style="font-size:12px; color:#40B5AD; font-weight:500;">Ready to upload</div>';
+                label.innerHTML = '<div style="margin-bottom:10px; display:flex; justify-content:center;"><div style="width:44px; height:44px; background:linear-gradient(135deg,#40B5AD,#2d9e97); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(64,181,173,0.35);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div style="font-size:14px; font-weight:600; color:#0A2540; margin-bottom:4px;">' + input.files[0].name.substring(0,30) + (input.files[0].name.length > 30 ? '...' : '') + '</div><div style="font-size:12px; color:#40B5AD; font-weight:500;">Ready to upload</div>';
             }
         }
 
@@ -483,16 +483,6 @@ Payment: ${payment}`;
             setVal('pay-booking-id-hidden', bookingId);
             setText('telegram-booking-id-display', 'Your Booking ID: ' + bookingId);
             setHref('telegram-bot-link', 'https://t.me/htmrentals_bot?start=' + bookingId);
-            const waMsg = 'Hi HTM Rentals, please find my payment slip below.' +
-                '\n\nBooking ID: #' + bookingId +
-                '\nGuest: ' + (document.getElementById('pay-guest-name')?.textContent || '') +
-                '\nCheck-in: ' + (document.getElementById('pay-checkin')?.textContent || '') +
-                '\nCheck-out: ' + (document.getElementById('pay-checkout')?.textContent || '') +
-                '\nNights: ' + (document.getElementById('pay-nights')?.textContent || '') +
-                '\nTotal: ' + (document.getElementById('pay-total')?.textContent || '') +
-                '\n\nPlease attach the transfer slip and press send.';
-            setHref('whatsapp-slip-link', 'https://wa.me/9609373113?text=' + encodeURIComponent(waMsg));
-            modal.style.display = 'flex';
         }
 
         function disconnectTelegram() {
@@ -1139,7 +1129,7 @@ Payment: ${payment}`;
                     <div style="font-size:13px; font-weight:600; color:#0A2540; margin-bottom:3px;">Upload ID card front</div>
                     <div style="font-size:11px; color:#999;">National ID or Passport — front side</div>
                 </label>
-                <input type="file" id="id-file" accept="image/*" style="display:none;" onchange="updateIdLabel(this)">
+                <input type="file" id="id-file" accept="image/*,.pdf" style="display:none;" onchange="updateIdLabel(this)">
             </div>
             <!-- Step 3: Telegram Login -->
             <div style="margin-bottom:20px;">
@@ -1189,11 +1179,7 @@ Payment: ${payment}`;
             <button id="upload-slip-btn" onclick="uploadSlip()" style="width:100%; padding:16px; background:linear-gradient(135deg,#006994,#40B5AD); color:white; border:none; border-radius:40px; font-weight:700; font-size:15px; cursor:pointer; margin-bottom:12px; box-shadow:0 4px 15px rgba(0,105,148,0.3);">
                 Submit Payment Slip ✓
             </button>
-            <div style="text-align:center; margin-bottom:16px;">
-                <a id="whatsapp-slip-link" href="https://wa.me/9609373113" target="_blank" style="font-size:12px; color:#888; text-decoration:none;">
-                    No Telegram? <span style="color:#25D366; font-weight:600;">Send slip via WhatsApp instead →</span>
-                </a>
-            </div>
+
             <div style="text-align:center; font-size:13px; color:#999;">
                 Need help? <a href="tel:+9609373113" style="color:#006994; font-weight:600; text-decoration:none;">Call us: 9373113</a>
             </div>
