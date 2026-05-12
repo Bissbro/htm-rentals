@@ -484,6 +484,7 @@ Payment: ${payment}`;
             setText('telegram-booking-id-display', 'Your Booking ID: ' + bookingId);
             setHref('telegram-bot-link', 'https://t.me/htmrentals_bot?start=' + bookingId);
             modal.style.display = 'flex';
+            document.getElementById('payment-form-wrap').scrollTop = 0;
         }
 
         function disconnectTelegram() {
@@ -524,12 +525,12 @@ Payment: ${payment}`;
             const slipFile = document.getElementById('slip-file');
             if (slipFile) slipFile.value = '';
             const slipLabel = document.getElementById('slip-label');
-            if (slipLabel) { slipLabel.style.borderColor = ''; slipLabel.style.background = ''; slipLabel.innerHTML = '<div style="font-size:24px; margin-bottom:6px;">&#x1F4CE;</div><div style="font-size:13px; font-weight:600; color:#0A2540; margin-bottom:3px;">Choose file or tap to browse</div><div style="font-size:11px; color:#999;">Screenshot or photo of your transfer confirmation</div>'; }
+            if (slipLabel) { slipLabel.style.borderColor = ''; slipLabel.style.background = ''; slipLabel.innerHTML = '<div style="font-size:24px; margin-bottom:6px;">&#x1F4CE;</div><div style="font-size:13px; font-weight:600; color:#0A2540; margin-bottom:3px;">Choose file or tap to browse</div><div style="font-size:11px; color:#999;">Screenshot or photo (JPG, PNG)</div>'; }
             // Reset ID card input and label
             const idFile = document.getElementById('id-file');
             if (idFile) idFile.value = '';
             const idLabel = document.getElementById('id-label');
-            if (idLabel) { idLabel.style.borderColor = ''; idLabel.style.background = ''; idLabel.innerHTML = '<div style="font-size:24px; margin-bottom:6px;">&#x1FAA7;</div><div style="font-size:13px; font-weight:600; color:#0A2540; margin-bottom:3px;">Upload ID card front</div><div style="font-size:11px; color:#999;">National ID or Passport — front side</div>'; }
+            if (idLabel) { idLabel.style.borderColor = ''; idLabel.style.background = ''; idLabel.innerHTML = '<div style="font-size:24px; margin-bottom:6px;">&#x1FAA7;</div><div style="font-size:13px; font-weight:600; color:#0A2540; margin-bottom:3px;">Upload ID card front</div><div style="font-size:11px; color:#999;">Photo of ID card front (JPG, PNG)</div>'; }
         }
         async function compressImage(file, maxSizeMB = 1) {
             return new Promise((resolve) => {
@@ -1123,17 +1124,17 @@ Payment: ${payment}`;
                 <label for="slip-file" style="display:block; border:2px dashed #D0D5DD; border-radius:14px; padding:16px; text-align:center; cursor:pointer; margin-bottom:12px;" id="slip-label">
                     <div style="font-size:24px; margin-bottom:6px;">📎</div>
                     <div style="font-size:13px; font-weight:600; color:#0A2540; margin-bottom:3px;">Choose file or tap to browse</div>
-                    <div style="font-size:11px; color:#999;">Screenshot or photo of your transfer confirmation</div>
+                    <div style="font-size:11px; color:#999;">Screenshot or photo (JPG, PNG)</div>
                 </label>
-                <input type="file" id="slip-file" accept="image/*,.pdf" style="display:none;" onchange="updateSlipLabel(this)">
+                <input type="file" id="slip-file" accept="image/*" style="display:none;" onchange="updateSlipLabel(this)">
                 <!-- ID Card -->
                 <div style="font-size:11px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">ID Card — Front <span style="color:#e53e3e;">*</span></div>
                 <label for="id-file" style="display:block; border:2px dashed #D0D5DD; border-radius:14px; padding:16px; text-align:center; cursor:pointer;" id="id-label">
                     <div style="font-size:24px; margin-bottom:6px;">🪪</div>
                     <div style="font-size:13px; font-weight:600; color:#0A2540; margin-bottom:3px;">Upload ID card front</div>
-                    <div style="font-size:11px; color:#999;">National ID or Passport — front side</div>
+                    <div style="font-size:11px; color:#999;">Photo of ID card front (JPG, PNG)</div>
                 </label>
-                <input type="file" id="id-file" accept="image/*,.pdf" style="display:none;" onchange="updateIdLabel(this)">
+                <input type="file" id="id-file" accept="image/*" style="display:none;" onchange="updateIdLabel(this)">
             </div>
             <!-- Step 3: Telegram Login -->
             <div style="margin-bottom:20px;">
@@ -1190,14 +1191,14 @@ Payment: ${payment}`;
         </div>
     </div>
     <div id="slip-success-screen" style="display:none; background:white; border-radius:24px; width:100%; max-width:460px; padding:40px 28px; text-align:center; box-shadow:0 24px 60px rgba(0,0,0,0.3);">
-        <div style="width:72px; height:72px; background:linear-gradient(135deg,#006994,#40B5AD); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:2rem;">&#x2705;</div>
+        <div style="width:72px; height:72px; background:linear-gradient(135deg,#006994,#40B5AD); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow:0 4px 20px rgba(0,105,148,0.35);"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <h2 style="font-size:1.4rem; font-weight:800; color:#0A2540; margin-bottom:8px;">Payment Slip Received!</h2>
         <p style="color:#6C757D; font-size:14px; line-height:1.6; margin-bottom:20px;">We'll review your payment and confirm your booking shortly.<br>You'll be notified via <strong>Telegram</strong> or <strong>WhatsApp</strong>.</p>
         <div style="background:#F8F9FA; border-radius:12px; padding:14px; margin-bottom:24px;">
             <div style="font-size:11px; color:#999; margin-bottom:4px; text-transform:uppercase; letter-spacing:1px;">Booking ID</div>
             <div id="success-booking-id" style="font-size:1.2rem; font-weight:800; color:#006994;"></div>
         </div>
-        <div style="font-size:13px; color:#999; margin-bottom:20px;">Questions? <a href="https://wa.me/9609373113" style="color:#006994; font-weight:600; text-decoration:none;">WhatsApp 9373113</a></div>
+        <div style="font-size:13px; color:#999; margin-bottom:20px;">Questions? <a href="tel:+9609373113" style="color:#006994; font-weight:600; text-decoration:none;">Call us: 9373113</a></div>
         <button onclick="closePaymentModal()" style="background:#0A2540; color:white; border:none; border-radius:40px; padding:12px 32px; font-weight:700; font-size:14px; cursor:pointer;">Done</button>
     </div>
 </div>
