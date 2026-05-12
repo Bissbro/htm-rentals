@@ -485,11 +485,18 @@ Payment: ${payment}`;
             setHref('telegram-bot-link', 'https://t.me/htmrentals_bot?start=' + bookingId);
             modal.style.display = 'flex';
             document.getElementById('payment-form-wrap').scrollTop = 0;
+            // Auto-link if Telegram was previously connected this session
+            if (sessionStorage.getItem('tg_user_id')) {
+                linkStoredTelegram(bookingId);
+            }
         }
 
         function disconnectTelegram() {
             document.getElementById('tg-connected-msg').style.display = 'none';
             document.getElementById('tg-widget-wrap').style.display = 'flex';
+            // Clear sessionStorage
+            sessionStorage.removeItem('tg_user_id');
+            sessionStorage.removeItem('tg_username');
             // Clear from backend
             const bookingId = document.getElementById('pay-booking-id-hidden').value;
             if (bookingId) {
@@ -510,10 +517,30 @@ Payment: ${payment}`;
                 });
                 const data = await res.json();
                 if (data.success) {
-                    document.getElementById('tg-widget-wrap').style.display = 'none';
-                    document.getElementById('tg-connected-msg').style.display = 'block';
+                    // Store in sessionStorage for reuse across bookings
+                    sessionStorage.setItem('tg_user_id', String(user.id));
+                    sessionStorage.setItem('tg_username', user.username || '');
+                    showTelegramConnected();
                 }
             } catch(e) { console.error('Telegram link error:', e.message); }
+        }
+
+        function showTelegramConnected() {
+            document.getElementById('tg-widget-wrap').style.display = 'none';
+            document.getElementById('tg-connected-msg').style.display = 'block';
+        }
+
+        async function linkStoredTelegram(bookingId) {
+            const tgId = sessionStorage.getItem('tg_user_id');
+            if (!tgId || !bookingId) return;
+            try {
+                await fetch(`${API_BASE_URL}/bookings/${bookingId}/link-telegram`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ telegram_id: tgId, telegram_username: sessionStorage.getItem('tg_username') || '' })
+                });
+                showTelegramConnected();
+            } catch(e) { console.error('Auto-link error:', e.message); }
         }
 
         function closePaymentModal() {
