@@ -483,6 +483,7 @@ Payment: ${payment}`;
             setVal('pay-booking-id-hidden', bookingId);
             setText('telegram-booking-id-display', 'Your Booking ID: ' + bookingId);
             setHref('telegram-bot-link', 'https://t.me/htmrentals_bot?start=' + bookingId);
+            modal.style.display = 'flex';
         }
 
         function disconnectTelegram() {
