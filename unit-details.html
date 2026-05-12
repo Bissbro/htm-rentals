@@ -1097,24 +1097,40 @@ Payment: ${payment}`;
             <div style="margin-bottom:20px;">
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
                     <div style="width:28px; height:28px; background:#0A2540; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:700; flex-shrink:0;">3</div>
-                    <div style="font-size:14px; font-weight:700; color:#0A2540;">Get Instant Confirmation <span style="font-size:11px; font-weight:400; color:#40B5AD;">(Optional)</span></div>
+                    <div style="font-size:14px; font-weight:700; color:#0A2540;">Instant Confirmation <span style="font-size:11px; font-weight:500; color:#40B5AD;">(Optional)</span></div>
                 </div>
-                <div style="background:#f0fafa; border:1.5px solid #40B5AD22; border-radius:14px; padding:14px 16px; text-align:center;">
-                    <div style="font-size:13px; color:#0A2540; margin-bottom:14px;">Connect your Telegram to receive your booking confirmation card instantly.</div>
-                    <div id="tg-connected-msg" style="display:none; background:#e8f8f5; border-radius:10px; padding:10px; margin-bottom:10px;">
-                        <div style="font-size:14px; font-weight:700; color:#40B5AD;">&#x2705; Telegram Connected!</div>
-                        <div style="font-size:12px; color:#666; margin-top:4px;">You'll receive your confirmation card automatically.</div>
+                <div style="background:linear-gradient(135deg, #0A2540 0%, #0d3660 100%); border-radius:16px; padding:20px; text-align:center; position:relative; overflow:hidden;">
+                    <!-- Subtle pattern overlay -->
+                    <div style="position:absolute; inset:0; opacity:0.04; background-image:radial-gradient(circle, white 1px, transparent 1px); background-size:20px 20px;"></div>
+                    
+                    <!-- Connected state -->
+                    <div id="tg-connected-msg" style="display:none; position:relative;">
+                        <div style="width:52px; height:52px; background:rgba(64,181,173,0.15); border:2px solid #40B5AD; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:22px;">&#x2705;</div>
+                        <div style="font-size:15px; font-weight:700; color:#ffffff; margin-bottom:4px;">Telegram Connected</div>
+                        <div style="font-size:12px; color:rgba(255,255,255,0.6);">Your confirmation card will be sent automatically once confirmed.</div>
                     </div>
-                    <div id="tg-widget-wrap" style="display:flex; justify-content:center;">
-                        <script async src="https://telegram.org/js/telegram-widget.js?22"
-                            data-telegram-login="htmrentals_bot"
-                            data-size="large"
-                            data-onauth="onTelegramAuth(user)"
-                            data-request-access="write"
-                            data-radius="20">
-                        </script>
+
+                    <!-- Widget state -->
+                    <div id="tg-widget-wrap" style="position:relative;">
+                        <div style="width:48px; height:48px; background:rgba(255,255,255,0.08); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#40B5AD"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+                        </div>
+                        <div style="font-size:15px; font-weight:700; color:#ffffff; margin-bottom:6px;">Receive Your Booking Card</div>
+                        <div style="font-size:12px; color:rgba(255,255,255,0.55); margin-bottom:16px; line-height:1.5;">Securely verify via Telegram and receive your<br>personalised booking confirmation instantly.</div>
+                        <div style="display:flex; justify-content:center; margin-bottom:12px;">
+                            <script async src="https://telegram.org/js/telegram-widget.js?22"
+                                data-telegram-login="htmrentals_bot"
+                                data-size="large"
+                                data-onauth="onTelegramAuth(user)"
+                                data-request-access="write"
+                                data-radius="20">
+                            </script>
+                        </div>
+                        <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <span style="font-size:11px; color:rgba(255,255,255,0.4);">Secured by Telegram OAuth — your data stays private</span>
+                        </div>
                     </div>
-                    <div style="font-size:11px; color:#999; margin-top:8px;">&#x2713; One tap — no app switching required</div>
                 </div>
             </div>
 
