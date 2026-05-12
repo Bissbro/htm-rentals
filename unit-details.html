@@ -593,6 +593,12 @@ Payment: ${payment}`;
                     document.getElementById("success-booking-id").textContent = "#" + bookingIdVal;
                     document.querySelector("#payment-modal > div:not(#slip-success-screen)").style.display = "none";
                     document.getElementById("slip-success-screen").style.display = "block";
+                    // Update message based on Telegram link
+                    const isTgLinked = document.getElementById('tg-connected-msg').style.display !== 'none';
+                    if (isTgLinked) {
+                        document.getElementById('success-title').textContent = 'Booking Confirmed!';
+                        document.getElementById('success-msg').innerHTML = 'Your dates are secured. Check your <strong>Telegram</strong> for your booking confirmation card.';
+                    }
                 } else {
                     alert(data.error || "Upload failed. Please try WhatsApp instead.");
                 }
@@ -1221,8 +1227,8 @@ Payment: ${payment}`;
     </div>
     <div id="slip-success-screen" style="display:none; background:white; border-radius:24px; width:100%; max-width:460px; padding:40px 28px; text-align:center; box-shadow:0 24px 60px rgba(0,0,0,0.3);">
         <div style="width:72px; height:72px; background:linear-gradient(135deg,#006994,#40B5AD); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow:0 4px 20px rgba(0,105,148,0.35);"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-        <h2 style="font-size:1.4rem; font-weight:800; color:#0A2540; margin-bottom:8px;">Payment Slip Received!</h2>
-        <p style="color:#6C757D; font-size:14px; line-height:1.6; margin-bottom:20px;">We'll review your payment and confirm your booking shortly.<br>You'll be notified via <strong>Telegram</strong> or <strong>WhatsApp</strong>.</p>
+        <h2 id="success-title" style="font-size:1.4rem; font-weight:800; color:#0A2540; margin-bottom:8px;">Payment Slip Received!</h2>
+        <p id="success-msg" style="color:#6C757D; font-size:14px; line-height:1.6; margin-bottom:20px;">We'll review your payment and confirm your booking shortly.<br>You'll be notified via <strong>Telegram</strong> or <strong>WhatsApp</strong>.</p>
         <div style="background:#F8F9FA; border-radius:12px; padding:14px; margin-bottom:24px;">
             <div style="font-size:11px; color:#999; margin-bottom:4px; text-transform:uppercase; letter-spacing:1px;">Booking ID</div>
             <div id="success-booking-id" style="font-size:1.2rem; font-weight:800; color:#006994;"></div>
