@@ -433,7 +433,7 @@
     </script>
 </head>
 <body>
-    <a href="https://wa.me/9609373113" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <a href="https://wa.me/9609373113" class="whatsapp-float" target="_blank" aria-label="Chat with HTM Rentals on WhatsApp"><i class="fab fa-whatsapp"></i></a>
 
     <header>
         <div class="container header-container">
@@ -451,6 +451,7 @@
         </div>
     </header>
 
+    <main>
     <div class="hero" id="hero">
         <div class="hero-slides" id="hero-slides"></div>
         <div class="hero-dots" id="hero-dots"></div>
@@ -579,6 +580,7 @@
         </div>
     </section>
 
+    </main>
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -598,9 +600,9 @@
                 <div class="footer-links">
                     <h4>Follow Us</h4>
                     <div class="social-icons">
-                        <a href="https://facebook.com/htmrentalss" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://instagram.com/htmrentals" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="https://tiktok.com/@htmrentals" target="_blank"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://facebook.com/htmrentalss" target="_blank" aria-label="HTM Rentals on Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://instagram.com/htmrentals" target="_blank" aria-label="HTM Rentals on Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://tiktok.com/@htmrentals" target="_blank" aria-label="HTM Rentals on TikTok"><i class="fab fa-tiktok"></i></a>
                     </div>
                 </div>
             </div>
@@ -695,7 +697,7 @@
                 let gallery = [];
                 if (typeof unit.gallery_images === 'string') { try { gallery = JSON.parse(unit.gallery_images); } catch(e) {} }
                 const featuredImage = unit.featured_image || (gallery.length ? gallery[0] : 'https://via.placeholder.com/400x300?text=HTM+Rentals');
-                return `<div class="unit-card"><div class="unit-image"><img src="${featuredImage}" alt="${escapeHtml(unit.unit_name)}"></div><div class="unit-info"><h3 class="unit-name">${escapeHtml(unit.unit_name)}</h3><div class="starting-from">Starting from</div><div class="unit-price"><span class="price-amount">$${unit.rate_usd}</span> <span class="price-nightly">nightly</span> <span class="price-sep">|</span> <span class="price-amount">MVR ${unit.rate_mvr}</span> <span class="price-nightly">nightly</span></div><div class="unit-features"><span><i class="fas fa-user-friends"></i> ${unit.max_guests} guests</span><span><i class="fas fa-bed"></i> ${unit.bedrooms} bed(s)</span></div><a href="unit-details.html?id=${unit.id}&currency=USD" class="btn">More Information</a></div></div>`;
+                return `<div class="unit-card"><div class="unit-image"><img src="${featuredImage}" alt="${escapeHtml(unit.unit_name)}"></div><div class="unit-info"><h3 class="unit-name">${escapeHtml(unit.unit_name)}</h3><div class="starting-from">Starting from</div><div class="unit-price"><span class="price-amount">$${unit.rate_usd}</span> <span class="price-nightly">nightly</span> <span class="price-sep">|</span> <span class="price-amount">MVR ${unit.rate_mvr}</span> <span class="price-nightly">nightly</span></div><div class="unit-features"><span><i class="fas fa-user-friends"></i> ${unit.max_guests} guests</span><span><i class="fas fa-bed"></i> ${unit.bedrooms} bed(s)</span></div><a href="unit-details.html?id=${unit.id}&currency=USD" class="btn" aria-label="View details for ${escapeHtml(unit.unit_name)}">View Apartment</a></div></div>`;
             }).join('');
         }
 
