@@ -1,0 +1,31 @@
+[1mdiff --git a/loan-tracker.html b/loan-tracker.html[m
+[1mindex 0606aa2..4260eae 100644[m
+[1m--- a/loan-tracker.html[m
+[1m+++ b/loan-tracker.html[m
+[36m@@ -306,6 +306,9 @@[m [mfunction renderAll() {[m
+                 <button class="loan-action-btn" onclick="openPaymentModalForLoan(${loan.id})">[m
+                     <i class="fas fa-plus"></i> Record Payment[m
+                 </button>[m
+[32m+[m[32m                <button class="loan-action-btn" style="background:rgba(220,53,69,0.1);color:#dc3545;" onclick="deleteLoan(${loan.id}, '${loan.loan_name.replace(/'/g, \"\")}')">[m
+[32m+[m[32m                    <i class="fas fa-trash"></i> Delete Loan[m
+[32m+[m[32m                </button>[m
+             </div>[m
+         </div>`;[m
+     });[m
+[36m@@ -418,6 +421,16 @@[m [mfunction openPaymentModal() {[m
+     document.getElementById('payment-modal').classList.add('open');[m
+ }[m
+ [m
+[32m+[m[32masync function deleteLoan(id, name) {[m
+[32m+[m[32m    if (!confirm(`Delete loan "${name}" and all its payment history? This cannot be undone.`)) return;[m
+[32m+[m[32m    try {[m
+[32m+[m[32m        const res = await fetch(`${API}/admin/loans/${id}`, { method: 'DELETE', headers: authHeaders() });[m
+[32m+[m[32m        const data = await res.json();[m
+[32m+[m[32m        if (data.success) { loadData(); }[m
+[32m+[m[32m        else alert('Failed: ' + data.error);[m
+[32m+[m[32m    } catch(e) { alert('Error: ' + e.message); }[m
+[32m+[m[32m}[m
+[32m+[m
+ function openPaymentModalForLoan(loanId) {[m
+     openPaymentModal();[m
+     document.getElementById('pay-loan-id').value = loanId;[m
