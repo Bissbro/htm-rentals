@@ -254,10 +254,10 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            height: 580px;
+            height: 520px;
             perspective: 1000px;
         }
-        @media (min-width: 768px) { .units-carousel { height: 620px; } }
+        @media (min-width: 768px) { .units-carousel { height: 560px; } }
         .unit-card {
             position: absolute;
             width: 78vw; max-width: 360px;
@@ -275,12 +275,12 @@
             z-index: 10; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
         }
         .unit-card.prev {
-            transform: translateX(-75%) scale(0.8) rotateY(15deg);
-            z-index: 5; filter: brightness(0.65);
+            transform: translateX(-62%) scale(0.78) rotateY(15deg);
+            z-index: 5; filter: brightness(0.6);
         }
         .unit-card.next {
-            transform: translateX(75%) scale(0.8) rotateY(-15deg);
-            z-index: 5; filter: brightness(0.65);
+            transform: translateX(62%) scale(0.78) rotateY(-15deg);
+            z-index: 5; filter: brightness(0.6);
         }
         .unit-card.hidden { opacity: 0; pointer-events: none; z-index: 1; }
         /* Unit Card Inner */
@@ -721,7 +721,7 @@ async function loadUnits() {
         carousel.innerHTML = units.map(unit => renderUnit(unit)).join('');
         unitCards = Array.from(carousel.querySelectorAll('.unit-card'));
 
-        // Dots
+        if (units.length > 1) dotsContainer.innerHTML = units.map((_, i) =>
         dotsContainer.innerHTML = units.map((_, i) =>
             `<button class="carousel-dot${i === 0 ? ' active' : ''}" onclick="goToUnit(${i})" aria-label="Unit ${i+1}"></button>`
         ).join('');
