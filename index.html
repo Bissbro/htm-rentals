@@ -718,7 +718,6 @@ async function loadUnits() {
         carousel.innerHTML = units.map(unit => renderUnit(unit)).join('');
         unitCards = Array.from(carousel.querySelectorAll('.unit-card'));
 
-        if (units.length > 1) dotsContainer.innerHTML = units.map((_, i) =>
         dotsContainer.innerHTML = units.map((_, i) =>
             `<button class="carousel-dot${i === 0 ? ' active' : ''}" onclick="goToUnit(${i})" aria-label="Unit ${i+1}"></button>`
         ).join('');
