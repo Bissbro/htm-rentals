@@ -247,17 +247,18 @@
         .amenity-pill span { color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 500; }
 
         /* ========== UNITS COVERFLOW ========== */
-        .units-section { background: var(--warm-white); padding: 48px 0 60px; }
-        .units-carousel-wrap { position: relative; overflow: visible; padding: 20px 0 32px; }
+        .units-section { background: var(--warm-white); padding: 40px 0 48px; }
+        .units-carousel-wrap { position: relative; overflow: hidden; padding: 20px 0 32px; }
+        .units-section { overflow: hidden; }
         .units-carousel {
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            height: 520px;
+            height: 500px;
             perspective: 1000px;
         }
-        @media (min-width: 768px) { .units-carousel { height: 560px; } }
+        @media (min-width: 768px) { .units-carousel { height: 540px; } }
         .unit-card {
             position: absolute;
             width: 78vw; max-width: 360px;
@@ -545,8 +546,8 @@
         <div class="units-carousel-wrap">
             <div class="units-carousel" id="units-carousel">
             </div>
+            </div>
             <div class="carousel-dots" id="units-dots"></div>
-        </div>
     </div>
 </section>
 
