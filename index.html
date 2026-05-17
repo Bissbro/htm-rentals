@@ -740,7 +740,7 @@ function renderUnit(unit) {
 
     // Pricing
     const mvr = parseFloat(unit.rate_mvr) || 0;
-    const origMvr = parseFloat(unit.original_price_mvr) || 0;
+    const origMvr = parseFloat(unit.original_price_mvr || unit.original_price) || 0;
     const hasDiscount = origMvr > mvr && mvr > 0;
     const offerLabel = unit.offer_label || '';
 
