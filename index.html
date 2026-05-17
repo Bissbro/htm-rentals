@@ -269,7 +269,7 @@
             cursor: pointer;
             transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             transform-origin: center center;
-            user-select: none;
+            user-select: none; -webkit-tap-highlight-color: transparent; outline: none;
         }
         .unit-card.active {
             transform: translateX(0) scale(1) rotateY(0deg);
@@ -291,7 +291,7 @@
         .carousel-dot {
             width: 8px; height: 8px; border-radius: 50%;
             background: var(--gray-border); border: none;
-            padding: 0; cursor: pointer;
+            padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; outline: none;
             transition: background 0.3s, width 0.3s;
         }
         .carousel-dot.active {
