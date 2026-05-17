@@ -246,94 +246,111 @@
         .amenity-pill i { color: var(--gold); font-size: 16px; }
         .amenity-pill span { color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 500; }
 
-        /* ========== UNITS ========== */
-        .units-section { background: var(--warm-white); padding: 80px 0; }
+        /* ========== UNITS CAROUSEL ========== */
+        .units-section { background: var(--warm-white); padding: 80px 0 60px; }
+        .units-carousel-wrap { position: relative; }
+        .units-carousel {
+            display: flex; gap: 20px;
+            overflow-x: auto; scrollbar-width: none;
+            scroll-snap-type: x mandatory;
+            padding: 8px 24px 24px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .units-carousel::-webkit-scrollbar { display: none; }
         .unit-card {
+            min-width: calc(88vw); max-width: 480px;
             background: var(--white);
             border-radius: var(--radius-xl);
             overflow: hidden;
             box-shadow: var(--shadow-md);
-            margin-bottom: 32px;
+            scroll-snap-align: center;
+            flex-shrink: 0;
             transition: transform 0.3s, box-shadow 0.3s;
         }
-        .unit-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        @media (min-width: 768px) {
+            .unit-card { min-width: 460px; }
+        }
 
-        /* Unit Gallery */
-        .unit-gallery { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; background: var(--navy); }
-        @media (min-width: 768px) { .unit-gallery { aspect-ratio: 21/9; } }
-        .unit-gallery-slides { display: flex; height: 100%; transition: transform 0.4s ease; }
-        .unit-gallery-slide { min-width: 100%; height: 100%; object-fit: cover; }
-        .gallery-btn {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(255,255,255,0.9); border: none; border-radius: 50%;
-            width: 36px; height: 36px; cursor: pointer; font-size: 14px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: var(--shadow-sm); transition: 0.2s; color: var(--navy);
+        /* Unit Image */
+        .unit-img {
+            width: 100%; aspect-ratio: 4/3;
+            object-fit: cover; display: block;
+            background: var(--navy);
         }
-        .gallery-btn:hover { background: white; transform: translateY(-50%) scale(1.05); }
-        .gallery-btn-prev { left: 12px; }
-        .gallery-btn-next { right: 12px; }
-        .gallery-counter {
-            position: absolute; bottom: 12px; right: 12px;
-            background: rgba(0,0,0,0.5); color: white;
-            font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 600;
+        .unit-img-wrap { position: relative; }
+        .unit-img-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(10,37,64,0.7) 0%, transparent 100%);
+            padding: 20px 20px 16px;
+            display: flex; justify-content: space-between; align-items: flex-end;
         }
+        .unit-img-badge {
+            background: var(--gold); color: white;
+            font-size: 10px; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+        }
+        .unit-img-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem; font-weight: 700; color: white;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+        .unit-img-price span { font-size: 12px; font-weight: 400; opacity: 0.8; }
 
         /* Unit Info */
-        .unit-info { padding: 28px 28px 32px; }
-        .unit-badge {
-            display: inline-block;
-            background: rgba(184,151,90,0.12); color: var(--gold);
-            font-size: 11px; font-weight: 700; letter-spacing: 1px;
-            text-transform: uppercase; padding: 4px 12px; border-radius: 20px;
-            margin-bottom: 12px;
-        }
+        .unit-info { padding: 20px 20px 24px; }
         .unit-name {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(1.3rem, 3vw, 1.7rem);
-            color: var(--navy); font-weight: 700;
-            margin-bottom: 6px; line-height: 1.2;
+            font-size: 1.2rem; color: var(--navy);
+            font-weight: 700; margin-bottom: 4px; line-height: 1.2;
         }
-        .unit-location { font-size: 13px; color: var(--gray); margin-bottom: 20px; }
+        .unit-location { font-size: 12px; color: var(--gray); margin-bottom: 14px; }
         .unit-features {
-            display: flex; gap: 20px; flex-wrap: wrap;
-            margin-bottom: 24px;
+            display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 18px;
         }
         .unit-feature {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 13px; color: var(--charcoal);
+            display: flex; align-items: center; gap: 5px;
+            font-size: 12px; color: var(--charcoal);
         }
-        .unit-feature i { color: var(--teal); font-size: 14px; }
+        .unit-feature i { color: var(--teal); font-size: 12px; }
         .unit-price-row {
-            display: flex; align-items: flex-end; justify-content: space-between;
-            flex-wrap: wrap; gap: 16px;
-            padding-top: 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; padding-top: 16px;
             border-top: 1px solid var(--gray-border);
         }
         .unit-price-block {}
         .unit-offer-label {
-            font-size: 11px; font-weight: 700; letter-spacing: 1px;
-            text-transform: uppercase; color: var(--gold); margin-bottom: 4px;
+            font-size: 10px; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; color: var(--gold); margin-bottom: 2px;
         }
         .unit-price-main {
             font-family: 'Playfair Display', serif;
-            font-size: 1.8rem; font-weight: 700; color: var(--gold);
-            line-height: 1;
+            font-size: 1.4rem; font-weight: 700; color: var(--gold); line-height: 1;
         }
         .unit-price-original {
-            font-size: 13px; color: var(--gray);
-            text-decoration: line-through; margin-left: 8px;
+            font-size: 12px; color: var(--gray);
+            text-decoration: line-through; margin-left: 6px;
         }
-        .unit-price-period { font-size: 12px; color: var(--gray); margin-top: 3px; }
+        .unit-price-period { font-size: 11px; color: var(--gray); margin-top: 2px; }
         .btn-view-unit {
-            display: inline-flex; align-items: center; gap: 8px;
+            display: inline-flex; align-items: center; gap: 6px;
             background: var(--navy); color: white;
-            padding: 13px 28px; border-radius: 40px;
-            text-decoration: none; font-weight: 700; font-size: 13px;
-            transition: background 0.2s, transform 0.2s;
-            letter-spacing: 0.3px; white-space: nowrap;
+            padding: 11px 20px; border-radius: 40px;
+            text-decoration: none; font-weight: 700; font-size: 12px;
+            transition: background 0.2s;
+            letter-spacing: 0.3px; white-space: nowrap; flex-shrink: 0;
         }
-        .btn-view-unit:hover { background: var(--navy-light); transform: translateY(-1px); }
+        .btn-view-unit:hover { background: var(--navy-light); }
+
+        /* Carousel dots */
+        .carousel-dots {
+            display: flex; justify-content: center; gap: 8px; margin-top: 8px;
+        }
+        .carousel-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--gray-border); border: none; cursor: pointer;
+            transition: all 0.3s; padding: 0;
+        }
+        .carousel-dot.active { background: var(--gold); width: 20px; border-radius: 3px; }
 
         /* ========== EXPERIENCES ========== */
         .experiences-section { background: var(--gray-light); padding: 80px 0; }
@@ -558,9 +575,14 @@
         <div class="section-label">Our Apartments</div>
         <h2 class="section-title">Find Your Perfect Unit</h2>
         <div class="section-divider"></div>
-        <div id="units-container">
-            <div class="loading-shimmer"></div>
-            <div class="loading-shimmer"></div>
+        <div class="units-carousel-wrap">
+            <div class="units-carousel" id="units-carousel">
+                <div style="min-width:4px;flex-shrink:0;"></div>
+                <div class="loading-shimmer" style="min-width:88vw;max-width:480px;height:420px;border-radius:32px;flex-shrink:0;"></div>
+                <div class="loading-shimmer" style="min-width:88vw;max-width:480px;height:420px;border-radius:32px;flex-shrink:0;"></div>
+                <div style="min-width:4px;flex-shrink:0;"></div>
+            </div>
+            <div class="carousel-dots" id="units-dots"></div>
         </div>
     </div>
 </section>
@@ -723,23 +745,38 @@ async function loadUnits() {
         const res = await fetch(`${API}/units`);
         const data = await res.json();
         const units = data.units || data;
-        const container = document.getElementById('units-container');
-        if (!units.length) { container.innerHTML = '<p style="color:#999;text-align:center;">No units available.</p>'; return; }
-        container.innerHTML = units.map(unit => renderUnit(unit)).join('');
+        const carousel = document.getElementById('units-carousel');
+        const dotsContainer = document.getElementById('units-dots');
+        if (!units.length) { carousel.innerHTML = '<p style="padding:40px;color:#999;">No units available.</p>'; return; }
+        carousel.innerHTML =
+            '<div style="min-width:16px;flex-shrink:0;"></div>' +
+            units.map(unit => renderUnit(unit)).join('') +
+            '<div style="min-width:16px;flex-shrink:0;"></div>';
+        // Dots
+        if (units.length > 1) {
+            dotsContainer.innerHTML = units.map((_, i) =>
+                `<button class="carousel-dot${i === 0 ? ' active' : ''}" onclick="scrollToUnit(${i})" aria-label="Unit ${i+1}"></button>`
+            ).join('');
+            // Update dots on scroll
+            carousel.addEventListener('scroll', () => {
+                const cardWidth = carousel.querySelector('.unit-card')?.offsetWidth || 0;
+                const idx = Math.round(carousel.scrollLeft / (cardWidth + 20));
+                document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+            });
+        }
     } catch(e) { console.error('Units load error:', e); }
 }
 
+function scrollToUnit(index) {
+    const carousel = document.getElementById('units-carousel');
+    const card = carousel.querySelectorAll('.unit-card')[index];
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
 function renderUnit(unit) {
-    const images = (() => {
-        try { return typeof unit.gallery_images === 'string' ? JSON.parse(unit.gallery_images) : (unit.gallery_images || []); }
-        catch { return []; }
-    })();
-    if (unit.featured_image && !images.includes(unit.featured_image)) images.unshift(unit.featured_image);
-    const allImages = images.length ? images : ['https://via.placeholder.com/800x400?text=HTM+Rentals'];
+    const featuredImage = unit.featured_image || 'https://via.placeholder.com/480x360?text=HTM+Rentals';
     const unitShort = unit.unit_name.match(/A-[\w-]+/)?.[0] || unit.unit_name.split('|')[1]?.trim() || unit.unit_name;
     const building = unit.unit_name.includes('|') ? unit.unit_name.split('|')[0].trim() : 'Malas Residence';
-
-    // Pricing
     const mvr = parseFloat(unit.rate_mvr) || 0;
     const origMvr = parseFloat(unit.original_price_mvr || unit.original_price) || 0;
     const hasDiscount = origMvr > mvr && mvr > 0;
@@ -747,30 +784,26 @@ function renderUnit(unit) {
 
     return `
     <div class="unit-card">
-        <div class="unit-gallery" id="gallery-${unit.id}">
-            <div class="unit-gallery-slides" id="slides-${unit.id}">
-                ${allImages.map(img => `<img class="unit-gallery-slide" src="${img}" alt="${unit.unit_name}" loading="lazy" width="800" height="450">`).join('')}
+        <div class="unit-img-wrap">
+            <img class="unit-img" src="${featuredImage}" alt="${unit.unit_name}" loading="lazy" width="480" height="360">
+            <div class="unit-img-overlay">
+                ${offerLabel ? `<div class="unit-img-badge">${offerLabel}</div>` : '<div></div>'}
+                <div class="unit-img-price">MVR ${mvr.toLocaleString()} <span>/ night</span></div>
             </div>
-            ${allImages.length > 1 ? `
-            <button class="gallery-btn gallery-btn-prev" onclick="galleryPrev(${unit.id})" aria-label="Previous photo"><i class="fas fa-chevron-left"></i></button>
-            <button class="gallery-btn gallery-btn-next" onclick="galleryNext(${unit.id})" aria-label="Next photo"><i class="fas fa-chevron-right"></i></button>
-            <div class="gallery-counter" id="counter-${unit.id}">1 / ${allImages.length}</div>
-            ` : ''}
         </div>
         <div class="unit-info">
-            ${offerLabel ? `<div class="unit-badge">${offerLabel}</div>` : ''}
             <h3 class="unit-name">${unitShort}</h3>
-            <div class="unit-location"><i class="fas fa-map-marker-alt" style="color:var(--gold);margin-right:5px;"></i>${building} · Hulhumale' Phase 2</div>
+            <div class="unit-location"><i class="fas fa-map-marker-alt" style="color:var(--gold);margin-right:4px;"></i>${building} · Hulhumale' Phase 2</div>
             <div class="unit-features">
                 <div class="unit-feature"><i class="fas fa-users"></i>${unit.max_guests} guests</div>
-                <div class="unit-feature"><i class="fas fa-bed"></i>${unit.bedrooms} bedroom${unit.bedrooms > 1 ? 's' : ''}</div>
+                <div class="unit-feature"><i class="fas fa-bed"></i>${unit.bedrooms} bed${unit.bedrooms > 1 ? 's' : ''}</div>
                 <div class="unit-feature"><i class="fas fa-bath"></i>${unit.bathrooms} bath</div>
                 <div class="unit-feature"><i class="fas fa-wifi"></i>WiFi</div>
                 <div class="unit-feature"><i class="fas fa-utensils"></i>Kitchen</div>
             </div>
             <div class="unit-price-row">
                 <div class="unit-price-block">
-                    ${offerLabel ? `<div class="unit-offer-label">${offerLabel}</div>` : ''}
+                    ${hasDiscount ? `<div class="unit-offer-label">${offerLabel || 'Special Rate'}</div>` : ''}
                     <div>
                         <span class="unit-price-main">MVR ${mvr.toLocaleString()}</span>
                         ${hasDiscount ? `<span class="unit-price-original">MVR ${origMvr.toLocaleString()}</span>` : ''}
@@ -783,27 +816,6 @@ function renderUnit(unit) {
             </div>
         </div>
     </div>`;
-}
-
-// Gallery navigation
-const galleryIndexes = {};
-function galleryNext(id) {
-    const slides = document.getElementById('slides-' + id);
-    const count = slides.children.length;
-    galleryIndexes[id] = ((galleryIndexes[id] || 0) + 1) % count;
-    updateGallery(id, count);
-}
-function galleryPrev(id) {
-    const slides = document.getElementById('slides-' + id);
-    const count = slides.children.length;
-    galleryIndexes[id] = ((galleryIndexes[id] || 0) - 1 + count) % count;
-    updateGallery(id, count);
-}
-function updateGallery(id, count) {
-    const idx = galleryIndexes[id] || 0;
-    document.getElementById('slides-' + id).style.transform = `translateX(-${idx * 100}%)`;
-    const counter = document.getElementById('counter-' + id);
-    if (counter) counter.textContent = `${idx + 1} / ${count}`;
 }
 
 // ========== EXPERIENCES ==========
