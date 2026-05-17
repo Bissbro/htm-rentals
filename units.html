@@ -200,6 +200,28 @@
             </div>
         </div>
 
+        <div class="form-section">Discount / Offer</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Original Price MVR</label>
+                <input type="number" id="unit-original-mvr" placeholder="e.g. 2000">
+            </div>
+            <div class="form-group">
+                <label>Original Price USD</label>
+                <input type="number" id="unit-original-usd" placeholder="e.g. 130">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Offer Label</label>
+                <input type="text" id="unit-offer-label" placeholder="e.g. Early Bird Rate">
+            </div>
+            <div class="form-group">
+                <label>Offer Expiry</label>
+                <input type="date" id="unit-offer-expiry">
+            </div>
+        </div>
+
         <div class="form-section">Platform Links</div>
         <div class="form-group">
             <label>Airbnb URL</label>
@@ -457,6 +479,10 @@ async function editUnit(id) {
     document.getElementById('unit-bed-types').value = unit.bed_types || '';
     document.getElementById('unit-mvr').value = unit.rate_mvr || '';
     document.getElementById('unit-usd').value = unit.rate_usd || '';
+    document.getElementById('unit-original-mvr').value = unit.original_price_mvr || '';
+    document.getElementById('unit-original-usd').value = unit.original_price_usd || '';
+    document.getElementById('unit-offer-label').value = unit.offer_label || '';
+    document.getElementById('unit-offer-expiry').value = unit.offer_expiry ? unit.offer_expiry.slice(0,10) : '';
     document.getElementById('unit-airbnb').value = unit.airbnb_url || '';
     document.getElementById('unit-agoda').value = unit.agoda_url || '';
     document.getElementById('unit-booking').value = unit.booking_url || '';
@@ -520,6 +546,10 @@ async function saveUnit() {
         bed_types: document.getElementById('unit-bed-types').value || null,
         rate_mvr: parseFloat(document.getElementById('unit-mvr').value) || 0,
         rate_usd: parseFloat(document.getElementById('unit-usd').value) || 0,
+        original_price_mvr: parseFloat(document.getElementById('unit-original-mvr').value) || null,
+        original_price_usd: parseFloat(document.getElementById('unit-original-usd').value) || null,
+        offer_label: document.getElementById('unit-offer-label').value || null,
+        offer_expiry: document.getElementById('unit-offer-expiry').value || null,
         airbnb_url: document.getElementById('unit-airbnb').value.trim() || null,
         agoda_url: document.getElementById('unit-agoda').value.trim() || null,
         booking_url: document.getElementById('unit-booking').value.trim() || null,
