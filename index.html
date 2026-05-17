@@ -303,9 +303,9 @@
             font-size: 1.2rem; color: var(--navy);
             font-weight: 700; margin-bottom: 4px; line-height: 1.2;
         }
-        .unit-location { font-size: 12px; color: var(--gray); margin-bottom: 14px; }
+        .unit-location { font-size: 12px; color: var(--gray); margin-bottom: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .unit-features {
-            display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 18px;
+            display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;
         }
         .unit-feature {
             display: flex; align-items: center; gap: 5px;
@@ -314,8 +314,9 @@
         .unit-feature i { color: var(--teal); font-size: 12px; }
         .unit-price-row {
             display: flex; align-items: center; justify-content: space-between;
-            gap: 12px; padding-top: 16px;
+            gap: 10px; padding-top: 14px;
             border-top: 1px solid var(--gray-border);
+            flex-wrap: nowrap;
         }
         .unit-price-block {}
         .unit-offer-label {
@@ -334,7 +335,7 @@
         .btn-view-unit {
             display: inline-flex; align-items: center; gap: 6px;
             background: var(--navy); color: white;
-            padding: 11px 20px; border-radius: 40px;
+            padding: 9px 18px; border-radius: 40px;
             text-decoration: none; font-weight: 700; font-size: 12px;
             transition: background 0.2s;
             letter-spacing: 0.3px; white-space: nowrap; flex-shrink: 0;
@@ -775,8 +776,9 @@ function scrollToUnit(index) {
 
 function renderUnit(unit) {
     const featuredImage = unit.featured_image || 'https://via.placeholder.com/480x360?text=HTM+Rentals';
-    const unitShort = unit.unit_name.match(/A-[\w-]+/)?.[0] || unit.unit_name.split('|')[1]?.trim() || unit.unit_name;
-    const building = unit.unit_name.includes('|') ? unit.unit_name.split('|')[0].trim() : 'Malas Residence';
+    const unitShort = unit.unit_number || unit.unit_name.match(/A-[\w-]+/)?.[0] || unit.unit_name.split('|')[1]?.trim() || unit.unit_name;
+    const unitType = unit.unit_type_label || '';
+    const building = unit.building_name || (unit.unit_name.includes('|') ? unit.unit_name.split('|')[0].trim() : 'Malas Residence');
     const mvr = parseFloat(unit.rate_mvr) || 0;
     const origMvr = parseFloat(unit.original_price_mvr || unit.original_price) || 0;
     const hasDiscount = origMvr > mvr && mvr > 0;
@@ -793,7 +795,7 @@ function renderUnit(unit) {
         </div>
         <div class="unit-info">
             <h3 class="unit-name">${unitShort}</h3>
-            <div class="unit-location"><i class="fas fa-map-marker-alt" style="color:var(--gold);margin-right:4px;"></i>${building} · Hulhumale' Phase 2</div>
+            <div class="unit-location"><i class="fas fa-map-marker-alt" style="color:var(--gold);margin-right:4px;"></i>${unitType ? unitType + ' · ' : ''}${building}</div>
             <div class="unit-features">
                 <div class="unit-feature"><i class="fas fa-users"></i>${unit.max_guests} guests</div>
                 <div class="unit-feature"><i class="fas fa-bed"></i>${unit.bedrooms} bed${unit.bedrooms > 1 ? 's' : ''}</div>
