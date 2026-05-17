@@ -544,10 +544,6 @@
         <div class="section-divider"></div>
         <div class="units-carousel-wrap">
             <div class="units-carousel" id="units-carousel">
-                <div style="min-width:4px;flex-shrink:0;"></div>
-                <div class="loading-shimmer" style="min-width:88vw;max-width:480px;height:420px;border-radius:32px;flex-shrink:0;"></div>
-                <div class="loading-shimmer" style="min-width:88vw;max-width:480px;height:420px;border-radius:32px;flex-shrink:0;"></div>
-                <div style="min-width:4px;flex-shrink:0;"></div>
             </div>
             <div class="carousel-dots" id="units-dots"></div>
         </div>
@@ -649,8 +645,9 @@ const API = 'https://api.htmrentals.com/api';
 // ========== HEADER SCROLL ==========
 const header = document.getElementById('header');
 window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 60);
-});
+        header.classList.toggle('scrolled', window.scrollY > 60);
+    });
+    if (window.scrollY > 60) header.classList.add('scrolled');
 
 // ========== DRAWER ==========
 function openDrawer() {
