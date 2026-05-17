@@ -285,44 +285,51 @@
         }
         .unit-card.hidden { opacity: 0; pointer-events: none; z-index: 1; }
         /* Unit Card Inner */
-        .unit-gallery { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; background: var(--navy); }
+        .unit-gallery {
+            position: relative; width: 100%;
+            height: 58%; overflow: hidden; background: var(--navy);
+        }
         .unit-gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .unit-info { padding: 20px 20px 24px; }
+        .unit-gallery-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(10,37,64,0.75) 0%, transparent 100%);
+            padding: 12px 14px 10px;
+            display: flex; gap: 12px; align-items: center;
+        }
+        .unit-spec-pill {
+            display: flex; align-items: center; gap: 4px;
+            color: rgba(255,255,255,0.9); font-size: 11px; font-weight: 600;
+        }
+        .unit-spec-pill i { font-size: 10px; color: var(--gold); }
+        .unit-info { padding: 14px 16px 16px; }
         .unit-name {
             font-family: 'Playfair Display', serif;
-            font-size: 1.4rem; color: var(--navy);
+            font-size: 1.25rem; color: var(--navy);
             font-weight: 700; margin-bottom: 2px; line-height: 1.2;
         }
-        .unit-type { font-size: 12px; color: var(--gray); margin-bottom: 16px; }
-        .unit-specs {
-            display: flex; gap: 16px; margin-bottom: 16px;
-            padding-bottom: 16px; border-bottom: 1px solid var(--gray-border);
-        }
-        .unit-spec {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 13px; font-weight: 600; color: var(--charcoal);
-        }
-        .unit-spec i { color: var(--teal); font-size: 13px; }
+        .unit-type { font-size: 11px; color: var(--gray); margin-bottom: 12px; letter-spacing: 0.3px; }
+        .unit-gold-divider { width: 24px; height: 1.5px; background: var(--gold); margin-bottom: 12px; }
         .unit-pricing {
-            display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
         }
         .unit-price-mvr {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem; font-weight: 700; color: var(--gold);
+            font-size: 1.3rem; font-weight: 700; color: var(--gold); line-height: 1;
         }
-        .unit-price-divider { width: 1px; height: 18px; background: var(--gray-border); }
-        .unit-price-usd { font-size: 14px; font-weight: 600; color: var(--gray); }
-        .unit-price-period { font-size: 11px; color: var(--gray); margin-left: auto; }
+        .unit-price-sep { color: var(--gray-border); font-size: 16px; }
+        .unit-price-usd { font-size: 12px; font-weight: 600; color: var(--gray); }
         .btn-view-unit {
             display: flex; align-items: center; justify-content: center; gap: 8px;
             background: var(--navy); color: white;
-            padding: 12px; border-radius: 14px;
-            text-decoration: none; font-weight: 700; font-size: 13px;
-            transition: background 0.2s; width: 100%;
+            padding: 11px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; font-size: 12px;
+            transition: background 0.2s; width: 100%; letter-spacing: 0.3px;
         }
         .btn-view-unit:hover { background: var(--navy-light); }
         .unit-card.prev .unit-info,
         .unit-card.next .unit-info { opacity: 0; }
+        .unit-card.prev .unit-gallery-overlay,
+        .unit-card.next .unit-gallery-overlay { opacity: 0; }
             display: flex; gap: 20px;
             overflow-x: auto; scrollbar-width: none;
             padding: 4px 24px 20px;
@@ -772,24 +779,23 @@ function renderUnit(unit) {
     return `
     <div class="unit-card" data-id="${unit.id}">
         <div class="unit-gallery">
-            <img src="${featuredImage}" alt="${unit.unit_name}" loading="lazy" width="400" height="225">
+            <img src="${featuredImage}" alt="${unit.unit_name}" loading="lazy" width="400" height="300">
+            <div class="unit-gallery-overlay">
+                <div class="unit-spec-pill"><i class="fas fa-users"></i>${unit.max_guests}</div>
+                <div class="unit-spec-pill"><i class="fas fa-bed"></i>${unit.bedrooms}</div>
+                <div class="unit-spec-pill"><i class="fas fa-utensils"></i>Kitchen</div>
+            </div>
         </div>
         <div class="unit-info">
-            ${offerLabel ? `<div style="display:inline-block;background:rgba(184,151,90,0.12);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:10px;">${offerLabel}</div>` : ''}
             <h3 class="unit-name">${unitShort}</h3>
             <div class="unit-type">${unitType}</div>
-            <div class="unit-specs">
-                <div class="unit-spec"><i class="fas fa-users"></i>${unit.max_guests} guests</div>
-                <div class="unit-spec"><i class="fas fa-bed"></i>${unit.bedrooms} bed${unit.bedrooms > 1 ? 's' : ''}</div>
-                <div class="unit-spec"><i class="fas fa-utensils"></i>Kitchen</div>
-            </div>
+            <div class="unit-gold-divider"></div>
             <div class="unit-pricing">
                 <div class="unit-price-mvr">MVR ${mvr.toLocaleString()}</div>
-                <div class="unit-price-divider"></div>
-                <div class="unit-price-usd">USD ${usd}</div>
-                <div class="unit-price-period">/ night</div>
+                <div class="unit-price-sep">|</div>
+                <div class="unit-price-usd">$ ${usd}</div>
+                ${hasDiscount ? `<div style="font-size:10px;color:var(--gray);text-decoration:line-through;margin-left:auto;">MVR ${origMvr.toLocaleString()}</div>` : ''}
             </div>
-            ${hasDiscount ? `<div style="font-size:11px;color:var(--gray);text-decoration:line-through;margin-bottom:12px;">MVR ${origMvr.toLocaleString()}</div>` : ''}
             <a href="unit-details.html?id=${unit.id}&currency=USD" class="btn-view-unit">
                 View Details <i class="fas fa-arrow-right"></i>
             </a>
