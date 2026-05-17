@@ -170,7 +170,8 @@
     async function load() {
         const res = await fetch(`${API}/admin/hero-images`, { headers: hdrs() });
         if (res.status === 401) { window.location.href = 'admin.html'; return; }
-        slides = await res.json();
+        const data = await res.json();
+        slides = data.images || data;
         render();
     }
 

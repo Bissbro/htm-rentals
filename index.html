@@ -681,7 +681,8 @@ let heroSlides = [], heroIndex = 0, heroTimer;
 async function loadHero() {
     try {
         const res = await fetch(`${API}/hero-images`);
-        const data = await res.json();
+        const json = await res.json();
+        const data = json.images || json;
         if (!data.length) return;
         heroSlides = data;
         const container = document.getElementById('hero-slides');
