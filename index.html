@@ -371,28 +371,34 @@
         }
         .experiences-scroll::-webkit-scrollbar { display: none; }
         .experience-card {
-            min-width: 72vw; max-width: 72vw;
-            background: white; border-radius: var(--radius-lg);
-            overflow: hidden; box-shadow: var(--shadow-sm);
+            min-width: 60vw; max-width: 60vw;
+            border-radius: var(--radius-lg);
+            overflow: hidden; box-shadow: var(--shadow-md);
             scroll-snap-align: start; flex-shrink: 0;
+            position: relative; cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
+            aspect-ratio: 3/4;
         }
-        @media (min-width: 768px) { .experience-card { min-width: 340px; max-width: 340px; } }
-        .experience-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+        @media (min-width: 768px) { .experience-card { min-width: 280px; max-width: 280px; } }
+        .experience-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
         .experience-img {
-            width: 100%; aspect-ratio: 4/3; object-fit: cover;
+            width: 100%; height: 100%; object-fit: cover;
             display: block; background: var(--navy);
+            position: absolute; top: 0; left: 0;
         }
-        .experience-info { padding: 20px; }
+        .experience-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(10,37,64,0.92) 0%, rgba(10,37,64,0.4) 60%, transparent 100%);
+            padding: 24px 16px 20px;
+        }
         .experience-name {
             font-family: 'Playfair Display', serif;
             font-size: 1.1rem; font-weight: 700;
-            color: var(--navy); margin-bottom: 6px;
+            color: white; margin-bottom: 8px; line-height: 1.3;
         }
-        .experience-desc { font-size: 13px; color: var(--gray); line-height: 1.5; margin-bottom: 14px; }
         .experience-meta { display: flex; justify-content: space-between; align-items: center; }
-        .experience-price { font-weight: 700; color: var(--gold); font-size: 15px; }
-        .experience-duration { font-size: 12px; color: var(--gray); }
+        .experience-price { font-weight: 700; color: var(--gold); font-size: 14px; }
+        .experience-duration { font-size: 12px; color: rgba(255,255,255,0.7); }
 
         /* ========== PROMO BANNER ========== */
         .promo-section { padding: 0; }
@@ -856,12 +862,11 @@ async function loadExperiences() {
         data.map(exp => `
             <div class="experience-card">
                 ${exp.images && exp.images.length
-                    ? `<img class="experience-img" src="${exp.images[0]}" alt="${exp.title}" loading="lazy" width="320" height="240">`
-                    : `<div class="experience-img" style="background:var(--navy);display:flex;align-items:center;justify-content:center;"><i class="fas fa-compass" style="font-size:2rem;color:var(--gold);"></i></div>`
+                    ? `<img class="experience-img" src="${exp.images[0]}" alt="${exp.title}" loading="lazy">`
+                    : `<div class="experience-img" style="background:linear-gradient(135deg,var(--navy),var(--teal));"></div>`
                 }
-                <div class="experience-info">
+                <div class="experience-overlay">
                     <div class="experience-name">${exp.title}</div>
-                    <div class="experience-desc">${exp.description ? exp.description.substring(0, 80) + (exp.description.length > 80 ? '...' : '') : ''}</div>
                     <div class="experience-meta">
                         <div class="experience-price">${exp.price ? exp.currency + ' ' + parseFloat(exp.price).toLocaleString() : 'Contact Us'}</div>
                         <div class="experience-duration">${exp.duration || ''}</div>
