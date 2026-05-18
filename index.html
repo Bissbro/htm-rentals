@@ -947,7 +947,7 @@ async function loadExperiences() {
             container.innerHTML = '<div style="padding:40px;color:#999;font-size:14px;">No experiences available yet.</div>';
             return;
         }
-        container.innerHTML = `<div style="min-width:16px;flex-shrink:0;"></div>` +
+        container.innerHTML = `<div style="min-width:20px;flex-shrink:0;"></div>` +
         data.map(exp => `
             <div class="experience-card">
                 ${exp.images && exp.images.length
@@ -962,7 +962,7 @@ async function loadExperiences() {
                     </div>
                 </div>
             </div>
-        `).join('') + `<div style="min-width:16px;flex-shrink:0;"></div>`;
+        `).join('') + `<div style="min-width:20px;flex-shrink:0;"></div>`;
     } catch(e) { console.error('Experiences error:', e); }
 }
 
