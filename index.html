@@ -348,16 +348,17 @@
             overflow-x: auto; scrollbar-width: none;
             padding: 4px 24px 20px;
             scroll-snap-type: x mandatory;
+            display: flex; flex-direction: row;
         }
         .experiences-scroll::-webkit-scrollbar { display: none; }
         .experience-card {
-            min-width: 280px; max-width: 280px;
+            min-width: 72vw; max-width: 72vw;
             background: white; border-radius: var(--radius-lg);
             overflow: hidden; box-shadow: var(--shadow-sm);
             scroll-snap-align: start; flex-shrink: 0;
             transition: transform 0.3s, box-shadow 0.3s;
         }
-        @media (min-width: 768px) { .experience-card { min-width: 320px; max-width: 320px; } }
+        @media (min-width: 768px) { .experience-card { min-width: 340px; max-width: 340px; } }
         .experience-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
         .experience-img {
             width: 100%; aspect-ratio: 4/3; object-fit: cover;
