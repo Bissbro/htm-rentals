@@ -259,6 +259,15 @@
             perspective: 1000px;
         }
         @media (min-width: 768px) { .units-carousel { height: 480px; } }
+        @property --angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+        @keyframes rotate-border {
+            from { --angle: 0deg; }
+            to { --angle: 360deg; }
+        }
         .unit-card {
             position: absolute;
             width: 62vw; max-width: 300px; height: 420px;
