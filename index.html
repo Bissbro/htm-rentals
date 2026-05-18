@@ -495,7 +495,65 @@
             .btn-view-unit { width: 100%; justify-content: center; }
             .contact-grid { grid-template-columns: 1fr; }
         }
-    </style>
+    
+        /* ========== RENTAL CONNECT ========== */
+        .rental-connect-section { background: var(--navy); padding: 60px 0; position: relative; overflow: hidden; }
+        .rental-connect-section::before {
+            content: ''; position: absolute; top: -80px; right: -80px;
+            width: 300px; height: 300px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(184,151,90,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .rc-powered {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+            color: rgba(255,255,255,0.4); font-weight: 600; margin-bottom: 8px;
+        }
+        .rc-powered span { color: var(--gold); }
+        .rental-connect-section .section-title { color: white; }
+        .rental-connect-section .section-divider { background: var(--gold); }
+        .rc-tagline { font-size: 15px; color: rgba(255,255,255,0.6); margin-bottom: 40px; font-style: italic; }
+        .rc-coming-soon {
+            border: 1px solid rgba(184,151,90,0.25);
+            border-radius: 24px; padding: 48px 32px;
+            text-align: center; position: relative;
+            background: rgba(184,151,90,0.04);
+        }
+        .rc-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(184,151,90,0.12); border: 1px solid rgba(184,151,90,0.3);
+            border-radius: 40px; padding: 8px 20px; margin-bottom: 32px;
+        }
+        .rc-badge i { color: var(--gold); font-size: 14px; }
+        .rc-badge span { color: var(--gold); font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        .rc-soon-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 5vw, 2.2rem);
+            color: white; font-weight: 700; margin-bottom: 16px; line-height: 1.3;
+        }
+        .rc-soon-desc {
+            font-size: 14px; color: rgba(255,255,255,0.5);
+            line-height: 1.7; max-width: 420px; margin: 0 auto 36px;
+        }
+        .rc-features {
+            display: flex; justify-content: center; gap: 32px;
+            margin-bottom: 40px; flex-wrap: nowrap;
+        }
+        .rc-feature {
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .rc-feature i { color: var(--gold); font-size: 1.2rem; }
+        .rc-feature span { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+        .rc-cta {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--gold); color: white;
+            padding: 14px 32px; border-radius: 40px;
+            text-decoration: none; font-weight: 700; font-size: 14px;
+            transition: background 0.2s, transform 0.2s; letter-spacing: 0.3px;
+        }
+        .rc-cta:hover { background: #a07848; transform: translateY(-2px); }
+        .rc-cta-sub { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 16px; }
+</style>
 </head>
 <body>
 
@@ -609,7 +667,52 @@
     </div>
 </section>
 
-<!-- PROMO BANNER -->
+
+    <!-- RENTAL CONNECT -->
+    <section class="rental-connect-section" id="rental-connect">
+        <div class="container">
+            <div class="rc-powered">Powered by <span>HTM</span></div>
+            <h2 class="section-title">Rental Connect</h2>
+            <div class="section-divider"></div>
+            <p class="rc-tagline">Verified rentals, trusted connections.</p>
+            <div class="rc-coming-soon">
+                <div class="rc-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>100% Verified</span>
+                </div>
+                <div class="rc-soon-title">Something powerful<br>is coming to Hulhumale'</div>
+                <p class="rc-soon-desc">
+                    We're building a curated network of verified local rental providers — 
+                    scooters, equipment, gear and more. Every listing personally verified by HTM.
+                </p>
+                <div class="rc-features">
+                    <div class="rc-feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>HTM Verified</span>
+                    </div>
+                    <div class="rc-feature">
+                        <i class="fas fa-handshake"></i>
+                        <span>Trusted Providers</span>
+                    </div>
+                    <div class="rc-feature">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Local Only</span>
+                    </div>
+                    <div class="rc-feature">
+                        <i class="fas fa-star"></i>
+                        <span>Best Rated</span>
+                    </div>
+                </div>
+                <a href="https://wa.me/9607555608?text=Hi%2C%20I%27m%20interested%20in%20listing%20on%20Rental%20Connect" class="rc-cta" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    Register as a Provider
+                </a>
+                <div class="rc-cta-sub">We'll personally verify and onboard your business</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROMO BANNER -->
 <section class="promo-section" id="promo-section" style="display:none;">
     <div id="promo-container"></div>
 </section>
