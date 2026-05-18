@@ -698,6 +698,11 @@ async function loadHero() {
         container.innerHTML = data.map((img, i) => `
             <div class="hero-slide${i === 0 ? ' active' : ''}" style="background-image:url('${img.image_url}')">
                 <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    ${img.title ? '<div class="hero-eyebrow">Hulhumale, Maldives</div><h1 class="hero-title">' + img.title + '</h1>' : ''}
+                    ${img.subtitle ? '<p class="hero-subtitle">' + img.subtitle + '</p>' : ''}
+                    ${img.button_text ? '<a href="' + (img.button_link || '#units') + '" class="hero-cta">' + img.button_text + '</a>' : ''}
+                </div>
             </div>
         `).join('');
         if (data.length > 1) {
