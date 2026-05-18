@@ -268,6 +268,15 @@
             from { --angle: 0deg; }
             to { --angle: 360deg; }
         }
+        @property --angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+        @keyframes rotate-border {
+            from { --angle: 0deg; }
+            to { --angle: 360deg; }
+        }
         .unit-card {
             position: absolute;
             width: 62vw; max-width: 300px; height: 420px;
@@ -282,7 +291,7 @@
         }
         .unit-card.active {
             transform: translateX(0) scale(1) rotateY(0deg);
-            z-index: 10; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            z-index: 10; box-shadow: 0 20px 60px rgba(0,0,0,0.2); border: 2px solid transparent; background-image: linear-gradient(white, white), conic-gradient(from var(--angle), #B8975A, #f0d080, #fff, #B8975A); background-origin: border-box; background-clip: padding-box, border-box; animation: rotate-border 3s linear infinite;
         }
         .unit-card.prev {
             transform: translateX(-62%) scale(0.78) rotateY(15deg);
