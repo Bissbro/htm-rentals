@@ -281,8 +281,11 @@
                     }
                     
                     galleryImages = [];
-                    if (unit.featured_image) galleryImages.push(unit.featured_image);
-                    if (unit.gallery_images && unit.gallery_images.length) galleryImages.push(...unit.gallery_images);
+                    if (unit.gallery_images && unit.gallery_images.length) {
+                        galleryImages.push(...unit.gallery_images);
+                    } else if (unit.featured_image) {
+                        galleryImages.push(unit.featured_image);
+                    }
                     
                     await fetchAvailability();
                     renderUnitDetails();
