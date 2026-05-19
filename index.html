@@ -793,144 +793,44 @@
 
     <!-- CORAL DIVIDER: Experiences to Rental Connect -->
     <div class="coral-divider" style="background: transparent;">
-        <svg viewBox="0 0 1440 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <defs>
-                <linearGradient id="waterGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgba(42,157,143,0);"/>
-                    <stop offset="40%" style="stop-color:rgba(42,157,143,0.12);"/>
-                    <stop offset="100%" style="stop-color:rgba(42,157,143,0.35);"/>
-                </linearGradient>
-            </defs>
-
-            <!-- Water body - back layer lightest -->
-            <path d="M0,40 C120,15 280,65 440,35 C600,5 760,55 920,30 C1080,5 1240,50 1440,25 L1440,180 L0,180 Z"
-                  fill="rgba(42,157,143,0.08)"/>
-            <!-- Water body - mid layer -->
-            <path d="M0,65 C150,35 320,85 500,55 C680,25 840,75 1020,48 C1200,21 1340,68 1440,48 L1440,180 L0,180 Z"
-                  fill="rgba(42,157,143,0.15)"/>
-            <!-- Water body - front layer -->
-            <path d="M0,88 C180,58 360,100 560,72 C760,44 940,90 1120,65 C1280,44 1380,80 1440,68 L1440,180 L0,180 Z"
-                  fill="rgba(42,157,143,0.25)"/>
-
-            <!-- OCEAN FLOOR - undulating hills, back layer -->
-            <path d="M0,145 C80,120 160,155 260,130 C360,105 440,145 560,125 C680,105 780,148 900,128 C1020,108 1120,150 1240,128 C1340,110 1400,140 1440,130 L1440,180 L0,180 Z"
-                  fill="rgba(42,157,143,0.4)"/>
-            <!-- OCEAN FLOOR - mid layer -->
-            <path d="M0,155 C60,132 140,165 240,142 C340,119 460,158 580,138 C700,118 820,158 960,138 C1100,118 1220,155 1340,138 C1400,128 1425,148 1440,142 L1440,180 L0,180 Z"
-                  fill="rgba(10,37,64,0.6)"/>
-            <!-- OCEAN FLOOR - front layer darkest -->
-            <path d="M0,163 C100,145 200,170 320,152 C440,134 560,168 700,150 C840,132 960,166 1100,148 C1220,132 1340,162 1440,150 L1440,180 L0,180 Z"
-                  fill="#0A2540"/>
-
-            <!-- CORAL growing from floor hills -->
-            <!-- Left cluster - branching coral -->
-            <path d="M60,163 L60,128 M60,128 L46,108 M60,128 L72,105 M46,108 L38,88 M46,108 L52,90 M72,105 L80,86 M72,105 L65,88"
-                  stroke="#0A2540" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-            <!-- Brain coral -->
-            <ellipse cx="130" cy="162" rx="32" ry="16" fill="#0A2540"/>
-            <ellipse cx="130" cy="158" rx="24" ry="11" fill="#0d3660"/>
-            <path d="M118,158 Q130,153 142,158 M122,162 Q130,156 138,162" stroke="rgba(42,157,143,0.3)" stroke-width="1" fill="none"/>
-            <!-- Sea fan -->
-            <path d="M220,165 L220,125 C220,125 200,105 205,88 C208,76 214,82 220,95 C220,82 226,76 232,88 C238,105 220,125 220,125"
-                  fill="#0A2540" opacity="0.9"/>
-            <!-- Seaweed -->
-            <path d="M300,168 C295,155 305,142 298,128 C291,114 302,100 296,88"
-                  stroke="#0A2540" stroke-width="4" stroke-linecap="round" fill="none"/>
-            <path d="M312,168 C318,154 308,140 315,126 C322,112 310,98 317,85"
-                  stroke="#0A2540" stroke-width="3" stroke-linecap="round" fill="none"/>
-            <!-- Rock formation -->
-            <ellipse cx="400" cy="165" rx="38" ry="16" fill="#0A2540"/>
-            <ellipse cx="420" cy="162" rx="25" ry="12" fill="#0d3660"/>
-            <!-- Tall branching coral -->
-            <path d="M490,165 L490,118 M490,118 L474,95 M490,118 L504,92 M474,95 L464,72 M474,95 L480,74 M504,92 L512,70 M504,92 L498,73"
-                  stroke="#0A2540" stroke-width="4" stroke-linecap="round" fill="none"/>
-            <!-- Small coral cluster -->
-            <ellipse cx="570" cy="162" rx="16" ry="8" fill="#0A2540"/>
-            <ellipse cx="562" cy="156" rx="9" ry="7" fill="#0A2540"/>
-            <ellipse cx="578" cy="157" rx="8" ry="6" fill="#0A2540"/>
-            <!-- Large brain coral center -->
-            <ellipse cx="660" cy="160" rx="48" ry="20" fill="#0A2540"/>
-            <ellipse cx="660" cy="155" rx="38" ry="14" fill="#0d3660"/>
-            <path d="M642,155 Q660,148 678,155 M648,160 Q660,153 672,160" stroke="rgba(42,157,143,0.25)" stroke-width="1.5" fill="none"/>
-            <!-- Fan coral -->
-            <path d="M760,165 L760,118 C760,118 736,98 742,78 C746,64 754,72 760,90 C760,72 766,64 772,78 C778,98 760,118 760,118"
-                  fill="#0A2540" opacity="0.85"/>
-            <!-- Tall seaweed -->
-            <path d="M840,168 C834,150 846,132 838,114 C830,96 842,78 835,62"
-                  stroke="#0A2540" stroke-width="5" stroke-linecap="round" fill="none"/>
-            <!-- Branching coral right -->
-            <path d="M920,165 L920,120 M920,120 L905,98 M920,120 L934,95 M905,98 L895,76 M905,98 L910,78 M934,95 L942,74"
-                  stroke="#0A2540" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-            <!-- Rock cluster -->
-            <ellipse cx="1020" cy="163" rx="42" ry="17" fill="#0A2540"/>
-            <ellipse cx="1045" cy="160" rx="28" ry="12" fill="#0d3660"/>
-            <!-- Sea fan right -->
-            <path d="M1120,165 L1120,122 C1120,122 1098,102 1104,82 C1108,68 1116,76 1120,94 C1120,76 1126,68 1132,82 C1138,102 1120,122 1120,122"
-                  fill="#0A2540" opacity="0.9"/>
-            <!-- Branching coral far right -->
-            <path d="M1220,165 L1220,115 M1220,115 L1204,90 M1220,115 L1235,88 M1204,90 L1194,68 M1204,90 L1210,70 M1235,88 L1244,66"
-                  stroke="#0A2540" stroke-width="4" stroke-linecap="round" fill="none"/>
-            <!-- Brain coral right -->
-            <ellipse cx="1340" cy="162" rx="36" ry="15" fill="#0A2540"/>
-            <ellipse cx="1340" cy="158" rx="26" ry="10" fill="#0d3660"/>
-            <!-- Small corals far right -->
-            <path d="M1410,165 L1410,138 M1410,138 L1400,122 M1410,138 L1418,120"
-                  stroke="#0A2540" stroke-width="3" stroke-linecap="round" fill="none"/>
-
-            <!-- TURTLE - swimming diagonally, 70% across -->
-            <g transform="translate(920,55) rotate(-15)" opacity="0.5">
-                <!-- Body -->
-                <ellipse cx="0" cy="0" rx="28" ry="18" fill="#0A2540"/>
-                <!-- Shell pattern -->
-                <ellipse cx="0" cy="0" rx="22" ry="14" fill="#0d3660" opacity="0.6"/>
-                <path d="M-8,-6 L0,-12 L8,-6 L8,6 L0,10 L-8,6 Z" fill="#0A2540" opacity="0.4"/>
-                <!-- Head -->
-                <ellipse cx="28" cy="-4" rx="9" ry="7" fill="#0A2540"/>
-                <!-- Front flippers -->
-                <path d="M-5,-14 C-15,-28 -28,-24 -32,-18 C-26,-14 -15,-16 -5,-14 Z" fill="#0A2540"/>
-                <path d="M-5,14 C-15,28 -28,24 -32,18 C-26,14 -15,16 -5,14 Z" fill="#0A2540"/>
-                <!-- Back flippers -->
-                <path d="M-20,-8 C-34,-14 -38,-8 -36,-2 C-32,-4 -28,-8 -20,-8 Z" fill="#0A2540"/>
-                <path d="M-20,8 C-34,14 -38,8 -36,2 C-32,4 -28,8 -20,8 Z" fill="#0A2540"/>
-                <!-- Tail -->
-                <path d="M-28,0 L-40,4 L-38,-4 Z" fill="#0A2540"/>
-            </g>
-
-            <!-- FISH SCHOOL - small distant fish -->
-            <!-- Fish 1 -->
-            <g transform="translate(180,45)" opacity="0.25">
-                <ellipse cx="0" cy="0" rx="8" ry="4" fill="#0A2540"/>
-                <path d="M-8,0 L-14,-4 L-14,4 Z" fill="#0A2540"/>
-            </g>
-            <!-- Fish 2 -->
-            <g transform="translate(200,38)" opacity="0.2">
-                <ellipse cx="0" cy="0" rx="6" ry="3" fill="#0A2540"/>
-                <path d="M-6,0 L-11,-3 L-11,3 Z" fill="#0A2540"/>
-            </g>
-            <!-- Fish 3 -->
-            <g transform="translate(192,52)" opacity="0.22">
-                <ellipse cx="0" cy="0" rx="7" ry="3.5" fill="#0A2540"/>
-                <path d="M-7,0 L-12,-3 L-12,3 Z" fill="#0A2540"/>
-            </g>
-            <!-- Fish 4 -->
-            <g transform="translate(215,46)" opacity="0.18">
-                <ellipse cx="0" cy="0" rx="5" ry="2.5" fill="#0A2540"/>
-                <path d="M-5,0 L-9,-2 L-9,2 Z" fill="#0A2540"/>
-            </g>
-            <!-- Fish 5 -->
-            <g transform="translate(205,56)" opacity="0.2">
-                <ellipse cx="0" cy="0" rx="6" ry="3" fill="#0A2540"/>
-                <path d="M-6,0 L-10,-2.5 L-10,2.5 Z" fill="#0A2540"/>
-            </g>
-            <!-- Lone larger fish left -->
-            <g transform="translate(380,72)" opacity="0.2">
-                <ellipse cx="0" cy="0" rx="12" ry="5" fill="#0A2540"/>
-                <path d="M-12,0 L-20,-5 L-20,5 Z" fill="#0A2540"/>
-            </g>
-        </svg>
+    <svg viewBox="0 0 1440 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,25 C240,5 480,50 720,22 C960,0 1200,44 1440,18 L1440,220 L0,220 Z" fill="rgba(42,157,143,0.07)"/>
+    <path d="M0,48 C200,22 440,68 680,42 C920,16 1160,60 1440,36 L1440,220 L0,220 Z" fill="rgba(42,157,143,0.13)"/>
+    <path d="M0,72 C180,48 400,88 640,62 C880,36 1120,78 1440,55 L1440,220 L0,220 Z" fill="rgba(42,157,143,0.20)"/>
+    <path d="M0,96 C160,72 380,108 620,84 C860,60 1100,100 1440,76 L1440,220 L0,220 Z" fill="rgba(42,157,143,0.28)"/>
+    <path d="M0,145 C40,108 120,162 240,128 C360,94 460,158 600,118 C740,78 840,152 1000,112 C1160,72 1280,148 1400,110 C1425,103 1435,115 1440,110 L1440,220 L0,220 Z" fill="rgba(42,157,143,0.45)"/>
+    <path d="M0,158 C50,128 140,170 260,142 C380,114 480,165 620,135 C760,105 870,162 1020,130 C1170,98 1280,158 1400,128 C1428,120 1438,138 1440,132 L1440,220 L0,220 Z" fill="rgba(10,37,64,0.65)"/>
+    <path d="M0,172 C40,148 120,178 240,156 C360,134 470,174 610,150 C750,126 870,170 1020,146 C1170,122 1290,168 1420,144 C1434,140 1438,152 1440,148 L1440,220 L0,220 Z" fill="#0A2540"/>
+    <g transform="translate(840,74) rotate(-18)" opacity="0.62">
+        <ellipse cx="0" cy="0" rx="30" ry="20" fill="#0A2540"/>
+        <ellipse cx="0" cy="0" rx="24" ry="16" fill="#0d3660" opacity="0.65"/>
+        <path d="M-5,0 Q0,-6 5,0 Q0,6 -5,0" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="none"/>
+        <ellipse cx="32" cy="0" rx="7" ry="5" fill="#0A2540"/>
+        <ellipse cx="42" cy="-2" rx="11" ry="8" fill="#0A2540"/>
+        <circle cx="47" cy="-4" r="1.8" fill="#0d3660"/>
+        <path d="M28,-16 C20,-28 2,-32 -14,-24 C-6,-15 14,-14 28,-16 Z" fill="#0A2540"/>
+        <path d="M28,16 C20,28 2,32 -14,24 C-6,15 14,14 28,16 Z" fill="#0A2540"/>
+        <path d="M-18,-12 C-28,-20 -35,-14 -33,-8 C-28,-10 -24,-11 -18,-12 Z" fill="#0A2540"/>
+        <path d="M-18,12 C-28,20 -35,14 -33,8 C-28,10 -24,11 -18,12 Z" fill="#0A2540"/>
+        <path d="M-30,0 L-37,3 L-36,-3 Z" fill="#0A2540"/>
+    </g>
+    <circle cx="890" cy="57" r="2.5" fill="rgba(42,157,143,0.35)"/>
+    <circle cx="900" cy="46" r="2" fill="rgba(42,157,143,0.28)"/>
+    <circle cx="894" cy="35" r="1.4" fill="rgba(42,157,143,0.22)"/>
+    <g opacity="0.32">
+        <g transform="translate(162,40)"><ellipse cx="0" cy="0" rx="10" ry="5" fill="#0A2540"/><path d="M-10,0 L-17,-5 L-17,5 Z" fill="#0A2540"/></g>
+        <g transform="translate(180,30)"><ellipse cx="0" cy="0" rx="8" ry="4" fill="#0A2540"/><path d="M-8,0 L-14,-4 L-14,4 Z" fill="#0A2540"/></g>
+        <g transform="translate(172,50)"><ellipse cx="0" cy="0" rx="7" ry="3.5" fill="#0A2540"/><path d="M-7,0 L-12,-3 L-12,3 Z" fill="#0A2540"/></g>
+        <g transform="translate(195,38)"><ellipse cx="0" cy="0" rx="5" ry="2.5" fill="#0A2540"/><path d="M-5,0 L-9,-2 L-9,2 Z" fill="#0A2540"/></g>
+        <g transform="translate(188,55)"><ellipse cx="0" cy="0" rx="5" ry="2.5" fill="#0A2540"/><path d="M-5,0 L-9,-2 L-9,2 Z" fill="#0A2540"/></g>
+        <g transform="translate(208,44)"><ellipse cx="0" cy="0" rx="4" ry="2" fill="#0A2540"/><path d="M-4,0 L-7,-2 L-7,2 Z" fill="#0A2540"/></g>
+    </g>
+    <g transform="translate(1150,50)" opacity="0.22">
+        <ellipse cx="0" cy="0" rx="14" ry="6" fill="#0A2540"/>
+        <path d="M-14,0 L-23,-6 L-23,6 Z" fill="#0A2540"/>
+    </g>
+    </svg>
     </div>
-
-
     <!-- RENTAL CONNECT -->
     <section class="rental-connect-section" id="rental-connect">
         <div class="container">
@@ -995,74 +895,40 @@
 
     <!-- CORAL DIVIDER: Contact to Footer -->
     <div class="coral-divider" style="background: rgba(255,255,255,0.88);">
-        <svg viewBox="0 0 1440 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <!-- Water layers -->
-            <path d="M0,35 C180,10 360,58 540,32 C720,6 900,52 1080,28 C1260,4 1360,42 1440,28 L1440,150 L0,150 Z"
-                  fill="rgba(42,157,143,0.08)"/>
-            <path d="M0,55 C160,28 340,72 520,48 C700,24 880,68 1060,44 C1240,20 1360,58 1440,44 L1440,150 L0,150 Z"
-                  fill="rgba(42,157,143,0.18)"/>
-            <path d="M0,75 C200,48 400,88 600,65 C800,42 1000,82 1200,60 C1320,46 1390,72 1440,62 L1440,150 L0,150 Z"
-                  fill="rgba(42,157,143,0.28)"/>
-
-            <!-- Ocean floor hills -->
-            <path d="M0,118 C80,95 180,128 300,108 C420,88 540,125 680,105 C820,85 940,122 1080,102 C1200,84 1320,118 1440,100 L1440,150 L0,150 Z"
-                  fill="rgba(42,157,143,0.45)"/>
-            <path d="M0,128 C100,110 220,138 360,120 C500,102 640,135 800,116 C960,97 1100,132 1260,114 C1360,103 1410,125 1440,118 L1440,150 L0,150 Z"
-                  fill="rgba(10,37,64,0.7)"/>
-            <path d="M0,138 C120,122 260,145 420,130 C580,115 740,142 920,128 C1100,114 1240,140 1400,128 C1420,126 1432,132 1440,130 L1440,150 L0,150 Z"
-                  fill="#0A2540"/>
-
-            <!-- Coral smaller version -->
-            <path d="M80,138 L80,108 M80,108 L68,90 M80,108 L90,88 M68,90 L60,72"
-                  stroke="#0A2540" stroke-width="3" stroke-linecap="round" fill="none"/>
-            <ellipse cx="180" cy="136" rx="28" ry="13" fill="#0A2540"/>
-            <ellipse cx="180" cy="132" rx="20" ry="9" fill="#0d3660"/>
-            <path d="M280,138 L280,108 C280,108 264,92 268,78 C272,66 278,74 280,88 C280,74 284,66 290,78 C294,92 280,108 280,108" fill="#0A2540"/>
-            <path d="M380,138 C374,122 386,106 378,92 C370,78 382,64 375,50" stroke="#0A2540" stroke-width="4" stroke-linecap="round" fill="none"/>
-            <ellipse cx="480" cy="135" rx="35" ry="14" fill="#0A2540"/>
-            <path d="M580,138 L580,100 M580,100 L566,80 M580,100 L592,78 M566,80 L556,60 M592,78 L600,58" stroke="#0A2540" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-            <ellipse cx="700" cy="132" rx="44" ry="18" fill="#0A2540"/>
-            <ellipse cx="700" cy="127" rx="33" ry="12" fill="#0d3660"/>
-            <path d="M820,138 L820,104 C820,104 802,86 806,70 C810,57 818,65 820,80 C820,65 826,57 832,70 C836,86 820,104 820,104" fill="#0A2540"/>
-            <path d="M940,138 L940,95 M940,95 L926,74 M940,95 L952,72 M926,74 L916,52" stroke="#0A2540" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-            <ellipse cx="1060" cy="134" rx="38" ry="15" fill="#0A2540"/>
-            <path d="M1180,138 C1174,120 1186,102 1178,86" stroke="#0A2540" stroke-width="4" stroke-linecap="round" fill="none"/>
-            <path d="M1280,138 L1280,100 M1280,100 L1266,80 M1280,100 L1292,78" stroke="#0A2540" stroke-width="3" stroke-linecap="round" fill="none"/>
-            <ellipse cx="1390" cy="135" rx="30" ry="12" fill="#0A2540"/>
-
-            <!-- Turtle swimming right side, different position -->
-            <g transform="translate(1100,52) rotate(10) scale(-1,1)" opacity="0.4">
-                <ellipse cx="0" cy="0" rx="26" ry="17" fill="#0A2540"/>
-                <ellipse cx="0" cy="0" rx="20" ry="13" fill="#0d3660" opacity="0.5"/>
-                <path d="M-8,-6 L0,-12 L8,-6 L8,6 L0,10 L-8,6 Z" fill="#0A2540" opacity="0.4"/>
-                <ellipse cx="26" cy="-3" rx="8" ry="6" fill="#0A2540"/>
-                <path d="M-5,-13 C-14,-26 -26,-22 -30,-16 C-24,-12 -14,-15 -5,-13 Z" fill="#0A2540"/>
-                <path d="M-5,13 C-14,26 -26,22 -30,16 C-24,12 -14,15 -5,13 Z" fill="#0A2540"/>
-                <path d="M-18,-8 C-32,-13 -36,-7 -34,-2 C-30,-4 -26,-8 -18,-8 Z" fill="#0A2540"/>
-                <path d="M-18,8 C-32,13 -36,7 -34,2 C-30,4 -26,8 -18,8 Z" fill="#0A2540"/>
-                <path d="M-26,0 L-38,4 L-36,-4 Z" fill="#0A2540"/>
-            </g>
-
-            <!-- Small fish school right -->
-            <g transform="translate(1200,38)" opacity="0.2">
-                <ellipse cx="0" cy="0" rx="7" ry="3.5" fill="#0A2540"/>
-                <path d="M-7,0 L-12,-3 L-12,3 Z" fill="#0A2540"/>
-            </g>
-            <g transform="translate(1218,30)" opacity="0.18">
-                <ellipse cx="0" cy="0" rx="5" ry="2.5" fill="#0A2540"/>
-                <path d="M-5,0 L-9,-2 L-9,2 Z" fill="#0A2540"/>
-            </g>
-            <g transform="translate(1210,46)" opacity="0.22">
-                <ellipse cx="0" cy="0" rx="6" ry="3" fill="#0A2540"/>
-                <path d="M-6,0 L-10,-2.5 L-10,2.5 Z" fill="#0A2540"/>
-            </g>
-            <g transform="translate(1228,40)" opacity="0.15">
-                <ellipse cx="0" cy="0" rx="5" ry="2.5" fill="#0A2540"/>
-                <path d="M-5,0 L-9,-2 L-9,2 Z" fill="#0A2540"/>
-            </g>
-        </svg>
+    <svg viewBox="0 0 1440 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <rect width="1440" height="200" fill="#0A2540"/>
+    <path d="M0,40 C220,15 460,62 700,35 C940,8 1180,55 1440,28 L1440,200 L0,200 Z" fill="rgba(42,157,143,0.10)"/>
+    <path d="M0,65 C200,38 440,78 680,52 C920,26 1160,70 1440,46 L1440,200 L0,200 Z" fill="rgba(42,157,143,0.18)"/>
+    <path d="M0,88 C180,62 400,100 640,75 C880,50 1120,92 1440,68 L1440,200 L0,200 Z" fill="rgba(42,157,143,0.28)"/>
+    <path d="M0,108 C160,84 380,118 620,94 C860,70 1100,112 1440,88 L1440,200 L0,200 Z" fill="rgba(42,157,143,0.38)"/>
+    <path d="M0,145 C70,115 170,158 300,128 C430,98 540,152 680,118 C820,84 940,148 1100,112 C1260,76 1360,142 1440,115 L1440,200 L0,200 Z" fill="rgba(42,157,143,0.4)"/>
+    <path d="M0,158 C80,132 190,165 340,140 C490,115 610,160 780,134 C950,108 1080,158 1260,130 C1360,114 1418,148 1440,138 L1440,200 L0,200 Z" fill="rgba(255,255,255,0.14)"/>
+    <path d="M0,170 C90,148 220,175 400,154 C580,133 740,168 940,148 C1140,128 1300,165 1440,146 L1440,200 L0,200 Z" fill="#FAFAF8"/>
+    <g transform="translate(440,65) rotate(12) scale(-1,1)" opacity="0.55">
+        <ellipse cx="0" cy="0" rx="28" ry="19" fill="rgba(42,157,143,0.9)"/>
+        <ellipse cx="0" cy="0" rx="22" ry="15" fill="rgba(42,157,143,0.6)" opacity="0.7"/>
+        <path d="M-5,0 Q0,-5 5,0 Q0,5 -5,0" stroke="rgba(255,255,255,0.12)" stroke-width="7" fill="none"/>
+        <ellipse cx="30" cy="0" rx="7" ry="5" fill="rgba(42,157,143,0.9)"/>
+        <ellipse cx="40" cy="-2" rx="10" ry="8" fill="rgba(42,157,143,0.9)"/>
+        <circle cx="45" cy="-4" r="1.8" fill="rgba(10,37,64,0.5)"/>
+        <path d="M26,-15 C18,-26 1,-30 -12,-22 C-4,-13 14,-13 26,-15 Z" fill="rgba(42,157,143,0.85)"/>
+        <path d="M26,15 C18,26 1,30 -12,22 C-4,13 14,13 26,15 Z" fill="rgba(42,157,143,0.85)"/>
+        <path d="M-17,-11 C-27,-19 -33,-13 -31,-7 C-27,-9 -23,-10 -17,-11 Z" fill="rgba(42,157,143,0.75)"/>
+        <path d="M-17,11 C-27,19 -33,13 -31,7 C-27,9 -23,10 -17,11 Z" fill="rgba(42,157,143,0.75)"/>
+        <path d="M-28,0 L-35,3 L-34,-3 Z" fill="rgba(42,157,143,0.85)"/>
+    </g>
+    <circle cx="396" cy="52" r="2.5" fill="rgba(255,255,255,0.18)"/>
+    <circle cx="404" cy="41" r="2" fill="rgba(255,255,255,0.14)"/>
+    <circle cx="398" cy="30" r="1.4" fill="rgba(255,255,255,0.10)"/>
+    <g opacity="0.4">
+        <g transform="translate(1160,45)"><ellipse cx="0" cy="0" rx="9" ry="4.5" fill="rgba(42,157,143,0.9)"/><path d="M-9,0 L-15,-4 L-15,4 Z" fill="rgba(42,157,143,0.9)"/></g>
+        <g transform="translate(1178,35)"><ellipse cx="0" cy="0" rx="7" ry="3.5" fill="rgba(42,157,143,0.9)"/><path d="M-7,0 L-12,-3 L-12,3 Z" fill="rgba(42,157,143,0.9)"/></g>
+        <g transform="translate(1170,54)"><ellipse cx="0" cy="0" rx="6" ry="3" fill="rgba(42,157,143,0.9)"/><path d="M-6,0 L-10,-2.5 L-10,2.5 Z" fill="rgba(42,157,143,0.9)"/></g>
+        <g transform="translate(1190,44)"><ellipse cx="0" cy="0" rx="5" ry="2.5" fill="rgba(42,157,143,0.9)"/><path d="M-5,0 L-8,-2 L-8,2 Z" fill="rgba(42,157,143,0.9)"/></g>
+        <g transform="translate(1182,60)"><ellipse cx="0" cy="0" rx="5" ry="2.5" fill="rgba(42,157,143,0.9)"/><path d="M-5,0 L-8,-2 L-8,2 Z" fill="rgba(42,157,143,0.9)"/></g>
+    </g>
+    </svg>
     </div>
-
 <!-- FOOTER -->
 <footer>
     <div class="container">
