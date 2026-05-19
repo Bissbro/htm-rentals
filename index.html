@@ -428,7 +428,7 @@
         .promo-banner-link { display: block; overflow: hidden; }
 
         /* ========== CONTACT ========== */
-        .contact-section { background: linear-gradient(180deg, var(--warm-white) 0%, rgba(42,157,143,0.04) 100%); padding: 60px 0; }
+        .contact-section { background: transparent; padding: 60px 0; }
         .contact-section .section-title { color: var(--navy); }
         .contact-section .section-label { color: var(--teal); }
         .contact-section .section-divider { background: var(--teal); }
@@ -607,9 +607,68 @@
             background: linear-gradient(180deg, #ffffff 0%, rgba(42,157,143,0.06) 50%, rgba(42,157,143,0.03) 100%); 
         }
         .units-section { background: #ffffff; }
+
+        /* ========== OCEAN THEME ========== */
+        .ocean-bg {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+            overflow: hidden;
+        }
+        .ocean-bg svg {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+        main, header, footer { position: relative; z-index: 1; }
+        .hero { position: relative; z-index: 1; }
+
+        /* Coral divider */
+        .coral-divider {
+            position: relative; line-height: 0;
+            margin-bottom: -2px; z-index: 2;
+            overflow: hidden;
+        }
+        .coral-divider svg { display: block; width: 100%; }
+
+        /* Remove old wave dividers */
+        .wave-divider { display: none; }
+
+        /* Light sections get white bg so content is readable */
+        .units-section { background: rgba(255,255,255,0.85); }
+        .experiences-section { background: rgba(255,255,255,0.75); }
+        .contact-section { background: rgba(255,255,255,0.88); padding: 60px 0; }
+        .amenities-strip { background: rgba(255,255,255,0.5); }
 </style>
 </head>
 <body>
+
+<!-- OCEAN BACKGROUND -->
+<div class="ocean-bg" aria-hidden="true">
+    <svg viewBox="0 0 400 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+            <linearGradient id="waveGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:rgba(42,157,143,0.18)"/>
+                <stop offset="100%" style="stop-color:rgba(42,157,143,0.04)"/>
+            </linearGradient>
+            <linearGradient id="waveGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:rgba(42,157,143,0.10)"/>
+                <stop offset="100%" style="stop-color:rgba(42,157,143,0.02)"/>
+            </linearGradient>
+        </defs>
+        <!-- Main wave body flowing down the page -->
+        <path d="M-50,80 C50,20 150,120 200,80 C250,40 320,140 420,100 L420,280 C350,320 240,220 180,270 C120,320 40,240 -50,280 Z" 
+              fill="url(#waveGrad1)"/>
+        <path d="M-30,300 C80,260 180,360 260,310 C340,260 400,340 450,300 L450,480 C380,520 280,430 200,470 C120,510 30,440 -30,480 Z" 
+              fill="url(#waveGrad2)"/>
+        <path d="M350,420 C420,380 480,460 500,430 L500,600 C460,640 380,570 320,600 C260,630 200,570 180,540 C220,480 300,450 350,420 Z" 
+              fill="url(#waveGrad1)" opacity="0.7"/>
+        <path d="M-60,580 C40,540 140,620 220,580 C300,540 360,600 420,570 L420,750 C340,790 240,720 160,760 C80,800 0,740 -60,760 Z" 
+              fill="url(#waveGrad2)" opacity="0.8"/>
+        <path d="M100,780 C180,740 280,820 360,780 C420,755 460,790 480,800 L480,900 C400,900 300,900 200,900 C100,900 0,900 -50,900 L-50,820 C0,790 60,810 100,780 Z" 
+              fill="url(#waveGrad1)" opacity="0.5"/>
+    </svg>
+</div>
+
 
 <!-- HEADER -->
 <header class="header" id="header">
@@ -731,14 +790,59 @@
 
 
 
-    <!-- WAVE: Experiences to Rental Connect - sandbank moment, teal melting into navy -->
-    <div class="wave-divider" style="background: linear-gradient(180deg, rgba(42,157,143,0.08) 0%, rgba(42,157,143,0.04) 100%);">
+
+    <!-- CORAL DIVIDER: Experiences to Rental Connect -->
+    <div class="coral-divider" style="background: transparent;">
         <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,40 C180,90 360,10 560,55 C760,95 960,15 1160,50 C1300,70 1380,30 1440,45 L1440,120 L0,120 Z" fill="rgba(42,157,143,0.5)"/>
-            <path d="M0,65 C200,30 400,80 620,50 C840,20 1040,75 1240,45 C1340,30 1400,60 1440,55 L1440,120 L0,120 Z" fill="rgba(42,157,143,0.3)"/>
-            <path d="M0,85 C240,55 480,95 720,70 C960,45 1200,85 1440,65 L1440,120 L0,120 Z" fill="#0A2540"/>
+            <!-- Ocean water wave -->
+            <path d="M0,60 C120,30 240,80 360,55 C480,30 600,75 720,50 C840,25 960,70 1080,48 C1200,26 1320,65 1440,45 L1440,120 L0,120 Z" 
+                  fill="rgba(42,157,143,0.15)"/>
+            <path d="M0,75 C100,50 220,90 340,68 C460,46 580,85 700,65 C820,45 940,80 1060,62 C1180,44 1300,75 1440,58 L1440,120 L0,120 Z" 
+                  fill="rgba(42,157,143,0.25)"/>
+            <!-- Coral silhouettes -->
+            <!-- Brain coral left -->
+            <ellipse cx="80" cy="108" rx="35" ry="18" fill="#0A2540"/>
+            <ellipse cx="80" cy="105" rx="28" ry="14" fill="#0d3660"/>
+            <!-- Branching coral -->
+            <path d="M160,120 L160,90 M160,90 L148,72 M160,90 L170,68 M148,72 L140,55 M170,68 L178,52" 
+                  stroke="#0A2540" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <!-- Fan coral -->
+            <path d="M260,120 L260,85 C260,85 240,70 245,55 C250,40 260,50 260,85 C260,50 270,40 275,55 C280,70 260,85 260,85" 
+                  fill="#0A2540"/>
+            <!-- Small rocks -->
+            <ellipse cx="340" cy="116" rx="20" ry="10" fill="#0A2540"/>
+            <ellipse cx="365" cy="118" rx="12" ry="7" fill="#0d3660"/>
+            <!-- Tall thin coral -->
+            <path d="M450,120 L450,75 M450,75 L442,60 M450,75 L456,58 M442,60 L438,45 M456,58 L460,44" 
+                  stroke="#0A2540" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <!-- Sea anemone -->
+            <path d="M540,120 L540,95 C535,88 530,80 535,74 C538,70 542,74 540,80 C538,74 542,70 546,74 C551,80 546,88 540,95" 
+                  fill="#0A2540"/>
+            <!-- Brain coral center -->
+            <ellipse cx="650" cy="110" rx="45" ry="20" fill="#0A2540"/>
+            <ellipse cx="650" cy="107" rx="36" ry="15" fill="#0d3660"/>
+            <!-- Branching coral right center -->
+            <path d="M780,120 L780,82 M780,82 L765,62 M780,82 L793,60 M765,62 L756,44 M793,60 L800,42 M756,44 L750,30 M800,42 L806,28" 
+                  stroke="#0A2540" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <!-- Small corals -->
+            <ellipse cx="880" cy="114" rx="25" ry="12" fill="#0A2540"/>
+            <path d="M950,120 L950,88 M950,88 L940,72 M950,88 L958,70" 
+                  stroke="#0A2540" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <!-- Fan coral right -->
+            <path d="M1060,120 L1060,80 C1060,80 1040,65 1045,48 C1050,32 1060,45 1060,80 C1060,45 1070,32 1075,48 C1080,65 1060,80 1060,80" 
+                  fill="#0A2540"/>
+            <!-- Rocks right -->
+            <ellipse cx="1180" cy="113" rx="35" ry="14" fill="#0A2540"/>
+            <ellipse cx="1210" cy="116" rx="20" ry="9" fill="#0d3660"/>
+            <!-- Branching coral far right -->
+            <path d="M1320,120 L1320,78 M1320,78 L1308,58 M1320,78 L1330,56 M1308,58 L1300,42" 
+                  stroke="#0A2540" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <ellipse cx="1400" cy="112" rx="28" ry="13" fill="#0A2540"/>
+            <!-- Ocean floor -->
+            <rect x="0" y="115" width="1440" height="5" fill="#0A2540"/>
         </svg>
     </div>
+
     <!-- RENTAL CONNECT -->
     <section class="rental-connect-section" id="rental-connect">
         <div class="container">
@@ -800,13 +904,39 @@
 
 </main>
 
-    <!-- WAVE: Contact to Footer -->
-    <div class="wave-divider" style="background: linear-gradient(180deg, var(--warm-white) 0%, rgba(42,157,143,0.04) 100%);">
-        <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,40 C180,10 360,65 580,35 C800,5 1000,60 1200,35 C1320,20 1390,50 1440,40 L1440,80 L0,80 Z" fill="rgba(42,157,143,0.12)"/>
-            <path d="M0,58 C220,30 440,70 680,48 C920,25 1140,65 1360,45 C1400,40 1425,55 1440,52 L1440,80 L0,80 Z" fill="#0A2540"/>
+
+    <!-- CORAL DIVIDER: Contact to Footer -->
+    <div class="coral-divider" style="background: rgba(255,255,255,0.88);">
+        <svg viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <!-- Gentle wave -->
+            <path d="M0,50 C180,25 360,70 540,45 C720,20 900,65 1080,42 C1260,19 1350,55 1440,40 L1440,100 L0,100 Z" 
+                  fill="rgba(42,157,143,0.12)"/>
+            <path d="M0,65 C160,42 320,78 500,58 C680,38 860,72 1040,55 C1220,38 1340,68 1440,55 L1440,100 L0,100 Z" 
+                  fill="rgba(42,157,143,0.2)"/>
+            <!-- Sandy coral floor - smaller, softer -->
+            <ellipse cx="60" cy="94" rx="28" ry="12" fill="#0A2540"/>
+            <path d="M140,100 L140,75 M140,75 L130,60 M140,75 L148,58" 
+                  stroke="#0A2540" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <ellipse cx="240" cy="92" rx="35" ry="14" fill="#0A2540"/>
+            <path d="M360,100 L360,72 C360,72 345,58 350,45 C354,34 360,45 360,72 C360,45 366,34 370,45 C375,58 360,72 360,72" 
+                  fill="#0A2540"/>
+            <ellipse cx="480" cy="95" rx="22" ry="10" fill="#0A2540"/>
+            <path d="M580,100 L580,70 M580,70 L570,55 M580,70 L588,52 M570,55 L564,40" 
+                  stroke="#0A2540" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <ellipse cx="700" cy="90" rx="42" ry="16" fill="#0A2540"/>
+            <ellipse cx="720" cy="88" rx="30" ry="11" fill="#0d3660"/>
+            <path d="M860,100 L860,68 M860,68 L848,50 M860,68 L870,48" 
+                  stroke="#0A2540" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <ellipse cx="980" cy="93" rx="30" ry="12" fill="#0A2540"/>
+            <path d="M1100,100 L1100,74 C1100,74 1086,60 1090,46 C1094,34 1100,46 1100,74 C1100,46 1106,34 1110,46 C1114,60 1100,74 1100,74" 
+                  fill="#0A2540"/>
+            <ellipse cx="1240" cy="94" rx="25" ry="11" fill="#0A2540"/>
+            <path d="M1360,100 L1360,72 M1360,72 L1350,56 M1360,72 L1368,54" 
+                  stroke="#0A2540" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <rect x="0" y="96" width="1440" height="4" fill="#0A2540"/>
         </svg>
     </div>
+
 
 <!-- FOOTER -->
 <footer>
