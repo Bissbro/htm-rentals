@@ -942,9 +942,8 @@
             <h2 class="section-title">What Our Guests Say</h2>
             <div class="section-divider"></div>
             <div class="reviews-overall" id="reviews-overall" style="display:none;">
-                <div class="reviews-avg" id="reviews-avg">0.0</div>
-                <div class="reviews-avg-right">
-                    <div class="reviews-stars-row" id="reviews-avg-stars"></div>
+                <div>
+                    <div class="reviews-avg-stars" id="reviews-avg-stars"></div>
                     <div class="reviews-count" id="reviews-count"></div>
                 </div>
             </div>
@@ -1509,35 +1508,52 @@ async function loadReviews() {
 
         // Overall rating
         const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
-        document.getElementById('reviews-avg').textContent = avg.toFixed(1);
-        document.getElementById('reviews-count').textContent = reviews.length + ' verified review' + (reviews.length > 1 ? 's' : '');
-        document.getElementById('reviews-overall').style.display = 'flex';
-
-        // Stars
         const starsEl = document.getElementById('reviews-avg-stars');
         starsEl.innerHTML = [1,2,3,4,5].map(i =>
             `<i class="fas fa-star${i <= Math.round(avg) ? '' : '-o'}"></i>`
-        ).join('');
+        ).join('') + `<span class="reviews-avg-num">${avg.toFixed(1)}</span>`;
+        document.getElementById('reviews-count').textContent = reviews.length + ' guest review' + (reviews.length > 1 ? 's' : '');
+        document.getElementById('reviews-overall').style.display = 'flex';
 
         // Cards
-        const MAXLEN = 160;
+        const MAXLEN = 150;
+        const platformConfig = {
+            direct:  { icon: 'fas fa-shield-alt', label: 'HTM Direct',   cls: 'badge-direct'   },
+            airbnb:  { icon: 'fas fa-home',        label: 'Airbnb',       cls: 'badge-airbnb'   },
+            booking: { icon: 'fas fa-bed',          label: 'Booking.com',  cls: 'badge-booking'  },
+            google:  { icon: 'fab fa-google',       label: 'Google',       cls: 'badge-google'   },
+            agoda:   { icon: 'fas fa-plane',        label: 'Agoda',        cls: 'badge-agoda'    }
+        };
         container.innerHTML = '<div style="min-width:24px;flex-shrink:0;"></div>' +
         reviews.map((r, idx) => {
             const long = r.comment && r.comment.length > MAXLEN;
             const short = long ? r.comment.substring(0, MAXLEN) + '...' : r.comment;
             const stars = [1,2,3,4,5].map(i =>
-                `<i class="fas fa-star" style="color:${i <= r.rating ? '#C9A96E' : 'rgba(255,255,255,0.15)'};font-size:12px;"></i>`
+                `<i class="fas fa-star${i <= r.rating ? '' : '" style="color:rgba(255,255,255,0.15)'}" ></i>`
             ).join('');
-            const unitName = r.unit_number ? `${r.unit_number} · ${r.unit_type || ''}` : '';
+            const unitMeta = r.unit_number ? `Stayed in ${r.unit_number}` : '';
+            const countryMeta = r.country || '';
+            const meta = [countryMeta, unitMeta].filter(Boolean).join(' · ');
+            const cc = r.country ? r.country.substring(0,2).toUpperCase() : '';
+            const platform = r.platform || 'direct';
+            const pc = platformConfig[platform] || platformConfig.direct;
+            const verifiedBadge = r.is_verified
+                ? `<span class="review-badge badge-verified"><i class="fas fa-shield-alt"></i> HTM Verified</span>`
+                : '';
+            const platformBadge = `<span class="review-badge ${pc.cls}"><i class="${pc.icon}"></i> ${pc.label}</span>`;
             return `
             <div class="review-card">
-                <div class="review-stars">${stars}</div>
+                <div class="review-quote">&ldquo;</div>
                 <div class="review-comment" id="rc-${idx}">${short}</div>
                 ${long ? `<button class="review-readmore" onclick="expandReview(${idx}, `+JSON.stringify(r.comment)+`)">Read more</button>` : ''}
                 <div class="review-footer">
-                    <div class="review-guest">${r.guest_name}</div>
-                    <div class="review-meta">${r.country || ''}${unitName ? ' · Stayed in ' + unitName : ''}</div>
-                    ${r.is_verified ? '<div class="review-verified"><i class="fas fa-check-circle"></i> Verified Stay</div>' : ''}
+                    <div class="review-guest-row">
+                        <div class="review-guest">${r.guest_name}</div>
+                        ${cc ? `<span class="review-country-code">${cc}</span>` : ''}
+                    </div>
+                    <div class="review-stars-row">${stars}</div>
+                    ${meta ? `<div class="review-meta">${meta}</div>` : ''}
+                    <div class="review-badges">${verifiedBadge}${platformBadge}</div>
                 </div>
             </div>`;
         }).join('') + '<div style="min-width:24px;flex-shrink:0;"></div>';
