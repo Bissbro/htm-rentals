@@ -598,6 +598,74 @@
         .experiences-section { background: transparent; }
         .contact-section { background: transparent; padding: 60px 0; }
         .amenities-strip { background: var(--navy); }
+
+        /* ========== AVAILABILITY CHECKER ========== */
+        .availability-strip {
+            background: var(--navy);
+            padding: 16px 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .availability-inner {
+            display: flex; gap: 10px; align-items: center;
+            max-width: 600px; margin: 0 auto;
+            flex-wrap: nowrap;
+        }
+        .avail-input-wrap {
+            flex: 1; min-width: 0;
+            display: flex; flex-direction: column; gap: 3px;
+        }
+        .avail-label {
+            font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+            color: rgba(255,255,255,0.4); font-weight: 600;
+        }
+        .avail-input {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; padding: 8px 10px;
+            color: white; font-size: 12px; font-family: 'Inter', sans-serif;
+            width: 100%; outline: none;
+            -webkit-appearance: none;
+        }
+        .avail-input:focus { border-color: var(--gold); }
+        .avail-btn {
+            background: var(--gold-gradient);
+            color: white; border: none; cursor: pointer;
+            padding: 10px 16px; border-radius: 8px;
+            font-size: 12px; font-weight: 700;
+            white-space: nowrap; flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(201,169,110,0.3);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .avail-btn:hover { opacity: 0.9; }
+
+        /* Unit availability overlays */
+        .unit-card .avail-overlay {
+            display: none;
+            position: absolute; top: 12px; right: 12px;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 11px; font-weight: 700;
+            z-index: 20; letter-spacing: 0.3px;
+        }
+        .unit-card.avail-yes .avail-overlay {
+            display: block;
+            background: rgba(42,157,143,0.9);
+            color: white;
+        }
+        .unit-card.avail-no .avail-overlay {
+            display: block;
+            background: rgba(0,0,0,0.7);
+            color: rgba(255,255,255,0.8);
+        }
+        .unit-card.avail-no {
+            filter: grayscale(0.6) opacity(0.7);
+            border-color: rgba(255,255,255,0.15) !important;
+            box-shadow: none !important;
+        }
+        .unit-card.avail-yes {
+            border-color: var(--teal) !important;
+            box-shadow: 0 0 16px rgba(42,157,143,0.3) !important;
+        }
 </style>
 </head>
 <body>
@@ -719,6 +787,22 @@
         </svg>
     </div>
 <!-- UNITS -->
+
+<!-- AVAILABILITY CHECKER -->
+<div class="availability-strip" id="availability-strip">
+    <div class="availability-inner">
+        <div class="avail-input-wrap">
+            <div class="avail-label">Check In</div>
+            <input type="date" class="avail-input" id="avail-checkin">
+        </div>
+        <div class="avail-input-wrap">
+            <div class="avail-label">Check Out</div>
+            <input type="date" class="avail-input" id="avail-checkout">
+        </div>
+        <button class="avail-btn" onclick="checkAvailability()">Check</button>
+    </div>
+</div>
+
 <section class="units-section" id="units">
     <div class="container">
         <div class="section-label">Our Apartments</div>
@@ -1001,6 +1085,82 @@ function startHeroTimer() {
 // ========== UNITS ==========
 
 
+
+
+// ========== AVAILABILITY CHECKER ==========
+async function checkAvailability() {
+    const checkin = document.getElementById('avail-checkin').value;
+    const checkout = document.getElementById('avail-checkout').value;
+    if (!checkin || !checkout) { alert('Please select both dates'); return; }
+    if (checkin >= checkout) { alert('Check-out must be after check-in'); return; }
+
+    const btn = document.querySelector('.avail-btn');
+    btn.textContent = '...';
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(`${API}/bookings/availability`);
+        const data = await res.json();
+
+        const cin = new Date(checkin);
+        const cout = new Date(checkout);
+
+        // Get all unit IDs from cards
+        const cards = document.querySelectorAll('.unit-card[data-id]');
+
+        cards.forEach(card => {
+            const unitId = parseInt(card.dataset.id);
+            card.classList.remove('avail-yes', 'avail-no');
+
+            // Check bookings overlap
+            const hasBooking = (data.bookings || []).some(b => {
+                if (b.unit_id !== unitId) return false;
+                const bIn = new Date(b.check_in_date);
+                const bOut = new Date(b.check_out_date);
+                return cin < bOut && cout > bIn;
+            });
+
+            // Check blocked dates
+            const hasBlocked = (data.blocked_dates || []).some(b => {
+                if (b.unit_id !== unitId) return false;
+                const bd = new Date(b.blocked_date);
+                return bd >= cin && bd < cout;
+            });
+
+            const available = !hasBooking && !hasBlocked;
+            card.classList.add(available ? 'avail-yes' : 'avail-no');
+
+            // Add overlay if not exists
+            let overlay = card.querySelector('.avail-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'avail-overlay';
+                card.querySelector('.unit-gallery').appendChild(overlay);
+            }
+            overlay.textContent = available ? '✓ Available' : '✗ Not Available';
+        });
+
+        // Scroll to units
+        document.getElementById('units').scrollIntoView({ behavior: 'smooth' });
+
+    } catch(e) {
+        console.error('Availability check error:', e);
+        alert('Could not check availability. Please try again.');
+    } finally {
+        btn.textContent = 'Check';
+        btn.disabled = false;
+    }
+}
+
+// Set min date to today
+window.addEventListener('DOMContentLoaded', () => {
+    const today = new Date().toISOString().split('T')[0];
+    const cin = document.getElementById('avail-checkin');
+    const cout = document.getElementById('avail-checkout');
+    if (cin) cin.min = today;
+    if (cout) cout.min = today;
+    if (cin) cin.addEventListener('change', () => { if (cout) cout.min = cin.value; });
+});
 
 const unitGalleryState = {};
 
