@@ -1026,42 +1026,34 @@ function slideUnitGallery(id, dir) {
 
 async function loadUnits() {
     try {
+    try {
         const res = await fetch(`${API}/units`);
         const data = await res.json();
         const units = data.units || data;
         const carousel = document.getElementById('units-carousel');
-        const dotsContainer = document.getElementById('units-dots');
         if (!units.length) { carousel.innerHTML = '<p style="padding:40px;color:#999;">No units available.</p>'; return; }
 
-        carousel.innerHTML = units.map(unit => renderUnit(unit)).join('');
-        unitCards = Array.from(carousel.querySelectorAll('.unit-card'));
-
-        dotsContainer.innerHTML = units.map((_, i) =>
-            `<button class="carousel-dot${i === 0 ? ' active' : ''}" onclick="goToUnit(${i})" aria-label="Unit ${i+1}"></button>`
-        ).join('');
-
-        // Set initial positions
-        goToUnit(0, false);
-
-        // Touch/swipe support
-        let startX = 0;
-        carousel.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-        carousel.addEventListener('touchend', e => {
-            const diff = startX - e.changedTouches[0].clientX;
-            if (Math.abs(diff) > 50) diff > 0 ? goToUnit(currentUnit + 1) : goToUnit(currentUnit - 1);
+        const order = ['A-701', 'A-207', 'A-106'];
+        units.sort((a, b) => {
+            const ai = order.indexOf(a.unit_number || '');
+            const bi = order.indexOf(b.unit_number || '');
+            if (ai === -1 && bi === -1) return 0;
+            if (ai === -1) return 1;
+            if (bi === -1) return -1;
+            return ai - bi;
         });
 
-        // Click side cards to navigate
-        carousel.addEventListener('click', e => {
-            const card = e.target.closest('.unit-card');
-            if (!card) return;
-            if (card.classList.contains('prev')) goToUnit(currentUnit - 1);
-            else if (card.classList.contains('next')) goToUnit(currentUnit + 1);
+        carousel.innerHTML = units.map(unit => renderUnit(unit)).join('');
+
+        units.forEach(unit => {
+            let imgs = unit.gallery_images || [];
+            if (typeof imgs === 'string') { try { imgs = JSON.parse(imgs); } catch(e) { imgs = []; } }
+            if (!imgs.length && unit.featured_image) imgs = [unit.featured_image];
+            initUnitGallery(unit.id, imgs);
         });
 
     } catch(e) { console.error('Units load error:', e); }
 }
-
 
 
 function renderUnit(unit) {
