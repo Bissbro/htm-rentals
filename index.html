@@ -279,12 +279,9 @@
             background: var(--white);
             border-radius: var(--radius-xl);
             overflow: hidden;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            border: 2px solid transparent;
-            transition: box-shadow 0.4s;
+            border: 2px solid #C9A96E;
+            box-shadow: 0 0 16px rgba(201,169,110,0.25), 0 4px 24px rgba(0,0,0,0.08);
             -webkit-tap-highlight-color: transparent;
-        }
-        .unit-card {
         }
 
         /* Unit Card Inner */
@@ -1004,6 +1001,29 @@ function startHeroTimer() {
 // ========== UNITS ==========
 
 
+
+const unitGalleryState = {};
+
+function initUnitGallery(id, images) {
+    unitGalleryState[id] = { current: 0, total: images.length };
+    const gallery = document.getElementById('ugallery-' + id);
+    if (!gallery) return;
+    let startX = 0;
+    gallery.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    gallery.addEventListener('touchend', e => {
+        const diff = startX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) slideUnitGallery(id, diff > 0 ? 1 : -1);
+    });
+}
+
+function slideUnitGallery(id, dir) {
+    const state = unitGalleryState[id];
+    if (!state) return;
+    state.current = ((state.current + dir) + state.total) % state.total;
+    const track = document.getElementById('utrack-' + id);
+    if (track) track.style.transform = 'translateX(-' + (state.current * 100) + '%)';
+}
+
 async function loadUnits() {
     try {
         const res = await fetch(`${API}/units`);
@@ -1078,8 +1098,8 @@ function renderUnit(unit) {
             ${arrowsHtml}
             
             <div class="unit-gallery-overlay">
-                <div class="unit-spec-pill"><i class="fas fa-users"></i>Max Guest</div>
-                <div class="unit-spec-pill"><i class="fas fa-bed"></i>Bed</div>
+                <div class="unit-spec-pill"><i class="fas fa-users"></i>${maxGuests} Max Guest</div>
+                <div class="unit-spec-pill"><i class="fas fa-bed"></i>${bedrooms} Bed</div>
                 <div class="unit-spec-pill"><i class="fas fa-utensils"></i>Kitchen</div>
             </div>
         </div>
