@@ -1050,10 +1050,11 @@ async function loadUnits() {
 
 
 function renderUnit(unit) {
-    const images = unit.gallery_images && unit.gallery_images.length
-        ? (unit.featured_image && !unit.gallery_images.includes(unit.featured_image)
-            ? [unit.featured_image, ...unit.gallery_images]
-            : unit.gallery_images)
+    let galleryImages = unit.gallery_images || [];
+    if (typeof galleryImages === 'string') {
+        try { galleryImages = JSON.parse(galleryImages); } catch(e) { galleryImages = []; }
+    }
+    const images = galleryImages.length ? galleryImages
         : [unit.featured_image || 'https://via.placeholder.com/400x300?text=HTM+Rentals'];
 
     const unitNumber = unit.unit_number || unit.unit_name.match(/A-[\w-]+/)?.[0] || unit.unit_name;
