@@ -87,7 +87,7 @@
             box-shadow: 0 2px 20px rgba(0,0,0,0.2);
         }
         .header-logo {
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: center; gap: 6px;
             text-decoration: none;
         }
         .header-logo img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; }
@@ -244,7 +244,7 @@
         /* ========== AMENITIES STRIP ========== */
         .amenities-strip {
             background: var(--navy);
-            padding: 14px 0;
+            padding: 10px 0;
         }
         .amenities-inner {
             display: flex; gap: 0;
@@ -254,13 +254,13 @@
         .amenities-inner::-webkit-scrollbar { display: none; }
         .amenity-pill {
             display: flex; align-items: center; gap: 10px;
-            padding: 0 18px; white-space: nowrap;
+            padding: 0 12px; white-space: nowrap;
             border-right: 1px solid rgba(255,255,255,0.1);
             flex-shrink: 0;
         }
         .amenity-pill:last-child { border-right: none; }
-        .amenity-pill i { color: var(--teal); font-size: 13px; }
-        .amenity-pill span { color: rgba(255,255,255,0.9); font-size: 11px; font-weight: 500; }
+        .amenity-pill i { color: var(--teal); font-size: 11px; }
+        .amenity-pill span { color: rgba(255,255,255,0.9); font-size: 10px; font-weight: 500; }
 
         /* ========== UNITS COVERFLOW ========== */
         .units-section { background: #ffffff; padding: 40px 0 48px; }
@@ -1114,6 +1114,7 @@ function clearAvailability() {
         const overlay = card.querySelector('.avail-overlay');
         if (overlay) overlay.remove();
     });
+    document.querySelector('.avail-btn').textContent = 'Check Availability';
 }
 async function checkAvailability() {
     const checkin = document.getElementById('avail-checkin').value;
