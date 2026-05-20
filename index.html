@@ -297,7 +297,7 @@
         .unit-gallery-dots { position: absolute; bottom: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; }
         .unit-gallery-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; padding: 0; cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
         .unit-gallery-dot.active { background: white; width: 18px; border-radius: 3px; }
-        .unit-gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.88); border: none; cursor: pointer; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: var(--navy); z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.15); -webkit-tap-highlight-color: transparent; }
+        .unit-gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.92); border: none; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; color: var(--navy); z-index: 10; box-shadow: 0 2px 12px rgba(0,0,0,0.2); -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         .unit-gallery-arrow.prev { left: 12px; }
         .unit-gallery-arrow.next { right: 12px; }
         .unit-gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -1078,8 +1078,8 @@ function renderUnit(unit) {
             ${arrowsHtml}
             
             <div class="unit-gallery-overlay">
-                <div class="unit-spec-pill"><i class="fas fa-users"></i>${maxGuests}</div>
-                <div class="unit-spec-pill"><i class="fas fa-bed"></i>${bedrooms}</div>
+                <div class="unit-spec-pill"><i class="fas fa-users"></i>Max Guest</div>
+                <div class="unit-spec-pill"><i class="fas fa-bed"></i>Bed</div>
                 <div class="unit-spec-pill"><i class="fas fa-utensils"></i>Kitchen</div>
             </div>
         </div>
