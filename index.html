@@ -677,6 +677,15 @@
             border-color: rgba(255,255,255,0.15) !important;
             box-shadow: none !important;
         }
+        .unit-card.avail-no .btn-view-unit {
+            pointer-events: none;
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .unit-card.avail-no .unit-gallery-arrow {
+            pointer-events: none;
+            opacity: 0.3;
+        }
         .unit-card.avail-yes {
             border-color: var(--teal) !important;
             box-shadow: 0 0 16px rgba(42,157,143,0.3) !important;
@@ -1109,10 +1118,19 @@ function startHeroTimer() {
 function clearAvailability() {
     document.getElementById('avail-checkin').value = '';
     document.getElementById('avail-checkout').value = '';
-    document.querySelectorAll('.unit-card').forEach(card => {
+    const carousel = document.getElementById('units-carousel');
+    const allCards = Array.from(carousel.querySelectorAll('.unit-card'));
+    const order = ['A-701', 'A-207', 'A-106'];
+    allCards.sort((a, b) => {
+        const an = a.querySelector('.unit-name')?.textContent.trim() || '';
+        const bn = b.querySelector('.unit-name')?.textContent.trim() || '';
+        return order.indexOf(an) - order.indexOf(bn);
+    });
+    allCards.forEach(card => {
         card.classList.remove('avail-yes', 'avail-no');
         const overlay = card.querySelector('.avail-overlay');
         if (overlay) overlay.remove();
+        carousel.appendChild(card);
     });
     document.querySelector('.avail-btn').textContent = 'Check Availability';
 }
@@ -1167,6 +1185,13 @@ async function checkAvailability() {
             }
             overlay.textContent = available ? '✓ Available' : '✗ Not Available';
         });
+
+        // Sort available cards to top
+        const carousel = document.getElementById('units-carousel');
+        const allCards = Array.from(carousel.querySelectorAll('.unit-card'));
+        const available = allCards.filter(c => c.classList.contains('avail-yes'));
+        const unavailable = allCards.filter(c => c.classList.contains('avail-no'));
+        [...available, ...unavailable].forEach(card => carousel.appendChild(card));
 
         // Scroll to units
         document.getElementById('units').scrollIntoView({ behavior: 'smooth' });
