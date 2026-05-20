@@ -1194,14 +1194,6 @@ const unitGalleryState = {};
 
 function initUnitGallery(id, images) {
     unitGalleryState[id] = { current: 0, total: images.length };
-    const gallery = document.getElementById('ugallery-' + id);
-    if (!gallery) return;
-    let startX = 0;
-    gallery.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-    gallery.addEventListener('touchend', e => {
-        const diff = startX - e.changedTouches[0].clientX;
-        if (Math.abs(diff) > 40) slideUnitGallery(id, diff > 0 ? 1 : -1);
-    });
 }
 
 function slideUnitGallery(id, dir) {
