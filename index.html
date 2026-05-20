@@ -690,6 +690,65 @@
             border-color: var(--teal) !important;
             box-shadow: 0 0 16px rgba(42,157,143,0.3) !important;
         }
+
+        /* ========== REVIEWS ========== */
+        .reviews-section { background: var(--navy); padding: 60px 0; }
+        .reviews-section .section-title { color: white; }
+        .reviews-section .section-label { color: var(--teal); }
+        .reviews-section .section-divider { background: var(--teal); }
+        .reviews-overall {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 32px;
+        }
+        .reviews-avg {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem; font-weight: 700; color: white; line-height: 1;
+        }
+        .reviews-avg-right { display: flex; flex-direction: column; gap: 4px; }
+        .reviews-stars-row { display: flex; gap: 3px; }
+        .reviews-stars-row i { color: var(--gold); font-size: 16px; }
+        .reviews-count { font-size: 12px; color: rgba(255,255,255,0.45); }
+        .reviews-scroll {
+            display: flex; gap: 16px;
+            overflow-x: auto; scrollbar-width: none;
+            padding: 4px 24px 20px;
+        }
+        .reviews-scroll::-webkit-scrollbar { display: none; }
+        .review-card {
+            min-width: 280px; max-width: 280px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-lg);
+            padding: 20px; flex-shrink: 0;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .review-stars { display: flex; gap: 3px; }
+        .review-stars i { color: var(--gold); font-size: 13px; }
+        .review-comment {
+            font-size: 13px; color: rgba(255,255,255,0.8);
+            line-height: 1.7; flex: 1;
+        }
+        .review-comment.expanded { /* show all */ }
+        .review-readmore {
+            color: var(--teal); font-size: 12px; cursor: pointer;
+            background: none; border: none; padding: 0;
+            font-family: 'Inter', sans-serif; text-align: left;
+        }
+        .review-footer { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; }
+        .review-guest { font-size: 13px; font-weight: 600; color: white; margin-bottom: 2px; }
+        .review-meta { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 6px; }
+        .review-verified {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(42,157,143,0.12);
+            border: 1px solid rgba(42,157,143,0.25);
+            border-radius: 20px; padding: 2px 8px;
+            font-size: 10px; color: var(--teal); font-weight: 600;
+        }
+        .review-verified i { font-size: 9px; }
+        .reviews-empty {
+            color: rgba(255,255,255,0.3); font-size: 14px;
+            padding: 40px 24px; text-align: center;
+        }
 </style>
 </head>
 <body>
@@ -842,6 +901,93 @@
 </section>
 
 <!-- EXPERIENCES -->
+
+
+    <!-- CORAL DIVIDER: Units to Reviews -->
+    <div class="coral-divider" style="background: transparent;">
+    <svg viewBox="0 0 1440 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,25 C240,5 480,50 720,22 C960,0 1200,44 1440,18 L1440,220 L0,220 Z" fill="rgba(42,157,143,0.07)"/>
+    <path d="M0,48 C200,22 440,68 680,42 C920,16 1160,60 1440,36 L1440,220 L0,220 Z" fill="rgba(42,157,143,0.13)"/>
+    <path d="M0,72 C180,48 400,88 640,62 C880,36 1120,78 1440,55 L1440,220 L0,220 Z" fill="rgba(42,157,143,0.20)"/>
+    <path d="M0,96 C160,72 380,108 620,84 C860,60 1100,100 1440,76 L1440,220 L0,220 Z" fill="rgba(42,157,143,0.28)"/>
+    <path d="M0,145 C40,108 120,162 240,128 C360,94 460,158 600,118 C740,78 840,152 1000,112 C1160,72 1280,148 1400,110 C1425,103 1435,115 1440,110 L1440,220 L0,220 Z" fill="rgba(42,157,143,0.45)"/>
+    <path d="M0,158 C50,128 140,170 260,142 C380,114 480,165 620,135 C760,105 870,162 1020,130 C1170,98 1280,158 1400,128 C1428,120 1438,138 1440,132 L1440,220 L0,220 Z" fill="rgba(10,37,64,0.65)"/>
+    <path d="M0,172 C40,148 120,178 240,156 C360,134 470,174 610,150 C750,126 870,170 1020,146 C1170,122 1290,168 1420,144 C1434,140 1438,152 1440,148 L1440,220 L0,220 Z" fill="#0A2540"/>
+    <g transform="translate(980,74) rotate(-15)" opacity="0.55">
+        <ellipse cx="0" cy="0" rx="30" ry="20" fill="#0A2540"/>
+        <ellipse cx="0" cy="0" rx="23" ry="15" fill="#0d3660" opacity="0.7"/>
+        <path d="M0,-20 L10,-10 L10,10 L0,18 L-10,10 L-10,-10 Z" fill="#0A2540" opacity="0.4"/>
+        <ellipse cx="32" cy="0" rx="7" ry="5" fill="#0A2540"/>
+        <ellipse cx="42" cy="-2" rx="11" ry="8" fill="#0A2540"/>
+        <circle cx="47" cy="-4" r="1.8" fill="#0d3660"/>
+        <path d="M28,-16 C20,-28 2,-32 -14,-24 C-6,-15 14,-14 28,-16 Z" fill="#0A2540"/>
+        <path d="M28,16 C20,28 2,32 -14,24 C-6,15 14,14 28,16 Z" fill="#0A2540"/>
+        <path d="M-18,-12 C-28,-20 -35,-14 -33,-8 C-28,-10 -24,-11 -18,-12 Z" fill="#0A2540"/>
+        <path d="M-18,12 C-28,20 -35,14 -33,8 C-28,10 -24,11 -18,12 Z" fill="#0A2540"/>
+        <path d="M-30,0 L-37,3 L-36,-3 Z" fill="#0A2540"/>
+    </g>
+    <g opacity="0.28">
+        <g transform="translate(200,42)"><ellipse cx="0" cy="0" rx="10" ry="5" fill="#0A2540"/><path d="M-10,0 L-17,-5 L-17,5 Z" fill="#0A2540"/></g>
+        <g transform="translate(218,32)"><ellipse cx="0" cy="0" rx="8" ry="4" fill="#0A2540"/><path d="M-8,0 L-14,-4 L-14,4 Z" fill="#0A2540"/></g>
+        <g transform="translate(210,52)"><ellipse cx="0" cy="0" rx="7" ry="3.5" fill="#0A2540"/><path d="M-7,0 L-12,-3 L-12,3 Z" fill="#0A2540"/></g>
+        <g transform="translate(232,44)"><ellipse cx="0" cy="0" rx="5" ry="2.5" fill="#0A2540"/><path d="M-5,0 L-9,-2 L-9,2 Z" fill="#0A2540"/></g>
+    </g>
+    </svg>
+    </div>
+
+    <!-- REVIEWS -->
+    <section class="reviews-section" id="reviews">
+        <div class="container">
+            <div class="section-label">Guest Reviews</div>
+            <h2 class="section-title">What Our Guests Say</h2>
+            <div class="section-divider"></div>
+            <div class="reviews-overall" id="reviews-overall" style="display:none;">
+                <div class="reviews-avg" id="reviews-avg">0.0</div>
+                <div class="reviews-avg-right">
+                    <div class="reviews-stars-row" id="reviews-avg-stars"></div>
+                    <div class="reviews-count" id="reviews-count"></div>
+                </div>
+            </div>
+        </div>
+        <div class="reviews-scroll" id="reviews-scroll">
+            <div style="min-width:24px;flex-shrink:0;"></div>
+            <div class="reviews-empty" id="reviews-loading">Loading reviews...</div>
+            <div style="min-width:24px;flex-shrink:0;"></div>
+        </div>
+    </section>
+
+    <!-- CORAL DIVIDER: Reviews to Experiences -->
+    <div class="coral-divider" style="background:#0A2540;">
+    <svg viewBox="0 0 1440 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <rect width="1440" height="200" fill="#0A2540"/>
+    <path d="M0,40 C220,15 460,62 700,35 C940,8 1180,55 1440,28 L1440,200 L0,200 Z" fill="rgba(42,157,143,0.10)"/>
+    <path d="M0,65 C200,38 440,78 680,52 C920,26 1160,70 1440,46 L1440,200 L0,200 Z" fill="rgba(42,157,143,0.18)"/>
+    <path d="M0,88 C180,62 400,100 640,75 C880,50 1120,92 1440,68 L1440,200 L0,200 Z" fill="rgba(42,157,143,0.28)"/>
+    <path d="M0,108 C160,84 380,118 620,94 C860,70 1100,112 1440,88 L1440,200 L0,200 Z" fill="rgba(42,157,143,0.38)"/>
+    <path d="M0,145 C70,115 170,158 300,128 C430,98 540,152 680,118 C820,84 940,148 1100,112 C1260,76 1360,142 1440,115 L1440,200 L0,200 Z" fill="rgba(42,157,143,0.4)"/>
+    <path d="M0,158 C80,132 190,165 340,140 C490,115 610,160 780,134 C950,108 1080,158 1260,130 C1360,114 1418,148 1440,138 L1440,200 L0,200 Z" fill="rgba(255,255,255,0.14)"/>
+    <path d="M0,170 C90,148 220,175 400,154 C580,133 740,168 940,148 C1140,128 1300,165 1440,146 L1440,200 L0,200 Z" fill="#ffffff"/>
+    <g transform="translate(560,65) rotate(10) scale(-1,1)" opacity="0.5">
+        <ellipse cx="0" cy="0" rx="28" ry="19" fill="rgba(42,157,143,0.9)"/>
+        <ellipse cx="0" cy="0" rx="22" ry="15" fill="rgba(42,157,143,0.6)" opacity="0.7"/>
+        <ellipse cx="30" cy="0" rx="7" ry="5" fill="rgba(42,157,143,0.9)"/>
+        <ellipse cx="40" cy="-2" rx="10" ry="8" fill="rgba(42,157,143,0.9)"/>
+        <circle cx="45" cy="-4" r="1.8" fill="rgba(10,37,64,0.5)"/>
+        <path d="M26,-15 C18,-26 1,-30 -12,-22 C-4,-13 14,-13 26,-15 Z" fill="rgba(42,157,143,0.85)"/>
+        <path d="M26,15 C18,26 1,30 -12,22 C-4,13 14,13 26,15 Z" fill="rgba(42,157,143,0.85)"/>
+        <path d="M-17,-11 C-27,-19 -33,-13 -31,-7 C-27,-9 -23,-10 -17,-11 Z" fill="rgba(42,157,143,0.75)"/>
+        <path d="M-17,11 C-27,19 -33,13 -31,7 C-27,9 -23,10 -17,11 Z" fill="rgba(42,157,143,0.75)"/>
+        <path d="M-28,0 L-35,3 L-34,-3 Z" fill="rgba(42,157,143,0.85)"/>
+    </g>
+    <g opacity="0.35">
+        <g transform="translate(1180,42)"><ellipse cx="0" cy="0" rx="9" ry="4.5" fill="rgba(42,157,143,0.9)"/><path d="M-9,0 L-15,-4 L-15,4 Z" fill="rgba(42,157,143,0.9)"/></g>
+        <g transform="translate(1198,32)"><ellipse cx="0" cy="0" rx="7" ry="3.5" fill="rgba(42,157,143,0.9)"/><path d="M-7,0 L-12,-3 L-12,3 Z" fill="rgba(42,157,143,0.9)"/></g>
+        <g transform="translate(1190,52)"><ellipse cx="0" cy="0" rx="6" ry="3" fill="rgba(42,157,143,0.9)"/><path d="M-6,0 L-10,-2.5 L-10,2.5 Z" fill="rgba(42,157,143,0.9)"/></g>
+        <g transform="translate(1210,44)"><ellipse cx="0" cy="0" rx="5" ry="2.5" fill="rgba(42,157,143,0.9)"/><path d="M-5,0 L-8,-2 L-8,2 Z" fill="rgba(42,157,143,0.9)"/></g>
+    </g>
+    </svg>
+    </div>
+
 <section class="experiences-section" id="experiences">
     <div class="container" style="padding-bottom:0;">
         <div class="section-label">Curated Experiences</div>
@@ -1347,6 +1493,67 @@ async function loadExperiences() {
     } catch(e) { console.error('Experiences error:', e); }
 }
 
+
+// ========== REVIEWS ==========
+async function loadReviews() {
+    try {
+        const res = await fetch(`${API}/reviews`);
+        const data = await res.json();
+        const reviews = data.reviews || data;
+        const container = document.getElementById('reviews-scroll');
+
+        if (!reviews.length) {
+            container.innerHTML = '<div style="min-width:24px;flex-shrink:0;"></div><div class="reviews-empty">Be the first to share your experience!</div><div style="min-width:24px;flex-shrink:0;"></div>';
+            return;
+        }
+
+        // Overall rating
+        const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+        document.getElementById('reviews-avg').textContent = avg.toFixed(1);
+        document.getElementById('reviews-count').textContent = reviews.length + ' verified review' + (reviews.length > 1 ? 's' : '');
+        document.getElementById('reviews-overall').style.display = 'flex';
+
+        // Stars
+        const starsEl = document.getElementById('reviews-avg-stars');
+        starsEl.innerHTML = [1,2,3,4,5].map(i =>
+            `<i class="fas fa-star${i <= Math.round(avg) ? '' : '-o'}"></i>`
+        ).join('');
+
+        // Cards
+        const MAXLEN = 160;
+        container.innerHTML = '<div style="min-width:24px;flex-shrink:0;"></div>' +
+        reviews.map((r, idx) => {
+            const long = r.comment && r.comment.length > MAXLEN;
+            const short = long ? r.comment.substring(0, MAXLEN) + '...' : r.comment;
+            const stars = [1,2,3,4,5].map(i =>
+                `<i class="fas fa-star" style="color:${i <= r.rating ? '#C9A96E' : 'rgba(255,255,255,0.15)'};font-size:12px;"></i>`
+            ).join('');
+            const unitName = r.unit_number ? `${r.unit_number} · ${r.unit_type || ''}` : '';
+            return `
+            <div class="review-card">
+                <div class="review-stars">${stars}</div>
+                <div class="review-comment" id="rc-${idx}">${short}</div>
+                ${long ? `<button class="review-readmore" onclick="expandReview(${idx}, `+JSON.stringify(r.comment)+`)">Read more</button>` : ''}
+                <div class="review-footer">
+                    <div class="review-guest">${r.guest_name}</div>
+                    <div class="review-meta">${r.country || ''}${unitName ? ' · Stayed in ' + unitName : ''}</div>
+                    ${r.is_verified ? '<div class="review-verified"><i class="fas fa-check-circle"></i> Verified Stay</div>' : ''}
+                </div>
+            </div>`;
+        }).join('') + '<div style="min-width:24px;flex-shrink:0;"></div>';
+
+    } catch(e) { console.error('Reviews error:', e); }
+}
+
+function expandReview(idx, full) {
+    const el = document.getElementById('rc-' + idx);
+    if (el) {
+        el.textContent = full;
+        el.nextElementSibling && el.nextElementSibling.classList.contains('review-readmore')
+            ? el.nextElementSibling.remove() : null;
+    }
+}
+
 // ========== PROMO BANNERS ==========
 async function loadPromoBanners() {
     try {
@@ -1365,6 +1572,7 @@ async function loadPromoBanners() {
 // ========== INIT ==========
 loadHero();
 loadUnits();
+loadReviews();
 loadExperiences();
 loadPromoBanners();
 </script>
