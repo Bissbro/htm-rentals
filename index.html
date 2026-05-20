@@ -284,12 +284,7 @@
             transition: box-shadow 0.4s;
             -webkit-tap-highlight-color: transparent;
         }
-        .unit-card.active {
-            background-image: linear-gradient(white, white), conic-gradient(from var(--angle), #A8864E, #E8C484, #fff, #A8864E);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-            animation: rotate-border 3s linear infinite;
-            box-shadow: 0 8px 40px rgba(201,169,110,0.25);
+        .unit-card {
         }
 
         /* Unit Card Inner */
@@ -1081,7 +1076,7 @@ function renderUnit(unit) {
                 ${images.map(img => `<img class="unit-gallery-slide" src="${img}" alt="${unitNumber}" loading="lazy">`).join('')}
             </div>
             ${arrowsHtml}
-            <div class="unit-gallery-dots" id="udots-${unit.id}">${dotsHtml}</div>
+            
             <div class="unit-gallery-overlay">
                 <div class="unit-spec-pill"><i class="fas fa-users"></i>${maxGuests}</div>
                 <div class="unit-spec-pill"><i class="fas fa-bed"></i>${bedrooms}</div>
