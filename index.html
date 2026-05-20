@@ -264,26 +264,8 @@
 
         /* ========== UNITS COVERFLOW ========== */
         .units-section { background: #ffffff; padding: 40px 0 48px; }
-        .units-carousel-wrap { position: relative; overflow: hidden; padding: 20px 0 32px; }
-        .units-section { overflow: hidden; }
-        .units-carousel {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            height: 440px;
-            perspective: 1000px;
-        }
-        @media (min-width: 768px) { .units-carousel { height: 480px; } }
-        @property --angle {
-            syntax: '<angle>';
-            initial-value: 0deg;
-            inherits: false;
-        }
-        @keyframes rotate-border {
-            from { --angle: 0deg; }
-            to { --angle: 360deg; }
-        }
+        .units-carousel-wrap { padding: 8px 0 32px; }
+        .units-carousel { display: flex; flex-direction: column; gap: 24px; }
         @property --angle {
             syntax: '<angle>';
             initial-value: 0deg;
@@ -294,49 +276,35 @@
             to { --angle: 360deg; }
         }
         .unit-card {
-            position: absolute;
-            width: 62vw; max-width: 300px; height: 420px;
             background: var(--white);
             border-radius: var(--radius-xl);
             overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            cursor: pointer;
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            transform-origin: center center;
-            user-select: none; -webkit-tap-highlight-color: transparent; outline: none;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            border: 2px solid transparent;
+            transition: box-shadow 0.4s;
+            -webkit-tap-highlight-color: transparent;
         }
         .unit-card.active {
-            transform: translateX(0) scale(1) rotateY(0deg);
-            z-index: 10; box-shadow: 0 20px 60px rgba(0,0,0,0.2); border: 2px solid transparent; background-image: linear-gradient(white, white), conic-gradient(from var(--angle), #B8975A, #f0d080, #fff, #B8975A); background-origin: border-box; background-clip: padding-box, border-box; animation: rotate-border 3s linear infinite;
-        }
-        .unit-card.prev {
-            transform: translateX(-62%) scale(0.78) rotateY(15deg);
-            z-index: 5; filter: brightness(0.6);
-        }
-        .unit-card.next {
-            transform: translateX(62%) scale(0.78) rotateY(-15deg);
-            z-index: 5; filter: brightness(0.6);
-        }
-        .unit-card.hidden { opacity: 0; pointer-events: none; z-index: 1; }
-        .carousel-dots {
-            display: flex; justify-content: center; gap: 8px;
-            margin-top: 16px; padding-bottom: 8px;
-        }
-        .carousel-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: var(--gray-border); border: none;
-            padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; outline: none;
-            transition: background 0.3s, width 0.3s;
-        }
-        .carousel-dot.active {
-            background: var(--teal); width: 20px; border-radius: 4px;
+            background-image: linear-gradient(white, white), conic-gradient(from var(--angle), #A8864E, #E8C484, #fff, #A8864E);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            animation: rotate-border 3s linear infinite;
+            box-shadow: 0 8px 40px rgba(201,169,110,0.25);
         }
 
         /* Unit Card Inner */
         .unit-gallery {
             position: relative; width: 100%;
-            height: 240px; overflow: hidden; background: var(--navy);
+            aspect-ratio: 4/3; overflow: hidden; background: var(--navy);
         }
+        .unit-gallery-track { display: flex; height: 100%; transition: transform 0.35s ease; }
+        .unit-gallery-slide { min-width: 100%; height: 100%; object-fit: cover; display: block; flex-shrink: 0; }
+        .unit-gallery-dots { position: absolute; bottom: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; }
+        .unit-gallery-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; padding: 0; cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
+        .unit-gallery-dot.active { background: white; width: 18px; border-radius: 3px; }
+        .unit-gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.88); border: none; cursor: pointer; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: var(--navy); z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.15); -webkit-tap-highlight-color: transparent; }
+        .unit-gallery-arrow.prev { left: 12px; }
+        .unit-gallery-arrow.next { right: 12px; }
         .unit-gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .unit-gallery-overlay {
             position: absolute; bottom: 0; left: 0; right: 0;
@@ -349,16 +317,19 @@
             color: rgba(255,255,255,0.9); font-size: 11px; font-weight: 600;
         }
         .unit-spec-pill i { font-size: 10px; color: var(--teal); }
-        .unit-info { padding: 14px 16px 16px; }
+        .unit-info { padding: 18px 20px 20px; }
+        .unit-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .unit-building { font-size: 11px; color: var(--gray); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+        .unit-type-badge { background: rgba(42,157,143,0.1); color: var(--teal); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.3px; white-space: nowrap; }
         .unit-name {
             font-family: 'Playfair Display', serif;
-            font-size: 1.25rem; color: var(--navy);
-            font-weight: 700; margin-bottom: 2px; line-height: 1.2;
+            font-size: 1.5rem; color: var(--navy);
+            font-weight: 700; margin-bottom: 12px; line-height: 1.2;
         }
-        .unit-type { font-size: 11px; color: var(--gray); margin-bottom: 12px; letter-spacing: 0.3px; }
         .unit-gold-divider { width: 24px; height: 1.5px; background: var(--gold); margin-bottom: 12px; }
         .unit-pricing {
-            display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+            display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+            padding: 12px 0; border-top: 1px solid #f0f0ee; border-bottom: 1px solid #f0f0ee;
         }
         .unit-price-mvr {
             font-family: 'Playfair Display', serif;
@@ -381,10 +352,7 @@
             transform: skewX(-20deg); animation: btn-shine 4s infinite 1s;
         }
         .btn-view-unit:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(10,37,64,0.4), inset 0 1px 0 rgba(255,255,255,0.1); }
-        .unit-card.prev .unit-info,
-        .unit-card.next .unit-info { opacity: 0; }
-        .unit-card.prev .unit-gallery-overlay,
-        .unit-card.next .unit-gallery-overlay { opacity: 0; }
+
         .experiences-scroll {
             display: flex; flex-direction: row; gap: 12px;
             overflow-x: auto; scrollbar-width: none;
@@ -765,10 +733,8 @@
         <h2 class="section-title">Find Your Perfect Unit</h2>
         <div class="section-divider"></div>
         <div class="units-carousel-wrap">
-            <div class="units-carousel" id="units-carousel">
-            </div>
-            </div>
-            <div class="carousel-dots" id="units-dots"></div>
+            <div class="units-carousel" id="units-carousel"></div>
+        </div>
     </div>
 </section>
 
@@ -1041,7 +1007,7 @@ function startHeroTimer() {
 }
 
 // ========== UNITS ==========
-let unitCards = [], currentUnit = 0;
+
 
 async function loadUnits() {
     try {
@@ -1081,49 +1047,57 @@ async function loadUnits() {
     } catch(e) { console.error('Units load error:', e); }
 }
 
-function goToUnit(index, animate = true) {
-    const count = unitCards.length;
-    if (count === 0) return;
-    currentUnit = ((index % count) + count) % count;
-    unitCards.forEach((card, i) => {
-        card.classList.remove('active', 'prev', 'next', 'hidden');
-        if (i === currentUnit) card.classList.add('active');
-        else if (i === (currentUnit - 1 + count) % count) card.classList.add('prev');
-        else if (i === (currentUnit + 1) % count) card.classList.add('next');
-        else card.classList.add('hidden');
-    });
-    document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === currentUnit));
-}
+
 
 function renderUnit(unit) {
-    const featuredImage = unit.featured_image || 'https://via.placeholder.com/400x225?text=HTM+Rentals';
-    const unitShort = unit.unit_number || unit.unit_name.match(/A-[\w-]+/)?.[0] || unit.unit_name.split('|')[1]?.trim() || unit.unit_name;
+    const images = unit.gallery_images && unit.gallery_images.length
+        ? (unit.featured_image && !unit.gallery_images.includes(unit.featured_image)
+            ? [unit.featured_image, ...unit.gallery_images]
+            : unit.gallery_images)
+        : [unit.featured_image || 'https://via.placeholder.com/400x300?text=HTM+Rentals'];
+
+    const unitNumber = unit.unit_number || unit.unit_name.match(/A-[\w-]+/)?.[0] || unit.unit_name;
+    const building = unit.building_name || 'Malas Residence';
     const unitType = unit.unit_type_label || '';
     const mvr = parseFloat(unit.rate_mvr) || 0;
     const usd = parseFloat(unit.rate_usd) || 0;
-    const origMvr = parseFloat(unit.original_price_mvr || unit.original_price) || 0;
-    const hasDiscount = origMvr > mvr && mvr > 0;
-    const offerLabel = unit.offer_label || '';
+    const maxGuests = unit.max_guests || 4;
+    const bedrooms = unit.bedrooms || 1;
+
+    const dotsHtml = images.length > 1
+        ? images.map((_, i) => `<button class="unit-gallery-dot${i===0?' active':''}" onclick="goToUnitSlide('${unit.id}',${i})"></button>`).join('')
+        : '';
+
+    const arrowsHtml = images.length > 1
+        ? `<button class="unit-gallery-arrow prev" onclick="slideUnitGallery('${unit.id}',-1)">&#8249;</button>
+           <button class="unit-gallery-arrow next" onclick="slideUnitGallery('${unit.id}',1)">&#8250;</button>`
+        : '';
 
     return `
     <div class="unit-card" data-id="${unit.id}">
-        <div class="unit-gallery">
-            <img src="${featuredImage}" alt="${unit.unit_name}" loading="lazy" width="400" height="300">
+        <div class="unit-gallery" id="ugallery-${unit.id}">
+            <div class="unit-gallery-track" id="utrack-${unit.id}">
+                ${images.map(img => `<img class="unit-gallery-slide" src="${img}" alt="${unitNumber}" loading="lazy">`).join('')}
+            </div>
+            ${arrowsHtml}
+            <div class="unit-gallery-dots" id="udots-${unit.id}">${dotsHtml}</div>
             <div class="unit-gallery-overlay">
-                <div class="unit-spec-pill"><i class="fas fa-users"></i>${unit.max_guests}</div>
-                <div class="unit-spec-pill"><i class="fas fa-bed"></i>${unit.bedrooms}</div>
+                <div class="unit-spec-pill"><i class="fas fa-users"></i>${maxGuests}</div>
+                <div class="unit-spec-pill"><i class="fas fa-bed"></i>${bedrooms}</div>
                 <div class="unit-spec-pill"><i class="fas fa-utensils"></i>Kitchen</div>
             </div>
         </div>
         <div class="unit-info">
-            <h3 class="unit-name">${unitShort}</h3>
-            <div class="unit-type">${unitType}</div>
+            <div class="unit-card-header">
+                <div class="unit-building">${building}</div>
+                <div class="unit-type-badge">${unitType}</div>
+            </div>
+            <h3 class="unit-name">${unitNumber}</h3>
             <div class="unit-gold-divider"></div>
             <div class="unit-pricing">
-                <div class="unit-price-mvr">MVR ${mvr.toLocaleString()}</div>
+                <div class="unit-price-mvr">MVR ${mvr.toLocaleString()}.00</div>
                 <div class="unit-price-sep">|</div>
-                <div class="unit-price-usd">$ ${usd}</div>
-                ${hasDiscount ? `<div style="font-size:10px;color:var(--gray);text-decoration:line-through;margin-left:auto;">MVR ${origMvr.toLocaleString()}</div>` : ''}
+                <div class="unit-price-usd">$ ${usd}.00</div>
             </div>
             <a href="unit-details.html?id=${unit.id}&currency=USD" class="btn-view-unit">
                 View Details <i class="fas fa-arrow-right"></i>
