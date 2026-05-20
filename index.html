@@ -1026,7 +1026,6 @@ function slideUnitGallery(id, dir) {
 
 async function loadUnits() {
     try {
-    try {
         const res = await fetch(`${API}/units`);
         const data = await res.json();
         const units = data.units || data;
