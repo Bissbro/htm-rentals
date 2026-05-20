@@ -602,42 +602,57 @@
         /* ========== AVAILABILITY CHECKER ========== */
         .availability-strip {
             background: var(--navy);
-            padding: 16px 24px;
+            padding: 20px 24px;
             border-top: 1px solid rgba(255,255,255,0.06);
         }
         .availability-inner {
-            display: flex; gap: 10px; align-items: center;
-            max-width: 600px; margin: 0 auto;
-            flex-wrap: nowrap;
+            max-width: 500px; margin: 0 auto;
+        }
+        .avail-dates-row {
+            display: flex; align-items: stretch; gap: 0;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; overflow: hidden;
+            margin-bottom: 10px;
         }
         .avail-input-wrap {
             flex: 1; min-width: 0;
-            display: flex; flex-direction: column; gap: 3px;
+            display: flex; flex-direction: column;
+            padding: 8px 12px;
+        }
+        .avail-input-wrap:first-child {
+            border-right: 1px solid rgba(255,255,255,0.1);
         }
         .avail-label {
             font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
-            color: rgba(255,255,255,0.4); font-weight: 600;
+            color: rgba(255,255,255,0.4); font-weight: 600; margin-bottom: 4px;
         }
         .avail-input {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 8px; padding: 8px 10px;
-            color: white; font-size: 12px; font-family: 'Inter', sans-serif;
-            width: 100%; outline: none;
-            -webkit-appearance: none;
+            background: transparent; border: none;
+            color: white; font-size: 13px; font-family: 'Inter', sans-serif;
+            width: 100%; outline: none; font-weight: 500;
+            -webkit-appearance: none; padding: 0;
         }
-        .avail-input:focus { border-color: var(--gold); }
+        .avail-input::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.5); }
         .avail-btn {
             background: var(--gold-gradient);
             color: white; border: none; cursor: pointer;
-            padding: 10px 16px; border-radius: 8px;
-            font-size: 12px; font-weight: 700;
-            white-space: nowrap; flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(201,169,110,0.3);
+            padding: 13px; border-radius: 10px;
+            font-size: 13px; font-weight: 700;
+            width: 100%; display: block;
+            box-shadow: 0 2px 12px rgba(201,169,110,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
             -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
+            touch-action: manipulation; margin-bottom: 10px;
         }
-        .avail-btn:hover { opacity: 0.9; }
+        .avail-clear {
+            display: block; text-align: center;
+            color: rgba(255,255,255,0.35); font-size: 11px;
+            cursor: pointer; background: none; border: none;
+            width: 100%; padding: 4px;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', sans-serif;
+        }
+        .avail-clear:hover { color: rgba(255,255,255,0.6); }
 
         /* Unit availability overlays */
         .unit-card .avail-overlay {
@@ -791,15 +806,18 @@
 <!-- AVAILABILITY CHECKER -->
 <div class="availability-strip" id="availability-strip">
     <div class="availability-inner">
-        <div class="avail-input-wrap">
-            <div class="avail-label">Check In</div>
-            <input type="date" class="avail-input" id="avail-checkin">
+        <div class="avail-dates-row">
+            <div class="avail-input-wrap">
+                <div class="avail-label">Check In</div>
+                <input type="date" class="avail-input" id="avail-checkin">
+            </div>
+            <div class="avail-input-wrap">
+                <div class="avail-label">Check Out</div>
+                <input type="date" class="avail-input" id="avail-checkout">
+            </div>
         </div>
-        <div class="avail-input-wrap">
-            <div class="avail-label">Check Out</div>
-            <input type="date" class="avail-input" id="avail-checkout">
-        </div>
-        <button class="avail-btn" onclick="checkAvailability()">Check</button>
+        <button class="avail-btn" onclick="checkAvailability()">Check Availability</button>
+        <button class="avail-clear" onclick="clearAvailability()">Clear</button>
     </div>
 </div>
 
@@ -1088,6 +1106,15 @@ function startHeroTimer() {
 
 
 // ========== AVAILABILITY CHECKER ==========
+function clearAvailability() {
+    document.getElementById('avail-checkin').value = '';
+    document.getElementById('avail-checkout').value = '';
+    document.querySelectorAll('.unit-card').forEach(card => {
+        card.classList.remove('avail-yes', 'avail-no');
+        const overlay = card.querySelector('.avail-overlay');
+        if (overlay) overlay.remove();
+    });
+}
 async function checkAvailability() {
     const checkin = document.getElementById('avail-checkin').value;
     const checkout = document.getElementById('avail-checkout').value;
