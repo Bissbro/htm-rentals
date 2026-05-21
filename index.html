@@ -1552,7 +1552,7 @@ async function loadReviews() {
             const verifiedBadge = r.is_verified
                 ? `<img src="https://api.htmrentals.com/uploads/1779348088924-873581476.png" alt="Genuine Guest" style="width:56px;height:56px;object-fit:contain;">`
                 : '';
-            const platformBadge = `<span class="review-badge ${pc.cls}"><i class="${pc.icon}"></i> ${pc.label}</span>`;
+            const platformText = (platform === 'direct') ? '' : `<div class="review-platform">via ${pc.label}</div>`;
             return `
             <div class="review-card">
                 <div class="review-quote">&#8220;</div>
