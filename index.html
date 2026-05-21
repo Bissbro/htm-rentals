@@ -696,63 +696,26 @@
         .reviews-section .section-title { color: white; }
         .reviews-section .section-label { color: var(--teal); }
         .reviews-section .section-divider { background: var(--teal); }
-        .reviews-overall {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 32px;
-        }
-        .reviews-avg {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem; font-weight: 700; color: white; line-height: 1;
-        }
-        .reviews-avg-right { display: flex; flex-direction: column; gap: 4px; }
-        .reviews-stars-row { display: flex; gap: 3px; }
-        .reviews-stars-row i { color: var(--gold); font-size: 16px; }
-        .reviews-count { font-size: 12px; color: rgba(255,255,255,0.45); }
-        .reviews-scroll {
-            display: flex; gap: 16px;
-            overflow-x: auto; scrollbar-width: none;
-            padding: 4px 24px 20px;
-        }
+        .reviews-overall { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+        .reviews-overall-stars { display: flex; gap: 4px; margin-bottom: 4px; }
+        .reviews-overall-stars i { color: #E8C484; font-size: 20px; }
+        .reviews-overall-num { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: white; margin-left: 6px; }
+        .reviews-count { font-size: 12px; color: rgba(255,255,255,0.4); }
+        .reviews-scroll { display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; padding: 4px 24px 24px; }
         .reviews-scroll::-webkit-scrollbar { display: none; }
-        .review-card {
-            min-width: 280px; max-width: 280px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: var(--radius-lg);
-            padding: 20px; flex-shrink: 0;
-            display: flex; flex-direction: column; gap: 12px;
-        }
-        .review-stars { display: flex; gap: 3px; }
-        .review-stars i { color: var(--gold); font-size: 13px; }
-        .review-comment {
-            font-size: 13px; color: rgba(255,255,255,0.8);
-            line-height: 1.7; flex: 1;
-        }
-        .review-comment.expanded { /* show all */ }
-        .review-readmore {
-            color: var(--teal); font-size: 12px; cursor: pointer;
-            background: none; border: none; padding: 0;
-            font-family: 'Inter', sans-serif; text-align: left;
-        }
-        .review-footer { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; }
-        .review-guest { font-size: 13px; font-weight: 600; color: white; margin-bottom: 2px; }
-        .review-meta { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 6px; }
-        .review-verified {
-            display: inline-flex; align-items: center; gap: 4px;
-            background: rgba(42,157,143,0.12);
-            border: 1px solid rgba(42,157,143,0.25);
-            border-radius: 20px; padding: 2px 8px;
-            font-size: 10px; color: var(--teal); font-weight: 600;
-        }
-        .review-verified i { font-size: 9px; }
-        .reviews-empty {
-            color: rgba(255,255,255,0.3); font-size: 14px;
-            padding: 40px 24px; text-align: center;
-        }
-        .review-platform {
-            font-size: 11px; color: rgba(255,255,255,0.25);
-            font-style: italic; margin-bottom: 10px;
-        }
+        .review-card { min-width: 272px; max-width: 272px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-lg); padding: 22px 20px 18px; flex-shrink: 0; display: flex; flex-direction: column; }
+        .review-quote { font-family: 'Playfair Display', serif; font-size: 3rem; color: #C9A96E; opacity: 0.5; line-height: 0.8; margin-bottom: 14px; }
+        .review-comment { font-size: 13px; color: rgba(255,255,255,0.8); line-height: 1.75; flex: 1; font-style: italic; margin-bottom: 16px; }
+        .review-readmore { color: var(--teal); font-size: 12px; cursor: pointer; background: none; border: none; padding: 0; font-family: 'Inter', sans-serif; margin-bottom: 12px; display: block; }
+        .review-footer { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px; }
+        .review-guest-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+        .review-guest { font-size: 13px; font-weight: 700; color: white; }
+        .review-country-code { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(201,169,110,0.4); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: rgba(201,169,110,0.8); letter-spacing: 0.5px; flex-shrink: 0; }
+        .review-stars-row { display: flex; gap: 3px; margin-bottom: 6px; }
+        .review-stars-row i { color: #E8C484; font-size: 12px; }
+        .review-meta { font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
+        .review-platform { font-size: 11px; color: rgba(255,255,255,0.25); font-style: italic; margin-bottom: 10px; }
+        .reviews-empty { color: rgba(255,255,255,0.3); font-size: 14px; padding: 40px 24px; text-align: center; }
 </style>
 </head>
 <body>
@@ -947,7 +910,7 @@
             <div class="section-divider"></div>
             <div class="reviews-overall" id="reviews-overall" style="display:none;">
                 <div>
-                    <div class="reviews-avg-stars" id="reviews-avg-stars"></div>
+                    <div class="reviews-overall-stars" id="reviews-avg-stars"></div>
                     <div class="reviews-count" id="reviews-count"></div>
                 </div>
             </div>
@@ -1498,109 +1461,65 @@ async function loadExperiences() {
 
 
 // ========== REVIEWS ==========
+const COUNTRY_CODES = {'maldives':'MV','united kingdom':'GB','uk':'GB','united states':'US','usa':'US','uae':'AE','united arab emirates':'AE','india':'IN','saudi arabia':'SA','qatar':'QA','kuwait':'KW','bahrain':'BH','oman':'OM','malaysia':'MY','singapore':'SG','australia':'AU','germany':'DE','france':'FR','china':'CN','japan':'JP','south korea':'KR','canada':'CA','italy':'IT','spain':'ES','indonesia':'ID','thailand':'TH','philippines':'PH','bangladesh':'BD','pakistan':'PK','sri lanka':'LK','nepal':'NP','russia':'RU','turkey':'TR'};
+const PLATFORM_LABELS = {direct:'HTM Direct',airbnb:'Airbnb',booking:'Booking.com',google:'Google',agoda:'Agoda'};
+const SEAL_URL = 'https://api.htmrentals.com/uploads/1779348088924-873581476.png';
+const REVIEW_MAXLEN = 150;
+
 async function loadReviews() {
     try {
         const res = await fetch(`${API}/reviews`);
         const data = await res.json();
         const reviews = data.reviews || data;
         const container = document.getElementById('reviews-scroll');
-
         if (!reviews.length) {
             container.innerHTML = '<div style="min-width:24px;flex-shrink:0;"></div><div class="reviews-empty">Be the first to share your experience!</div><div style="min-width:24px;flex-shrink:0;"></div>';
             return;
         }
-
-        // Overall rating
-        const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
-        const starsEl = document.getElementById('reviews-avg-stars');
-        starsEl.innerHTML = [1,2,3,4,5].map(i =>
-            `<i class="fas fa-star${i <= Math.round(avg) ? '' : '-o'}"></i>`
-        ).join('') + `<span class="reviews-avg-num">${avg.toFixed(1)}</span>`;
-        document.getElementById('reviews-count').textContent = reviews.length + ' guest review' + (reviews.length > 1 ? 's' : '');
+        const avg = reviews.reduce((s,r) => s+r.rating, 0) / reviews.length;
+        document.getElementById('reviews-avg-stars').innerHTML =
+            [1,2,3,4,5].map(i => '<i class="fas fa-star' + (i<=Math.round(avg)?'':'-o') + '"></i>').join('') +
+            '<span class="reviews-overall-num">' + avg.toFixed(1) + '</span>';
+        document.getElementById('reviews-count').textContent = reviews.length + ' guest review' + (reviews.length>1?'s':'');
         document.getElementById('reviews-overall').style.display = 'flex';
-
-        // Cards
-        const MAXLEN = 150;
-        const platformConfig = {
-            direct:  { icon: 'fas fa-shield-alt', label: 'HTM Direct',   cls: 'badge-direct'   },
-            airbnb:  { icon: 'fas fa-home',        label: 'Airbnb',       cls: 'badge-airbnb'   },
-            booking: { icon: 'fas fa-bed',          label: 'Booking.com',  cls: 'badge-booking'  },
-            google:  { icon: 'fab fa-google',       label: 'Google',       cls: 'badge-google'   },
-            agoda:   { icon: 'fas fa-plane',        label: 'Agoda',        cls: 'badge-agoda'    }
-        };
         container.innerHTML = '<div style="min-width:24px;flex-shrink:0;"></div>' +
-        reviews.map((r, idx) => {
-            const long = r.comment && r.comment.length > MAXLEN;
-            const short = long ? r.comment.substring(0, MAXLEN) + '...' : r.comment;
-            const stars = [1,2,3,4,5].map(i =>
-                `<i class="fas fa-star${i <= r.rating ? '' : '" style="color:rgba(255,255,255,0.15)'}" ></i>`
-            ).join('');
-            const unitMeta = r.unit_number ? `Stayed in ${r.unit_number}` : '';
-            const meta = unitMeta || '';
-            const countryCodes = {
-            'maldives':'MV','united kingdom':'GB','uk':'GB','united states':'US','usa':'US',
-            'uae':'AE','united arab emirates':'AE','india':'IN','saudi arabia':'SA',
-            'qatar':'QA','kuwait':'KW','bahrain':'BH','oman':'OM','malaysia':'MY',
-            'singapore':'SG','australia':'AU','germany':'DE','france':'FR','china':'CN',
-            'japan':'JP','south korea':'KR','canada':'CA','italy':'IT','spain':'ES',
-            'indonesia':'ID','thailand':'TH','philippines':'PH','bangladesh':'BD',
-            'pakistan':'PK','sri lanka':'LK','nepal':'NP','russia':'RU','turkey':'TR'
-        };
-        const cc = r.country ? (countryCodes[r.country.toLowerCase()] || r.country.substring(0,2).toUpperCase()) : '';
-            const platform = r.platform || 'direct';
-            const pc = platformConfig[platform] || platformConfig.direct;
-            const verifiedBadge = r.is_verified
-                ? `<img src="https://api.htmrentals.com/uploads/1779348088924-873581476.png" alt="Genuine Guest" style="width:56px;height:56px;object-fit:contain;">`
-                : '';
-            const platformText = (platform === 'direct') ? '' : `<div class="review-platform">via ${pc.label}</div>`;
-            return `
-            <div class="review-card">
-                <div class="review-quote">&#8220;</div>
-                <div class="review-comment" id="rc-${idx}">${short}</div>
-                ${long ? `<button class="review-readmore" onclick="expandReview(${idx}, `+JSON.stringify(r.comment)+`)">Read more</button>` : ''}
-                <div class="review-footer">
-                    <div class="review-guest-row">
-                        <div class="review-guest">${r.guest_name}</div>
-                        ${cc ? `<span class="review-country-code">${cc}</span>` : ''}
-                    </div>
-                    <div class="review-stars-row">${stars}</div>
-                    ${meta ? `<div class="review-meta">${meta}</div>` : ''}
-                    ${platformText}
-                    ${verifiedBadge}
-                </div>
-            </div>`;
-        }).join('') + '<div style="min-width:24px;flex-shrink:0;"></div>';
-
+            reviews.map(function(r, idx) {
+                var long = r.comment && r.comment.length > REVIEW_MAXLEN;
+                var short = long ? r.comment.substring(0, REVIEW_MAXLEN) + '...' : r.comment;
+                var stars = [1,2,3,4,5].map(function(i) {
+                    return '<i class="fas fa-star" style="color:' + (i<=r.rating?'#E8C484':'rgba(255,255,255,0.15)') + '"></i>';
+                }).join('');
+                var cc = r.country ? (COUNTRY_CODES[r.country.toLowerCase()] || r.country.substring(0,2).toUpperCase()) : '';
+                var platform = r.platform || 'direct';
+                var platformHtml = platform !== 'direct' ? '<div class="review-platform">via ' + (PLATFORM_LABELS[platform]||platform) + '</div>' : '';
+                var sealHtml = r.is_verified ? '<img src="' + SEAL_URL + '" alt="Genuine Guest" style="width:52px;height:52px;object-fit:contain;">' : '';
+                var unitHtml = r.unit_number ? '<div class="review-meta">Stayed in ' + r.unit_number + '</div>' : '';
+                var readMore = long ? '<button class="review-readmore" onclick="expandReview(' + idx + ',' + JSON.stringify(r.comment) + ')">Read more</button>' : '';
+                var countryHtml = cc ? '<div class="review-country-code">' + cc + '</div>' : '';
+                return '<div class="review-card">' +
+                    '<div class="review-quote">“</div>' +
+                    '<div class="review-comment" id="rc-' + idx + '">' + short + '</div>' +
+                    readMore +
+                    '<div class="review-footer">' +
+                        '<div class="review-guest-row">' +
+                            '<div class="review-guest">' + r.guest_name + '</div>' +
+                            countryHtml +
+                        '</div>' +
+                        '<div class="review-stars-row">' + stars + '</div>' +
+                        unitHtml +
+                        platformHtml +
+                        sealHtml +
+                    '</div>' +
+                '</div>';
+            }).join('') + '<div style="min-width:24px;flex-shrink:0;"></div>';
     } catch(e) { console.error('Reviews error:', e); }
 }
 
 function expandReview(idx, full) {
-    const el = document.getElementById('rc-' + idx);
-    if (el) {
-        el.textContent = full;
-        el.nextElementSibling && el.nextElementSibling.classList.contains('review-readmore')
-            ? el.nextElementSibling.remove() : null;
-    }
+    var el = document.getElementById('rc-' + idx);
+    if (el) el.textContent = full;
 }
 
-// ========== PROMO BANNERS ==========
-async function loadPromoBanners() {
-    try {
-        const res = await fetch(`${API}/promo-banners`);
-        const data = await res.json();
-        if (!data.length) return;
-        document.getElementById('promo-section').style.display = 'block';
-        document.getElementById('promo-container').innerHTML = data.map(b =>
-            b.link_url
-                ? `<a href="${b.link_url}" class="promo-banner-link" target="_blank"><img src="${b.image_url}" class="promo-banner" alt="Promotion" loading="lazy"></a>`
-                : `<img src="${b.image_url}" class="promo-banner" alt="Promotion" loading="lazy">`
-        ).join('');
-    } catch(e) { console.error('Promo error:', e); }
-}
-
-// ========== INIT ==========
-loadHero();
-loadUnits();
 loadReviews();
 loadExperiences();
 loadPromoBanners();
