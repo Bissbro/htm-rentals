@@ -621,6 +621,18 @@ Payment: ${payment}`;
         }
 
         async function uploadSlip() {
+            // Update guest email from modal input
+            const modalEmail = document.getElementById('modal-email');
+            if (modalEmail && modalEmail.value) {
+                const bookingId = document.getElementById('pay-booking-id-hidden').value;
+                if (bookingId) {
+                    await fetch(API_BASE_URL + '/bookings/' + bookingId + '/update-email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: modalEmail.value })
+                    }).catch(e => console.error('Email update error:', e));
+                }
+            }
             const bookingId = document.getElementById('pay-booking-id-hidden').value;
             const fileInput = document.getElementById('slip-file');
             const idInput = document.getElementById('id-file');
@@ -1206,10 +1218,24 @@ Payment: ${payment}`;
                 </label>
                 <input type="file" id="id-file" accept="image/*" style="display:none;" onchange="updateIdLabel(this)">
             </div>
-            <!-- Step 3: Telegram Login -->
+
+            <!-- Step 3: Email -->
             <div style="margin-bottom:20px;">
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
                     <div style="width:28px; height:28px; background:#0A2540; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:700; flex-shrink:0;">3</div>
+                    <div style="font-size:14px; font-weight:700; color:#0A2540;">Confirmation Email</div>
+                </div>
+                <div style="border:1.5px solid #E8E8E8; border-radius:14px; padding:14px 16px;">
+                    <div style="font-size:11px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Email Address <span style="color:#e53e3e;">*</span></div>
+                    <input type="email" id="modal-email" placeholder="your@email.com" style="width:100%; padding:10px 14px; border:1.5px solid #E8E8E8; border-radius:10px; font-size:14px; font-family:Inter,sans-serif; outline:none; box-sizing:border-box;" required>
+                    <div style="font-size:11px; color:#999; margin-top:6px;">Your booking confirmation and invoice will be sent here.</div>
+                </div>
+            </div>
+
+            <!-- Step 4: Telegram Login -->
+            <div style="margin-bottom:20px;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+                    <div style="width:28px; height:28px; background:#0A2540; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:700; flex-shrink:0;">4</div>
                     <div style="font-size:14px; font-weight:700; color:#0A2540;">Instant Confirmation <span style="font-size:11px; font-weight:500; color:#40B5AD;">Recommended</span></div>
                 </div>
                 <div style="background:linear-gradient(135deg, #0A2540 0%, #0d3660 100%); border-radius:16px; padding:20px; text-align:center; position:relative; overflow:hidden;">
