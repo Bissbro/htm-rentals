@@ -144,6 +144,16 @@
             </div>
             <div class="form-row">
                 <div class="form-group">
+                    <label>Platform</label>
+                    <select id="rev-platform">
+                        <option value="direct">HTM Direct</option>
+                        <option value="airbnb">Airbnb</option>
+                        <option value="booking">Booking.com</option>
+                        <option value="google">Google</option>
+                        <option value="agoda">Agoda</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Sort Order</label>
                     <input type="number" id="rev-sort" value="0">
                 </div>
@@ -262,6 +272,7 @@ function openModal(id=null) {
         document.getElementById('rev-sort').value = r.sort_order||0;
         document.getElementById('rev-active').checked = !!r.is_active;
         document.getElementById('rev-verified').checked = !!r.is_verified;
+        document.getElementById('rev-platform').value = r.platform || 'direct';
         setRating(r.rating||5);
     } else {
         document.getElementById('rev-name').value = '';
@@ -271,6 +282,7 @@ function openModal(id=null) {
         document.getElementById('rev-sort').value = 0;
         document.getElementById('rev-active').checked = true;
         document.getElementById('rev-verified').checked = true;
+        document.getElementById('rev-platform').value = 'direct';
         setRating(5);
     }
     document.getElementById('modal').classList.add('open');
