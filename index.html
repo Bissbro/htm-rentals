@@ -1543,7 +1543,7 @@ async function loadReviews() {
         container.innerHTML = '<div style="min-width:20px;flex-shrink:0;"></div>' +
             reviews.map(function(r, idx) {
                 var long = r.comment && r.comment.length > REVIEW_MAXLEN;
-                var short = long ? r.comment.substring(0, REVIEW_MAXLEN) + '...' : r.comment;
+                var short = long ? r.comment.substring(0, REVIEW_MAXLEN) : r.comment;
                 var stars = [1,2,3,4,5].map(function(i){
                     return '<i class="fas fa-star" style="color:' + (i<=r.rating?'#E8C484':'rgba(255,255,255,0.12)') + '"></i>';
                 }).join('');
@@ -1554,14 +1554,14 @@ async function loadReviews() {
                 if (platform !== 'direct') subParts.push('via ' + (PLATFORM_LABELS[platform]||platform));
                 var subText = subParts.join(' · ');
                 var ccHtml = cc ? '<div class="review-country-code">' + cc + '</div>' : '';
-                var readMoreBtn = long ? '<button class="review-readmore" onclick="event.stopPropagation();openReviewModal(' + idx + ')">Read more</button>' : '';
+                var readMoreBtn = '';
                 return '<div class="review-card" onclick="openReviewModal(' + idx + ')">' +
                     '<div>' +
                         '<div class="review-top">' +
                             '<div class="review-stars-row">' + stars + '</div>' +
                             ccHtml +
                         '</div>' +
-                        '<div class="review-comment">' + short + '</div>' +
+                        '<div class="review-comment">' + short + (long ? '... <button class="review-readmore" onclick="event.stopPropagation();openReviewModal(' + idx + ')">Read more</button>' : '') + '</div>' +
                     '</div>' +
                     '<div class="review-bottom">' +
                         '<div class="review-bottom-left">' +
