@@ -1538,7 +1538,7 @@ async function loadReviews() {
             const platform = r.platform || 'direct';
             const pc = platformConfig[platform] || platformConfig.direct;
             const verifiedBadge = r.is_verified
-                ? `<span class="review-badge badge-verified"><i class="fas fa-shield-alt"></i> HTM Verified</span>`
+                ? `<img src="https://api.htmrentals.com/uploads/1779348088924-873581476.png" alt="Genuine Guest" style="width:56px;height:56px;object-fit:contain;">`
                 : '';
             const platformBadge = `<span class="review-badge ${pc.cls}"><i class="${pc.icon}"></i> ${pc.label}</span>`;
             return `
