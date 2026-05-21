@@ -696,26 +696,59 @@
         .reviews-section .section-title { color: white; }
         .reviews-section .section-label { color: var(--teal); }
         .reviews-section .section-divider { background: var(--teal); }
-        .reviews-overall { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+        .reviews-overall { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
         .reviews-overall-stars { display: flex; gap: 4px; margin-bottom: 4px; }
         .reviews-overall-stars i { color: #E8C484; font-size: 20px; }
         .reviews-overall-num { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: white; margin-left: 6px; }
         .reviews-count { font-size: 12px; color: rgba(255,255,255,0.4); }
-        .reviews-scroll { display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; padding: 4px 24px 24px; }
+        .reviews-scroll { display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; padding: 4px 20px 24px; }
         .reviews-scroll::-webkit-scrollbar { display: none; }
-        .review-card { min-width: 272px; max-width: 272px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-lg); padding: 22px 20px 18px; flex-shrink: 0; display: flex; flex-direction: column; }
-        .review-quote { font-family: 'Playfair Display', serif; font-size: 3rem; color: #C9A96E; opacity: 0.5; line-height: 0.8; margin-bottom: 14px; }
-        .review-comment { font-size: 13px; color: rgba(255,255,255,0.8); line-height: 1.75; flex: 1; font-style: italic; margin-bottom: 16px; }
-        .review-readmore { color: var(--teal); font-size: 12px; cursor: pointer; background: none; border: none; padding: 0; font-family: 'Inter', sans-serif; margin-bottom: 12px; display: block; }
-        .review-footer { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px; }
-        .review-guest-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-        .review-guest { font-size: 13px; font-weight: 700; color: white; }
-        .review-country-code { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(201,169,110,0.4); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: rgba(201,169,110,0.8); letter-spacing: 0.5px; flex-shrink: 0; }
-        .review-stars-row { display: flex; gap: 3px; margin-bottom: 6px; }
-        .review-stars-row i { color: #E8C484; font-size: 12px; }
-        .review-meta { font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
-        .review-platform { font-size: 11px; color: rgba(255,255,255,0.25); font-style: italic; margin-bottom: 10px; }
+        /* Compact fixed-height card */
+        .review-card {
+            min-width: 260px; max-width: 260px; height: 210px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 16px; flex-shrink: 0;
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer; -webkit-tap-highlight-color: transparent;
+            transition: border-color 0.2s;
+        }
+        .review-card:active { border-color: rgba(201,169,110,0.4); }
+        .review-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .review-stars-row { display: flex; gap: 2px; }
+        .review-stars-row i { color: #E8C484; font-size: 11px; }
+        .review-country-code { width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(201,169,110,0.4); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: rgba(201,169,110,0.8); letter-spacing: 0.5px; flex-shrink: 0; }
+        .review-comment { font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.65; font-style: italic; flex: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; }
+        .review-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.07); }
+        .review-bottom-left { display: flex; flex-direction: column; gap: 2px; }
+        .review-guest { font-size: 12px; font-weight: 700; color: white; }
+        .review-sub { font-size: 10px; color: rgba(255,255,255,0.3); }
+        .review-readmore { font-size: 10px; color: var(--teal); cursor: pointer; margin-top: 2px; background: none; border: none; padding: 0; font-family: inherit; -webkit-tap-highlight-color: transparent; }
         .reviews-empty { color: rgba(255,255,255,0.3); font-size: 14px; padding: 40px 24px; text-align: center; }
+        /* Review Modal */
+        .review-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: flex-end; justify-content: center; -webkit-tap-highlight-color: transparent; }
+        .review-modal-overlay.open { display: flex; }
+        .review-modal {
+            background: #0d2d4a; border-radius: 24px 24px 0 0;
+            width: 100%; max-width: 600px;
+            max-height: 85vh; overflow-y: auto;
+            padding: 28px 24px 40px;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .review-modal-handle { width: 36px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin: 0 auto 24px; }
+        .review-modal-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .review-modal-guest { display: flex; align-items: center; gap: 10px; }
+        .review-modal-name { font-size: 15px; font-weight: 700; color: white; }
+        .review-modal-stars { display: flex; gap: 3px; margin-top: 3px; }
+        .review-modal-stars i { color: #E8C484; font-size: 12px; }
+        .review-modal-close { background: rgba(255,255,255,0.1); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
+        .review-modal-meta { font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 20px; }
+        .review-modal-text { font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.8; font-style: italic; margin-bottom: 24px; }
+        .review-modal-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .review-modal-platform { font-size: 11px; color: rgba(255,255,255,0.3); font-style: italic; }
 </style>
 </head>
 <body>
@@ -916,11 +949,34 @@
             </div>
         </div>
         <div class="reviews-scroll" id="reviews-scroll">
-            <div style="min-width:24px;flex-shrink:0;"></div>
+            <div style="min-width:20px;flex-shrink:0;"></div>
             <div class="reviews-empty" id="reviews-loading">Loading reviews...</div>
-            <div style="min-width:24px;flex-shrink:0;"></div>
+            <div style="min-width:20px;flex-shrink:0;"></div>
         </div>
     </section>
+
+    <!-- REVIEW MODAL -->
+    <div class="review-modal-overlay" id="review-modal-overlay" onclick="closeReviewModal(event)">
+        <div class="review-modal" id="review-modal">
+            <div class="review-modal-handle"></div>
+            <div class="review-modal-top">
+                <div class="review-modal-guest">
+                    <div id="modal-country-code" class="review-country-code" style="width:36px;height:36px;font-size:10px;"></div>
+                    <div>
+                        <div class="review-modal-name" id="modal-guest-name"></div>
+                        <div class="review-modal-stars" id="modal-stars"></div>
+                    </div>
+                </div>
+                <button class="review-modal-close" onclick="closeReviewModal()">&#x2715;</button>
+            </div>
+            <div class="review-modal-meta" id="modal-meta"></div>
+            <div class="review-modal-text" id="modal-text"></div>
+            <div class="review-modal-footer">
+                <div class="review-modal-platform" id="modal-platform"></div>
+                <img src="https://api.htmrentals.com/uploads/1779348088924-873581476.png" alt="Genuine Guest" id="modal-seal" style="width:52px;height:52px;object-fit:contain;display:none;">
+            </div>
+        </div>
+    </div>
 
     <!-- CORAL DIVIDER: Reviews to Experiences -->
     <div class="coral-divider" style="background:#0A2540;">
@@ -1464,67 +1520,90 @@ async function loadExperiences() {
 const COUNTRY_CODES = {'maldives':'MV','united kingdom':'GB','uk':'GB','united states':'US','usa':'US','uae':'AE','united arab emirates':'AE','india':'IN','saudi arabia':'SA','qatar':'QA','kuwait':'KW','bahrain':'BH','oman':'OM','malaysia':'MY','singapore':'SG','australia':'AU','germany':'DE','france':'FR','china':'CN','japan':'JP','south korea':'KR','canada':'CA','italy':'IT','spain':'ES','indonesia':'ID','thailand':'TH','philippines':'PH','bangladesh':'BD','pakistan':'PK','sri lanka':'LK','nepal':'NP','russia':'RU','turkey':'TR'};
 const PLATFORM_LABELS = {direct:'HTM Direct',airbnb:'Airbnb',booking:'Booking.com',google:'Google',agoda:'Agoda'};
 const SEAL_URL = 'https://api.htmrentals.com/uploads/1779348088924-873581476.png';
-const REVIEW_MAXLEN = 150;
+const REVIEW_MAXLEN = 120;
+var reviewData = [];
 
-const reviewComments = {};
 async function loadReviews() {
     try {
-        const res = await fetch(`${API}/reviews`);
-        const data = await res.json();
-        const reviews = data.reviews || data;
-        const container = document.getElementById('reviews-scroll');
+        var res = await fetch(API + '/reviews');
+        var data = await res.json();
+        var reviews = data.reviews || data;
+        reviewData = reviews;
+        var container = document.getElementById('reviews-scroll');
         if (!reviews.length) {
-            container.innerHTML = '<div style="min-width:24px;flex-shrink:0;"></div><div class="reviews-empty">Be the first to share your experience!</div><div style="min-width:24px;flex-shrink:0;"></div>';
+            container.innerHTML = '<div style="min-width:20px;flex-shrink:0;"></div><div class="reviews-empty">Be the first to share your experience!</div><div style="min-width:20px;flex-shrink:0;"></div>';
             return;
         }
-        const avg = reviews.reduce((s,r) => s+r.rating, 0) / reviews.length;
+        var avg = reviews.reduce(function(s,r){ return s+r.rating; }, 0) / reviews.length;
         document.getElementById('reviews-avg-stars').innerHTML =
-            [1,2,3,4,5].map(i => '<i class="fas fa-star' + (i<=Math.round(avg)?'':'-o') + '"></i>').join('') +
+            [1,2,3,4,5].map(function(i){ return '<i class="fas fa-star' + (i<=Math.round(avg)?'':'-o') + '"></i>'; }).join('') +
             '<span class="reviews-overall-num">' + avg.toFixed(1) + '</span>';
         document.getElementById('reviews-count').textContent = reviews.length + ' guest review' + (reviews.length>1?'s':'');
         document.getElementById('reviews-overall').style.display = 'flex';
-        container.innerHTML = '<div style="min-width:24px;flex-shrink:0;"></div>' +
+        container.innerHTML = '<div style="min-width:20px;flex-shrink:0;"></div>' +
             reviews.map(function(r, idx) {
                 var long = r.comment && r.comment.length > REVIEW_MAXLEN;
                 var short = long ? r.comment.substring(0, REVIEW_MAXLEN) + '...' : r.comment;
-                var stars = [1,2,3,4,5].map(function(i) {
-                    return '<i class="fas fa-star" style="color:' + (i<=r.rating?'#E8C484':'rgba(255,255,255,0.15)') + '"></i>';
+                var stars = [1,2,3,4,5].map(function(i){
+                    return '<i class="fas fa-star" style="color:' + (i<=r.rating?'#E8C484':'rgba(255,255,255,0.12)') + '"></i>';
                 }).join('');
                 var cc = r.country ? (COUNTRY_CODES[r.country.toLowerCase()] || r.country.substring(0,2).toUpperCase()) : '';
                 var platform = r.platform || 'direct';
-                var platformHtml = platform !== 'direct' ? '<div class="review-platform">via ' + (PLATFORM_LABELS[platform]||platform) + '</div>' : '';
-                var sealHtml = r.is_verified ? '<img src="' + SEAL_URL + '" alt="Genuine Guest" style="width:52px;height:52px;object-fit:contain;">' : '';
-                var unitHtml = r.unit_number ? '<div class="review-meta">Stayed in ' + r.unit_number + '</div>' : '';
-                reviewComments[idx] = r.comment;
-                var readMore = long ? '<button class="review-readmore" onclick="expandReview(' + idx + ')">>Read more</button>' : '';
-                var countryHtml = cc ? '<div class="review-country-code">' + cc + '</div>' : '';
-                return '<div class="review-card">' +
-                    '<div class="review-quote">“</div>' +
-                    '<div class="review-comment" id="rc-' + idx + '">' + short + '</div>' +
-                    readMore +
-                    '<div class="review-footer">' +
-                        '<div class="review-guest-row">' +
-                            '<div class="review-guest">' + r.guest_name + '</div>' +
-                            countryHtml +
+                var subParts = [];
+                if (r.unit_number) subParts.push(r.unit_number);
+                if (platform !== 'direct') subParts.push('via ' + (PLATFORM_LABELS[platform]||platform));
+                var subText = subParts.join(' · ');
+                var ccHtml = cc ? '<div class="review-country-code">' + cc + '</div>' : '';
+                var readMoreBtn = long ? '<button class="review-readmore" onclick="event.stopPropagation();openReviewModal(' + idx + ')">Read more</button>' : '';
+                return '<div class="review-card" onclick="openReviewModal(' + idx + ')">' +
+                    '<div>' +
+                        '<div class="review-top">' +
+                            '<div class="review-stars-row">' + stars + '</div>' +
+                            ccHtml +
                         '</div>' +
-                        '<div class="review-stars-row">' + stars + '</div>' +
-                        unitHtml +
-                        platformHtml +
-                        sealHtml +
+                        '<div class="review-comment">' + short + '</div>' +
+                    '</div>' +
+                    '<div class="review-bottom">' +
+                        '<div class="review-bottom-left">' +
+                            '<div class="review-guest">' + r.guest_name + '</div>' +
+                            (subText ? '<div class="review-sub">' + subText + '</div>' : '') +
+                            readMoreBtn +
+                        '</div>' +
+                        (r.is_verified ? '<img src="' + SEAL_URL + '" alt="Genuine Guest" style="width:40px;height:40px;object-fit:contain;">' : '') +
                     '</div>' +
                 '</div>';
-            }).join('') + '<div style="min-width:24px;flex-shrink:0;"></div>';
+            }).join('') + '<div style="min-width:20px;flex-shrink:0;"></div>';
     } catch(e) { console.error('Reviews error:', e); }
 }
 
-function expandReview(idx) {
-    var el = document.getElementById('rc-' + idx);
-    var btn = el ? el.nextElementSibling : null;
-    if (el) { el.textContent = reviewComments[idx]; el.style.fontStyle='italic'; }
-    if (btn) btn.style.display = 'none';
+function openReviewModal(idx) {
+    var r = reviewData[idx];
+    if (!r) return;
+    var cc = r.country ? (COUNTRY_CODES[r.country.toLowerCase()] || r.country.substring(0,2).toUpperCase()) : '';
+    var platform = r.platform || 'direct';
+    var stars = [1,2,3,4,5].map(function(i){
+        return '<i class="fas fa-star" style="color:' + (i<=r.rating?'#E8C484':'rgba(255,255,255,0.15)') + '"></i>';
+    }).join('');
+    var metaParts = [];
+    if (r.unit_number) metaParts.push('Stayed in ' + r.unit_number);
+    if (platform !== 'direct') metaParts.push('via ' + (PLATFORM_LABELS[platform]||platform));
+    document.getElementById('modal-country-code').textContent = cc;
+    document.getElementById('modal-guest-name').textContent = r.guest_name;
+    document.getElementById('modal-stars').innerHTML = stars;
+    document.getElementById('modal-meta').textContent = metaParts.join(' · ');
+    document.getElementById('modal-text').textContent = r.comment || '';
+    document.getElementById('modal-platform').textContent = platform !== 'direct' ? 'Review via ' + (PLATFORM_LABELS[platform]||platform) : 'HTM Direct Booking';
+    document.getElementById('modal-seal').style.display = r.is_verified ? 'block' : 'none';
+    document.getElementById('review-modal-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
 }
 
-loadUnits();
+function closeReviewModal(e) {
+    if (e && e.target !== document.getElementById('review-modal-overlay')) return;
+    document.getElementById('review-modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
 loadReviews();
 loadExperiences();
 loadPromoBanners();
