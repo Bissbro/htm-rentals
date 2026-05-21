@@ -1466,6 +1466,7 @@ const PLATFORM_LABELS = {direct:'HTM Direct',airbnb:'Airbnb',booking:'Booking.co
 const SEAL_URL = 'https://api.htmrentals.com/uploads/1779348088924-873581476.png';
 const REVIEW_MAXLEN = 150;
 
+const reviewComments = {};
 async function loadReviews() {
     try {
         const res = await fetch(`${API}/reviews`);
@@ -1494,7 +1495,8 @@ async function loadReviews() {
                 var platformHtml = platform !== 'direct' ? '<div class="review-platform">via ' + (PLATFORM_LABELS[platform]||platform) + '</div>' : '';
                 var sealHtml = r.is_verified ? '<img src="' + SEAL_URL + '" alt="Genuine Guest" style="width:52px;height:52px;object-fit:contain;">' : '';
                 var unitHtml = r.unit_number ? '<div class="review-meta">Stayed in ' + r.unit_number + '</div>' : '';
-                var readMore = long ? '<button class="review-readmore" onclick="expandReview(' + idx + ',' + JSON.stringify(r.comment) + ')">Read more</button>' : '';
+                reviewComments[idx] = r.comment;
+                var readMore = long ? '<button class="review-readmore" onclick="expandReview(' + idx + ')">>Read more</button>' : '';
                 var countryHtml = cc ? '<div class="review-country-code">' + cc + '</div>' : '';
                 return '<div class="review-card">' +
                     '<div class="review-quote">“</div>' +
@@ -1515,9 +1517,11 @@ async function loadReviews() {
     } catch(e) { console.error('Reviews error:', e); }
 }
 
-function expandReview(idx, full) {
+function expandReview(idx) {
     var el = document.getElementById('rc-' + idx);
-    if (el) el.textContent = full;
+    var btn = el ? el.nextElementSibling : null;
+    if (el) { el.textContent = reviewComments[idx]; el.style.fontStyle='italic'; }
+    if (btn) btn.style.display = 'none';
 }
 
 loadUnits();
