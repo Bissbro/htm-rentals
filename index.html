@@ -23,7 +23,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script></noscript>
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -877,11 +879,11 @@
         <div class="avail-dates-row">
             <div class="avail-input-wrap">
                 <div class="avail-label">Check In</div>
-                <input type="date" class="avail-input" id="avail-checkin">
+                <input type="text" class="avail-input" id="avail-checkin" placeholder="Select date" readonly>
             </div>
             <div class="avail-input-wrap">
                 <div class="avail-label">Check Out</div>
-                <input type="date" class="avail-input" id="avail-checkout">
+                <input type="text" class="avail-input" id="avail-checkout" placeholder="Select date" readonly>
             </div>
         </div>
         <button class="avail-btn" onclick="checkAvailability()">Check Availability</button>
@@ -1284,8 +1286,8 @@ function startHeroTimer() {
 
 // ========== AVAILABILITY CHECKER ==========
 function clearAvailability() {
-    document.getElementById('avail-checkin').value = '';
-    document.getElementById('avail-checkout').value = '';
+    document.getElementById('avail-checkin')._flatpickr && document.getElementById('avail-checkin')._flatpickr.clear();
+    document.getElementById('avail-checkout')._flatpickr && document.getElementById('avail-checkout')._flatpickr.clear();
     const carousel = document.getElementById('units-carousel');
     const allCards = Array.from(carousel.querySelectorAll('.unit-card'));
     const order = ['A-701', 'A-207', 'A-106'];
@@ -1375,12 +1377,22 @@ async function checkAvailability() {
 
 // Set min date to today
 window.addEventListener('DOMContentLoaded', () => {
-    const today = new Date().toISOString().split('T')[0];
-    const cin = document.getElementById('avail-checkin');
-    const cout = document.getElementById('avail-checkout');
-    if (cin) cin.min = today;
-    if (cout) cout.min = today;
-    if (cin) cin.addEventListener('change', () => { if (cout) cout.min = cin.value; });
+    const today = new Date();
+    const cinPicker = flatpickr('#avail-checkin', {
+        minDate: 'today',
+        dateFormat: 'Y-m-d',
+        disableMobile: false,
+        onChange: function(selectedDates) {
+            if (selectedDates[0]) {
+                coutPicker.set('minDate', selectedDates[0]);
+            }
+        }
+    });
+    const coutPicker = flatpickr('#avail-checkout', {
+        minDate: 'today',
+        dateFormat: 'Y-m-d',
+        disableMobile: false
+    });
 });
 
 const unitGalleryState = {};
