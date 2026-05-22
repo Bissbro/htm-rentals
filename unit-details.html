@@ -64,7 +64,7 @@
         }
         .header-spacer { height: 56px; }
 
-        /* Toggle - Foreign first, Local second */
+        /* Toggle - Local first, Foreign second */
         .currency-toggle { display: flex; gap: 8px; }
         .toggle-option {
             display: flex;
@@ -208,11 +208,11 @@
         <div class="header-spacer"></div>
         <div class="header">
             <div class="currency-toggle">
-                <button id="toggle-foreign" class="toggle-option foreign-active" onclick="setMode('foreign')">
-                    <i class="fas fa-plane"></i><span>Foreign</span>
-                </button>
-                <button id="toggle-local" class="toggle-option" onclick="setMode('local')">
+                <button id="toggle-local" class="toggle-option local-active" onclick="setMode('local')">
                     <i class="fas fa-sailboat"></i><span>Local</span>
+                </button>
+                <button id="toggle-foreign" class="toggle-option" onclick="setMode('foreign')">
+                    <i class="fas fa-plane"></i><span>Foreign</span>
                 </button>
             </div>
             <a href="index.html" class="back-arrow">
@@ -247,7 +247,7 @@
         let galleryImages = [];
         let currentImageIndex = 0;
         let slideInterval = null;
-        let currentMode = 'foreign';
+        let currentMode = 'local';
         let refreshInterval = null;
 
         function scrollToBookingCard() {
