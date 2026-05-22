@@ -480,23 +480,21 @@ Payment: ${payment}`;
         }
 
         function showPaymentPage(bookingId, guestName, phone, nights, total, checkIn, checkOut) {
-            const modal = document.getElementById('payment-modal');
-            if (!modal) { console.error('Payment modal not found'); return; }
-            const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-            const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
-            const setHref = (id, val) => { const el = document.getElementById(id); if (el) el.href = val; };
-            setText('pay-booking-id', '#' + bookingId);
-            setText('pay-guest-name', guestName);
-            setText('pay-nights', nights + ' night' + (nights > 1 ? 's' : ''));
-            setText('pay-checkin', formatDate(checkIn));
-            setText('pay-checkout', formatDate(checkOut));
-            setText('pay-total', 'MVR ' + total.toFixed(2));
-            setVal('pay-booking-id-hidden', bookingId);
-            setText('telegram-booking-id-display', 'Your Booking ID: ' + bookingId);
-            setHref('telegram-bot-link', 'https://t.me/htmrentals_bot?start=' + bookingId);
-            modal.style.display = 'flex';
-            document.getElementById('payment-form-wrap').scrollTop = 0;
-            // Auto-link if Telegram was previously connected this session
+            // Redirect to dedicated checkout page
+            const params = new URLSearchParams({
+                booking_id: bookingId,
+                unit: unit.id,
+                checkin: checkIn,
+                checkout: checkOut,
+                guests: parseInt(document.getElementById('adults').value || 1) + parseInt(document.getElementById('children').value || 0),
+                amount: total.toFixed(2),
+                currency: 'MVR',
+                name: encodeURIComponent(guestName),
+                phone: phone
+            });
+            window.location.href = '/checkout.html?' + params.toString();
+            if (false) {
+            // Legacy modal code below - kept for reference
             if (sessionStorage.getItem('tg_user_id')) {
                 linkStoredTelegram(bookingId);
             }
