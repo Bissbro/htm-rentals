@@ -493,11 +493,6 @@ Payment: ${payment}`;
                 phone: phone
             });
             window.location.href = '/checkout.html?' + params.toString();
-            if (false) {
-            // Legacy modal code below - kept for reference
-            if (sessionStorage.getItem('tg_user_id')) {
-                linkStoredTelegram(bookingId);
-            }
         }
 
         function disconnectTelegram() {
