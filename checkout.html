@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — HTM Rentals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --navy: #0A2540;
+            --navy-light: #0d3660;
+            --teal: #2A9D8F;
+            --gold: #C9A96E;
+            --white: #ffffff;
+            --gray: #6C757D;
+            --gray-light: #F8F9FA;
+            --gray-border: #E5E5E5;
+            --radius: 16px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        body { font-family: 'Inter', sans-serif; background: #F0F4F8; min-height: 100vh; }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: var(--navy);
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .header-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .header-logo img { width: 36px; height: 36px; border-radius: 8px; }
+        .header-logo-text { font-family: 'Playfair Display', serif; font-size: 1rem; color: white; font-weight: 600; }
+        .header-back { color: rgba(255,255,255,0.6); font-size: 13px; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+        .header-back:hover { color: white; }
+
+        /* ===== LAYOUT ===== */
+        .checkout-wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            .checkout-wrap {
+                grid-template-columns: 380px 1fr;
+                padding: 40px 24px 60px;
+                gap: 28px;
+                align-items: start;
+            }
+        }
+
+        /* ===== LEFT PANEL - BOOKING SUMMARY ===== */
+        .summary-panel {
+            background: var(--navy);
+            border-radius: var(--radius);
+            overflow: hidden;
+            position: sticky;
+            top: 80px;
+        }
+        .summary-image {
+            width: 100%; aspect-ratio: 16/9;
+            object-fit: cover; display: block;
+            background: var(--navy-light);
+        }
+        .summary-body { padding: 24px; }
+        .summary-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
+        .summary-unit { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: white; font-weight: 700; margin-bottom: 4px; }
+        .summary-building { font-size: 12px; color: rgba(255,255,255,0.45); margin-bottom: 20px; }
+        .summary-divider { height: 1px; background: rgba(255,255,255,0.08); margin-bottom: 20px; }
+        .summary-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .summary-date-item {}
+        .summary-date-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal); margin-bottom: 4px; }
+        .summary-date-val { font-size: 14px; font-weight: 700; color: white; }
+        .summary-nights { font-size: 12px; color: rgba(255,255,255,0.45); margin-bottom: 20px; }
+        .summary-price-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-top: 1px solid rgba(255,255,255,0.08); }
+        .summary-price-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+        .summary-price-val { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--gold); }
+        .summary-price-usd { font-size: 11px; color: rgba(255,255,255,0.3); text-align: right; margin-top: 2px; }
+        .summary-guests { display: flex; align-items: center; gap: 8px; font-size: 12px; color: rgba(255,255,255,0.45); margin-bottom: 16px; }
+        .summary-guests i { color: var(--teal); font-size: 11px; }
+
+        /* ===== RIGHT PANEL - CHECKOUT FORM ===== */
+        .form-panel { display: flex; flex-direction: column; gap: 16px; }
+
+        .checkout-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .checkout-card-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--gray-border);
+            display: flex; align-items: center; gap: 12px;
+        }
+        .step-num {
+            width: 28px; height: 28px;
+            background: var(--navy);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700; color: white;
+            flex-shrink: 0;
+        }
+        .step-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+        .checkout-card-body { padding: 20px 24px; }
+
+        /* Bank account cards */
+        .bank-card {
+            border: 1.5px solid var(--gray-border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bank-card:hover { border-color: var(--teal); }
+        .bank-card:last-child { margin-bottom: 0; }
+        .bank-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: inline-block; }
+        .badge-bml { background: #E8F4FD; color: #006994; }
+        .badge-mib { background: #E8F5E9; color: #2e7d32; }
+        .bank-name { font-size: 11px; color: var(--gray); margin-bottom: 4px; }
+        .bank-account { font-size: 15px; font-weight: 800; color: var(--navy); letter-spacing: 1px; font-family: monospace; }
+        .bank-holder { font-size: 11px; color: var(--gray); margin-top: 2px; }
+        .copy-btn { font-size: 12px; font-weight: 600; color: var(--teal); flex-shrink: 0; }
+        .copy-hint { font-size: 11px; color: var(--gray); margin-top: 12px; text-align: center; }
+
+        /* Upload areas */
+        .upload-area {
+            border: 2px dashed var(--gray-border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            margin-bottom: 12px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .upload-area:hover { border-color: var(--teal); background: rgba(42,157,143,0.02); }
+        .upload-area.uploaded { border-color: var(--teal); background: rgba(42,157,143,0.05); border-style: solid; }
+        .upload-icon { font-size: 28px; margin-bottom: 8px; }
+        .upload-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
+        .upload-sub { font-size: 11px; color: var(--gray); }
+        .upload-label { font-size: 10px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+        .required { color: #e53e3e; }
+
+        /* Email input */
+        .form-group { margin-bottom: 0; }
+        .form-label { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+        .form-input {
+            width: 100%; padding: 12px 16px;
+            border: 1.5px solid var(--gray-border);
+            border-radius: 10px;
+            font-size: 14px; font-family: 'Inter', sans-serif;
+            outline: none; color: var(--navy);
+            transition: border-color 0.2s;
+        }
+        .form-input:focus { border-color: var(--teal); }
+        .form-hint { font-size: 11px; color: var(--gray); margin-top: 6px; }
+
+        /* Submit button */
+        .submit-btn {
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, var(--teal), #1e8a7d);
+            color: white; border: none;
+            border-radius: 40px;
+            font-size: 15px; font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(42,157,143,0.35);
+            -webkit-tap-highlight-color: transparent;
+            transition: opacity 0.2s, transform 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .submit-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .submit-note { text-align: center; font-size: 12px; color: var(--gray); margin-top: 10px; }
+
+        /* Success screen */
+        .success-screen {
+            display: none;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 48px 32px;
+            text-align: center;
+        }
+        .success-icon { width: 72px; height: 72px; background: linear-gradient(135deg, var(--teal), #1e8a7d); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 4px 20px rgba(42,157,143,0.35); }
+        .success-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); font-weight: 700; margin-bottom: 8px; }
+        .success-sub { font-size: 14px; color: var(--gray); line-height: 1.6; margin-bottom: 24px; }
+        .booking-id-box { background: var(--gray-light); border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+        .booking-id-label { font-size: 10px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .booking-id-val { font-size: 1.3rem; font-weight: 800; color: var(--teal); }
+        .success-back { background: var(--navy); color: white; border: none; border-radius: 40px; padding: 12px 32px; font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: none; display: inline-block; }
+
+        /* Loading overlay */
+        .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(10,37,64,0.6); z-index: 999; align-items: center; justify-content: center; }
+        .loading-overlay.show { display: flex; }
+        .loading-spinner { width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .secure-note { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: var(--gray); margin-top: 8px; }
+        .secure-note i { color: var(--teal); font-size: 10px; }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <a href="javascript:history.back()" class="header-back">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+    <a href="/" class="header-logo">
+        <img src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="HTM Rentals">
+        <span class="header-logo-text">HTM Rentals</span>
+    </a>
+    <div style="width:60px;"></div>
+</header>
+
+<div class="checkout-wrap">
+
+    <!-- LEFT: Booking Summary -->
+    <div class="summary-panel" id="summary-panel">
+        <div style="width:100%;aspect-ratio:16/9;background:#0d3660;display:flex;align-items:center;justify-content:center;" id="summary-img-wrap">
+            <i class="fas fa-home" style="font-size:2rem;color:rgba(255,255,255,0.2);"></i>
+        </div>
+        <div class="summary-body">
+            <div class="summary-label">Your Booking</div>
+            <div class="summary-unit" id="sum-unit">Loading...</div>
+            <div class="summary-building" id="sum-building">Malas Residence</div>
+            <div class="summary-divider"></div>
+            <div class="summary-dates">
+                <div class="summary-date-item">
+                    <div class="summary-date-label">Check In</div>
+                    <div class="summary-date-val" id="sum-checkin">—</div>
+                </div>
+                <div class="summary-date-item">
+                    <div class="summary-date-label">Check Out</div>
+                    <div class="summary-date-val" id="sum-checkout">—</div>
+                </div>
+            </div>
+            <div class="summary-nights" id="sum-nights"></div>
+            <div class="summary-guests"><i class="fas fa-users"></i> <span id="sum-guests"></span></div>
+            <div class="summary-price-row">
+                <div>
+                    <div class="summary-price-label">Total Amount</div>
+                    <div class="summary-price-usd" id="sum-usd"></div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="summary-price-val" id="sum-price">MVR 0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT: Form -->
+    <div class="form-panel" id="form-panel">
+
+        <!-- Step 1: Transfer Payment -->
+        <div class="checkout-card">
+            <div class="checkout-card-header">
+                <div class="step-num">1</div>
+                <div class="step-title">Transfer Payment</div>
+            </div>
+            <div class="checkout-card-body">
+                <div id="mvr-accounts">
+                    <div class="bank-card" onclick="copyAccount('7730000770586', this)">
+                        <div>
+                            <span class="bank-badge badge-bml">BML</span>
+                            <div class="bank-name">Bank of Maldives</div>
+                            <div class="bank-account">7730000770586</div>
+                            <div class="bank-holder">Account Name: HTM</div>
+                        </div>
+                        <div class="copy-btn">Tap to copy</div>
+                    </div>
+                    <div class="bank-card" onclick="copyAccount('90501400052311000', this)">
+                        <div>
+                            <span class="bank-badge badge-mib">MIB</span>
+                            <div class="bank-name">Maldives Islamic Bank</div>
+                            <div class="bank-account">90501400052311000</div>
+                            <div class="bank-holder">Account Name: HTM</div>
+                        </div>
+                        <div class="copy-btn">Tap to copy</div>
+                    </div>
+                </div>
+                <div id="usd-accounts" style="display:none;">
+                    <div class="bank-card" onclick="copyAccount('7730000770587', this)">
+                        <div>
+                            <span class="bank-badge badge-bml">BML</span>
+                            <div class="bank-name">Bank of Maldives — USD</div>
+                            <div class="bank-account">7730000770587</div>
+                            <div class="bank-holder">Account Name: HTM</div>
+                        </div>
+                        <div class="copy-btn">Tap to copy</div>
+                    </div>
+                    <div class="bank-card" onclick="copyAccount('90403100427391000', this)">
+                        <div>
+                            <span class="bank-badge badge-mib">MIB</span>
+                            <div class="bank-name">Maldives Islamic Bank — USD</div>
+                            <div class="bank-account">90403100427391000</div>
+                            <div class="bank-holder">Account Name: HTM</div>
+                        </div>
+                        <div class="copy-btn">Tap to copy</div>
+                    </div>
+                </div>
+                <div class="copy-hint">Tap any account number to copy</div>
+            </div>
+        </div>
+
+        <!-- Step 2: Upload Documents -->
+        <div class="checkout-card">
+            <div class="checkout-card-header">
+                <div class="step-num">2</div>
+                <div class="step-title">Upload Documents</div>
+            </div>
+            <div class="checkout-card-body">
+                <div class="upload-label">Transfer Slip <span class="required">*</span></div>
+                <label for="slip-file" class="upload-area" id="slip-area">
+                    <div class="upload-icon">📎</div>
+                    <div class="upload-title">Choose file or tap to browse</div>
+                    <div class="upload-sub">Screenshot or photo (JPG, PNG)</div>
+                </label>
+                <input type="file" id="slip-file" accept="image/*" style="display:none;" onchange="handleFileSelect(this, 'slip-area', 'slip-name')">
+
+                <div class="upload-label" style="margin-top:16px;">ID Card — Front <span class="required">*</span></div>
+                <label for="id-file" class="upload-area" id="id-area">
+                    <div class="upload-icon">🪪</div>
+                    <div class="upload-title">Upload ID card front</div>
+                    <div class="upload-sub">Photo of ID card front (JPG, PNG)</div>
+                </label>
+                <input type="file" id="id-file" accept="image/*" style="display:none;" onchange="handleFileSelect(this, 'id-area', 'id-name')">
+            </div>
+        </div>
+
+        <!-- Step 3: Email -->
+        <div class="checkout-card">
+            <div class="checkout-card-header">
+                <div class="step-num">3</div>
+                <div class="step-title">Confirmation Email</div>
+            </div>
+            <div class="checkout-card-body">
+                <div class="form-group">
+                    <label class="form-label" for="guest-email">Email Address <span class="required">*</span></label>
+                    <input type="email" class="form-input" id="guest-email" placeholder="your@email.com">
+                    <div class="form-hint">Your booking confirmation and invoice will be sent here.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div>
+            <button class="submit-btn" id="submit-btn" onclick="submitCheckout()">
+                <i class="fas fa-check-circle"></i> Confirm Booking
+            </button>
+            <div class="submit-note">You will receive a confirmation email instantly.</div>
+            <div class="secure-note"><i class="fas fa-lock"></i> Your information is secure</div>
+        </div>
+
+        <!-- Success screen -->
+        <div class="success-screen" id="success-screen">
+            <div class="success-icon">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <div class="success-title">Booking Confirmed!</div>
+            <div class="success-sub">Your booking has been confirmed. Check your email for the confirmation and invoice.</div>
+            <div class="booking-id-box">
+                <div class="booking-id-label">Booking ID</div>
+                <div class="booking-id-val" id="success-booking-id">—</div>
+            </div>
+            <a href="/" class="success-back">Back to Home</a>
+        </div>
+
+    </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<script>
+const API = 'https://api.htmrentals.com/api';
+
+// Parse URL params
+const params = new URLSearchParams(window.location.search);
+const unitId = params.get('unit');
+const checkin = params.get('checkin');
+const checkout = params.get('checkout');
+const guests = parseInt(params.get('guests')) || 1;
+const amount = parseFloat(params.get('amount')) || 0;
+const currency = params.get('currency') || 'MVR';
+const guestName = decodeURIComponent(params.get('name') || '');
+const guestPhone = params.get('phone') || '';
+const guestNid = params.get('nid') || '';
+const bookingIdParam = params.get('booking_id');
+
+let bookingId = bookingIdParam || null;
+
+// Format date
+function fmtDate(d) {
+    if (!d) return '—';
+    const date = new Date(d);
+    return date.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+}
+
+// Load unit and populate summary
+async function loadSummary() {
+    if (!unitId) return;
+    try {
+        const res = await fetch(API + '/units/' + unitId);
+        const data = await res.json();
+        const unit = data.unit || data;
+
+        document.getElementById('sum-unit').textContent = unit.unit_number || unit.unit_name;
+        document.getElementById('sum-building').textContent = unit.building_name || 'Malas Residence';
+
+        // Unit image
+        const imgWrap = document.getElementById('summary-img-wrap');
+        const img = unit.featured_image || (unit.gallery_images ? JSON.parse(unit.gallery_images)[0] : null);
+        if (img) {
+            imgWrap.innerHTML = '<img src="' + img + '" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" alt="' + (unit.unit_number || '') + '">';
+        }
+
+        // Dates
+        document.getElementById('sum-checkin').textContent = fmtDate(checkin);
+        document.getElementById('sum-checkout').textContent = fmtDate(checkout);
+
+        const nights = checkin && checkout ? Math.ceil((new Date(checkout) - new Date(checkin)) / (1000*60*60*24)) : 0;
+        document.getElementById('sum-nights').textContent = nights + ' night' + (nights !== 1 ? 's' : '');
+        document.getElementById('sum-guests').textContent = guests + ' guest' + (guests !== 1 ? 's' : '');
+
+        // Price
+        document.getElementById('sum-price').textContent = currency + ' ' + amount.toFixed(2);
+        if (currency === 'MVR') {
+            const usd = amount / 15.4;
+            document.getElementById('sum-usd').textContent = '$ ' + usd.toFixed(2);
+        }
+
+        // Show USD accounts if USD booking
+        if (currency === 'USD') {
+            document.getElementById('mvr-accounts').style.display = 'none';
+            document.getElementById('usd-accounts').style.display = 'block';
+        }
+
+    } catch(e) { console.error('Load summary error:', e); }
+}
+
+// Copy account number
+function copyAccount(num, el) {
+    navigator.clipboard.writeText(num).then(() => {
+        const btn = el.querySelector('.copy-btn');
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.style.color = 'var(--teal)';
+        setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+    });
+}
+
+// Handle file selection
+function handleFileSelect(input, areaId, nameId) {
+    const area = document.getElementById(areaId);
+    if (input.files[0]) {
+        area.classList.add('uploaded');
+        area.innerHTML = '<div class="upload-icon">✅</div><div class="upload-title">' + input.files[0].name + '</div><div class="upload-sub">Tap to change</div>';
+    }
+}
+
+// Compress image
+async function compressImage(file, maxSizeMB = 1) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let w = img.width, h = img.height;
+                const maxDim = 1920;
+                if (w > maxDim || h > maxDim) {
+                    if (w > h) { h = h * maxDim / w; w = maxDim; }
+                    else { w = w * maxDim / h; h = maxDim; }
+                }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                canvas.toBlob((blob) => resolve(new File([blob], file.name, { type: 'image/jpeg' })), 'image/jpeg', 0.85);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// Submit checkout
+async function submitCheckout() {
+    const slipInput = document.getElementById('slip-file');
+    const idInput = document.getElementById('id-file');
+    const email = document.getElementById('guest-email').value.trim();
+
+    if (!slipInput.files[0]) { alert('Please upload your payment slip'); return; }
+    if (!idInput.files[0]) { alert('Please upload your ID card'); return; }
+    if (!email) { alert('Please enter your email address'); return; }
+    if (!email.includes('@')) { alert('Please enter a valid email address'); return; }
+
+    showLoading(true);
+
+    try {
+        // Create booking if not exists
+        if (!bookingId) {
+            const bookingRes = await fetch(API + '/bookings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    unit_id: unitId,
+                    check_in_date: checkin,
+                    check_out_date: checkout,
+                    guest_name: guestName,
+                    guest_email: email,
+                    guest_phone: guestPhone,
+                    guest_nid: guestNid,
+                    number_of_guests: guests,
+                    total_amount: amount,
+                    currency: currency,
+                    booking_source: 'Direct'
+                })
+            });
+            const bookingData = await bookingRes.json();
+            if (!bookingData.success && !bookingData.booking_id && !bookingData.id) {
+                throw new Error(bookingData.error || 'Booking creation failed');
+            }
+            bookingId = bookingData.booking_id || bookingData.id;
+        }
+
+        // Update email
+        await fetch(API + '/bookings/' + bookingId + '/update-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+        });
+
+        // Compress and upload
+        let slip = slipInput.files[0];
+        let idCard = idInput.files[0];
+        if (slip.type.startsWith('image/')) slip = await compressImage(slip);
+        if (idCard.type.startsWith('image/')) idCard = await compressImage(idCard);
+
+        const formData = new FormData();
+        formData.append('slip', slip);
+        formData.append('id_card', idCard);
+
+        const uploadRes = await fetch(API + '/bookings/' + bookingId + '/slip', {
+            method: 'POST',
+            body: formData
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadData.success) throw new Error(uploadData.error || 'Upload failed');
+
+        // Show success
+        showLoading(false);
+        document.getElementById('form-panel').innerHTML = '';
+        const success = document.getElementById('success-screen') || document.createElement('div');
+        showSuccess(bookingId);
+
+    } catch(e) {
+        showLoading(false);
+        console.error('Checkout error:', e);
+        alert('Something went wrong: ' + e.message + '. Please try again or contact us.');
+    }
+}
+
+function showSuccess(bId) {
+    document.getElementById('form-panel').innerHTML = `
+        <div class="success-screen" style="display:block;">
+            <div class="success-icon">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <div class="success-title">Booking Confirmed!</div>
+            <div class="success-sub">Your booking has been confirmed. Check your email for the confirmation and invoice.</div>
+            <div class="booking-id-box">
+                <div class="booking-id-label">Booking ID</div>
+                <div class="booking-id-val">INV-2026-${String(bId).padStart(3,'0')}</div>
+            </div>
+            <a href="/" class="success-back">Back to Home</a>
+        </div>`;
+}
+
+function showLoading(show) {
+    document.getElementById('loading-overlay').classList.toggle('show', show);
+    const btn = document.getElementById('submit-btn');
+    if (btn) { btn.disabled = show; btn.innerHTML = show ? '<i class="fas fa-spinner fa-spin"></i> Processing...' : '<i class="fas fa-check-circle"></i> Confirm Booking'; }
+}
+
+// Init
+loadSummary();
+</script>
+</body>
+</html>
