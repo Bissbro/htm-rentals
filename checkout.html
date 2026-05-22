@@ -467,8 +467,17 @@ function copyAccount(num, el) {
 function handleFile(input, areaId) {
     const area = document.getElementById(areaId);
     if (input.files[0]) {
+        const name = input.files[0].name;
+        const shortName = name.length > 32 ? name.substring(0, 32) + '...' : name;
         area.classList.add('uploaded');
-        area.innerHTML = '<div class="upload-icon">&#x2705;</div><div class="upload-title">' + input.files[0].name + '</div><div class="upload-sub">Tap to change</div>';
+        area.innerHTML =
+            '<div style="margin-bottom:10px;display:flex;justify-content:center;">' +
+                '<div style="width:44px;height:44px;background:linear-gradient(135deg,#2A9D8F,#1e8a7d);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(42,157,143,0.35);">' +
+                    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+                '</div>' +
+            '</div>' +
+            '<div style="font-size:13px;font-weight:600;color:#0A2540;margin-bottom:4px;">' + shortName + '</div>' +
+            '<div style="font-size:12px;color:#2A9D8F;font-weight:500;">Ready to upload · Tap to change</div>';
     }
 }
 
