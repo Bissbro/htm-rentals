@@ -100,7 +100,6 @@
         @media print {
             body > .container { display: none; }
             .modal { display: none !important; }
-            #invoice-doc { display: block !important; position: static !important; padding: 0 !important; }
             .doc-actions { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .inv-header { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -115,8 +114,6 @@
             .inv-payment-section { padding: 12px !important; margin-bottom: 10px !important; }
             .inv-footer { padding-top: 12px !important; }
         }
-        #invoice-doc { display: none; position: fixed; inset: 0; z-index: 2000; background: white; overflow-y: auto; padding: 24px; }
-        #invoice-doc.show { display: block; }
         .doc-actions { display: flex; gap: 12px; justify-content: flex-end; margin-bottom: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
         .inv-wrapper { max-width: 800px; margin: 0 auto; font-family: 'Inter', sans-serif; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; }
 
@@ -473,65 +470,6 @@
 </div>
 
 <!-- INVOICE DOCUMENT -->
-<div id="invoice-doc">
-    <div class="doc-actions">
-        <button class="btn btn-secondary" onclick="closeInvoice()"><i class="fas fa-times"></i> Close</button>
-        <button class="btn btn-primary" onclick="downloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
-    </div>
-    <div class="inv-wrapper" style="position:relative">
-        <div class="paid-stamp" id="paid-stamp" style="display:none">PAID</div>
-        <div class="inv-header">
-            <div class="inv-brand">
-                <div class="inv-logo">HTM</div>
-                <div class="inv-address">Malas Residence<br>Hulhumale', Maldives</div>
-            </div>
-            <div class="inv-meta">
-                <div class="inv-type" id="doc-type">Invoice</div>
-                <div class="inv-number" id="doc-number">—</div>
-                <div class="inv-date" id="doc-date">—</div>
-                <div class="inv-currency-badge" id="doc-currency">MVR</div>
-            </div>
-        </div>
-        <div class="inv-body">
-            <div class="inv-parties">
-                <div class="inv-party">
-                    <div class="party-label">From</div>
-                    <div class="party-name">HTM Rentals</div>
-                    <div class="party-detail">Malas Residence, Hulhumale'</div>
-                    <div class="party-detail">Maldives</div>
-                </div>
-                <div class="inv-party">
-                    <div class="party-label">Bill To</div>
-                    <div class="party-name" id="doc-guest-name">—</div>
-                    <div class="party-detail" id="doc-guest-phone"></div>
-                    <div class="party-detail" id="doc-guest-email"></div>
-                </div>
-            </div>
-            <div class="inv-booking-strip" id="doc-booking-strip" style="display:none;">
-                <div class="inv-bstrip-item"><div class="bstrip-label">Unit</div><div class="bstrip-value" id="doc-unit">—</div></div>
-                <div class="inv-bstrip-item"><div class="bstrip-label">Check In</div><div class="bstrip-value" id="doc-checkin">—</div></div>
-                <div class="inv-bstrip-item"><div class="bstrip-label">Check Out</div><div class="bstrip-value" id="doc-checkout">—</div></div>
-                <div class="inv-bstrip-item"><div class="bstrip-label">Nights</div><div class="bstrip-value" id="doc-nights">—</div></div>
-            </div>
-            <table class="inv-items-table">
-                <thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th></tr></thead>
-                <tbody id="doc-items"></tbody>
-            </table>
-            <div class="inv-totals">
-                <div class="inv-totals-box" id="doc-totals"></div>
-            </div>
-            <div class="inv-payment-section" id="doc-payment-section">
-                <div class="inv-payment-title">Payment Details</div>
-                <div class="inv-payment-grid" id="doc-payment-details"></div>
-            </div>
-            <div class="inv-footer">
-                Thank you for choosing HTM Rentals • htmrentals.com<br>
-                <span id="doc-company-phone"></span> • <span id="doc-company-email"></span><br>
-                <span id="doc-company-address"></span>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     if (!sessionStorage.getItem('adminToken')) { window.location.href = 'admin.html'; }
@@ -914,78 +852,13 @@
     }
 
     // ==================== VIEW / DELETE ====================
-    function downloadPDF() {
-        if (!window._currentInvId) return;
-        window.open('https://api.htmrentals.com/api/admin/invoices/' + window._currentInvId + '/pdf?token=' + sessionStorage.getItem('adminToken'), '_blank');
+
+    function viewInvoice(id) {
+        const token = sessionStorage.getItem('adminToken');
+        window.open('https://api.htmrentals.com/api/admin/invoices/' + id + '/pdf?token=' + token, '_blank');
     }
 
-    async function viewInvoice(id) {
-        window._currentInvId = id;
-        const res = await fetch(`${API}/admin/invoices/${id}`, { headers: authHeaders() });
-        const data = await res.json();
-        if (!data.success) { alert('Failed to load invoice'); return; }
-        const inv = data.invoice;
-        const items = data.items;
-        const sym = inv.currency === 'USD' ? '$' : 'MVR';
 
-        document.getElementById('doc-type').textContent = inv.invoice_type === 'minibar' ? 'Minibar Invoice' : 'Invoice';
-        document.getElementById('doc-number').textContent = inv.invoice_number;
-        document.getElementById('doc-date').textContent = `Issued: ${formatDate(inv.issue_date)}`;
-        document.getElementById('doc-currency').textContent = inv.currency;
-        document.getElementById('doc-guest-name').textContent = inv.guest_name || '—';
-        document.getElementById('doc-guest-phone').textContent = inv.guest_phone || '';
-        document.getElementById('doc-guest-email').textContent = inv.guest_email || '';
-
-        // Paid stamp
-        document.getElementById('paid-stamp').style.display = inv.status === 'paid' ? 'inline-block' : 'none';
-
-        // Company footer
-        if (data.company) {
-            document.getElementById('doc-company-phone').textContent = data.company.whatsapp_number || '';
-            document.getElementById('doc-company-email').textContent = data.company.email_address || '';
-            document.getElementById('doc-company-address').textContent = data.company.address || '';
-        }
-
-        // Booking strip
-        const strip = document.getElementById('doc-booking-strip');
-        if (inv.invoice_type === 'booking' && inv.check_in_date) {
-            strip.style.display = 'grid';
-            document.getElementById('doc-unit').textContent = inv.unit_name || '—';
-            document.getElementById('doc-checkin').textContent = formatDate(inv.check_in_date);
-            document.getElementById('doc-checkout').textContent = formatDate(inv.check_out_date);
-            document.getElementById('doc-nights').textContent = inv.total_nights || '—';
-        } else {
-            strip.style.display = 'none';
-        }
-
-        // Items
-        document.getElementById('doc-items').innerHTML = items.map(item => `
-            <tr${item.item_type === 'discount' ? ' class="discount-row"' : ''}>
-                <td>${item.description}</td>
-                <td>${item.quantity}</td>
-                <td>${sym} ${fmt(Math.abs(item.unit_price))}</td>
-                <td>${item.amount < 0 ? '−' : ''}${sym} ${fmt(Math.abs(item.amount))}</td>
-            </tr>
-        `).join('');
-
-        // Totals
-        const discount = parseFloat(inv.discount_amount || 0);
-        document.getElementById('doc-totals').innerHTML = `
-            <div class="inv-total-row"><span class="tr-label">Subtotal</span><span>${sym} ${fmt(inv.subtotal)}</span></div>
-            ${discount > 0 ? `<div class="inv-total-row"><span class="tr-label">Discount</span><span>− ${sym} ${fmt(discount)}</span></div>` : ''}
-            <div class="inv-total-row"><span>Total</span><span>${sym} ${fmt(inv.total_amount)}</span></div>
-        `;
-
-        // Payment details
-        const paymentDetails = inv.invoice_type === 'minibar' || true ? `
-            <div class="inv-payment-item"><div class="pi-label">MVR Payments</div><div class="pi-value">BML 7730000770586 (HTM)<br>MIB 90501400052311000 (HTM)</div></div>
-            <div class="inv-payment-item"><div class="pi-label">USD Payments</div><div class="pi-value">BML 7730000770587 (HTM)<br>MIB 90403100427391000 (HTM)</div></div>
-        ` : '';
-        document.getElementById('doc-payment-details').innerHTML = paymentDetails;
-
-        document.getElementById('invoice-doc').classList.add('show');
-        window.scrollTo(0, 0);
-    }
 
     async function deleteInvoice(id) {
         if (!confirm('Delete this invoice? This cannot be undone.')) return;
@@ -995,7 +868,6 @@
         else alert(data.error || 'Failed to delete');
     }
 
-    function closeInvoice() { document.getElementById('invoice-doc').classList.remove('show'); }
 
     // ==================== TABS ====================
     function switchTab(tab, el) {
