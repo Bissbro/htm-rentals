@@ -180,24 +180,12 @@
             z-index: 10;
         }
 
-
-        .inv-mobile-cards { display: none; flex-direction: column; gap: 10px; }
-        .inv-card { background: white; border-radius: 12px; padding: 14px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid var(--turquoise); }
-        .inv-card.status-paid { border-left-color: var(--success); }
-        .inv-card.status-sent { border-left-color: var(--warning); }
-        .inv-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .inv-card-num { font-size: 13px; font-weight: 700; color: var(--navy); }
-        .inv-card-amt { font-size: 14px; font-weight: 800; color: var(--navy); }
-        .inv-card-row { font-size: 12px; color: var(--gray-text); margin-bottom: 3px; }
-        .inv-card-actions { display: flex; gap: 8px; margin-top: 10px; }
         @media (max-width: 600px) {
             .form-row { grid-template-columns: 1fr; }
             .inv-parties { grid-template-columns: 1fr; }
             .inv-payment-grid { grid-template-columns: 1fr; }
             .inv-header { flex-direction: column; }
             .inv-meta { text-align: left; }
-            .table-wrap { display: none; }
-            .inv-mobile-cards { display: flex; }
         }
     </style>
 </head>
@@ -245,7 +233,6 @@
                     <tbody id="all-invoices-body"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
                 </table>
             </div>
-            <div class="inv-mobile-cards" id="all-invoices-mobile"><div style="text-align:center;padding:20px;color:var(--gray-text);">Loading...</div></div>
         </div>
     </div>
 
@@ -261,7 +248,6 @@
                     <tbody id="booking-invoices-body"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
                 </table>
             </div>
-            <div class="inv-mobile-cards" id="booking-invoices-mobile"><div style="text-align:center;padding:20px;color:var(--gray-text);">Loading...</div></div>
         </div>
     </div>
 
@@ -277,7 +263,6 @@
                     <tbody id="minibar-invoices-body"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody>
                 </table>
             </div>
-            <div class="inv-mobile-cards" id="minibar-invoices-mobile"><div style="text-align:center;padding:20px;color:var(--gray-text);">Loading...</div></div>
         </div>
     </div>
 
@@ -643,27 +628,6 @@
         `).join('');
     }
 
-    function invCard(inv) {
-        var sym = inv.currency === 'USD' ? '$' : 'MVR';
-        var amt = sym + ' ' + fmt(inv.total_amount);
-        var dates = inv.check_in_date ? inv.check_in_date + ' to ' + inv.check_out_date : '';
-        var html = '<div class="inv-card status-' + inv.status + '">';
-        html += '<div class="inv-card-top">';
-        html += '<div><div class="inv-card-num">' + inv.invoice_number + '</div>';
-        html += '<div style="margin-top:3px;">' + statusBadge(inv.status) + '</div></div>';
-        html += '<div class="inv-card-amt">' + amt + '</div></div>';
-        if (inv.guest_name) html += '<div class="inv-card-row"><i class="fas fa-user" style="width:14px;color:var(--turquoise);margin-right:6px;font-size:11px;"></i>' + inv.guest_name + '</div>';
-        if (inv.unit_name) html += '<div class="inv-card-row"><i class="fas fa-building" style="width:14px;color:var(--turquoise);margin-right:6px;font-size:11px;"></i>' + inv.unit_name + '</div>';
-        if (dates) html += '<div class="inv-card-row"><i class="fas fa-calendar" style="width:14px;color:var(--turquoise);margin-right:6px;font-size:11px;"></i>' + dates + '</div>';
-        html += '<div class="inv-card-row"><i class="fas fa-tag" style="width:14px;color:var(--turquoise);margin-right:6px;font-size:11px;"></i>' + inv.invoice_type + '</div>';
-        html += '<div class="inv-card-actions">';
-        html += '<button class="btn btn-sm btn-primary" onclick="viewInvoice(' + inv.id + ')"><i class="fas fa-eye"></i> View</button>';
-        if (inv.status !== 'paid') html += '<button class="btn btn-sm btn-success" onclick="openPaymentModal(' + inv.id + ',' + inv.total_amount + ')">Mark Paid</button>';
-        html += '<button class="btn btn-sm btn-danger" onclick="deleteInvoice(' + inv.id + ')"><i class="fas fa-trash"></i></button>';
-        html += '</div></div>';
-        return html;
-    }
-
     function renderBookingInvoices() {
         const tbody = document.getElementById('booking-invoices-body');
         const filtered = allInvoices.filter(i => i.invoice_type === 'booking');
@@ -684,8 +648,6 @@
                 </td>
             </tr>
         `).join('');
-        var mB = document.getElementById('booking-invoices-mobile');
-        if (mB) mB.innerHTML = filtered.length ? filtered.map(function(inv){return invCard(inv);}).join('') : '<div style="text-align:center;padding:20px;">No booking invoices yet.</div>';
     }
 
     function renderMinibarInvoices() {
@@ -706,8 +668,6 @@
                 </td>
             </tr>
         `).join('');
-        var mM = document.getElementById('minibar-invoices-mobile');
-        if (mM) mM.innerHTML = filtered.length ? filtered.map(function(inv){return invCard(inv);}).join('') : '<div style="text-align:center;padding:20px;">No minibar invoices yet.</div>';
     }
 
     // ==================== BOOKING INVOICE ====================
