@@ -641,6 +641,8 @@
                 </td>
             </tr>
         `).join('');
+        var mA = document.getElementById('all-invoices-mobile');
+        if (mA) mA.innerHTML = allInvoices.length ? allInvoices.map(function(inv){return invCard(inv);}).join('') : '<div style="text-align:center;padding:20px;">No invoices yet.</div>';
     }
 
     function invCard(inv) {
