@@ -476,7 +476,7 @@
 <div id="invoice-doc">
     <div class="doc-actions">
         <button class="btn btn-secondary" onclick="closeInvoice()"><i class="fas fa-times"></i> Close</button>
-        <button class="btn btn-primary" onclick="window.print()"><i class="fas fa-download"></i> Download PDF</button>
+        <button class="btn btn-primary" onclick="downloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
     </div>
     <div class="inv-wrapper" style="position:relative">
         <div class="paid-stamp" id="paid-stamp" style="display:none">PAID</div>
@@ -914,7 +914,13 @@
     }
 
     // ==================== VIEW / DELETE ====================
+    function downloadPDF() {
+        if (!window._currentInvId) return;
+        window.open('https://api.htmrentals.com/api/admin/invoices/' + window._currentInvId + '/pdf?token=' + sessionStorage.getItem('adminToken'), '_blank');
+    }
+
     async function viewInvoice(id) {
+        window._currentInvId = id;
         const res = await fetch(`${API}/admin/invoices/${id}`, { headers: authHeaders() });
         const data = await res.json();
         if (!data.success) { alert('Failed to load invoice'); return; }
