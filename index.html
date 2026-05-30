@@ -247,22 +247,26 @@
         .amenities-strip {
             background: var(--navy);
             padding: 10px 0;
+            overflow: hidden;
         }
         .amenities-inner {
-            display: flex; gap: 0;
-            overflow-x: auto; scrollbar-width: none;
-            padding: 0 24px;
+            display: flex;
+            width: max-content;
+            animation: amenity-ticker 35s linear infinite;
+            will-change: transform;
         }
-        .amenities-inner::-webkit-scrollbar { display: none; }
+        @keyframes amenity-ticker {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
         .amenity-pill {
-            display: flex; align-items: center; gap: 10px;
-            padding: 0 12px; white-space: nowrap;
-            border-right: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; gap: 8px;
+            padding: 0 20px; white-space: nowrap;
             flex-shrink: 0;
         }
-        .amenity-pill:last-child { border-right: none; }
         .amenity-pill i { color: var(--teal); font-size: 11px; }
         .amenity-pill span { color: rgba(255,255,255,0.9); font-size: 10px; font-weight: 500; }
+        .amenity-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.2); flex-shrink: 0; }
 
         /* ========== UNITS COVERFLOW ========== */
         .units-section { background: #ffffff; padding: 40px 0 48px; }
@@ -847,13 +851,24 @@
 <!-- AMENITIES STRIP -->
 <div class="amenities-strip">
     <div class="amenities-inner">
-        <div class="amenity-pill"><i class="fas fa-wifi"></i><span>High-Speed WiFi</span></div>
-        <div class="amenity-pill"><i class="fas fa-temperature-low"></i><span>Air Conditioning</span></div>
-        <div class="amenity-pill"><i class="fas fa-utensils"></i><span>Full Kitchen</span></div>
-        <div class="amenity-pill"><i class="fas fa-tv"></i><span>Smart TV</span></div>
-        <div class="amenity-pill"><i class="fas fa-shield-alt"></i><span>24/7 Security</span></div>
-        <div class="amenity-pill"><i class="fas fa-tshirt"></i><span>Washing Machine</span></div>
-        <div class="amenity-pill"><i class="fas fa-key"></i><span>Easy Check-in</span></div>
+        <div class="amenity-pill"><i class="fas fa-lock"></i><span>Fully Private Unit</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-wifi"></i><span>High-Speed WiFi</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-temperature-low"></i><span>Air Conditioning</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-shield-alt"></i><span>24/7 Security</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-utensils"></i><span>Full Kitchen</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-tv"></i><span>Smart TV</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-tshirt"></i><span>Washing Machine</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-cocktail"></i><span>In-Villa Minibar</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-leaf"></i><span>Peaceful Location</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-lock"></i><span>Fully Private Unit</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-wifi"></i><span>High-Speed WiFi</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-temperature-low"></i><span>Air Conditioning</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-shield-alt"></i><span>24/7 Security</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-utensils"></i><span>Full Kitchen</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-tv"></i><span>Smart TV</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-tshirt"></i><span>Washing Machine</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-cocktail"></i><span>In-Villa Minibar</span></div><div class="amenity-dot"></div>
+        <div class="amenity-pill"><i class="fas fa-leaf"></i><span>Peaceful Location</span></div><div class="amenity-dot"></div>
     </div>
 </div>
 
