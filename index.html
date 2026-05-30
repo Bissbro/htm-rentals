@@ -1619,10 +1619,10 @@ async function loadPromoBanners() {
     try {
         const res = await fetch('https://api.htmrentals.com/api/promo-banners');
         const data = await res.json();
-        if (!data.banners || data.banners.length === 0) return;
+        if (!data || data.length === 0) return;
         const section = document.getElementById('promo-section');
         const container = document.getElementById('promo-container');
-        const banner = data.banners[0];
+        const banner = data[0];
         const imageUrl = banner.image_filename 
             ? 'https://api.htmrentals.com/uploads/' + banner.image_filename
             : banner.image_url;
