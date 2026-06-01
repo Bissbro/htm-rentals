@@ -624,7 +624,6 @@
         .avail-input-wrap {
             flex: 1; min-width: 0;
             display: flex; flex-direction: column;
-            align-items: center;
             padding: 8px 12px;
             -webkit-tap-highlight-color: transparent;
             cursor: pointer;
@@ -635,7 +634,6 @@
         .avail-label {
             font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
             color: rgba(255,255,255,0.4); font-weight: 600; margin-bottom: 4px;
-            text-align: center;
         }
         .avail-input {
             background: transparent; border: none;
@@ -773,7 +771,8 @@
         .flatpickr-current-month input.cur-year { color: white; }
         .flatpickr-weekdays { background: rgba(255,255,255,0.05); }
         span.flatpickr-weekday { color: rgba(255,255,255,0.4); font-size: 11px; }
-        .flatpickr-day { color: white; border-radius: 8px; font-weight: 500; }
+        .flatpickr-day { color: white; border-radius: 8px; font-weight: 500; -webkit-tap-highlight-color: transparent; }
+        .flatpickr-months, .flatpickr-month, .flatpickr-prev-month, .flatpickr-next-month, .flatpickr-weekday, .flatpickr-current-month { -webkit-tap-highlight-color: transparent; }
         .flatpickr-day:hover { background: rgba(42,157,143,0.2); border-color: transparent; color: white; }
         .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange { background: #2A9D8F; border-color: #2A9D8F; color: white; }
         .flatpickr-day.today { border-color: rgba(201,169,110,0.5); color: #C9A96E; }
