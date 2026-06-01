@@ -357,8 +357,9 @@
         .experiences-scroll {
             display: flex; flex-direction: row; gap: 12px;
             overflow-x: auto; scrollbar-width: none;
-            padding: 4px 0 20px 0;
+            padding: 4px 0 20px 20px;
             scroll-snap-type: x mandatory;
+            scroll-padding-left: 20px;
         }
         .experiences-scroll::-webkit-scrollbar { display: none; }
         .experience-card {
