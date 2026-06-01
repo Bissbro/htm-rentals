@@ -619,11 +619,15 @@
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 10px; overflow: hidden;
             margin-bottom: 10px;
+            -webkit-tap-highlight-color: transparent;
         }
         .avail-input-wrap {
             flex: 1; min-width: 0;
             display: flex; flex-direction: column;
+            align-items: center;
             padding: 8px 12px;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
         }
         .avail-input-wrap:first-child {
             border-right: 1px solid rgba(255,255,255,0.1);
@@ -631,6 +635,7 @@
         .avail-label {
             font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
             color: rgba(255,255,255,0.4); font-weight: 600; margin-bottom: 4px;
+            text-align: center;
         }
         .avail-input {
             background: transparent; border: none;
@@ -638,6 +643,9 @@
             width: 100%; outline: none; font-weight: 500;
             -webkit-appearance: none; padding: 0;
             touch-action: manipulation;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
         }
         .avail-input::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.5); }
         .avail-btn {
