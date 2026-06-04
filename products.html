@@ -166,7 +166,7 @@
 
 <script>
 const API = 'https://api.htmrentals.com';
-let token = localStorage.getItem('htm_admin_token');
+let token = sessionStorage.getItem('adminToken');
 let editingImages = [];
 
 async function loadProducts() {
