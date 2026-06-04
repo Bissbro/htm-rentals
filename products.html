@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products — HTM Rentals Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #F8F9FA; color: #1C1C1E; }
+        :root { --navy: #0A2540; --teal: #40B5AD; --gold: #B8975A; --gray-light: #F8F9FA; --gray-border: #E5E5E5; --gray-text: #6C757D; --radius-lg: 20px; --radius-md: 12px; --shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .topnav { background: var(--navy); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+        .topnav-brand { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: white; }
+        .back-link { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+        .container { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .page-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--navy); }
+        .btn { padding: 10px 20px; border-radius: 40px; border: none; font-weight: 600; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background: var(--navy); color: white; }
+        .btn-teal { background: var(--teal); color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-sm { padding: 6px 14px; font-size: 12px; }
+        .card { background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
+        .card-header { padding: 16px 20px; border-bottom: 1px solid var(--gray-border); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .card-body { padding: 20px; }
+        .product-name { font-weight: 700; font-size: 15px; color: var(--navy); }
+        .product-meta { font-size: 12px; color: var(--gray-text); margin-top: 4px; }
+        .product-price { font-weight: 700; color: var(--gold); font-size: 14px; }
+        .badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .badge-active { background: #d4edda; color: #155724; }
+        .badge-inactive { background: #f8d7da; color: #721c24; }
+        .badge-featured { background: #fff3cd; color: #856404; }
+        .badge-out { background: #f8d7da; color: #721c24; }
+        .badge-in { background: #d4edda; color: #155724; }
+        .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .images-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+        .img-wrap { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; background: #f0f0f0; }
+        .img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .img-delete { position: absolute; top: 4px; right: 4px; background: rgba(220,53,69,0.9); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: white; border-radius: var(--radius-lg); width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--gray-border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 1; }
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--navy); }
+        .modal-body { padding: 20px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px 14px; border: 1.5px solid var(--gray-border); border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--teal); }
+        .form-group textarea { height: 80px; resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .modal-footer { padding: 16px 20px; border-top: 1px solid var(--gray-border); display: flex; gap: 10px; justify-content: flex-end; position: sticky; bottom: 0; background: white; }
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--gray-border); }
+        .toggle-row:last-child { border-bottom: none; }
+        .toggle-label { font-size: 13px; font-weight: 500; color: var(--navy); }
+        .toggle-sub { font-size: 11px; color: var(--gray-text); margin-top: 2px; }
+        .toggle { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; inset: 0; background: #ccc; border-radius: 24px; transition: 0.3s; cursor: pointer; }
+        .slider:before { position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+        input:checked + .slider { background: var(--teal); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        .upload-area { border: 2px dashed var(--gray-border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+        .upload-area:hover { border-color: var(--teal); }
+        .upload-area p { font-size: 13px; color: var(--gray-text); margin-top: 8px; }
+        .upload-area i { font-size: 24px; color: var(--teal); }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--gray-text); }
+        .empty-state i { font-size: 3rem; margin-bottom: 16px; opacity: 0.3; display: block; }
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--navy); color: white; padding: 12px 24px; border-radius: 40px; font-size: 13px; font-weight: 500; transition: transform 0.3s; z-index: 2000; white-space: nowrap; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .card-actions { display: flex; gap: 8px; flex-shrink: 0; }
+        .uploading-indicator { font-size: 12px; color: var(--teal); margin-top: 8px; display: none; }
+    </style>
+</head>
+<body>
+<nav class="topnav">
+    <div class="topnav-brand">HTM Rentals</div>
+    <a href="admin.html" class="back-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
+</nav>
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Shop Products</h1>
+        <button class="btn btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Add Product</button>
+    </div>
+    <div id="products-list">
+        <div class="empty-state"><i class="fas fa-box-open"></i><p>Loading products...</p></div>
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title" id="modal-title">Add Product</div>
+            <button class="btn btn-sm" onclick="closeModal()" style="background:none;color:#999;font-size:18px;padding:0;">✕</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit-id">
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="f-name" placeholder="e.g. Maldives Seashell Keychain">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="f-desc" placeholder="Short description of the product..."></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Price (USD)</label>
+                    <input type="number" id="f-price" placeholder="0.00" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="f-category">
+                        <option value="souvenirs">Souvenirs</option>
+                        <option value="apparel">Apparel</option>
+                        <option value="accessories">Accessories</option>
+                        <option value="digital">Digital</option>
+                        <option value="general">General</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Sort Order</label>
+                    <input type="number" id="f-sort" placeholder="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Stock Status</label>
+                    <select id="f-stock">
+                        <option value="in_stock">In Stock</option>
+                        <option value="out_of_stock">Out of Stock</option>
+                    </select>
+                </div>
+            </div>
+            <div style="background:#f8f9fa;border-radius:12px;padding:16px;margin-bottom:16px;">
+                <div class="toggle-row">
+                    <div><div class="toggle-label">Active</div><div class="toggle-sub">Show in shop</div></div>
+                    <label class="toggle"><input type="checkbox" id="f-active" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                    <div><div class="toggle-label">Featured</div><div class="toggle-sub">Show on homepage</div></div>
+                    <label class="toggle"><input type="checkbox" id="f-featured"><span class="slider"></span></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Product Images</label>
+                <div id="current-images" style="margin-bottom:12px;"></div>
+                <div class="upload-area" onclick="document.getElementById('img-upload').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Tap to upload images</p>
+                </div>
+                <input type="file" id="img-upload" accept="image/*" multiple style="display:none;" onchange="uploadImages(this)">
+                <div class="uploading-indicator" id="uploading-indicator"><i class="fas fa-spinner fa-spin"></i> Uploading...</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" onclick="closeModal()" style="background:#f0f0f0;color:#333;">Cancel</button>
+            <button class="btn btn-primary" onclick="saveProduct()"><i class="fas fa-save"></i> Save</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://api.htmrentals.com';
+let token = localStorage.getItem('htm_admin_token');
+let editingImages = [];
+
+async function loadProducts() {
+    try {
+        const res = await fetch(API + '/api/admin/products', { headers: { 'Authorization': 'Bearer ' + token } });
+        if (res.status === 401) { window.location.href = 'admin.html'; return; }
+        const products = await res.json();
+        renderProducts(products);
+    } catch(e) { showToast('Failed to load products'); }
+}
+
+function renderProducts(products) {
+    const list = document.getElementById('products-list');
+    if (!products.length) {
+        list.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>No products yet. Add your first product.</p></div>';
+        return;
+    }
+    list.innerHTML = products.map(function(p) {
+        var imgs = p.images || [];
+        return '<div class="card">' +
+            '<div class="card-header">' +
+                '<div style="flex:1;">' +
+                    '<div class="product-name">' + p.name + '</div>' +
+                    '<div class="product-meta">' + p.category + (p.description ? ' &middot; ' + p.description.substring(0,60) + (p.description.length>60?'...':'') : '') + '</div>' +
+                    '<div class="badge-row">' +
+                        '<span class="product-price">$' + parseFloat(p.price_usd).toFixed(2) + ' USD</span>' +
+                        '<span class="badge ' + (p.active ? 'badge-active' : 'badge-inactive') + '">' + (p.active ? 'Active' : 'Inactive') + '</span>' +
+                        '<span class="badge ' + (p.stock_status === 'in_stock' ? 'badge-in' : 'badge-out') + '">' + (p.stock_status === 'in_stock' ? 'In Stock' : 'Out of Stock') + '</span>' +
+                        (p.featured ? '<span class="badge badge-featured">Featured</span>' : '') +
+                    '</div>' +
+                '</div>' +
+                '<div class="card-actions">' +
+                    '<button class="btn btn-teal btn-sm" onclick="editProduct(' + JSON.stringify(p).replace(/"/g, '&quot;') + ')"><i class="fas fa-edit"></i></button>' +
+                    '<button class="btn btn-danger btn-sm" onclick="deleteProduct(' + p.id + ')"><i class="fas fa-trash"></i></button>' +
+                '</div>' +
+            '</div>' +
+            (imgs.length ? '<div class="card-body"><div class="images-grid">' + imgs.map(function(img) { return '<div class="img-wrap"><img src="' + img + '" loading="lazy"></div>'; }).join('') + '</div></div>' : '') +
+        '</div>';
+    }).join('');
+}
+
+function openModal(title) {
+    document.getElementById('modal-title').textContent = title || 'Add Product';
+    document.getElementById('edit-id').value = '';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-desc').value = '';
+    document.getElementById('f-price').value = '';
+    document.getElementById('f-category').value = 'souvenirs';
+    document.getElementById('f-sort').value = '0';
+    document.getElementById('f-stock').value = 'in_stock';
+    document.getElementById('f-active').checked = true;
+    document.getElementById('f-featured').checked = false;
+    editingImages = [];
+    renderCurrentImages();
+    document.getElementById('modal-overlay').classList.add('open');
+}
+
+function editProduct(p) {
+    document.getElementById('modal-title').textContent = 'Edit Product';
+    document.getElementById('edit-id').value = p.id;
+    document.getElementById('f-name').value = p.name;
+    document.getElementById('f-desc').value = p.description || '';
+    document.getElementById('f-price').value = p.price_usd;
+    document.getElementById('f-category').value = p.category || 'souvenirs';
+    document.getElementById('f-sort').value = p.sort_order || 0;
+    document.getElementById('f-stock').value = p.stock_status || 'in_stock';
+    document.getElementById('f-active').checked = !!p.active;
+    document.getElementById('f-featured').checked = !!p.featured;
+    editingImages = p.images || [];
+    renderCurrentImages();
+    document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+function renderCurrentImages() {
+    const wrap = document.getElementById('current-images');
+    if (!editingImages.length) { wrap.innerHTML = ''; return; }
+    wrap.innerHTML = '<div class="images-grid">' + editingImages.map(function(img, i) {
+        return '<div class="img-wrap"><img src="' + img + '"><button class="img-delete" onclick="removeImage(' + i + ')"><i class="fas fa-times"></i></button></div>';
+    }).join('') + '</div>';
+}
+
+function removeImage(i) { editingImages.splice(i, 1); renderCurrentImages(); }
+
+async function uploadImages(input) {
+    const files = Array.from(input.files);
+    if (!files.length) return;
+    document.getElementById('uploading-indicator').style.display = 'block';
+    for (var i = 0; i < files.length; i++) {
+        try {
+            var fd = new FormData();
+            fd.append('image', files[i]);
+            var res = await fetch(API + '/api/admin/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+            var data = await res.json();
+            if (data.url) editingImages.push(data.url);
+        } catch(e) { showToast('Upload failed'); }
+    }
+    document.getElementById('uploading-indicator').style.display = 'none';
+    renderCurrentImages();
+    input.value = '';
+}
+
+async function saveProduct() {
+    var name = document.getElementById('f-name').value.trim();
+    var price = document.getElementById('f-price').value;
+    if (!name || !price) { showToast('Name and price are required'); return; }
+    var id = document.getElementById('edit-id').value;
+    var payload = {
+        name: name,
+        description: document.getElementById('f-desc').value.trim(),
+        price_usd: parseFloat(price),
+        category: document.getElementById('f-category').value,
+        sort_order: parseInt(document.getElementById('f-sort').value) || 0,
+        stock_status: document.getElementById('f-stock').value,
+        active: document.getElementById('f-active').checked ? 1 : 0,
+        featured: document.getElementById('f-featured').checked ? 1 : 0,
+        images: editingImages
+    };
+    try {
+        var method = id ? 'PUT' : 'POST';
+        var url = id ? API + '/api/admin/products/' + id : API + '/api/admin/products';
+        var res = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(payload) });
+        var data = await res.json();
+        if (data.success) { showToast(id ? 'Product updated' : 'Product added'); closeModal(); loadProducts(); }
+        else { showToast('Error: ' + (data.error || 'Unknown error')); }
+    } catch(e) { showToast('Connection error'); }
+}
+
+async function deleteProduct(id) {
+    if (!confirm('Delete this product?')) return;
+    try {
+        var res = await fetch(API + '/api/admin/products/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+        var data = await res.json();
+        if (data.success) { showToast('Product deleted'); loadProducts(); }
+    } catch(e) { showToast('Error deleting product'); }
+}
+
+function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+if (!token) { window.location.href = 'admin.html'; } else { loadProducts(); }
+</script>
+</body>
+</html>
