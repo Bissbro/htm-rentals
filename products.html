@@ -166,12 +166,13 @@
 
 <script>
 const API = 'https://api.htmrentals.com';
-let token = sessionStorage.getItem('adminToken');
+if (!sessionStorage.getItem('adminToken')) window.location.href = 'admin.html';
+    const tkn = () => sessionStorage.getItem('adminToken');
 let editingImages = [];
 
 async function loadProducts() {
     try {
-        const res = await fetch(API + '/api/admin/products', { headers: { 'Authorization': 'Bearer ' + token } });
+        const res = await fetch(API + '/api/admin/products', { headers: { 'Authorization': 'Bearer ' + tkn() } });
         if (res.status === 401) { window.location.href = 'admin.html'; return; }
         const products = await res.json();
         renderProducts(products);
@@ -260,7 +261,7 @@ async function uploadImages(input) {
         try {
             var fd = new FormData();
             fd.append('image', files[i]);
-            var res = await fetch(API + '/api/admin/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+            var res = await fetch(API + '/api/admin/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + tkn() }, body: fd });
             var data = await res.json();
             if (data.url) editingImages.push(data.url);
         } catch(e) { showToast('Upload failed'); }
@@ -289,7 +290,7 @@ async function saveProduct() {
     try {
         var method = id ? 'PUT' : 'POST';
         var url = id ? API + '/api/admin/products/' + id : API + '/api/admin/products';
-        var res = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(payload) });
+        var res = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tkn() }, body: JSON.stringify(payload) });
         var data = await res.json();
         if (data.success) { showToast(id ? 'Product updated' : 'Product added'); closeModal(); loadProducts(); }
         else { showToast('Error: ' + (data.error || 'Unknown error')); }
@@ -299,7 +300,7 @@ async function saveProduct() {
 async function deleteProduct(id) {
     if (!confirm('Delete this product?')) return;
     try {
-        var res = await fetch(API + '/api/admin/products/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+        var res = await fetch(API + '/api/admin/products/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + tkn() } });
         var data = await res.json();
         if (data.success) { showToast('Product deleted'); loadProducts(); }
     } catch(e) { showToast('Error deleting product'); }
@@ -311,7 +312,7 @@ function showToast(msg) {
     setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
 
-if (!token) { window.location.href = 'admin.html'; } else { loadProducts(); }
+loadProducts();
 </script>
 </body>
 </html>
