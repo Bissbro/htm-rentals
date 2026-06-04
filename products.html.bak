@@ -108,14 +108,8 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Price (USD)</label>
-                    <input type="number" id="f-price" placeholder="0.00" step="0.01" min="0" oninput="autoMVR()">
+                    <input type="number" id="f-price" placeholder="0.00" step="0.01" min="0">
                 </div>
-                <div class="form-group">
-                    <label>Price (MVR)</label>
-                    <input type="number" id="f-price-mvr" placeholder="0.00" step="0.01" min="0">
-                </div>
-            </div>
-            <div class="form-row">
                 <div class="form-group">
                     <label>Category</label>
                     <select id="f-category">
@@ -125,10 +119,6 @@
                         <option value="digital">Digital</option>
                         <option value="general">General</option>
                     </select>
-                </div>
-                <div class="form-group">
-                    <label>Weight (grams)</label>
-                    <input type="number" id="f-weight" placeholder="500" min="1" value="500">
                 </div>
             </div>
             <div class="form-row">
@@ -225,9 +215,7 @@ function openModal(title) {
     document.getElementById('f-name').value = '';
     document.getElementById('f-desc').value = '';
     document.getElementById('f-price').value = '';
-    document.getElementById('f-price-mvr').value = '';
     document.getElementById('f-category').value = 'souvenirs';
-    document.getElementById('f-weight').value = '500';
     document.getElementById('f-sort').value = '0';
     document.getElementById('f-stock').value = 'in_stock';
     document.getElementById('f-active').checked = true;
@@ -243,9 +231,7 @@ function editProduct(p) {
     document.getElementById('f-name').value = p.name;
     document.getElementById('f-desc').value = p.description || '';
     document.getElementById('f-price').value = p.price_usd;
-    document.getElementById('f-price-mvr').value = p.price_mvr || (parseFloat(p.price_usd) * 15.42).toFixed(2);
     document.getElementById('f-category').value = p.category || 'souvenirs';
-    document.getElementById('f-weight').value = p.weight_g || 500;
     document.getElementById('f-sort').value = p.sort_order || 0;
     document.getElementById('f-stock').value = p.stock_status || 'in_stock';
     document.getElementById('f-active').checked = !!p.active;
@@ -285,14 +271,6 @@ async function uploadImages(input) {
     input.value = '';
 }
 
-function autoMVR() {
-    var usd = parseFloat(document.getElementById('f-price').value) || 0;
-    if (usd > 0) {
-        var mvr = (usd * 15.42).toFixed(2);
-        document.getElementById('f-price-mvr').value = mvr;
-    }
-}
-
 async function saveProduct() {
     var name = document.getElementById('f-name').value.trim();
     var price = document.getElementById('f-price').value;
@@ -302,9 +280,7 @@ async function saveProduct() {
         name: name,
         description: document.getElementById('f-desc').value.trim(),
         price_usd: parseFloat(price),
-        price_mvr: parseFloat(document.getElementById('f-price-mvr').value) || parseFloat(price) * 15.42,
         category: document.getElementById('f-category').value,
-        weight_g: parseInt(document.getElementById('f-weight').value) || 500,
         sort_order: parseInt(document.getElementById('f-sort').value) || 0,
         stock_status: document.getElementById('f-stock').value,
         active: document.getElementById('f-active').checked ? 1 : 0,
