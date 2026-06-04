@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders — HTM Rentals Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:#F8F9FA;color:#1C1C1E;}
+        :root{--navy:#0A2540;--teal:#40B5AD;--gold:#B8975A;--gray-light:#F8F9FA;--gray-border:#E5E5E5;--gray-text:#6C757D;--radius-lg:20px;--radius-md:12px;--shadow:0 2px 12px rgba(0,0,0,0.06);}
+        .topnav{background:var(--navy);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;}
+        .topnav-brand{font-family:'Playfair Display',serif;font-size:1.1rem;color:white;}
+        .back-link{color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;}
+        .container{max-width:960px;margin:0 auto;padding:24px 16px;}
+        .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:gap;}
+        .page-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--navy);}
+        .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+        .filter-pill{padding:6px 16px;border-radius:40px;border:1.5px solid var(--gray-border);background:white;font-size:12px;font-weight:600;cursor:pointer;color:var(--gray-text);transition:all 0.2s;}
+        .filter-pill.active{background:var(--navy);color:white;border-color:var(--navy);}
+        .btn{padding:10px 20px;border-radius:40px;border:none;font-weight:600;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+        .btn-sm{padding:6px 14px;font-size:12px;}
+        .btn-navy{background:var(--navy);color:white;}
+        .btn-teal{background:var(--teal);color:white;}
+        .btn-danger{background:#dc3545;color:white;}
+        .btn-outline{background:white;color:var(--navy);border:1.5px solid var(--gray-border);}
+        .card{background:white;border-radius:var(--radius-lg);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden;}
+        .card-header{padding:16px 20px;border-bottom:1px solid var(--gray-border);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+        .card-body{padding:16px 20px;}
+        .order-number{font-weight:700;font-size:15px;color:var(--navy);}
+        .order-meta{font-size:12px;color:var(--gray-text);margin-top:3px;}
+        .badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+        .badge-pending{background:#fff3cd;color:#856404;}
+        .badge-paid{background:#d4edda;color:#155724;}
+        .badge-processing{background:#cce5ff;color:#004085;}
+        .badge-shipped{background:#d1ecf1;color:#0c5460;}
+        .badge-completed{background:#d4edda;color:#155724;}
+        .badge-cancelled{background:#f8d7da;color:#721c24;}
+        .badge-stripe{background:#e3f2fd;color:#1565c0;}
+        .badge-slip{background:#f3e5f5;color:#6a1b9a;}
+        .badge-usd{background:#e8f5e9;color:#2e7d32;}
+        .badge-mvr{background:#fff8e1;color:#f57f17;}
+        .badge-hulhumale{background:#e0f7fa;color:#006064;}
+        .badge-domestic{background:#f3e5f5;color:#4a148c;}
+        .badge-international{background:#e8eaf6;color:#1a237e;}
+        .items-list{margin:8px 0;}
+        .item-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--gray-border);}
+        .item-row:last-child{border-bottom:none;}
+        .order-totals{margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-border);}
+        .total-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;}
+        .total-row.grand{font-weight:700;font-size:15px;color:var(--navy);margin-top:8px;padding-top:8px;border-top:1px solid var(--gray-border);}
+        .address-box{background:#f8f9fa;border-radius:8px;padding:12px;font-size:13px;color:#333;line-height:1.6;margin-top:8px;}
+        .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+        .status-select{padding:6px 12px;border-radius:8px;border:1.5px solid var(--gray-border);font-size:13px;font-family:'Inter',sans-serif;outline:none;background:white;}
+        .slip-img{max-width:200px;border-radius:8px;margin-top:8px;cursor:pointer;}
+        .empty-state{text-align:center;padding:60px 20px;color:var(--gray-text);}
+        .empty-state i{font-size:3rem;margin-bottom:16px;opacity:0.3;display:block;}
+        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--navy);color:white;padding:12px 24px;border-radius:40px;font-size:13px;font-weight:500;transition:transform 0.3s;z-index:2000;white-space:nowrap;}
+        .toast.show{transform:translateX(-50%) translateY(0);}
+        .section-label{font-size:11px;font-weight:700;color:var(--gray-text);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+        .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+        .info-item{font-size:13px;}
+        .info-item .label{color:var(--gray-text);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
+        .info-item .value{color:var(--navy);font-weight:500;}
+        .badge-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+        .print-btn{background:none;border:1.5px solid var(--gray-border);color:var(--navy);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+    </style>
+</head>
+<body>
+<nav class="topnav">
+    <div class="topnav-brand">HTM Rentals</div>
+    <a href="admin.html" class="back-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
+</nav>
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Shop Orders</h1>
+    </div>
+    <div class="filters">
+        <button class="filter-pill active" data-status="all">All</button>
+        <button class="filter-pill" data-status="pending">Pending</button>
+        <button class="filter-pill" data-status="paid">Paid</button>
+        <button class="filter-pill" data-status="processing">Processing</button>
+        <button class="filter-pill" data-status="shipped">Shipped</button>
+        <button class="filter-pill" data-status="completed">Completed</button>
+        <button class="filter-pill" data-status="cancelled">Cancelled</button>
+    </div>
+    <div id="orders-list">
+        <div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Loading orders...</p></div>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+if(!sessionStorage.getItem('adminToken')) window.location.href='admin.html';
+const tkn=()=>sessionStorage.getItem('adminToken');
+const API='https://api.htmrentals.com';
+let allOrders=[], currentFilter='all';
+
+async function loadOrders(){
+    try{
+        var res=await fetch(API+'/api/admin/orders',{headers:{'Authorization':'Bearer '+tkn()}});
+        if(res.status===401){window.location.href='admin.html';return;}
+        allOrders=await res.json();
+        renderOrders();
+    }catch(e){showToast('Failed to load orders');}
+}
+
+function renderOrders(){
+    var list=document.getElementById('orders-list');
+    var filtered=currentFilter==='all'?allOrders:allOrders.filter(function(o){return o.status===currentFilter;});
+    if(!filtered.length){
+        list.innerHTML='<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>'+(currentFilter==='all'?'No orders yet.':'No '+currentFilter+' orders.')+'</p></div>';
+        return;
+    }
+    list.innerHTML=filtered.map(function(o){
+        var items=o.items||[];
+        var itemsHtml=items.map(function(i){
+            return '<div class="item-row"><span>'+i.name+' x'+i.qty+'</span><span>'+(o.currency==='MVR'?'MVR '+(i.price_mvr*i.qty).toFixed(2):'$'+(i.price*i.qty).toFixed(2))+'</span></div>';
+        }).join('');
+        var subtotal=o.currency==='MVR'?(o.total_mvr||0):(o.subtotal_usd||0);
+        var shippingCost=o.currency==='MVR'?o.shipping_cost_mvr:o.shipping_cost_usd;
+        var deliveryBadge='badge-international';
+        if(o.delivery_type==='hulhumale') deliveryBadge='badge-hulhumale';
+        else if(o.delivery_type==='domestic') deliveryBadge='badge-domestic';
+        var date=new Date(o.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+        return '<div class="card" id="order-'+o.id+'">' +
+            '<div class="card-header">' +
+                '<div>' +
+                    '<div class="order-number">'+o.order_number+'</div>' +
+                    '<div class="order-meta">'+date+'</div>' +
+                    '<div class="badge-row">' +
+                        '<span class="badge badge-'+o.status+'">'+o.status.charAt(0).toUpperCase()+o.status.slice(1)+'</span>' +
+                        '<span class="badge badge-'+o.payment_method+'">'+o.payment_method+'</span>' +
+                        '<span class="badge badge-'+(o.currency||'usd').toLowerCase()+'">'+(o.currency||'USD')+'</span>' +
+                        '<span class="badge '+deliveryBadge+'">'+(o.delivery_type||'international')+'</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div style="text-align:right;flex-shrink:0;">' +
+                    '<div style="font-size:18px;font-weight:700;color:var(--navy);">'+(o.currency==='MVR'?'MVR '+parseFloat(o.total_mvr||0).toFixed(2):'$'+parseFloat(o.subtotal_usd||0).toFixed(2))+'</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="card-body">' +
+                '<div class="info-grid">' +
+                    '<div class="info-item"><div class="label">Customer</div><div class="value">'+o.customer_name+'</div></div>' +
+                    '<div class="info-item"><div class="label">Email</div><div class="value">'+o.customer_email+'</div></div>' +
+                    (o.customer_phone?'<div class="info-item"><div class="label">Phone</div><div class="value">'+o.customer_phone+'</div></div>':'') +
+                    (o.shipping_service?'<div class="info-item"><div class="label">Shipping</div><div class="value">'+o.shipping_service+'</div></div>':'') +
+                '</div>' +
+                '<div class="section-label">Items</div>' +
+                '<div class="items-list">'+itemsHtml+'</div>' +
+                '<div class="order-totals">' +
+                    (shippingCost>0?'<div class="total-row"><span>'+(o.shipping_service||'Shipping')+'</span><span>'+(o.currency==='MVR'?'MVR '+parseFloat(o.shipping_cost_mvr).toFixed(2):'$'+parseFloat(o.shipping_cost_usd).toFixed(2))+'</span></div>':'') +
+                    '<div class="total-row grand"><span>Total</span><span>'+(o.currency==='MVR'?'MVR '+parseFloat(o.total_mvr||0).toFixed(2):'$'+parseFloat(o.subtotal_usd||0).toFixed(2))+'</span></div>' +
+                '</div>' +
+                (o.shipping_address?'<div class="section-label" style="margin-top:12px;">Delivery Address</div><div class="address-box">'+o.shipping_address+'</div>':'') +
+                (o.payment_slip?'<div class="section-label" style="margin-top:12px;">Payment Slip</div><img class="slip-img" src="'+o.payment_slip+'" onclick="window.open(\''+o.payment_slip+'\',\'_blank\')" alt="Payment slip">':'') +
+                (o.notes?'<div class="section-label" style="margin-top:12px;">Notes</div><div class="address-box">'+o.notes+'</div>':'') +
+                '<div class="actions">' +
+                    '<select class="status-select" id="status-'+o.id+'">' +
+                        '<option value="pending"'+(o.status==='pending'?' selected':'')+'>Pending</option>' +
+                        '<option value="paid"'+(o.status==='paid'?' selected':'')+'>Paid</option>' +
+                        '<option value="processing"'+(o.status==='processing'?' selected':'')+'>Processing</option>' +
+                        '<option value="shipped"'+(o.status==='shipped'?' selected':'')+'>Shipped</option>' +
+                        '<option value="completed"'+(o.status==='completed'?' selected':'')+'>Completed</option>' +
+                        '<option value="cancelled"'+(o.status==='cancelled'?' selected':'')+'>Cancelled</option>' +
+                    '</select>' +
+                    '<button class="btn btn-teal btn-sm" onclick="updateStatus('+o.id+')"><i class="fas fa-save"></i> Update</button>' +
+                    '<button class="print-btn" onclick="printLabel('+o.id+')"><i class="fas fa-print"></i> Label</button>' +
+                    '<button class="btn btn-danger btn-sm" onclick="deleteOrder('+o.id+')"><i class="fas fa-trash"></i></button>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    }).join('');
+}
+
+document.querySelectorAll('.filter-pill').forEach(function(btn){
+    btn.addEventListener('click',function(){
+        document.querySelectorAll('.filter-pill').forEach(function(b){b.classList.remove('active');});
+        btn.classList.add('active');
+        currentFilter=btn.dataset.status;
+        renderOrders();
+    });
+});
+
+async function updateStatus(id){
+    var status=document.getElementById('status-'+id).value;
+    try{
+        var res=await fetch(API+'/api/admin/orders/'+id,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tkn()},body:JSON.stringify({status:status})});
+        var data=await res.json();
+        if(data.success){showToast('Status updated');loadOrders();}
+        else showToast('Error updating status');
+    }catch(e){showToast('Connection error');}
+}
+
+async function deleteOrder(id){
+    if(!confirm('Delete this order?'))return;
+    try{
+        var res=await fetch(API+'/api/admin/orders/'+id,{method:'DELETE',headers:{'Authorization':'Bearer '+tkn()}});
+        var data=await res.json();
+        if(data.success){showToast('Order deleted');loadOrders();}
+    }catch(e){showToast('Error deleting order');}
+}
+
+function printLabel(id){
+    var o=allOrders.find(function(x){return x.id===id;});
+    if(!o)return;
+    var w=window.open('','_blank');
+    w.document.write('<html><head><title>Shipping Label - '+o.order_number+'</title><style>body{font-family:Arial,sans-serif;padding:20px;max-width:400px;margin:0 auto;border:2px solid #000;}h2{margin:0 0 4px;font-size:18px;}p{margin:4px 0;font-size:14px;}.divider{border-top:1px solid #000;margin:12px 0;}.from{margin-bottom:12px;}.to{margin-bottom:12px;}.order-ref{font-size:12px;color:#666;}.items{font-size:12px;margin-top:8px;}.barcode{text-align:center;font-size:24px;letter-spacing:4px;margin-top:12px;font-family:monospace;}</style></head><body>');
+    w.document.write('<div class="from"><strong>FROM:</strong><br>HTM Shop<br>Malas Residence, Hulhumale Phase 2<br>Maldives<br>Tel: +960 9373113</div>');
+    w.document.write('<div class="divider"></div>');
+    w.document.write('<div class="to"><strong>TO:</strong><br><strong>'+o.customer_name+'</strong><br>'+(o.shipping_address||'').replace(/\n/g,'<br>')+'<br>Tel: '+(o.customer_phone||'-')+'<br>Email: '+o.customer_email+'</div>');
+    w.document.write('<div class="divider"></div>');
+    w.document.write('<div class="order-ref">Order: '+o.order_number+'<br>Service: '+(o.shipping_service||'Standard')+'<br>Date: '+new Date(o.created_at).toLocaleDateString()+'</div>');
+    w.document.write('<div class="items"><strong>Contents:</strong><br>'+(o.items||[]).map(function(i){return i.name+' x'+i.qty;}).join('<br>')+'</div>');
+    w.document.write('<div class="barcode">'+o.order_number+'</div>');
+    w.document.write('</body></html>');
+    w.document.close();
+    w.print();
+}
+
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
+
+loadOrders();
+</script>
+</body>
+</html>
