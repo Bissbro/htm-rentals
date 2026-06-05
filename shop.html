@@ -671,7 +671,7 @@ function renderProducts(products){
             html += '<div class="cat-section">' +
                 '<div class="cat-section-header">' +
                 '<span class="cat-section-title"><i class="'+meta.icon+'"></i> '+meta.label+'</span>' +
-                '<button class="cat-see-all" onclick="selectCategoryStripe(''+cat+'')">See All <i class="fas fa-chevron-right"></i></button>' +
+                '<button class="cat-see-all" onclick="selectCategoryStripe(\'' + cat + '\')">See All <i class="fas fa-chevron-right"></i></button>' +
                 '</div>' +
                 '<div class="product-grid">' +
                 items.slice(0,4).map(productCardHtml).join('') +
