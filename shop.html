@@ -621,7 +621,7 @@ function buildCategoryStripe(products){
     if(!stripe) return;
     stripe.innerHTML = cats.map(function(c){
         var meta = c==='all' ? {label:'All',icon:'fas fa-th'} : (CAT_META[c]||{label:c,icon:'fas fa-box'});
-        return '<button class="cat-pill'+(currentCategory===c?' active':'')+'" data-cat="'+c+'" onclick="selectCategoryStripe(''+c+'')">' +
+        return '<button class="cat-pill'+(currentCategory===c?' active':'')+'" data-cat="'+c+'" onclick="selectCategoryStripe(\'' + c + '\')">'+
             '<i class="'+meta.icon+'"></i> '+meta.label+'</button>';
     }).join('');
     // Update filter sheet
