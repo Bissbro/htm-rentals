@@ -726,11 +726,16 @@ function renderShippingOptions(services,curr){
     }
     document.getElementById('delivery-options').innerHTML=services.map(function(s,i){
         var price=curr==='MVR'?'MVR '+s.total_mvr.toFixed(2):'$'+s.total_usd.toFixed(2);
+        var priceDisplay=s.total_mvr===0?'FREE':price;
+        var provider=s.name.toLowerCase().indexOf('free')!==-1?'HTM Shop':'Maldives Post';
+        var providerColor=provider==='HTM Shop'?'#2A9D8F':'#c02f34';
         return '<div class="delivery-option'+(i===0?' selected':'')+'" onclick="selectShipping(this,\''+s.name+'\','+s.total_mvr+','+s.total_usd+')">' +
-            '<div class="delivery-option-header"><span class="delivery-option-name">'+s.name+'</span><span class="delivery-option-price">'+price+'</span></div>' +
-            (s.eta?'<div class="delivery-option-desc"><i class="fas fa-clock" style="margin-right:4px;opacity:0.6;"></i>Est. '+s.eta+'</div>':'') +
-            (s.trackable?'<div class="delivery-option-trackable"><i class="fas fa-map-marker-alt"></i> Trackable</div>':'') +
-            '</div>';
+            '<div class="delivery-option-header"><span class="delivery-option-name">'+s.name+'</span><span class="delivery-option-price">'+priceDisplay+'</span></div>' +
+            '<div style="margin-top:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+            '<span style="font-size:10px;font-weight:700;color:white;background:'+providerColor+';padding:2px 8px;border-radius:20px;">'+provider+'</span>' +
+            (s.eta?'<span style="font-size:11px;color:#6C757D;"><i class="fas fa-clock" style="margin-right:3px;"></i>Est. '+s.eta+'</span>':'') +
+            (s.trackable?'<span style="font-size:11px;color:#2A9D8F;"><i class="fas fa-map-marker-alt" style="margin-right:3px;"></i>Trackable</span>':'') +
+            '</div></div>';
     }).join('');
     // Auto-select first
     var first=services[0];
