@@ -869,6 +869,11 @@ function updateOrderSummary(){
 }
 
 function openCheckout(){
+    // Save currency to localStorage for checkout page
+    localStorage.setItem('htm_currency', currency);
+    window.location.href = '/shop-checkout.html';
+}
+function openCheckout_old(){
     closeCart();
     document.getElementById('checkout-form-wrap').style.display='block';
     document.getElementById('success-screen').classList.remove('show');

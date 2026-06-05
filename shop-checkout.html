@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Checkout — HTM Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html{background:#0A2540;}
+        body{font-family:'Inter',sans-serif;background:#F8F9FA;color:#1C1C1E;min-height:100vh;}
+        :root{--navy:#0A2540;--gold:#C9A96E;--gold-gradient:linear-gradient(135deg,#A8864E 0%,#E8C484 50%,#A8864E 100%);--teal:#2A9D8F;--gray:#6C757D;--gray-light:#F4F4F2;--gray-border:#E8E8E6;--radius-sm:8px;--radius-md:14px;}
+
+        /* TOPBAR */
+        .topbar{background:var(--navy);height:56px;display:flex;align-items:center;padding:0 20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.2);}
+        .topbar-back{color:rgba(255,255,255,0.8);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent;}
+        .topbar-title{font-family:'Playfair Display',serif;color:white;font-size:1rem;font-weight:600;position:absolute;left:50%;transform:translateX(-50%);}
+
+        /* ORDER SUMMARY STRIP */
+        .summary-strip{background:white;border-bottom:1px solid var(--gray-border);padding:14px 20px;}
+        .summary-strip-inner{display:flex;justify-content:space-between;align-items:center;max-width:600px;margin:0 auto;}
+        .summary-items{font-size:13px;color:var(--gray);}
+        .summary-items strong{color:var(--navy);}
+        .summary-total{font-size:16px;font-weight:700;color:var(--navy);}
+        .summary-toggle{background:none;border:none;color:var(--teal);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent;}
+        .summary-detail{display:none;background:white;border-bottom:1px solid var(--gray-border);padding:0 20px 16px;}
+        .summary-detail.open{display:block;}
+        .summary-detail-inner{max-width:600px;margin:0 auto;}
+        .summary-line{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--gray-border);}
+        .summary-line:last-child{border-bottom:none;}
+        .summary-shipping-line{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;color:var(--gray);}
+        .summary-grand{display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:var(--navy);padding-top:10px;margin-top:4px;border-top:2px solid var(--navy);}
+
+        /* STEPS */
+        .steps-bar{background:white;border-bottom:1px solid var(--gray-border);padding:0 20px;}
+        .steps-inner{display:flex;align-items:center;max-width:600px;margin:0 auto;height:52px;}
+        .step{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--gray);flex:1;}
+        .step.active{color:var(--navy);}
+        .step.done{color:var(--teal);}
+        .step-num{width:24px;height:24px;border-radius:50%;border:2px solid var(--gray-border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+        .step.active .step-num{border-color:var(--navy);background:var(--navy);color:white;}
+        .step.done .step-num{border-color:var(--teal);background:var(--teal);color:white;}
+        .step-divider{width:20px;height:1px;background:var(--gray-border);flex-shrink:0;}
+
+        /* MAIN */
+        .checkout-main{max-width:600px;margin:0 auto;padding:24px 20px 100px;}
+
+        /* STEP PANELS */
+        .step-panel{display:none;}
+        .step-panel.active{display:block;}
+
+        /* FORM */
+        .form-group{margin-bottom:18px;}
+        .form-label{font-size:11px;font-weight:700;color:var(--navy);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px;display:block;}
+        .form-input{width:100%;padding:14px 16px;border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);font-size:16px;font-family:'Inter',sans-serif;color:#1C1C1E;outline:none;transition:border-color 0.2s;background:white;-webkit-appearance:none;}
+        .form-input:focus{border-color:var(--teal);}
+        .form-select{width:100%;padding:14px 16px;border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);font-size:16px;font-family:'Inter',sans-serif;color:#1C1C1E;outline:none;background:white;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236C757D' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+        /* DELIVERY OPTIONS */
+        .delivery-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+        .delivery-opt{border:2px solid var(--gray-border);border-radius:var(--radius-sm);padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color 0.2s;}
+        .delivery-opt.selected{border-color:var(--teal);background:rgba(42,157,143,0.04);}
+        .delivery-opt-header{display:flex;justify-content:space-between;align-items:center;}
+        .delivery-opt-name{font-size:14px;font-weight:600;color:var(--navy);}
+        .delivery-opt-price{font-size:14px;font-weight:700;color:var(--teal);}
+        .delivery-opt-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px;}
+        .provider-badge{font-size:10px;font-weight:700;color:white;padding:2px 8px;border-radius:20px;}
+        .eta-text{font-size:11px;color:var(--gray);}
+        .trackable-text{font-size:11px;color:var(--teal);}
+
+        /* PAYMENT */
+        .payment-section{background:white;border-radius:var(--radius-md);padding:20px;border:1px solid var(--gray-border);margin-bottom:20px;}
+        .payment-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+        .payment-title i{color:var(--teal);}
+        #stripe-payment-element{margin-bottom:8px;}
+        #stripe-errors{color:#e53e3e;font-size:12px;margin-top:4px;}
+
+        /* TRUST BADGES */
+        .trust-badges{display:flex;align-items:center;justify-content:center;gap:16px;padding:16px 0;margin-bottom:16px;}
+        .trust-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gray);}
+        .trust-badge i{font-size:14px;color:var(--teal);}
+
+        /* CONTINUE BTN */
+        .btn-continue{width:100%;padding:17px;background:var(--navy);color:white;border:none;border-radius:40px;font-size:15px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;margin-top:8px;}
+        .btn-place-order{width:100%;padding:17px;background:var(--gold-gradient);color:white;border:none;border-radius:40px;font-size:15px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 16px rgba(201,169,110,0.4);}
+        .btn-place-order:disabled{opacity:0.6;cursor:not-allowed;}
+        .btn-back-step{background:none;border:none;color:var(--gray);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:20px;-webkit-tap-highlight-color:transparent;}
+
+        /* SUCCESS */
+        .success-page{display:none;text-align:center;padding:60px 20px;}
+        .success-page.show{display:block;}
+        .success-icon{width:80px;height:80px;border-radius:50%;background:rgba(42,157,143,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+        .success-icon i{font-size:36px;color:var(--teal);}
+        .success-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:12px;}
+        .success-msg{font-size:14px;color:var(--gray);line-height:1.7;margin-bottom:32px;}
+        .success-order{background:white;border-radius:var(--radius-md);padding:20px;border:1px solid var(--gray-border);margin-bottom:24px;text-align:left;}
+        .success-order-num{font-size:12px;color:var(--gray);margin-bottom:4px;}
+        .success-order-val{font-size:16px;font-weight:700;color:var(--navy);}
+        .btn-back-shop{padding:14px 32px;background:var(--navy);color:white;border:none;border-radius:40px;font-size:14px;font-weight:700;cursor:pointer;}
+
+        /* SECTION TITLE */
+        .section-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:20px;}
+
+        /* SLIP */
+        .slip-info{background:var(--gray-light);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px;font-size:13px;line-height:1.6;}
+        .slip-info strong{color:var(--navy);}
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <a href="/shop.html" class="topbar-back"><i class="fas fa-chevron-left"></i> Shop</a>
+    <div class="topbar-title">Checkout</div>
+</div>
+
+<!-- ORDER SUMMARY STRIP -->
+<div class="summary-strip">
+    <div class="summary-strip-inner">
+        <div>
+            <div class="summary-items" id="strip-items">Loading...</div>
+            <button class="summary-toggle" onclick="toggleSummary()"><i class="fas fa-chevron-down" id="summary-chevron"></i> View order</button>
+        </div>
+        <div class="summary-total" id="strip-total">$0.00</div>
+    </div>
+</div>
+<div class="summary-detail" id="summary-detail">
+    <div class="summary-detail-inner">
+        <div id="summary-lines"></div>
+        <div class="summary-shipping-line" id="summary-shipping-line" style="display:none;">
+            <span id="summary-shipping-name">Shipping</span>
+            <span id="summary-shipping-cost"></span>
+        </div>
+        <div class="summary-grand"><span>Total</span><span id="summary-grand-total">$0.00</span></div>
+    </div>
+</div>
+
+<!-- STEPS BAR -->
+<div class="steps-bar">
+    <div class="steps-inner">
+        <div class="step active" id="step-tab-1">
+            <div class="step-num" id="step-num-1">1</div>
+            <span>Details</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step" id="step-tab-2">
+            <div class="step-num" id="step-num-2">2</div>
+            <span>Delivery</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step" id="step-tab-3">
+            <div class="step-num" id="step-num-3">3</div>
+            <span>Payment</span>
+        </div>
+    </div>
+</div>
+
+<div class="checkout-main">
+
+    <!-- STEP 1: DETAILS -->
+    <div class="step-panel active" id="panel-1">
+        <div class="section-title">Your Details</div>
+        <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input class="form-input" type="text" id="co-name" placeholder="Your full name" autocomplete="name">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" type="email" id="co-email" placeholder="you@email.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Phone <span style="font-weight:400;text-transform:none;color:var(--gray);">(optional)</span></label>
+            <input class="form-input" type="tel" id="co-phone" placeholder="+960 XXX XXXX" autocomplete="tel">
+        </div>
+        <button class="btn-continue" onclick="goToStep2()">Continue to Delivery <i class="fas fa-arrow-right" style="margin-left:8px;"></i></button>
+    </div>
+
+    <!-- STEP 2: DELIVERY -->
+    <div class="step-panel" id="panel-2">
+        <button class="btn-back-step" onclick="goToStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+        <div class="section-title">Delivery</div>
+        <div class="form-group">
+            <label class="form-label">Delivery Location</label>
+            <select class="form-select" id="co-delivery-type" onchange="onDeliveryTypeChange()">
+                <option value="">Select delivery option</option>
+                <option value="hulhumale">Hulhumale' — Free Delivery</option>
+                <option value="domestic">Other Maldives Islands</option>
+                <option value="international">International</option>
+            </select>
+        </div>
+        <div id="hulhumale-fields" style="display:none;">
+            <div class="form-group">
+                <label class="form-label">Delivery Address</label>
+                <input class="form-input" type="text" id="co-hulhumale-address" placeholder="Building, Floor, Unit number">
+            </div>
+        </div>
+        <div id="domestic-fields" style="display:none;">
+            <div class="form-group">
+                <label class="form-label">Atoll</label>
+                <select class="form-select" id="co-atoll" onchange="onAtollChange()">
+                    <option value="">Select atoll</option>
+                    <option value="1">Haa Alif</option>
+                    <option value="2">Haa Dhaalu</option>
+                    <option value="3">Shaviyani</option>
+                    <option value="4">Noonu</option>
+                    <option value="5">Raa</option>
+                    <option value="6">Baa</option>
+                    <option value="7">Lhaviyani</option>
+                    <option value="8">Kaafu</option>
+                    <option value="9">Alif Alif</option>
+                    <option value="10">Alif Dhaalu</option>
+                    <option value="11">Vaavu</option>
+                    <option value="12">Meemu</option>
+                    <option value="13">Faafu</option>
+                    <option value="14">Dhaalu</option>
+                    <option value="15">Thaa</option>
+                    <option value="16">Laamu</option>
+                    <option value="17">Gaafu Alif</option>
+                    <option value="18">Gaafu Dhaalu</option>
+                    <option value="19">Fuvahmulah City</option>
+                    <option value="20">Addu City</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Island & Address</label>
+                <input class="form-input" type="text" id="co-island" placeholder="Island name and address">
+            </div>
+        </div>
+        <div id="international-fields" style="display:none;">
+            <div class="form-group">
+                <label class="form-label">Country</label>
+                <select class="form-select" id="co-country" onchange="onCountryChange()">
+                    <option value="">Select country</option>
+                    <option value="42">Australia</option>
+                    <option value="43">Austria</option>
+                    <option value="1">Bahrain</option>
+                    <option value="2">Bangladesh</option>
+                    <option value="105">Belgium</option>
+                    <option value="37">Bhutan</option>
+                    <option value="66">Brazil</option>
+                    <option value="39">Brunei</option>
+                    <option value="67">Canada</option>
+                    <option value="23">China</option>
+                    <option value="16">Egypt</option>
+                    <option value="45">France</option>
+                    <option value="48">Germany</option>
+                    <option value="116">Ghana</option>
+                    <option value="50">Greece</option>
+                    <option value="18">Hong Kong</option>
+                    <option value="3">India</option>
+                    <option value="19">Indonesia</option>
+                    <option value="130">Ireland</option>
+                    <option value="152">Israel</option>
+                    <option value="51">Italy</option>
+                    <option value="52">Japan</option>
+                    <option value="22">Jordan</option>
+                    <option value="24">Kenya</option>
+                    <option value="25">Kuwait</option>
+                    <option value="26">Lebanon</option>
+                    <option value="4">Malaysia</option>
+                    <option value="5">Mauritius</option>
+                    <option value="54">Morocco</option>
+                    <option value="40">Myanmar</option>
+                    <option value="6">Nepal</option>
+                    <option value="55">Netherlands</option>
+                    <option value="68">New Zealand</option>
+                    <option value="56">Nigeria</option>
+                    <option value="138">Norway</option>
+                    <option value="7">Oman</option>
+                    <option value="8">Pakistan</option>
+                    <option value="27">Philippines</option>
+                    <option value="57">Portugal</option>
+                    <option value="9">Qatar</option>
+                    <option value="58">Russia</option>
+                    <option value="28">Saudi Arabia</option>
+                    <option value="10">Seychelles</option>
+                    <option value="11">Singapore</option>
+                    <option value="60">South Africa</option>
+                    <option value="59">South Korea</option>
+                    <option value="61">Spain</option>
+                    <option value="12">Sri Lanka</option>
+                    <option value="143">Sweden</option>
+                    <option value="62">Switzerland</option>
+                    <option value="13">Thailand</option>
+                    <option value="32">Turkey</option>
+                    <option value="64">UK</option>
+                    <option value="14">UAE</option>
+                    <option value="70">USA</option>
+                    <option value="111">Vietnam</option>
+                    <option value="125">Yemen</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Full Address</label>
+                <input class="form-input" type="text" id="co-address" placeholder="Street, City, Postal Code, Country" autocomplete="street-address">
+            </div>
+        </div>
+        <div id="shipping-options-wrap" style="display:none;">
+            <div class="form-label" style="margin-bottom:12px;">Shipping Service</div>
+            <div class="delivery-opts" id="delivery-opts"></div>
+        </div>
+        <button class="btn-continue" id="btn-continue-delivery" onclick="goToStep3()" style="display:none;">Continue to Payment <i class="fas fa-arrow-right" style="margin-left:8px;"></i></button>
+    </div>
+
+    <!-- STEP 3: PAYMENT -->
+    <div class="step-panel" id="panel-3">
+        <button class="btn-back-step" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+        <div class="section-title">Payment</div>
+        <div class="payment-section" id="payment-section">
+            <div class="payment-title"><i class="fas fa-lock"></i> Pay Securely</div>
+            <div id="stripe-payment-element"></div>
+            <div id="stripe-errors"></div>
+        </div>
+        <div id="mvr-slip-section" style="display:none;">
+            <div class="slip-info">
+                <strong>Bank Transfer Details</strong><br>
+                Bank of Maldives<br>
+                Account: 7730000012345<br>
+                Name: HTM Rentals<br><br>
+                Transfer the exact amount and upload your slip below.
+            </div>
+            <div class="form-group">
+                <label class="form-label">Upload Payment Slip</label>
+                <input class="form-input" type="file" id="co-slip" accept="image/*,application/pdf">
+            </div>
+        </div>
+        <div class="trust-badges">
+            <div class="trust-badge"><i class="fas fa-lock"></i> SSL Secured</div>
+            <div class="trust-badge"><i class="fab fa-stripe"></i> Stripe</div>
+            <div class="trust-badge"><i class="fas fa-shield-alt"></i> Safe Checkout</div>
+        </div>
+        <div style="background:white;border-radius:var(--radius-md);padding:16px;border:1px solid var(--gray-border);margin-bottom:20px;">
+            <div style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Order Summary</div>
+            <div id="final-summary-lines"></div>
+            <div id="final-shipping-line" style="display:none;font-size:13px;color:var(--gray);display:flex;justify-content:space-between;padding:4px 0;">
+                <span id="final-shipping-name"></span><span id="final-shipping-cost"></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700;color:var(--navy);margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-border);">
+                <span>Total</span><span id="final-total">$0.00</span>
+            </div>
+            <div style="font-size:11px;color:var(--gray);text-align:center;margin-top:8px;">All prices are GST inclusive</div>
+        </div>
+        <div style="font-size:12px;color:var(--gray);line-height:1.6;background:white;border-radius:var(--radius-sm);padding:14px;border:1px solid var(--gray-border);margin-bottom:20px;">
+            <strong style="color:var(--navy);">Returns Policy:</strong> All sales are final. We do not accept returns or exchanges on international orders. For damaged items, contact us within 48 hours of delivery.
+        </div>
+        <button class="btn-place-order" id="btn-place-order" onclick="placeOrder()">Place Order</button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-page" id="success-page">
+        <div class="success-icon"><i class="fas fa-check"></i></div>
+        <div class="success-title">Order Placed!</div>
+        <div class="success-msg" id="success-msg">Thank you for your order. We will confirm and process it shortly.</div>
+        <div class="success-order">
+            <div class="success-order-num">Order Number</div>
+            <div class="success-order-val" id="success-order-num">—</div>
+        </div>
+        <button class="btn-back-shop" onclick="window.location.href='/shop.html'">Continue Shopping</button>
+    </div>
+
+</div>
+
+<script>
+const API = 'https://api.htmrentals.com';
+const STRIPE_PK = 'pk_live_51SThlOC6iG157x7p0onlAPkrbW9Bhd7EkrZ1S7dPvkv6XYHIdXMwHiHomeK3hsS6gDJ2sZpFFqPYTuG4ftSOM9eP00IzmnoXsU';
+const MVR_RATE = 15.42;
+
+let cart = JSON.parse(localStorage.getItem('htm_cart') || '[]');
+let currency = localStorage.getItem('htm_currency') || 'USD';
+let currentStep = 1;
+let selectedShipping = null;
+let stripeInstance = null, stripeElements = null, stripePaymentEl = null;
+let paymentMethod = currency === 'MVR' ? 'slip' : 'stripe';
+
+// ========== INIT ==========
+function init(){
+    if(!cart.length){ window.location.href = '/shop.html'; return; }
+    renderSummaryStrip();
+    initStripe();
+}
+
+function getCartSubtotalUsd(){ return cart.reduce(function(s,i){return s+i.price_usd*i.qty;},0); }
+function getCartSubtotalMvr(){ return cart.reduce(function(s,i){return s+i.price_mvr*i.qty;},0); }
+function getTotalUsd(){ return getCartSubtotalUsd() + (selectedShipping?selectedShipping.usd:0); }
+function getTotalMvr(){ return getCartSubtotalMvr() + (selectedShipping?selectedShipping.mvr:0); }
+function formatAmt(usd,mvr){ return currency==='MVR'?'MVR '+mvr.toFixed(2):'$'+usd.toFixed(2); }
+
+function renderSummaryStrip(){
+    var itemCount = cart.reduce(function(s,i){return s+i.qty;},0);
+    var names = cart.slice(0,2).map(function(i){return i.name;}).join(', ')+(cart.length>2?' +more':'');
+    document.getElementById('strip-items').innerHTML = '<strong>'+itemCount+' item'+(itemCount!==1?'s':'')+'</strong> · '+names;
+    updateTotals();
+}
+
+function updateTotals(){
+    var totalUsd = getTotalUsd(), totalMvr = getTotalMvr();
+    document.getElementById('strip-total').textContent = formatAmt(totalUsd, totalMvr);
+    document.getElementById('summary-grand-total').textContent = formatAmt(totalUsd, totalMvr);
+    document.getElementById('final-total').textContent = formatAmt(totalUsd, totalMvr);
+    // Lines
+    var linesHtml = cart.map(function(i){
+        var p = currency==='MVR'?'MVR '+(i.price_mvr*i.qty).toFixed(2):'$'+(i.price_usd*i.qty).toFixed(2);
+        return '<div class="summary-line"><span>'+i.name+' x'+i.qty+'</span><span>'+p+'</span></div>';
+    }).join('');
+    document.getElementById('summary-lines').innerHTML = linesHtml;
+    document.getElementById('final-summary-lines').innerHTML = linesHtml;
+    // Shipping
+    if(selectedShipping){
+        var sc = formatAmt(selectedShipping.usd, selectedShipping.mvr);
+        var scDisplay = selectedShipping.usd===0?'FREE':sc;
+        document.getElementById('summary-shipping-line').style.display='flex';
+        document.getElementById('summary-shipping-name').textContent = selectedShipping.name;
+        document.getElementById('summary-shipping-cost').textContent = scDisplay;
+        document.getElementById('final-shipping-line').style.display='flex';
+        document.getElementById('final-shipping-name').textContent = selectedShipping.name;
+        document.getElementById('final-shipping-cost').textContent = scDisplay;
+    }
+}
+
+function toggleSummary(){
+    var det = document.getElementById('summary-detail');
+    var chev = document.getElementById('summary-chevron');
+    det.classList.toggle('open');
+    chev.style.transform = det.classList.contains('open')?'rotate(180deg)':'';
+}
+
+// ========== STEPS ==========
+function goToStep(n){
+    document.getElementById('panel-'+currentStep).classList.remove('active');
+    document.getElementById('step-tab-'+currentStep).classList.remove('active');
+    currentStep = n;
+    document.getElementById('panel-'+n).classList.add('active');
+    document.getElementById('step-tab-'+n).classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function markStepDone(n){
+    document.getElementById('step-tab-'+n).classList.add('done');
+    document.getElementById('step-num-'+n).innerHTML = '<i class="fas fa-check" style="font-size:10px;"></i>';
+}
+
+function goToStep2(){
+    var name=document.getElementById('co-name').value.trim();
+    var email=document.getElementById('co-email').value.trim();
+    if(!name){ alert('Please enter your full name.'); return; }
+    if(!email||!email.includes('@')){ alert('Please enter a valid email.'); return; }
+    markStepDone(1);
+    goToStep(2);
+}
+
+function goToStep3(){
+    var deliveryType = document.getElementById('co-delivery-type').value;
+    if(!deliveryType){ alert('Please select a delivery option.'); return; }
+    if(!selectedShipping && deliveryType!=='hulhumale'){ alert('Please select a shipping service.'); return; }
+    if(deliveryType==='hulhumale' && !document.getElementById('co-hulhumale-address').value.trim()){ alert('Please enter your delivery address.'); return; }
+    if(deliveryType==='domestic' && !document.getElementById('co-island').value.trim()){ alert('Please enter your island and address.'); return; }
+    if(deliveryType==='international' && !document.getElementById('co-address').value.trim()){ alert('Please enter your delivery address.'); return; }
+    markStepDone(2);
+    updateTotals();
+    // Show/hide payment methods based on currency
+    if(currency==='MVR'){
+        document.getElementById('payment-section').style.display='none';
+        document.getElementById('mvr-slip-section').style.display='block';
+        paymentMethod='slip';
+    } else {
+        document.getElementById('payment-section').style.display='block';
+        document.getElementById('mvr-slip-section').style.display='none';
+        paymentMethod='stripe';
+        initStripeWithAmount();
+    }
+    goToStep(3);
+}
+
+// ========== DELIVERY ==========
+function onDeliveryTypeChange(){
+    var type = document.getElementById('co-delivery-type').value;
+    document.getElementById('hulhumale-fields').style.display = type==='hulhumale'?'block':'none';
+    document.getElementById('domestic-fields').style.display = type==='domestic'?'block':'none';
+    document.getElementById('international-fields').style.display = type==='international'?'block':'none';
+    document.getElementById('shipping-options-wrap').style.display = 'none';
+    document.getElementById('btn-continue-delivery').style.display = 'none';
+    selectedShipping = null;
+    updateTotals();
+    if(type==='hulhumale'){
+        selectedShipping = {name:'Free Delivery',usd:0,mvr:0,eta:'Same day / Next day'};
+        updateTotals();
+        document.getElementById('btn-continue-delivery').style.display='block';
+    }
+    if(type==='domestic') currency='MVR';
+    if(type==='international') currency='USD';
+}
+
+function onAtollChange(){
+    var stateId = document.getElementById('co-atoll').value;
+    if(!stateId) return;
+    loadDomesticRates(stateId);
+}
+
+function onCountryChange(){
+    var countryId = document.getElementById('co-country').value;
+    if(!countryId) return;
+    loadInternationalRates(countryId);
+}
+
+async function loadDomesticRates(stateId){
+    document.getElementById('shipping-options-wrap').style.display='block';
+    document.getElementById('delivery-opts').innerHTML='<div style="padding:16px;text-align:center;color:#6C757D;font-size:13px;"><i class="fas fa-spinner fa-spin"></i> Loading rates...</div>';
+    document.getElementById('btn-continue-delivery').style.display='none';
+    try{
+        var res = await fetch(API+'/api/shipping/domestic?state_id='+stateId);
+        var data = await res.json();
+        renderShippingOpts(data.services,'MVR');
+    }catch(e){ document.getElementById('delivery-opts').innerHTML='<div style="padding:16px;color:#e53e3e;font-size:13px;">Could not load rates.</div>'; }
+}
+
+async function loadInternationalRates(countryId){
+    var totalWeight = cart.reduce(function(s,i){return s+(i.weight_g||500)*i.qty;},0);
+    document.getElementById('shipping-options-wrap').style.display='block';
+    document.getElementById('delivery-opts').innerHTML='<div style="padding:16px;text-align:center;color:#6C757D;font-size:13px;"><i class="fas fa-spinner fa-spin"></i> Loading rates...</div>';
+    document.getElementById('btn-continue-delivery').style.display='none';
+    try{
+        var res = await fetch(API+'/api/shipping/rates?destination_country='+countryId+'&weight_g='+totalWeight);
+        var data = await res.json();
+        renderShippingOpts(data.services,'USD');
+    }catch(e){ document.getElementById('delivery-opts').innerHTML='<div style="padding:16px;color:#e53e3e;font-size:13px;">Could not load rates.</div>'; }
+}
+
+function renderShippingOpts(services, curr){
+    if(!services||!services.length){ document.getElementById('delivery-opts').innerHTML='<div style="padding:16px;color:#6C757D;font-size:13px;">No shipping options available.</div>'; return; }
+    document.getElementById('delivery-opts').innerHTML = services.map(function(s,i){
+        var price = curr==='MVR'?'MVR '+s.total_mvr.toFixed(2):'$'+s.total_usd.toFixed(2);
+        var priceDisplay = s.total_mvr===0?'FREE':price;
+        var providerColor = '#c02f34';
+        return '<div class="delivery-opt'+(i===0?' selected':'')+'" onclick="selectShipping(this,\''+s.name+'\','+s.total_mvr+','+s.total_usd+',\''+s.eta+'\')">' +
+            '<div class="delivery-opt-header"><span class="delivery-opt-name">'+s.name+'</span><span class="delivery-opt-price">'+priceDisplay+'</span></div>' +
+            '<div class="delivery-opt-meta">' +
+            '<span class="provider-badge" style="background:'+providerColor+';">Maldives Post</span>' +
+            (s.eta?'<span class="eta-text"><i class="fas fa-clock" style="margin-right:3px;"></i>Est. '+s.eta+'</span>':'') +
+            (s.trackable?'<span class="trackable-text"><i class="fas fa-map-marker-alt" style="margin-right:3px;"></i>Trackable</span>':'') +
+            '</div></div>';
+    }).join('');
+    // Auto select first
+    var first = services[0];
+    selectedShipping = {name:first.name,mvr:first.total_mvr,usd:first.total_usd,eta:first.eta||''};
+    updateTotals();
+    document.getElementById('btn-continue-delivery').style.display='block';
+}
+
+function selectShipping(el,name,mvr,usd,eta){
+    document.querySelectorAll('.delivery-opt').forEach(function(o){o.classList.remove('selected');});
+    el.classList.add('selected');
+    selectedShipping={name:name,mvr:parseFloat(mvr),usd:parseFloat(usd),eta:eta||''};
+    updateTotals();
+}
+
+// ========== STRIPE ==========
+function initStripe(){
+    if(!stripeInstance) stripeInstance = Stripe(STRIPE_PK);
+}
+
+function initStripeWithAmount(){
+    if(!stripeInstance) stripeInstance = Stripe(STRIPE_PK);
+    if(stripePaymentEl){ stripePaymentEl.unmount(); stripePaymentEl=null; }
+    var totalUsd = getTotalUsd();
+    stripeElements = stripeInstance.elements({
+        mode:'payment', amount:Math.round(totalUsd*100), currency:'usd',
+        appearance:{
+            theme:'stripe',
+            variables:{colorPrimary:'#0A2540',colorBackground:'#ffffff',colorText:'#1C1C1E',colorDanger:'#e53e3e',fontFamily:'Inter,sans-serif',borderRadius:'8px'}
+        }
+    });
+    stripePaymentEl = stripeElements.create('payment');
+    stripePaymentEl.mount('#stripe-payment-element');
+    stripePaymentEl.on('change',function(e){ document.getElementById('stripe-errors').textContent=e.error?e.error.message:''; });
+}
+
+// ========== PLACE ORDER ==========
+async function placeOrder(){
+    var name=document.getElementById('co-name').value.trim();
+    var email=document.getElementById('co-email').value.trim();
+    var phone=document.getElementById('co-phone').value.trim();
+    var deliveryType=document.getElementById('co-delivery-type').value;
+    var address='';
+    if(deliveryType==='hulhumale') address=document.getElementById('co-hulhumale-address').value.trim();
+    else if(deliveryType==='domestic') address=(document.getElementById('co-island').value||'')+' — '+document.getElementById('co-atoll').options[document.getElementById('co-atoll').selectedIndex].text;
+    else if(deliveryType==='international') address=document.getElementById('co-address').value.trim();
+
+    var btn=document.getElementById('btn-place-order');
+    btn.disabled=true; btn.textContent='Processing...';
+
+    try{
+        var subtotalUsd=getCartSubtotalUsd(), subtotalMvr=getCartSubtotalMvr();
+        var shippingUsd=selectedShipping?selectedShipping.usd:0, shippingMvr=selectedShipping?selectedShipping.mvr:0;
+        var totalUsd=parseFloat((subtotalUsd+shippingUsd).toFixed(2));
+        var stripePaymentIntentId='';
+
+        if(paymentMethod==='stripe'){
+            var submitResult = await stripeElements.submit();
+            if(submitResult.error){ document.getElementById('stripe-errors').textContent=submitResult.error.message; btn.disabled=false; btn.textContent='Place Order'; return; }
+            var piRes = await fetch(API+'/api/shop/create-payment-intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount_usd:totalUsd,order_description:'HTM Shop'})});
+            var piData = await piRes.json();
+            if(piData.error){ alert('Payment error: '+piData.error); btn.disabled=false; btn.textContent='Place Order'; return; }
+            var confirmResult = await stripeInstance.confirmPayment({elements:stripeElements,clientSecret:piData.client_secret,confirmParams:{return_url:'https://htmrentals.com/shop.html',payment_method_data:{billing_details:{name:name,email:email}}},redirect:'if_required'});
+            if(confirmResult.error){ document.getElementById('stripe-errors').textContent=confirmResult.error.message; btn.disabled=false; btn.textContent='Place Order'; return; }
+            stripePaymentIntentId=confirmResult.paymentIntent?confirmResult.paymentIntent.id:'';
+        }
+
+        var payload={
+            customer_name:name,customer_email:email,customer_phone:phone,
+            items:cart.map(function(i){return{id:i.id,name:i.name,price:i.price_usd,price_mvr:i.price_mvr,qty:i.qty};}),
+            subtotal_usd:totalUsd,subtotal_mvr:parseFloat((subtotalMvr+shippingMvr).toFixed(2)),
+            currency:currency,payment_method:paymentMethod,
+            stripe_payment_intent:stripePaymentIntentId,stripe_status:stripePaymentIntentId?'succeeded':'',
+            shipping_address:address,delivery_type:deliveryType,
+            shipping_service:selectedShipping?selectedShipping.name:'',
+            shipping_cost_usd:shippingUsd,shipping_cost_mvr:shippingMvr
+        };
+
+        if(paymentMethod==='slip'){
+            var slipFile=document.getElementById('co-slip').files[0];
+            if(slipFile){
+                var fd=new FormData(); fd.append('image',slipFile);
+                var upRes=await fetch(API+'/api/admin/upload',{method:'POST',body:fd});
+                var upData=await upRes.json();
+                if(upData.url) payload.payment_slip=upData.url;
+            }
+        }
+
+        var res=await fetch(API+'/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        var data=await res.json();
+        if(data.success){
+            localStorage.removeItem('htm_cart');
+            document.getElementById('panel-3').classList.remove('active');
+            document.getElementById('success-msg').textContent='Thank you '+name+'! Your order has been received. We will contact you at '+email+' to confirm.';
+            document.getElementById('success-order-num').textContent=data.order_number;
+            document.getElementById('success-page').classList.add('show');
+            window.scrollTo(0,0);
+        } else { alert('Something went wrong. Please try again.'); }
+    }catch(e){ alert('Connection error. Please try again.'); }
+    btn.disabled=false; btn.textContent='Place Order';
+}
+
+init();
+</script>
+</body>
+</html>
