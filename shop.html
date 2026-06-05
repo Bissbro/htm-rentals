@@ -569,15 +569,6 @@ function formatPrice(p){
     return '$' + parseFloat(p.price_usd).toFixed(2);
 }
 
-// ========== PRODUCTS ==========
-async function loadProducts(){
-    try{
-        var res = await fetch(API + '/api/products');
-        allProducts = await res.json();
-        renderProducts(allProducts);
-    }catch(e){document.getElementById('product-grid').innerHTML='<div class="shop-empty"><i class="fas fa-store-slash"></i><p>Could not load products.</p></div>';}
-}
-
 // Category display names and icons
 var CAT_META = {
     'souvenirs':         { label: 'Souvenirs',        icon: 'fas fa-star' },
@@ -590,6 +581,17 @@ var CAT_META = {
     'kids':              { label: 'Kids',              icon: 'fas fa-child' }
 };
 var CAT_ORDER = ['souvenirs','apparel','accessories','beach-essentials','photography','travel-essentials','food-gifts','kids'];
+
+// ========== PRODUCTS ==========
+async function loadProducts(){
+    try{
+        var res = await fetch(API + '/api/products');
+        allProducts = await res.json();
+        renderProducts(allProducts);
+    }catch(e){document.getElementById('product-grid').innerHTML='<div class="shop-empty"><i class="fas fa-store-slash"></i><p>Could not load products.</p></div>';}
+}
+
+
 
 function productCardHtml(p){
     var price = currency==='MVR' ? 'MVR '+ parseFloat(p.price_mvr||p.price_usd*15.42).toFixed(2) : '$'+parseFloat(p.price_usd).toFixed(2);
