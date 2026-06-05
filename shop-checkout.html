@@ -30,7 +30,10 @@
         .summary-detail{display:none;background:white;border-bottom:1px solid var(--gray-border);padding:0 20px 16px;}
         .summary-detail.open{display:block;}
         .summary-detail-inner{max-width:600px;margin:0 auto;}
-        .summary-line{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--gray-border);}
+        .summary-line{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px solid var(--gray-border);}
+        .summary-line-left{display:flex;align-items:center;gap:10px;}
+        .summary-thumb{width:36px;height:36px;border-radius:6px;object-fit:cover;background:var(--gray-light);flex-shrink:0;}
+        .summary-thumb-placeholder{width:36px;height:36px;border-radius:6px;background:var(--gray-light);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:14px;}
         .summary-line:last-child{border-bottom:none;}
         .summary-shipping-line{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;color:var(--gray);}
         .summary-grand{display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:var(--navy);padding-top:10px;margin-top:4px;border-top:2px solid var(--navy);}
@@ -123,7 +126,7 @@
     <div class="summary-strip-inner">
         <div>
             <div class="summary-items" id="strip-items">Loading...</div>
-            <button class="summary-toggle" onclick="toggleSummary()"><i class="fas fa-chevron-down" id="summary-chevron"></i> View order</button>
+            <button class="summary-toggle" id="summary-toggle-btn" onclick="toggleSummary()"><i class="fas fa-chevron-down" id="summary-chevron"></i> View order</button>
         </div>
         <div class="summary-total" id="strip-total">$0.00</div>
     </div>
@@ -345,7 +348,7 @@
             <div style="font-size:11px;color:var(--gray);text-align:center;margin-top:8px;">All prices are GST inclusive</div>
         </div>
         <div style="font-size:12px;color:var(--gray);line-height:1.6;background:white;border-radius:var(--radius-sm);padding:14px;border:1px solid var(--gray-border);margin-bottom:20px;">
-            <strong style="color:var(--navy);">Returns Policy:</strong> All sales are final. We do not accept returns or exchanges on international orders. For damaged items, contact us within 48 hours of delivery.
+            <strong style="color:var(--navy);">Returns Policy:</strong> All sales are final. For damaged items, email us at htmrentalss@gmail.com within 14 days of delivery with your order number and photos of the damaged item and packaging. We will arrange a replacement or refund at our discretion.
         </div>
         <button class="btn-place-order" id="btn-place-order" onclick="placeOrder()">Place Order</button>
     </div>
@@ -404,7 +407,8 @@ function updateTotals(){
     // Lines
     var linesHtml = cart.map(function(i){
         var p = currency==='MVR'?'MVR '+(i.price_mvr*i.qty).toFixed(2):'$'+(i.price_usd*i.qty).toFixed(2);
-        return '<div class="summary-line"><span>'+i.name+' x'+i.qty+'</span><span>'+p+'</span></div>';
+        var thumb = i.image ? '<img class="summary-thumb" src="'+i.image+'" alt="'+i.name+'">' : '<div class="summary-thumb-placeholder"><i class="fas fa-box-open"></i></div>';
+        return '<div class="summary-line"><div class="summary-line-left">'+thumb+'<span>'+i.name+' x'+i.qty+'</span></div><span>'+p+'</span></div>';
     }).join('');
     document.getElementById('summary-lines').innerHTML = linesHtml;
     document.getElementById('final-summary-lines').innerHTML = linesHtml;
@@ -430,6 +434,9 @@ function toggleSummary(){
 
 // ========== STEPS ==========
 function goToStep(n){
+    // Show view order toggle when going back
+    var toggleBtn = document.getElementById('summary-toggle-btn');
+    if(toggleBtn && n < 3) toggleBtn.style.display = 'flex';
     document.getElementById('panel-'+currentStep).classList.remove('active');
     document.getElementById('step-tab-'+currentStep).classList.remove('active');
     currentStep = n;
@@ -453,6 +460,11 @@ function goToStep2(){
 }
 
 function goToStep3(){
+    // Hide view order toggle on payment step
+    var toggleBtn = document.getElementById('summary-toggle-btn');
+    if(toggleBtn) toggleBtn.style.display = 'none';
+    // Close summary detail if open
+    document.getElementById('summary-detail').classList.remove('open');
     var deliveryType = document.getElementById('co-delivery-type').value;
     if(!deliveryType){ alert('Please select a delivery option.'); return; }
     if(!selectedShipping && deliveryType!=='hulhumale'){ alert('Please select a shipping service.'); return; }
@@ -566,8 +578,20 @@ function initStripeWithAmount(){
     if(!stripeInstance) stripeInstance = Stripe(STRIPE_PK);
     if(stripePaymentEl){ stripePaymentEl.unmount(); stripePaymentEl=null; }
     var totalUsd = getTotalUsd();
+    var billingCountry = '';
+    var deliveryType = document.getElementById('co-delivery-type').value;
+    if(deliveryType==='international'){
+        var sel = document.getElementById('co-country');
+        var opt = sel.options[sel.selectedIndex];
+        // Map common countries to ISO codes for Stripe
+        var countryMap = {'42':'AU','43':'AT','1':'BH','2':'BD','105':'BE','37':'BT','66':'BR','39':'BN','67':'CA','23':'CN','16':'EG','45':'FR','48':'DE','116':'GH','50':'GR','18':'HK','3':'IN','19':'ID','130':'IE','152':'IL','51':'IT','52':'JP','22':'JO','24':'KE','25':'KW','26':'LB','4':'MY','5':'MU','54':'MA','40':'MM','6':'NP','55':'NL','68':'NZ','56':'NG','138':'NO','7':'OM','8':'PK','27':'PH','57':'PT','9':'QA','58':'RU','28':'SA','10':'SC','11':'SG','60':'ZA','59':'KR','61':'ES','12':'LK','143':'SE','62':'CH','13':'TH','32':'TR','64':'GB','14':'AE','70':'US','111':'VN','125':'YE'};
+        billingCountry = countryMap[sel.value] || '';
+    } else if(deliveryType==='hulhumale'||deliveryType==='domestic'){
+        billingCountry = 'MV';
+    }
     stripeElements = stripeInstance.elements({
         mode:'payment', amount:Math.round(totalUsd*100), currency:'usd',
+        defaultValues: billingCountry ? { billingDetails: { address: { country: billingCountry } } } : {},
         appearance:{
             theme:'stripe',
             variables:{colorPrimary:'#0A2540',colorBackground:'#ffffff',colorText:'#1C1C1E',colorDanger:'#e53e3e',fontFamily:'Inter,sans-serif',borderRadius:'8px'}
