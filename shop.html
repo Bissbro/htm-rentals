@@ -70,7 +70,18 @@
         .shop-filter::-webkit-scrollbar{display:none;}
         .filter-btn{flex-shrink:0;padding:14px 20px;font-size:13px;font-weight:500;color:var(--gray);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
         .filter-btn.active{color:var(--navy);border-bottom-color:var(--teal);font-weight:600;}
-        .shop-main{padding:32px 20px 60px;max-width:1200px;margin:0 auto;}
+        .cat-stripe-wrap{background:white;border-bottom:1px solid var(--gray-border);position:sticky;top:105px;z-index:99;overflow:hidden;}
+        .cat-stripe{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;padding:0 16px;}
+        .cat-stripe::-webkit-scrollbar{display:none;}
+        .cat-pill{flex-shrink:0;padding:12px 16px;font-size:12px;font-weight:500;color:var(--gray);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;white-space:nowrap;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:6px;}
+        .cat-pill.active{color:var(--navy);border-bottom-color:var(--teal);font-weight:600;}
+        .cat-pill i{font-size:11px;}
+        .cat-section{margin-bottom:32px;}
+        .cat-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+        .cat-section-title{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+        .cat-section-title i{color:var(--teal);font-size:12px;}
+        .cat-see-all{background:none;border:none;font-size:12px;font-weight:600;color:var(--teal);cursor:pointer;display:flex;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent;}
+        .shop-main{padding:20px 20px 60px;max-width:1200px;margin:0 auto;}
         .shop-count{font-size:12px;color:var(--gray);margin-bottom:20px;}
         .product-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
         @media(min-width:600px){.product-grid{grid-template-columns:repeat(3,1fr);}}
@@ -249,9 +260,12 @@
     </button>
 </div>
 
+<div class="cat-stripe-wrap">
+    <div class="cat-stripe" id="category-stripe"></div>
+</div>
 <section class="shop-main">
     <div class="shop-count" id="shop-count"></div>
-    <div class="product-grid" id="product-grid">
+    <div id="product-grid">
         <div class="shimmer shimmer-card"></div>
         <div class="shimmer shimmer-card"></div>
         <div class="shimmer shimmer-card"></div>
@@ -502,13 +516,8 @@
         <div class="filter-sheet-title">Filter by Category</div>
         <button class="filter-sheet-close" onclick="closeFilterSheet()"><i class="fas fa-times"></i></button>
     </div>
-    <div class="filter-sheet-options">
+    <div class="filter-sheet-options" id="filter-sheet-options">
         <button class="filter-sheet-btn active" data-cat="all" onclick="selectCategory('all',this)"><i class="fas fa-th"></i> All Products</button>
-        <button class="filter-sheet-btn" data-cat="souvenirs" onclick="selectCategory('souvenirs',this)"><i class="fas fa-shell"></i> Souvenirs</button>
-        <button class="filter-sheet-btn" data-cat="apparel" onclick="selectCategory('apparel',this)"><i class="fas fa-tshirt"></i> Apparel</button>
-        <button class="filter-sheet-btn" data-cat="accessories" onclick="selectCategory('accessories',this)"><i class="fas fa-gem"></i> Accessories</button>
-        <button class="filter-sheet-btn" data-cat="digital" onclick="selectCategory('digital',this)"><i class="fas fa-download"></i> Digital</button>
-        <button class="filter-sheet-btn" data-cat="general" onclick="selectCategory('general',this)"><i class="fas fa-box"></i> General</button>
     </div>
 </div>
 
@@ -567,24 +576,115 @@ async function loadProducts(){
     }catch(e){document.getElementById('product-grid').innerHTML='<div class="shop-empty"><i class="fas fa-store-slash"></i><p>Could not load products.</p></div>';}
 }
 
+// Category display names and icons
+var CAT_META = {
+    'souvenirs':         { label: 'Souvenirs',        icon: 'fas fa-star' },
+    'apparel':           { label: 'Apparel',           icon: 'fas fa-tshirt' },
+    'accessories':       { label: 'Accessories',       icon: 'fas fa-gem' },
+    'beach-essentials':  { label: 'Beach Essentials',  icon: 'fas fa-umbrella-beach' },
+    'photography':       { label: 'Photography',       icon: 'fas fa-camera' },
+    'travel-essentials': { label: 'Travel Essentials', icon: 'fas fa-suitcase' },
+    'food-gifts':        { label: 'Food & Gifts',      icon: 'fas fa-gift' },
+    'kids':              { label: 'Kids',              icon: 'fas fa-child' }
+};
+var CAT_ORDER = ['souvenirs','apparel','accessories','beach-essentials','photography','travel-essentials','food-gifts','kids'];
+
+function productCardHtml(p){
+    var price = currency==='MVR' ? 'MVR '+ parseFloat(p.price_mvr||p.price_usd*15.42).toFixed(2) : '$'+parseFloat(p.price_usd).toFixed(2);
+    var curr = currency==='MVR' ? '' : 'USD';
+    var meta = CAT_META[p.category] || { label: p.category, icon: 'fas fa-box' };
+    return '<div class="product-card" onclick="openModal('+p.id+')">' +
+        '<div class="product-img-wrap">' +
+        (p.images&&p.images.length?'<img src="'+p.images[0]+'" alt="'+p.name+'" loading="lazy">':'<div class="product-img-placeholder"><i class="fas fa-box-open"></i></div>') +
+        (p.stock_status==='out_of_stock'?'<span class="product-badge out">Sold Out</span>':'') +
+        '</div><div class="product-info">' +
+        '<div class="product-category">'+meta.label+'</div>' +
+        '<div class="product-name">'+p.name+'</div>' +
+        '<div class="product-price">'+price+' <span>'+curr+'</span></div>' +
+        '</div></div>';
+}
+
+function buildCategoryStripe(products){
+    var cats = ['all'];
+    CAT_ORDER.forEach(function(c){
+        if(products.some(function(p){return p.category===c;})) cats.push(c);
+    });
+    // Also add any unlisted categories
+    products.forEach(function(p){
+        if(cats.indexOf(p.category)===-1) cats.push(p.category);
+    });
+    var stripe = document.getElementById('category-stripe');
+    if(!stripe) return;
+    stripe.innerHTML = cats.map(function(c){
+        var meta = c==='all' ? {label:'All',icon:'fas fa-th'} : (CAT_META[c]||{label:c,icon:'fas fa-box'});
+        return '<button class="cat-pill'+(currentCategory===c?' active':'')+'" data-cat="'+c+'" onclick="selectCategoryStripe(''+c+'')">' +
+            '<i class="'+meta.icon+'"></i> '+meta.label+'</button>';
+    }).join('');
+    // Update filter sheet
+    var fsOpts = document.getElementById('filter-sheet-options');
+    if(fsOpts){
+        fsOpts.innerHTML = cats.map(function(c){
+            var meta = c==='all' ? {label:'All Products',icon:'fas fa-th'} : (CAT_META[c]||{label:c,icon:'fas fa-box'});
+            return '<button class="filter-sheet-btn'+(currentCategory===c?' active':'')+'" data-cat="'+c+'" onclick="selectCategory(''+c+'',this)">'+
+                '<i class="'+meta.icon+'"></i> '+meta.label+'</button>';
+        }).join('');
+    }
+}
+
+function selectCategoryStripe(cat){
+    currentCategory = cat;
+    document.querySelectorAll('.cat-pill').forEach(function(b){b.classList.toggle('active', b.dataset.cat===cat);});
+    document.querySelectorAll('.filter-sheet-btn').forEach(function(b){b.classList.toggle('active', b.dataset.cat===cat);});
+    document.getElementById('filter-btn').classList.toggle('active', cat!=='all');
+    var query = document.getElementById('shop-search').value;
+    searchProducts(query);
+}
+
 function renderProducts(products){
     var grid=document.getElementById('product-grid');
     var count=document.getElementById('shop-count');
-    if(!products.length){grid.innerHTML='<div class="shop-empty"><i class="fas fa-store"></i><p>No products yet. Check back soon.</p></div>';count.textContent='';return;}
-    count.textContent=products.length+' product'+(products.length!==1?'s':'');
-    grid.innerHTML=products.map(function(p){
-        var price = currency==='MVR' ? 'MVR '+ parseFloat(p.price_mvr||p.price_usd*15.42).toFixed(2) : '$'+parseFloat(p.price_usd).toFixed(2);
-        var curr = currency==='MVR' ? '' : 'USD';
-        return '<div class="product-card" onclick="openModal('+p.id+')">' +
-            '<div class="product-img-wrap">' +
-            (p.images&&p.images.length?'<img src="'+p.images[0]+'" alt="'+p.name+'" loading="lazy">':'<div class="product-img-placeholder"><i class="fas fa-box-open"></i></div>') +
-            (p.stock_status==='out_of_stock'?'<span class="product-badge out">Sold Out</span>':'') +
-            '</div><div class="product-info">' +
-            '<div class="product-category">'+p.category+'</div>' +
-            '<div class="product-name">'+p.name+'</div>' +
-            '<div class="product-price">'+price+' <span>'+curr+'</span></div>' +
-            '</div></div>';
-    }).join('');
+    buildCategoryStripe(allProducts);
+    if(!products.length){
+        grid.innerHTML='<div class="shop-empty"><i class="fas fa-store"></i><p>No products yet. Check back soon.</p></div>';
+        count.textContent='';
+        return;
+    }
+
+    if(currentCategory==='all'){
+        // Grouped view
+        count.textContent = products.length+' product'+(products.length!==1?'s':'');
+        var grouped = {};
+        CAT_ORDER.forEach(function(c){ grouped[c] = []; });
+        products.forEach(function(p){
+            if(!grouped[p.category]) grouped[p.category] = [];
+            grouped[p.category].push(p);
+        });
+        var html = '';
+        CAT_ORDER.forEach(function(cat){
+            var items = grouped[cat];
+            if(!items||!items.length) return;
+            var meta = CAT_META[cat]||{label:cat,icon:'fas fa-box'};
+            html += '<div class="cat-section">' +
+                '<div class="cat-section-header">' +
+                '<span class="cat-section-title"><i class="'+meta.icon+'"></i> '+meta.label+'</span>' +
+                '<button class="cat-see-all" onclick="selectCategoryStripe(''+cat+'')">See All <i class="fas fa-chevron-right"></i></button>' +
+                '</div>' +
+                '<div class="product-grid">' +
+                items.slice(0,4).map(productCardHtml).join('') +
+                '</div></div>';
+        });
+        // unlisted categories
+        Object.keys(grouped).forEach(function(cat){
+            if(CAT_ORDER.indexOf(cat)===-1 && grouped[cat].length){
+                html += '<div class="cat-section"><div class="cat-section-header"><span class="cat-section-title">'+cat+'</span></div><div class="product-grid">'+grouped[cat].slice(0,4).map(productCardHtml).join('')+'</div></div>';
+            }
+        });
+        grid.innerHTML = html;
+    } else {
+        // Flat grid for single category
+        count.textContent = products.length+' product'+(products.length!==1?'s':'');
+        grid.innerHTML = products.map(productCardHtml).join('');
+    }
 }
 
 
