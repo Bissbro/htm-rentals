@@ -526,12 +526,18 @@ function setCurrency(c){
 function updatePaymentTabs(){
     var tabStripe = document.getElementById('tab-stripe');
     var tabSlip = document.getElementById('tab-slip');
+    var paymentTabs = document.getElementById('payment-tabs');
     if(!tabStripe) return;
     if(currency==='MVR'){
         tabStripe.style.display='none';
+        tabSlip.style.display='flex';
+        paymentTabs.style.display='flex';
         setPaymentTab('slip');
     } else {
         tabStripe.style.display='flex';
+        tabSlip.style.display='none';
+        paymentTabs.style.display='none';
+        setPaymentTab('stripe');
     }
 }
 
