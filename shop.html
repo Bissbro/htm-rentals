@@ -728,12 +728,13 @@ function renderShippingOptions(services,curr){
         var price=curr==='MVR'?'MVR '+s.total_mvr.toFixed(2):'$'+s.total_usd.toFixed(2);
         return '<div class="delivery-option'+(i===0?' selected':'')+'" onclick="selectShipping(this,\''+s.name+'\','+s.total_mvr+','+s.total_usd+')">' +
             '<div class="delivery-option-header"><span class="delivery-option-name">'+s.name+'</span><span class="delivery-option-price">'+price+'</span></div>' +
-            (s.trackable?'<div class="delivery-option-trackable"><i class="fas fa-map-marker-alt"></i> Trackable</div>':'<div class="delivery-option-desc">Standard delivery</div>') +
+            (s.eta?'<div class="delivery-option-desc"><i class="fas fa-clock" style="margin-right:4px;opacity:0.6;"></i>Est. '+s.eta+'</div>':'') +
+            (s.trackable?'<div class="delivery-option-trackable"><i class="fas fa-map-marker-alt"></i> Trackable</div>':'') +
             '</div>';
     }).join('');
     // Auto-select first
     var first=services[0];
-    selectedShipping={name:first.name,mvr:first.total_mvr,usd:first.total_usd};
+    selectedShipping={name:first.name,mvr:first.total_mvr,usd:first.total_usd,eta:first.eta};
     updateOrderSummary();
 }
 
