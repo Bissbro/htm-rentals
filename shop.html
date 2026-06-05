@@ -464,7 +464,7 @@
                 <button class="payment-tab" id="tab-slip" onclick="setPaymentTab('slip')"><i class="fas fa-university"></i>Bank Transfer</button>
             </div>
             <div id="stripe-fields">
-                <div id="stripe-card-element" style="border:1.5px solid var(--gray-border);border-radius:8px;padding:14px;margin-bottom:8px;min-height:44px;"></div>
+                <div id="stripe-payment-element" style="margin-bottom:8px;"></div>
                 <div id="stripe-card-errors" style="color:#e53e3e;font-size:12px;margin-top:4px;"></div>
             </div>
             <div id="slip-fields" style="display:none;">
@@ -882,21 +882,39 @@ function openCheckout(){
     updatePaymentTabs();
     document.getElementById('checkout-overlay').classList.add('open');
     document.body.style.overflow='hidden';
-    // Initialize Stripe Elements
+    // Initialize Stripe Payment Element
     if(!stripeInstance){
         stripeInstance = Stripe(STRIPE_PK);
-        var elements = stripeInstance.elements();
-        stripeCardElement = elements.create('card', {
-            style: {
-                base: { fontSize:'16px', color:'#1C1C1E', fontFamily:'Inter,sans-serif', '::placeholder':{ color:'#aab7c4' } },
-                invalid: { color:'#e53e3e' }
-            }
-        });
-        stripeCardElement.mount('#stripe-card-element');
-        stripeCardElement.on('change', function(e){
-            document.getElementById('stripe-card-errors').textContent = e.error ? e.error.message : '';
-        });
     }
+    // Always create fresh elements with amount
+    if(stripeCardElement){
+        stripeCardElement.unmount();
+        stripeCardElement = null;
+    }
+    var totalUsd = getCartTotal() + (selectedShipping ? selectedShipping.usd : 0);
+    var elementsInstance = stripeInstance.elements({
+        mode: 'payment',
+        amount: Math.round(totalUsd * 100),
+        currency: 'usd',
+        appearance: {
+            theme: 'stripe',
+            variables: {
+                colorPrimary: '#0A2540',
+                colorBackground: '#ffffff',
+                colorText: '#1C1C1E',
+                colorDanger: '#e53e3e',
+                fontFamily: 'Inter, sans-serif',
+                borderRadius: '8px',
+                spacingUnit: '4px'
+            }
+        }
+    });
+    stripeCardElement = elementsInstance.create('payment');
+    stripeCardElement.mount('#stripe-payment-element');
+    stripeCardElement.on('change', function(e){
+        document.getElementById('stripe-card-errors').textContent = e.error ? e.error.message : '';
+    });
+    stripeInstance._elementsInstance = elementsInstance;
 }
 function closeCheckout(){document.getElementById('checkout-overlay').classList.remove('open');document.body.style.overflow='';}
 
@@ -936,15 +954,23 @@ async function placeOrder(){
             var piData = await piRes.json();
             if(piData.error){ alert('Payment error: '+piData.error); btn.disabled=false; btn.textContent='Place Order'; return; }
 
-            // Confirm card payment
-            var confirmResult = await stripeInstance.confirmCardPayment(piData.client_secret, {
-                payment_method: { card: stripeCardElement, billing_details: { name: name, email: email } }
-            });
-            if(confirmResult.error){ 
+            // Confirm payment via Payment Element
+            var confirmResult = await stripeInstance._elementsInstance.submit();
+            if(confirmResult.error){
                 document.getElementById('stripe-card-errors').textContent = confirmResult.error.message;
-                btn.disabled=false; btn.textContent='Place Order'; return; 
+                btn.disabled=false; btn.textContent='Place Order'; return;
             }
-            stripePaymentIntentId = confirmResult.paymentIntent.id;
+            var confirmPayment = await stripeInstance.confirmPayment({
+                elements: stripeInstance._elementsInstance,
+                clientSecret: piData.client_secret,
+                confirmParams: { return_url: 'https://htmrentals.com/shop.html', payment_method_data: { billing_details: { name: name, email: email } } },
+                redirect: 'if_required'
+            });
+            if(confirmPayment.error){
+                document.getElementById('stripe-card-errors').textContent = confirmPayment.error.message;
+                btn.disabled=false; btn.textContent='Place Order'; return;
+            }
+            stripePaymentIntentId = confirmPayment.paymentIntent ? confirmPayment.paymentIntent.id : '';
         }
 
         var payload={
