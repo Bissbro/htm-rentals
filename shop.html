@@ -629,7 +629,7 @@ function buildCategoryStripe(products){
     if(fsOpts){
         fsOpts.innerHTML = cats.map(function(c){
             var meta = c==='all' ? {label:'All Products',icon:'fas fa-th'} : (CAT_META[c]||{label:c,icon:'fas fa-box'});
-            return '<button class="filter-sheet-btn'+(currentCategory===c?' active':'')+'" data-cat="'+c+'" onclick="selectCategory(''+c+'',this)">'+
+            return '<button class="filter-sheet-btn'+(currentCategory===c?' active':'')+'" data-cat="'+c+'" onclick="selectCategory(\'' + c + '\',this)">'+
                 '<i class="'+meta.icon+'"></i> '+meta.label+'</button>';
         }).join('');
     }
