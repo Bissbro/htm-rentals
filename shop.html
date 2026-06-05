@@ -37,16 +37,18 @@
         .drawer-contact a{display:block;color:rgba(255,255,255,0.6);text-decoration:none;font-size:13px;padding:4px 0;}
         .drawer-socials{display:flex;gap:16px;margin-top:16px;}
         .drawer-socials a{color:rgba(255,255,255,0.5);font-size:18px;}
-        .shop-hero{background:var(--navy);padding:80px 24px 48px;text-align:center;position:relative;overflow:hidden;}
-        .shop-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(42,157,143,0.15) 0%,transparent 70%);pointer-events:none;}
-        .shop-hero-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);font-weight:600;margin-bottom:12px;}
-        .shop-hero-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,8vw,3rem);color:white;font-weight:700;line-height:1.2;margin-bottom:12px;}
-        .shop-hero-sub{color:rgba(255,255,255,0.55);font-size:14px;max-width:360px;margin:0 auto 28px;line-height:1.6;}
-        .shop-hero-divider{width:48px;height:2px;background:var(--teal);margin:0 auto;}
-        .currency-toggle-wrap{background:var(--navy);padding:16px 24px 24px;display:flex;justify-content:center;}
-        .currency-toggle{display:flex;background:rgba(255,255,255,0.1);border-radius:40px;padding:4px;gap:4px;}
-        .currency-btn{padding:8px 24px;border-radius:40px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s;background:none;color:rgba(255,255,255,0.6);-webkit-tap-highlight-color:transparent;}
+        
+        .shop-page-header{background:var(--navy);padding:72px 20px 16px;}
+        .shop-page-header-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+        .shop-page-desc{font-size:12px;color:rgba(255,255,255,0.55);letter-spacing:0.3px;}
+        .currency-toggle{display:flex;background:rgba(255,255,255,0.1);border-radius:40px;padding:3px;gap:3px;}
+        .currency-btn{padding:5px 16px;border-radius:40px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.2s;background:none;color:rgba(255,255,255,0.6);-webkit-tap-highlight-color:transparent;}
         .currency-btn.active{background:white;color:var(--navy);}
+        .shop-search-wrap{position:relative;}
+        .shop-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.4);font-size:14px;}
+        .shop-search-input{width:100%;padding:11px 16px 11px 40px;background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.15);border-radius:40px;font-size:14px;font-family:'Inter',sans-serif;color:white;outline:none;}
+        .shop-search-input::placeholder{color:rgba(255,255,255,0.35);}
+        .shop-search-input:focus{border-color:rgba(255,255,255,0.4);}
         .shop-filter-wrap{background:white;border-bottom:1px solid var(--gray-border);position:sticky;top:56px;z-index:100;}
         .shop-filter{display:flex;overflow-x:auto;scrollbar-width:none;padding:0 20px;}
         .shop-filter::-webkit-scrollbar{display:none;}
@@ -215,16 +217,17 @@
     </div>
 </div>
 <main>
-<section class="shop-hero">
-    <div class="shop-hero-label">HTM Shop</div>
-    <h1 class="shop-hero-title">Take Maldives Home</h1>
-    <p class="shop-hero-sub">Curated souvenirs, apparel and gifts from the heart of Hulhumale'</p>
-    <div class="shop-hero-divider"></div>
-</section>
-<div class="currency-toggle-wrap">
-    <div class="currency-toggle">
-        <button class="currency-btn active" id="btn-usd" onclick="setCurrency('USD')">USD $</button>
-        <button class="currency-btn" id="btn-mvr" onclick="setCurrency('MVR')">MVR Rf</button>
+<div class="shop-page-header">
+    <div class="shop-page-header-inner">
+        <div class="shop-page-desc">Maldives souvenirs, apparel & gifts</div>
+        <div class="currency-toggle">
+            <button class="currency-btn active" id="btn-usd" onclick="setCurrency('USD')">USD $</button>
+            <button class="currency-btn" id="btn-mvr" onclick="setCurrency('MVR')">MVR</button>
+        </div>
+    </div>
+    <div class="shop-search-wrap">
+        <i class="fas fa-search shop-search-icon"></i>
+        <input type="text" class="shop-search-input" id="shop-search" placeholder="Search products..." oninput="searchProducts(this.value)">
     </div>
 </div>
 <div class="shop-filter-wrap">
@@ -837,6 +840,21 @@ async function placeOrder(){
         }else{alert('Something went wrong. Please try again.');}
     }catch(e){alert('Connection error. Please try again.');}
     btn.disabled=false;btn.textContent='Place Order';
+}
+
+function searchProducts(query){
+    var q=query.toLowerCase().trim();
+    var filtered=allProducts.filter(function(p){
+        return currentCategory==='all'||p.category===currentCategory;
+    });
+    if(q){
+        filtered=filtered.filter(function(p){
+            return p.name.toLowerCase().includes(q)||
+                   (p.description&&p.description.toLowerCase().includes(q))||
+                   p.category.toLowerCase().includes(q);
+        });
+    }
+    renderProducts(filtered);
 }
 
 updateCartCount();
