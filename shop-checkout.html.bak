@@ -298,18 +298,8 @@
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">Street / Building</label>
-                <input class="form-input" type="text" id="co-street" placeholder="Street, Building, Floor, Unit" autocomplete="address-line1">
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">City</label>
-                    <input class="form-input" type="text" id="co-city" placeholder="City" autocomplete="address-level2">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Postal Code</label>
-                    <input class="form-input" type="text" id="co-postal" placeholder="Postal Code" autocomplete="postal-code">
-                </div>
+                <label class="form-label">Full Address</label>
+                <input class="form-input" type="text" id="co-address" placeholder="Street, City, Postal Code, Country" autocomplete="street-address">
             </div>
         </div>
         <div id="shipping-options-wrap" style="display:none;">
@@ -447,15 +437,6 @@ function goToStep(n){
     // Show view order toggle when going back
     var toggleBtn = document.getElementById('summary-toggle-btn');
     if(toggleBtn && n < 3) toggleBtn.style.display = 'flex';
-    // When going back to step 2 from step 3, restore continue button
-    if(n === 2 && selectedShipping){
-        document.getElementById('btn-continue-delivery').style.display = 'block';
-        var delivType = document.getElementById('co-delivery-type').value;
-        document.getElementById('hulhumale-fields').style.display = delivType==='hulhumale'?'block':'none';
-        document.getElementById('domestic-fields').style.display = delivType==='domestic'?'block':'none';
-        document.getElementById('international-fields').style.display = delivType==='international'?'block':'none';
-        if(delivType!=='hulhumale') document.getElementById('shipping-options-wrap').style.display = 'block';
-    }
     document.getElementById('panel-'+currentStep).classList.remove('active');
     document.getElementById('step-tab-'+currentStep).classList.remove('active');
     currentStep = n;
@@ -489,8 +470,7 @@ function goToStep3(){
     if(!selectedShipping && deliveryType!=='hulhumale'){ alert('Please select a shipping service.'); return; }
     if(deliveryType==='hulhumale' && !document.getElementById('co-hulhumale-address').value.trim()){ alert('Please enter your delivery address.'); return; }
     if(deliveryType==='domestic' && !document.getElementById('co-island').value.trim()){ alert('Please enter your island and address.'); return; }
-    if(deliveryType==='international' && !document.getElementById('co-street').value.trim()){ alert('Please enter your street address.'); return; }
-    if(deliveryType==='international' && !document.getElementById('co-city').value.trim()){ alert('Please enter your city.'); return; }
+    if(deliveryType==='international' && !document.getElementById('co-address').value.trim()){ alert('Please enter your delivery address.'); return; }
     markStepDone(2);
     updateTotals();
     // Show/hide payment methods based on currency
@@ -631,7 +611,7 @@ async function placeOrder(){
     var address='';
     if(deliveryType==='hulhumale') address=document.getElementById('co-hulhumale-address').value.trim();
     else if(deliveryType==='domestic') address=(document.getElementById('co-island').value||'')+' — '+document.getElementById('co-atoll').options[document.getElementById('co-atoll').selectedIndex].text;
-    else if(deliveryType==='international'){ var street=document.getElementById('co-street').value.trim(); var city=document.getElementById('co-city').value.trim(); var postal=document.getElementById('co-postal').value.trim(); var countryName=document.getElementById('co-country').options[document.getElementById('co-country').selectedIndex].text; address=street+', '+city+(postal?', '+postal:'')+', '+countryName; }
+    else if(deliveryType==='international') address=document.getElementById('co-address').value.trim();
 
     var btn=document.getElementById('btn-place-order');
     btn.disabled=true; btn.textContent='Processing...';
