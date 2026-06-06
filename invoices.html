@@ -517,8 +517,8 @@
     async function loadInvoices() {
         const res = await fetch(`${API}/admin/invoices`, { headers: authHeaders() });
         const data = await res.json();
-        if (!data.success) return;
-        allInvoices = data.invoices;
+        if (!data.success) { console.log('loadInvoices failed:', data); return; }
+        allInvoices = data.invoices || [];
 
         let totalInvoiced = 0, totalOutstanding = 0;
         allInvoices.forEach(inv => {
