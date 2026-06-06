@@ -865,8 +865,7 @@
         const res = await fetch(`${API}/admin/invoices/${id}`, { method: 'DELETE', headers: authHeaders() });
         const data = await res.json();
         if (data.success) {
-            await loadInvoices();
-            await loadMinibarSummary();
+            location.reload();
         } else alert(data.error || 'Failed to delete');
     }
 
