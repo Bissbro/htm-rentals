@@ -118,11 +118,11 @@
         .unit-title h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 600; color: var(--navy); margin-bottom: 8px; line-height: 1.2; }
         @media (min-width: 768px) { .unit-title h1 { font-size: 2rem; } }
         .spec-stripes { margin: 8px 0 24px; border-top: 1px solid var(--gray-border); }
-        .spec-stripe { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--gray-border); }
-        .spec-icon { width: 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--teal); font-size: 16px; }
-        .spec-label { width: 90px; flex-shrink: 0; font-size: 12px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.3px; }
-        .spec-value { flex: 1; font-size: 13px; color: #444; line-height: 1.4; }
-        .spec-sep { color: var(--gray-border); margin: 0 2px; }
+        .spec-stripe { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--gray-border); min-height: 44px; }
+        .spec-icon { width: 28px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--teal); font-size: 15px; }
+        .spec-label { width: 88px; flex-shrink: 0; font-size: 10px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px; }
+        .spec-value { flex: 1; font-size: 13px; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
+        .spec-sep { color: #C8C8C8; margin: 0 4px; font-weight: 300; }
         .feature { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
         .feature i { font-size: 20px; color: var(--teal); }
         .feature-text { font-size: 14px; color: var(--gray-text); }
@@ -1050,16 +1050,15 @@ Payment: ${payment}`;
                                 if(unit.beds){ rows += '<div class="spec-stripe"><div class="spec-icon"><i class="fas fa-bed"></i></div><div class="spec-label">Bed' + (unit.beds!==1?'s':'') + '</div><div class="spec-value">' + unit.beds + (unit.bed_types?' <span class="spec-sep">·</span> '+escapeHtml(unit.bed_types):'') + '</div></div>'; }
                                 rows += '<div class="spec-stripe"><div class="spec-icon"><i class="fas fa-bath"></i></div><div class="spec-label">Bathroom' + (unit.bathrooms!==1?'s':'') + '</div><div class="spec-value">' + unit.bathrooms + ' <span class="spec-sep">·</span> Private</div></div>';
                                 if(hasAmenity('Fully Equipped Kitchen')||hasAmenity('Stove')||hasAmenity('Microwave')){
-                                    const ki=['Microwave','Electric Kettle','Cooking Utensils','Refrigerator'].filter(k=>hasAmenity(k));
-                                    rows += '<div class="spec-stripe"><div class="spec-icon"><i class="fas fa-utensils"></i></div><div class="spec-label">Kitchen</div><div class="spec-value">Fully Equipped' + (ki.length?' <span class="spec-sep">·</span> '+ki.slice(0,2).join(' · '):'') + '</div></div>';
+                                    rows += '<div class="spec-stripe"><div class="spec-icon"><i class="fas fa-utensils"></i></div><div class="spec-label">Kitchen</div><div class="spec-value">Fully Equipped</div></div>';
                                 }
                                 if(hasAmenity('Living Area')||hasAmenity('Sofa')){
-                                    const li=['Sofa','Widescreen Smart TV','Coffee Table'].filter(k=>hasAmenity(k));
-                                    rows += '<div class="spec-stripe"><div class="spec-icon"><i class="fas fa-couch"></i></div><div class="spec-label">Living Area</div><div class="spec-value">' + (li.join(' <span class="spec-sep">·</span> ')||'Available') + '</div></div>';
+                                    const li=[hasAmenity('Sofa')?'Sofa':'',hasAmenity('Widescreen Smart TV')?'Smart TV':''].filter(Boolean);
+                                    rows += '<div class="spec-stripe"><div class="spec-icon"><i class="fas fa-couch"></i></div><div class="spec-label">Living</div><div class="spec-value">' + (li.join(' <span class="spec-sep">·</span> ')||'Available') + '</div></div>';
                                 }
                                 if(hasAmenity('Balcony')){
-                                    const bi=['Coffee Table','Smoking Area'].filter(k=>hasAmenity(k));
-                                    rows += '<div class="spec-stripe"><div class="spec-icon"><i class="fas fa-building"></i></div><div class="spec-label">Balcony</div><div class="spec-value">Open Air' + (bi.length?' <span class="spec-sep">·</span> '+bi.join(' · '):'') + '</div></div>';
+                                    const bi=[hasAmenity('Coffee Table')?'Coffee Table':'',hasAmenity('Smoking Area')?'Smoking Area':''].filter(Boolean);
+                                    rows += '<div class="spec-stripe"><div class="spec-icon"><i class="fas fa-building"></i></div><div class="spec-label">Balcony</div><div class="spec-value">Open Air' + (bi.length?' <span class="spec-sep">·</span> '+bi.join(' <span class="spec-sep">·</span> '):'') + '</div></div>';
                                 }
                                 return rows;
                             })()}
