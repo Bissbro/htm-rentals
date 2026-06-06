@@ -111,7 +111,10 @@
         .gallery-dots { display: none; }
 
         /* Typography */
-        .unit-title h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 500; color: var(--navy); margin-bottom: 8px; text-align: left; }
+        .unit-title { margin-bottom: 4px; }
+        .unit-title-building { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 6px; display: block; }
+        .unit-title h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 600; color: var(--navy); margin-bottom: 8px; line-height: 1.2; }
+        .unit-title-badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--gray-text); background: var(--gray-light); padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; }
         @media (min-width: 768px) { .unit-title h1 { font-size: 2rem; } }
         .features-row { display: flex; flex-wrap: wrap; gap: 0; padding: 16px 0; border-top: 1px solid var(--gray-border); border-bottom: 1px solid var(--gray-border); margin-bottom: 24px; }
         .feature { flex: 1 1 48%; }
@@ -1028,7 +1031,11 @@ Payment: ${payment}`;
                 <div class="unit-layout">
                     <div>
                         <div class="gallery-container"><div class="gallery-slider" id="gallery-slider">${slidesHtml}${galleryImages.length > 1 ? `<button class="gallery-nav prev" onclick="prevImage()"><i class="fas fa-chevron-left"></i></button><button class="gallery-nav next" onclick="nextImage()"><i class="fas fa-chevron-right"></i></button><div class="gallery-counter">1 / ${galleryImages.length}</div>` : ''}</div>${galleryImages.length > 1 ? `<div class="gallery-dots" id="gallery-dots">${dotsHtml}</div>` : ''}</div>
-                        <div class="unit-title"><h1>${escapeHtml(unit.unit_name)}</h1></div>
+                        <div class="unit-title">
+                            <span class="unit-title-building">${escapeHtml(unit.building_name || 'HTM Rentals')}</span>
+                            <h1>${escapeHtml(unit.unit_type_label || unit.unit_name)}</h1>
+                            <span class="unit-title-badge">${escapeHtml(unit.unit_number || '')}</span>
+                        </div>
                         <div class="features-row">
                             <div class="feature"><i class="fas fa-user-friends"></i><div class="feature-text"><strong>${unit.max_guests} guests maximum</strong><div class="capacity-detail">${unit.max_adults || unit.max_guests} adults max · ${unit.max_children || 0} children max</div></div></div>
                             <div class="feature"><i class="fas fa-bed"></i><div class="feature-text"><strong>${unit.bedrooms} bedroom${unit.bedrooms !== 1 ? 's' : ''}</strong><div class="capacity-detail">private</div></div></div>
