@@ -50,6 +50,7 @@
         }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; width: 100%; overflow-x: hidden; }
+        .container.content-container { padding-top: 20px; }
 
         /* Header - Sticky */
         .header {
@@ -99,7 +100,7 @@
         @media (max-width: 900px) { .unit-layout { grid-template-columns: 1fr; gap: 32px; } .booking-card { position: static; margin-top: 24px; } }
 
         /* Gallery */
-        .gallery-container { position: relative; margin-bottom: 0; overflow: hidden; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; }
+        .gallery-container { position: relative; margin-bottom: 0; overflow: hidden; width: 100%; }
         .gallery-slider { position: relative; width: 100%; aspect-ratio: 4 / 3; }
         .gallery-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s ease; }
         .gallery-slide.active { opacity: 1; }
@@ -1032,9 +1033,9 @@ Payment: ${payment}`;
             const description = unit.description || 'Comfortable apartment with all essential amenities for a relaxing stay in Hulhumale\'. Perfect for business travelers, couples, or small families.';
             const showDescMore = description.length > 150;
             document.getElementById('content').innerHTML = `
-                <div class="unit-layout">
-                    <div>
                         <div class="gallery-container"><div class="gallery-slider" id="gallery-slider">${slidesHtml}${galleryImages.length > 1 ? `<button class="gallery-nav prev" onclick="prevImage()"><i class="fas fa-chevron-left"></i></button><button class="gallery-nav next" onclick="nextImage()"><i class="fas fa-chevron-right"></i></button><div class="gallery-counter">1 / ${galleryImages.length}</div>` : ''}</div>${galleryImages.length > 1 ? `<div class="gallery-dots" id="gallery-dots">${dotsHtml}</div>` : ''}</div>
+                <div class="container content-container"><div class="unit-layout">
+                <div>
                         <div class="unit-title">
                             <span class="unit-title-building">${escapeHtml(unit.building_name || 'HTM Rentals')}</span>
                             <h1>${escapeHtml(unit.unit_type_label || unit.unit_name)}</h1>
