@@ -21,7 +21,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { overflow-x: hidden; max-width: 100%; }
         #content { max-width: 100%; overflow-x: hidden; }
-        .map-section h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 500; color: var(--navy); margin-bottom: 6px; }
+        .map-section h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
         .map-section p { font-size: 13px; color: var(--gray-text); margin-bottom: 14px; }
         .map-container { position: relative; border-radius: 16px; overflow: hidden; height: 260px; cursor: pointer; background: #0A2540; }
         .map-overlay-btn { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); background: white; color: #0A2540; border: none; padding: 10px 20px; border-radius: 40px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; z-index: 10; }
@@ -29,15 +29,19 @@
         .map-info i { color: #40B5AD; font-size: 18px; flex-shrink: 0; }
         .map-info-text { font-size: 13px; color: #0A2540; }
         .map-info-text strong { display: block; font-weight: 700; margin-bottom: 2px; }
-        body { font-family: 'Inter', sans-serif; background: #FFFFFF; color: #222222; }
+        body { font-family: 'Inter', sans-serif; background: var(--warm-white); color: #222222; }
 
         :root {
             --navy: #0A2540;
-            --ocean: #006994;
+            --ocean: #0A2540;
             --turquoise: #40B5AD;
+            --teal: #40B5AD;
+            --gold: #C9A96E;
+            --gold-gradient: linear-gradient(135deg, #A8864E 0%, #E8C484 50%, #A8864E 100%);
             --white: #FFFFFF;
-            --gray-light: #F8F9FA;
-            --gray-border: #E5E5E5;
+            --warm-white: #FAFAF8;
+            --gray-light: #F4F4F2;
+            --gray-border: #E8E8E6;
             --gray-text: #6C757D;
             --radius-lg: 20px;
             --radius-md: 12px;
@@ -58,9 +62,9 @@
             top: 0;
             left: 0;
             right: 0;
-            background: white;
+            background: var(--navy);
             z-index: 1000;
-            border-bottom: 1px solid var(--gray-border);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.2);
         }
         .header-spacer { height: 56px; }
 
@@ -81,12 +85,13 @@
         }
         .toggle-option i { font-size: 14px; }
         .toggle-option:hover { background: rgba(64, 181, 173, 0.15); backdrop-filter: blur(4px); }
-        .toggle-option.foreign-active, .toggle-option.local-active { background: var(--turquoise); color: white; }
-        .toggle-option:not(.foreign-active):not(.local-active) { color: var(--gray-text); }
+        .toggle-option.foreign-active, .toggle-option.local-active { background: white; color: var(--navy); font-weight: 700; }
+        .toggle-option:not(.foreign-active):not(.local-active) { color: rgba(255,255,255,0.65); }
+        .toggle-option:hover { background: rgba(255,255,255,0.15) !important; }
 
         /* Back Arrow */
-        .back-arrow { display: flex; align-items: center; justify-content: center; text-decoration: none; padding: 8px; border-radius: 50%; transition: all 0.2s ease; }
-        .back-arrow:hover { background: rgba(0, 105, 148, 0.1); backdrop-filter: blur(4px); }
+        .back-arrow { display: flex; align-items: center; justify-content: center; text-decoration: none; padding: 8px; border-radius: 50%; transition: all 0.2s ease; color: rgba(255,255,255,0.85); }
+        .back-arrow:hover { background: rgba(255,255,255,0.1); }
         .back-arrow svg { width: 28px; height: 28px; }
 
         /* Layout */
@@ -105,14 +110,14 @@
         .gallery-counter { position: absolute; bottom: 16px; right: 16px; background: rgba(0,0,0,0.7); color: white; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; z-index: 10; }
         .gallery-dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
         .gallery-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gray-border); cursor: pointer; transition: all 0.2s; }
-        .gallery-dot.active { width: 20px; border-radius: 4px; background: var(--ocean); }
+        .gallery-dot.active { width: 20px; border-radius: 4px; background: var(--teal); }
 
         /* Typography */
         .unit-title h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 500; color: var(--navy); margin-bottom: 8px; text-align: left; }
         @media (min-width: 768px) { .unit-title h1 { font-size: 2rem; } }
         .features-row { display: flex; flex-wrap: wrap; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--gray-border); margin-bottom: 24px; }
         .feature { display: flex; align-items: center; gap: 12px; }
-        .feature i { font-size: 20px; color: var(--ocean); }
+        .feature i { font-size: 20px; color: var(--teal); }
         .feature-text { font-size: 14px; color: var(--gray-text); }
         .feature-text strong { display: block; color: var(--navy); font-weight: 600; }
         .capacity-detail { font-size: 12px; color: var(--gray-text); margin-top: 2px; }
@@ -121,7 +126,7 @@
         .glass-card { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(10px); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow-sm); }
         .description { line-height: 1.6; color: #4a4a4a; font-size: 16px; font-weight: 400; }
         .description.collapsed { max-height: 100px; overflow: hidden; }
-        .show-more-btn { background: none; border: none; color: var(--ocean); font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 12px; padding: 0; }
+        .show-more-btn { background: none; border: none; color: var(--teal); font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 12px; padding: 0; }
         .amenities-section h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 500; color: var(--navy); margin-bottom: 16px; }
         .amenities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .amenities-overlay { display: none; position: fixed; inset: 0; background: white; z-index: 9000; overflow-y: auto; }
@@ -138,9 +143,9 @@
         .amenity span { font-size: 13px; color: #0A2540; font-weight: 500; }
         .amenities-grid.collapsed { max-height: 200px; overflow: hidden; }
         .amenity { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
-        .amenity i { width: 24px; color: var(--turquoise); font-size: 16px; }
+        .amenity i { width: 24px; color: var(--teal); font-size: 16px; }
         .amenity span { font-size: 14px; font-weight: 400; color: #333; }
-        .show-all-btn { background: none; border: none; color: var(--ocean); font-weight: 600; font-size: 13px; cursor: pointer; margin-top: 12px; padding: 0; }
+        .show-all-btn { background: none; border: none; color: var(--teal); font-weight: 600; font-size: 13px; cursor: pointer; margin-top: 12px; padding: 0; }
 
         /* External Buttons */
         .external-buttons { display: block; margin: 16px 0 8px; padding-top: 16px; border-top: 1px solid var(--gray-border); max-width: 100%; overflow: hidden; }
@@ -161,11 +166,11 @@
         .calendar-section { margin: 20px 0; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .calendar-nav button { background: var(--gray-light); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: all 0.3s; }
-        .calendar-nav button:hover { background: var(--turquoise); color: white; }
+        .calendar-nav button:hover { background: var(--teal); color: white; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
         .calendar-weekday { font-weight: 600; padding: 10px 0; font-size: 12px; color: var(--gray-text); }
         .calendar-day { padding: 10px 5px; border-radius: 30px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
-        .calendar-day.available:hover { background: var(--turquoise); color: white; }
+        .calendar-day.available:hover { background: var(--teal); color: white; }
         .calendar-day.booked { background: var(--gray-light); color: var(--gray-text); text-decoration: line-through; cursor: not-allowed; }
         .calendar-day.selected { background: var(--ocean); color: white; }
         .calendar-day.in-range { background: rgba(0, 105, 148, 0.2); color: var(--navy); border-radius: 0; }
@@ -189,7 +194,7 @@
         .price-breakdown { background: var(--gray-light); padding: 16px; border-radius: var(--radius-md); margin: 16px 0; }
         .price-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; }
         .price-row.total { font-weight: 700; border-top: 1px solid var(--gray-border); margin-top: 8px; padding-top: 12px; }
-        .submit-btn { width: 100%; padding: 14px; background: var(--turquoise); color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 16px; transition: all 0.3s ease; }
+        .submit-btn { width: 100%; padding: 14px; background: var(--gold-gradient); color: white; border: none; border-radius: 40px; font-weight: 700; cursor: pointer; font-size: 16px; transition: all 0.3s ease; box-shadow: 0 4px 16px rgba(201,169,110,0.4); }
         .submit-btn:hover { background: var(--ocean); transform: translateY(-2px); }
         .message { padding: 14px; border-radius: var(--radius-md); margin-bottom: 16px; display: none; }
         .message.success { background: #D4EDDA; color: #155724; display: block; }
@@ -199,7 +204,7 @@
 
         /* Sticky Footer - Mobile Only */
         .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 12px 16px; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 99; display: none; border-top: 1px solid var(--gray-border); }
-        .sticky-footer .availability-btn { width: 100%; padding: 14px; background: var(--turquoise); color: white; border: none; border-radius: 40px; font-weight: 600; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .sticky-footer .availability-btn { width: 100%; padding: 14px; background: var(--gold-gradient); color: white; border: none; border-radius: 40px; font-weight: 700; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(201,169,110,0.4); }
         @media (max-width: 768px) { .sticky-footer { display: block; } body { padding-bottom: 80px; } .booking-card { top: 70px; } }
     </style>
 </head>
