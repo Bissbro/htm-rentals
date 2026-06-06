@@ -865,10 +865,8 @@
         const res = await fetch(`${API}/admin/invoices/${id}`, { method: 'DELETE', headers: authHeaders() });
         const data = await res.json();
         if (data.success) {
-            allInvoices = allInvoices.filter(i => i.id != id);
-            renderAllInvoices();
-            renderBookingInvoices();
-            renderMinibarInvoices();
+            await loadInvoices();
+            await loadMinibarSummary();
         } else alert(data.error || 'Failed to delete');
     }
 
