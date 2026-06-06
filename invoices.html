@@ -484,6 +484,12 @@
         await Promise.all([loadBookings(), loadUnits(), loadMinibarItems()]);
         loadInvoices();
         loadMinibarSummary();
+        const savedTab = sessionStorage.getItem('activeInvoiceTab');
+        if (savedTab) {
+            sessionStorage.removeItem('activeInvoiceTab');
+            const tabEl = document.querySelector(`.tab[onclick*="'${savedTab}'"]`);
+            if (tabEl) switchTab(savedTab, tabEl);
+        }
     }
 
     async function loadBookings() {
@@ -865,6 +871,7 @@
         const res = await fetch(`${API}/admin/invoices/${id}`, { method: 'DELETE', headers: authHeaders() });
         const data = await res.json();
         if (data.success) {
+            sessionStorage.setItem('activeInvoiceTab', activeTab);
             location.reload();
         } else alert(data.error || 'Failed to delete');
     }
