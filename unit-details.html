@@ -50,7 +50,7 @@
         }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; width: 100%; overflow-x: hidden; }
-        .container.content-container { padding-top: 20px; }
+        .container.content-container { padding-top: 32px; position: relative; z-index: 2; background: var(--warm-white); border-radius: 24px 24px 0 0; margin-top: -24px; }
 
         /* Header - Sticky */
         .header {
@@ -67,7 +67,7 @@
             z-index: 1000;
             box-shadow: 0 2px 20px rgba(0,0,0,0.2);
         }
-        .header-spacer { height: 56px; }
+        .header-spacer { height: 56px; margin-bottom: 0; }
 
         /* Toggle - Local first, Foreign second */
         .currency-toggle { display: flex; gap: 8px; }
@@ -100,8 +100,8 @@
         @media (max-width: 900px) { .unit-layout { grid-template-columns: 1fr; gap: 32px; } .booking-card { position: static; margin-top: 24px; } }
 
         /* Gallery */
-        .gallery-container { position: relative; margin-bottom: 0; overflow: hidden; width: 100%; }
-        .gallery-slider { position: relative; width: 100%; aspect-ratio: 4 / 3; }
+        .gallery-container { position: relative; margin-bottom: -24px; overflow: hidden; width: 100%; border-radius: 0 0 24px 24px; }
+        .gallery-slider { position: relative; width: 100%; aspect-ratio: 4 / 3; min-height: 280px; }
         .gallery-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s ease; }
         .gallery-slide.active { opacity: 1; }
         .gallery-slide img { width: 100%; height: 100%; object-fit: cover; }
