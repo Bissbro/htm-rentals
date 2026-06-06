@@ -570,7 +570,7 @@
 
     function renderAllInvoices() {
         const tbody = document.getElementById('all-invoices-body');
-        if (allInvoices.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="empty">No invoices yet.</td></tr>`; return; }
+        if (allInvoices.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="empty">No invoices yet.</td></tr>`; var mA=document.getElementById('all-invoices-mobile'); if(mA) mA.innerHTML='<div style="text-align:center;padding:20px;">No invoices yet.</div>'; return; }
         tbody.innerHTML = allInvoices.map(inv => `
             <tr>
                 <td><strong>${inv.invoice_number}</strong></td>
