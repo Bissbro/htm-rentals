@@ -1058,7 +1058,7 @@ Payment: ${payment}`;
                                 }
                                 if(hasAmenity('Balcony')){
                                     const bi=[hasAmenity('Coffee Table')?'Coffee Table':'',hasAmenity('Smoking Area')?'Smoking Area':''].filter(Boolean);
-                                    rows += '<div class="spec-stripe"><div class="spec-icon"><i class="fas fa-building"></i></div><div class="spec-label">Balcony</div><div class="spec-value">Open Air' + (bi.length?' <span class="spec-sep">·</span> '+bi.join(' <span class="spec-sep">·</span> '):'') + '</div></div>';
+                                    rows += '<div class="spec-stripe"><div class="spec-icon"><i class="fas fa-building"></i></div><div class="spec-label">Balcony</div><div class="spec-value">' + (bi.join(' <span class="spec-sep">·</span> ')||'Available') + '</div></div>';
                                 }
                                 return rows;
                             })()}
