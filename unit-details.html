@@ -117,6 +117,21 @@
         .unit-title-building { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); margin-bottom: 6px; display: block; }
         .unit-title h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 600; color: var(--navy); margin-bottom: 8px; line-height: 1.2; }
         @media (min-width: 768px) { .unit-title h1 { font-size: 2rem; } }
+        .desc-section { margin-bottom: 20px; }
+        .desc-content { }
+        .desc-content.collapsed { max-height: 120px; overflow: hidden; }
+        .desc-para { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+        .desc-para-icon { color: var(--navy); font-size: 15px; margin-top: 2px; flex-shrink: 0; width: 20px; }
+        .desc-para span { font-size: 14px; color: #444; line-height: 1.65; }
+        .desc-show-more-btn { display: block; width: 100%; margin-top: 12px; padding: 12px; background: var(--gray-light); border: none; border-radius: 12px; font-size: 13px; font-weight: 600; color: var(--navy); cursor: pointer; text-align: center; -webkit-tap-highlight-color: transparent; }
+        .desc-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: none; }
+        .desc-modal-overlay.open { display: block; }
+        .desc-modal { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-radius: 24px 24px 0 0; z-index: 2001; max-height: 85vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+        .desc-modal.open { transform: translateY(0); }
+        .desc-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 16px; border-bottom: 1px solid var(--gray-border); position: sticky; top: 0; background: white; }
+        .desc-modal-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--navy); }
+        .desc-modal-close { background: none; border: none; font-size: 18px; color: var(--gray-text); cursor: pointer; }
+        .desc-modal-body { padding: 20px; }
         .spec-stripes { margin: 4px 0 16px; border-top: 1px solid var(--gray-border); }
         .spec-stripe { display: flex; align-items: center; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--gray-border); min-height: 30px; }
         .spec-icon { width: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--teal); font-size: 13px; }
@@ -372,7 +387,19 @@
         function nextImage() { if (galleryImages.length) { currentImageIndex = (currentImageIndex + 1) % galleryImages.length; updateGalleryImage(); } }
         function prevImage() { if (galleryImages.length) { currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length; updateGalleryImage(); } }
         function goToImage(index) { currentImageIndex = index; updateGalleryImage(); }
-        function startAutoSlide() { /* auto slide disabled */ }
+        function openDescModal(){
+    const body = document.getElementById('desc-modal-body');
+    body.innerHTML = document.getElementById('description-text').innerHTML;
+    document.getElementById('desc-modal-overlay').classList.add('open');
+    document.getElementById('desc-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeDescModal(){
+    document.getElementById('desc-modal-overlay').classList.remove('open');
+    document.getElementById('desc-modal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+function startAutoSlide() { /* auto slide disabled */ }
         function resetAutoSlide() { /* auto slide disabled */ }
 
         async function fetchAvailability() {
@@ -1033,6 +1060,15 @@ Payment: ${payment}`;
             let childOptions = '<option value="0">0 children</option>';
             for (let i = 1; i <= maxChildren; i++) childOptions += `<option value="${i}">${i} child${i > 1 ? 'ren' : ''}</option>`;
             const description = unit.description || 'Comfortable apartment with all essential amenities for a relaxing stay in Hulhumale\'. Perfect for business travelers, couples, or small families.';
+            // Parse description — JSON array or plain text
+            let descHtml = '';
+            try {
+                const paras = JSON.parse(description);
+                if (Array.isArray(paras)) {
+                    descHtml = paras.map(p => `<div class="desc-para"><i class="fas ${p.icon} desc-para-icon"></i><span>${escapeHtml(p.text)}</span></div>`).join('');
+                }
+            } catch(e) {}
+            if (!descHtml) descHtml = `<p class="description">${escapeHtml(description)}</p>`;
             const showDescMore = description.length > 150;
             document.getElementById('content').innerHTML = `
                         <div class="gallery-container"><div class="gallery-slider" id="gallery-slider">${slidesHtml}${galleryImages.length > 1 ? `<button class="gallery-nav prev" onclick="prevImage()"><i class="fas fa-chevron-left"></i></button><button class="gallery-nav next" onclick="nextImage()"><i class="fas fa-chevron-right"></i></button><div class="gallery-unit-badge">${escapeHtml(unit.unit_number || "")}</div><div class="gallery-counter">1 / ${galleryImages.length}</div>` : ''}</div>${galleryImages.length > 1 ? `<div class="gallery-dots" id="gallery-dots">${dotsHtml}</div>` : ''}</div>
@@ -1067,7 +1103,10 @@ Payment: ${payment}`;
                             })()}
                         </div>
                         </div>
-                        <div class="glass-card"><div id="description-text" class="description ${showDescMore ? 'collapsed' : ''}">${escapeHtml(description)}</div>${showDescMore ? `<button id="desc-show-more-btn" class="show-more-btn" onclick="toggleDescription()">Show more</button>` : ''}</div>
+                        <div class="desc-section">
+                            <div id="description-text" class="desc-content ${showDescMore ? 'collapsed' : ''}">${descHtml}</div>
+                            ${showDescMore ? `<button class="desc-show-more-btn" onclick="openDescModal()">Show more</button>` : ''}
+                        </div>
                         <div class="glass-card map-section">
                             <h3>Our Location</h3>
                             <p>Malas Residence, Hulhumale' Phase 2, Maldives</p>
@@ -1355,6 +1394,16 @@ Payment: ${payment}`;
         <div style="font-size:13px; color:#999; margin-bottom:20px;">Questions? <a href="tel:+9609373113" style="color:#006994; font-weight:600; text-decoration:none;">Call us: 9373113</a></div>
         <button onclick="closePaymentModal()" style="background:#0A2540; color:white; border:none; border-radius:40px; padding:12px 32px; font-weight:700; font-size:14px; cursor:pointer;">Done</button>
     </div>
+</div>
+
+<!-- DESCRIPTION MODAL -->
+<div class="desc-modal-overlay" id="desc-modal-overlay" onclick="closeDescModal()"></div>
+<div class="desc-modal" id="desc-modal">
+    <div class="desc-modal-header">
+        <span class="desc-modal-title">About this place</span>
+        <button class="desc-modal-close" onclick="closeDescModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="desc-modal-body" id="desc-modal-body"></div>
 </div>
 
 <!-- AMENITIES OVERLAY -->

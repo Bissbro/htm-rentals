@@ -69,6 +69,10 @@
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 14px; border: 1.5px solid #E0E0E0; border-radius: 10px; font-size: 14px; outline: none; font-family: inherit; }
+        .desc-para-row { display: flex; gap: 8px; align-items: flex-start; background: #f8f9fa; border-radius: 10px; padding: 10px; }
+        .desc-icon-select { width: 44px; height: 44px; border: 1.5px solid #E0E0E0; border-radius: 8px; font-size: 16px; text-align: center; background: white; cursor: pointer; flex-shrink: 0; }
+        .desc-para-text { flex: 1; padding: 10px 12px; border: 1.5px solid #E0E0E0; border-radius: 8px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 60px; outline: none; }
+        .desc-para-remove { background: none; border: none; color: #ccc; font-size: 18px; cursor: pointer; padding: 4px; flex-shrink: 0; line-height: 1; margin-top: 10px; }
         .form-group input:focus, .form-group select:focus { border-color: #40B5AD; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .form-section { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #40B5AD; margin: 16px 0 10px; padding-bottom: 6px; border-bottom: 1.5px solid #f0fafa; }
@@ -148,8 +152,10 @@
             </select>
         </div>
         <div class="form-group">
-            <label>Description</label>
-            <textarea id="unit-description" rows="3" placeholder="Describe the unit..."></textarea>
+            <label>Description <span style="font-size:11px;color:#888;font-weight:400;">(each paragraph gets its own icon)</span></label>
+            <div id="desc-paragraphs" style="display:flex;flex-direction:column;gap:10px;margin-bottom:10px;"></div>
+            <button type="button" onclick="addDescParagraph()" style="background:none;border:1.5px dashed #40B5AD;color:#40B5AD;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;width:100%;">+ Add Paragraph</button>
+            <input type="hidden" id="unit-description">
         </div>
 
         <div class="form-section">Capacity & Rooms</div>
@@ -329,6 +335,58 @@ const HTM_AMENITIES = [
     {id:'airport_transfer',label:'Airport Transfer',icon:'fa-plane-arrival'},
 ];
 
+// Description paragraph editor
+const DESC_ICONS = [
+    {icon:'fa-home', label:'Home', emoji:'🏠'},
+    {icon:'fa-bed', label:'Bedroom', emoji:'🛏'},
+    {icon:'fa-bath', label:'Bathroom', emoji:'🚿'},
+    {icon:'fa-utensils', label:'Kitchen', emoji:'🍳'},
+    {icon:'fa-couch', label:'Living', emoji:'🛋'},
+    {icon:'fa-building', label:'Balcony', emoji:'🏗'},
+    {icon:'fa-wifi', label:'WiFi', emoji:'📶'},
+    {icon:'fa-shield-alt', label:'Security', emoji:'🔒'},
+    {icon:'fa-star', label:'Highlight', emoji:'⭐'},
+    {icon:'fa-map-marker-alt', label:'Location', emoji:'📍'},
+    {icon:'fa-car', label:'Parking', emoji:'🚗'},
+    {icon:'fa-snowflake', label:'AC', emoji:'❄️'},
+    {icon:'fa-tv', label:'TV', emoji:'📺'},
+    {icon:'fa-tshirt', label:'Laundry', emoji:'👕'},
+    {icon:'fa-lock', label:'Access', emoji:'🔑'},
+];
+
+function addDescParagraph(iconVal='fa-home', textVal='') {
+    const container = document.getElementById('desc-paragraphs');
+    const row = document.createElement('div');
+    row.className = 'desc-para-row';
+    const iconHtml = DESC_ICONS.map(i => `<option value="${i.icon}" ${i.icon===iconVal?'selected':''}>${i.emoji} ${i.label}</option>`).join('');
+    row.innerHTML = `<select class="desc-icon-select" onchange="updateDescHidden()">${iconHtml}</select><textarea class="desc-para-text" placeholder="Write paragraph..." oninput="updateDescHidden()">${textVal}</textarea><button type="button" class="desc-para-remove" onclick="this.parentElement.remove();updateDescHidden()">×</button>`;
+    container.appendChild(row);
+    updateDescHidden();
+}
+
+function updateDescHidden() {
+    const rows = document.querySelectorAll('.desc-para-row');
+    const data = Array.from(rows).map(row => ({
+        icon: row.querySelector('select').value,
+        text: row.querySelector('textarea').value.trim()
+    })).filter(p => p.text);
+    document.getElementById('unit-description').value = JSON.stringify(data);
+}
+
+function loadDescParagraphs(descValue) {
+    const container = document.getElementById('desc-paragraphs');
+    container.innerHTML = '';
+    if (!descValue) { addDescParagraph(); return; }
+    try {
+        const paras = JSON.parse(descValue);
+        if (Array.isArray(paras)) {
+            paras.forEach(p => addDescParagraph(p.icon||'fa-home', p.text||''));
+            return;
+        }
+    } catch(e) {}
+    addDescParagraph('fa-home', descValue);
+}
+
 async function init() {
     if (!getToken()) { window.location.href = 'admin.html'; return; }
     await loadUnits();
@@ -439,6 +497,8 @@ function openAddModal() {
     document.getElementById('unit-number').value = '';
     document.getElementById('unit-type-label').value = '';
     document.getElementById('unit-description').value = '';
+    document.getElementById('desc-paragraphs').innerHTML = '';
+    addDescParagraph();
     document.getElementById('unit-guests').value = '4';
     document.getElementById('unit-max-adults').value = '4';
     document.getElementById('unit-max-children').value = '2';
@@ -471,7 +531,7 @@ async function editUnit(id) {
     document.getElementById('unit-building').value = unit.building_name || 'Malas Residence';
     document.getElementById('unit-number').value = unit.unit_number || '';
     document.getElementById('unit-type-label').value = unit.unit_type_label || '';
-    document.getElementById('unit-description').value = unit.description || '';
+    loadDescParagraphs(unit.description || '');
     document.getElementById('unit-guests').value = unit.max_guests || 4;
     document.getElementById('unit-max-adults').value = unit.max_adults || 4;
     document.getElementById('unit-max-children').value = unit.max_children || 2;
