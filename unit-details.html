@@ -748,9 +748,13 @@ Payment: ${payment}`;
                 } else if (startDate && dateStr === startDate) isSelected = true;
                 const isPast = dateStr < todayStr;
                 let classes = 'calendar-day';
-                if (isBooked) classes += ' booked';
-                else if (isPast) classes += ' past';
-                else classes += ' available';
+                if (isPast && !isToday) {
+                    classes += ' past';
+                } else if (isBooked) {
+                    classes += ' booked';
+                } else {
+                    classes += ' available';
+                }
                 if (isToday) classes += ' today';
                 if (isSelected) classes += ' selected';
                 if (isInRange) classes += ' in-range';
