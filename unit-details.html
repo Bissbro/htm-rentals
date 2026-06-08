@@ -424,7 +424,7 @@ function startAutoSlide() { /* auto slide disabled */ }
                             const start = new Date(booking.check_in_date);
                             const end = new Date(booking.check_out_date);
                             for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
-                                bookedDates.push(d.toISOString().split('T')[0]);
+                                bookedDates.push(d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'));
                             }
                         });
                     }
