@@ -275,6 +275,8 @@
         let startDate = null;
         let endDate = null;
         let bookedDates = [];
+        const _today = new Date();
+        const todayStr = `${_today.getFullYear()}-${String(_today.getMonth()+1).padStart(2,'0')}-${String(_today.getDate()).padStart(2,'0')}`;
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
@@ -734,8 +736,7 @@ Payment: ${payment}`;
             const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
             weekdays.forEach(day => html += `<div class="calendar-weekday">${day}</div>`);
             for (let i = 0; i < firstDay; i++) html += '<div class="calendar-day empty"></div>';
-            const today = new Date();
-            const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+            // todayStr is global
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const isBooked = bookedDates.includes(dateStr);
