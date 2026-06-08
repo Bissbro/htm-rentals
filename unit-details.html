@@ -293,6 +293,7 @@
         let refreshInterval = null;
 
         function scrollToBookingCard() {
+            if(window.HTMAnalytics) HTMAnalytics.track('AVAILABILITY_TAP', {unit_id: currentUnitId});
             const bookingCard = document.getElementById('booking-card');
             if (bookingCard) {
                 const y = bookingCard.getBoundingClientRect().top + window.scrollY - 70;
@@ -397,7 +398,8 @@
             resetAutoSlide();
         }
 
-        function nextImage() { if (galleryImages.length) { currentImageIndex = (currentImageIndex + 1) % galleryImages.length; updateGalleryImage(); } }
+        function nextImage() {
+            if(window.HTMAnalytics) HTMAnalytics.track('GALLERY_SWIPE', {unit_id: currentUnitId, metadata: {direction: 'next'}}); if (galleryImages.length) { currentImageIndex = (currentImageIndex + 1) % galleryImages.length; updateGalleryImage(); } }
         function prevImage() { if (galleryImages.length) { currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length; updateGalleryImage(); } }
         function goToImage(index) { currentImageIndex = index; updateGalleryImage(); }
         function openDescModal(){
@@ -882,6 +884,7 @@ Payment: ${payment}`;
         }
 
         async function submitBooking(e) {
+            if(window.HTMAnalytics) HTMAnalytics.track('BOOKING_SUBMIT', {unit_id: currentUnitId});
             e.preventDefault();
             if (!startDate) { showMessage('Please select a check-in date', 'error'); return; }
             if (!endDate) { endDate = startDate; } // single night booking
@@ -929,6 +932,7 @@ Payment: ${payment}`;
         }
 
         function setMode(mode) {
+            if(window.HTMAnalytics) HTMAnalytics.track('MODE_SWITCH', {unit_id: currentUnitId, metadata: {mode: mode}});
             currentMode = mode;
             const localBtn = document.getElementById('toggle-local');
             const foreignBtn = document.getElementById('toggle-foreign');
@@ -1101,7 +1105,8 @@ Payment: ${payment}`;
             } catch(e) {}
             if (!descHtml) descHtml = `<p class="description">${escapeHtml(description)}</p>`;
             const showDescMore = description.length > 150;
-            document.getElementById('content').innerHTML = `
+            if(window.HTMAnalytics) HTMAnalytics.track('UNIT_VIEW', {unit_id: unit.id, metadata: {unit_name: unit.unit_name}});
+                document.getElementById('content').innerHTML = `
                         <div class="gallery-container"><div class="gallery-slider" id="gallery-slider">${slidesHtml}${galleryImages.length > 1 ? `<button class="gallery-nav prev" onclick="prevImage()"><i class="fas fa-chevron-left"></i></button><button class="gallery-nav next" onclick="nextImage()"><i class="fas fa-chevron-right"></i></button><div class="gallery-unit-badge">${escapeHtml(unit.unit_number || "")}</div><div class="gallery-counter">1 / ${galleryImages.length}</div>` : ''}</div>${galleryImages.length > 1 ? `<div class="gallery-dots" id="gallery-dots">${dotsHtml}</div>` : ''}</div>
                 <div class="container content-container"><div class="unit-layout">
                 <div>
@@ -1238,6 +1243,18 @@ Payment: ${payment}`;
             window.nextImage = nextImage; window.prevImage = prevImage; window.goToImage = goToImage;
             window.toggleDescription = toggleDescription; window.toggleAmenities = toggleAmenities;
             window.scrollToBookingCard = scrollToBookingCard;
+            // Track form start on first input focus
+            setTimeout(function() {
+                const firstInput = document.getElementById('guest-name');
+                if (firstInput && !firstInput._tracked) {
+                    firstInput.addEventListener('focus', function() {
+                        if (!this._tracked) {
+                            this._tracked = true;
+                            if(window.HTMAnalytics) HTMAnalytics.track('FORM_START', {unit_id: currentUnitId});
+                        }
+                    });
+                }
+            }, 1000);
         }
 
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
@@ -1449,5 +1466,6 @@ Payment: ${payment}`;
 </div>
 
 
+<script src="/analytics.js"></script>
 </body>
 </html>
