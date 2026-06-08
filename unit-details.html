@@ -748,14 +748,15 @@ Payment: ${payment}`;
                 } else if (startDate && dateStr === startDate) isSelected = true;
                 const isPast = dateStr < todayStr;
                 let classes = 'calendar-day';
-                if (isPast && !isToday) {
-                    classes += ' past';
+                if (isToday) {
+                    classes += isBooked ? ' booked today' : ' available today';
+                } else if (isPast) {
+                    classes += isBooked ? ' past booked' : ' past';
                 } else if (isBooked) {
                     classes += ' booked';
                 } else {
                     classes += ' available';
                 }
-                if (isToday) classes += ' today';
                 if (isSelected) classes += ' selected';
                 if (isInRange) classes += ' in-range';
                 html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isBooked})">${d}</div>`;
