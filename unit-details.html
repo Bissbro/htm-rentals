@@ -200,13 +200,13 @@
         .calendar-nav button:hover { background: var(--teal); color: white; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
         .calendar-weekday { font-weight: 600; padding: 10px 0; font-size: 12px; color: var(--gray-text); }
-        .calendar-day { padding: 10px 5px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.2s; font-weight: 400; color: var(--navy); }
-        .calendar-day.available:hover { background: rgba(64,181,173,0.12); color: var(--teal); }
-        .calendar-day.booked { background: none; color: #e53e3e; text-decoration: line-through; cursor: not-allowed; opacity: 0.7; }
-        .calendar-day.selected { background: var(--teal); color: white; border-radius: 8px; font-weight: 600; }
-        .calendar-day.in-range { background: rgba(64,181,173,0.1); color: var(--navy); border-radius: 0; }
-        .calendar-day.today { border: none; font-weight: 700; color: var(--teal); text-decoration: underline; text-underline-offset: 3px; }
-        .calendar-day.empty { cursor: default; background: transparent; color: transparent; }
+        .calendar-day { padding: 8px 4px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s; font-weight: 500; color: var(--navy); border: 1.5px solid var(--gray-border); }
+        .calendar-day.available:hover { background: rgba(64,181,173,0.1); border-color: var(--teal); color: var(--teal); }
+        .calendar-day.booked { background: none; color: #e53e3e; text-decoration: line-through; cursor: not-allowed; border-color: rgba(229,62,62,0.3); opacity: 0.8; }
+        .calendar-day.selected { background: var(--teal); color: white; border-radius: 6px; font-weight: 700; border-color: var(--teal); }
+        .calendar-day.in-range { background: rgba(64,181,173,0.08); color: var(--navy); border-radius: 0; border-color: transparent; }
+        .calendar-day.today { border: 1.5px solid var(--teal); font-weight: 700; color: var(--teal); box-shadow: 0 0 0 2px rgba(64,181,173,0.2); }
+        .calendar-day.empty { cursor: default; background: transparent; color: transparent; border-color: transparent; }
         .calendar-instruction { font-size: 11px; color: var(--gray-text); text-align: center; margin-top: 12px; font-style: italic; }
 
         /* Date Inputs */
