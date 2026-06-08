@@ -759,7 +759,8 @@ Payment: ${payment}`;
                 }
                 if (isSelected) classes += ' selected';
                 if (isInRange) classes += ' in-range';
-                html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isBooked})">${d}</div>`;
+                const todayStyle = isToday && !isBooked ? ' style="border: 2px solid #40B5AD !important; color: #40B5AD !important; box-shadow: 0 0 0 3px rgba(64,181,173,0.25) !important; font-weight: 700 !important;"' : '';
+                html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate('${dateStr}', ${isBooked})"${todayStyle}>${d}</div>`;
             }
             const grid = document.getElementById('calendar-grid');
             if (grid) grid.innerHTML = html;
