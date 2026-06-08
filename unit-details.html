@@ -191,21 +191,21 @@
         .booking-card { background: white; border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-md); border: 1px solid var(--gray-border); position: sticky; top: 80px; max-width: 100%; overflow: hidden; }
         .price-display { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; margin-bottom: 16px; }
         .price-mvr { font-size: 1.75rem; font-weight: 600; color: var(--navy); }
-        .price-nightly { font-size: 14px; color: var(--gray-text); }
+        .price-nightly { font-size: 13px; color: var(--gray-text); margin-left: 4px; }
 
         /* Calendar */
         .calendar-section { margin: 20px 0; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .calendar-nav button { background: var(--gray-light); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: all 0.3s; }
+        .calendar-nav button { background: white; border: 1.5px solid var(--gray-border); width: 34px; height: 34px; border-radius: 50%; cursor: pointer; transition: all 0.2s; color: var(--navy); font-size: 13px; }
         .calendar-nav button:hover { background: var(--teal); color: white; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
         .calendar-weekday { font-weight: 600; padding: 10px 0; font-size: 12px; color: var(--gray-text); }
         .calendar-day { padding: 10px 5px; border-radius: 30px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
         .calendar-day.available:hover { background: var(--teal); color: white; }
         .calendar-day.booked { background: var(--gray-light); color: var(--gray-text); text-decoration: line-through; cursor: not-allowed; }
-        .calendar-day.selected { background: var(--ocean); color: white; }
-        .calendar-day.in-range { background: rgba(0, 105, 148, 0.2); color: var(--navy); border-radius: 0; }
-        .calendar-day.today { border: 2px solid var(--turquoise); font-weight: 600; }
+        .calendar-day.selected { background: var(--teal); color: white; }
+        .calendar-day.in-range { background: rgba(64,181,173,0.15); color: var(--navy); border-radius: 0; }
+        .calendar-day.today { border: 2px solid var(--teal); font-weight: 600; }
         .calendar-day.empty { cursor: default; background: transparent; }
         .calendar-instruction { font-size: 11px; color: var(--gray-text); text-align: center; margin-top: 12px; font-style: italic; }
 
@@ -1135,7 +1135,7 @@ Payment: ${payment}`;
                         <div class="booking-card" id="booking-card">
                             <div class="price-display" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
                                 <div><span class="price-mvr">${currentMode === 'local' ? `MVR ${unit.rate_mvr}` : `$${usdRate}`}</span><span class="price-nightly">/ night</span></div>
-                                <span style="background:#f0fafa; border:1.5px solid #40B5AD; color:#40B5AD; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; letter-spacing:0.5px; ">DIRECT BOOKING</span>
+                                <span style="background:linear-gradient(135deg,#A8864E,#E8C484,#A8864E); color:white; font-size:10px; font-weight:700; padding:4px 12px; border-radius:20px; letter-spacing:1px;">DIRECT BOOKING</span>
                             </div>
                             <div id="external-buttons-container" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};"><div class="external-buttons">${externalButtonsHtml || '<p style="color: var(--gray-text);">No external booking links available. Please contact us directly.</p>'}${foreignInquiryHtml}</div></div>
                             <div class="calendar-section"><div class="calendar-header"><h4 id="calendar-month-year">${monthNames[currentMonth]} ${currentYear}</h4><div class="calendar-nav"><button id="prev-month"><i class="fas fa-chevron-left"></i></button><button id="next-month"><i class="fas fa-chevron-right"></i></button></div></div><div id="calendar-grid" class="calendar-grid"></div><div class="calendar-instruction"><i class="fas fa-info-circle"></i> Tap a date to start. Tap another date to end. Tap same date to clear.</div></div>
@@ -1150,7 +1150,7 @@ Payment: ${payment}`;
                                     <div id="form-message" class="message"></div>
                                     <button type="submit" class="submit-btn">Request to book</button>
                                 </form>
-                                <hr><p style="font-size: 12px; color: var(--gray-text); text-align: center; margin-top: 12px;"><i class="fas fa-lock"></i> You won't be charged yet</p>
+                                <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px;padding-top:16px;border-top:1px solid var(--gray-border);"><i class="fas fa-lock" style="color:var(--teal);font-size:12px;"></i><span style="font-size:11px;color:var(--gray-text);font-weight:500;">You won't be charged yet</span></div>
                             </div>
                             <div id="foreign-message" style="display: ${currentMode === 'foreign' ? 'block' : 'none'};">
                                 <form id="foreign-inquiry-form">
