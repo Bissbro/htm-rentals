@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics — HTM Rentals</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; scrollbar-width: none; }
+        :root {
+            --navy: #0A2540;
+            --teal: #40B5AD;
+            --gold: #B8975A;
+            --warm-white: #FAFAF8;
+            --gray-border: #E8E8E8;
+            --gray-text: #666;
+            --gray-light: #F5F5F3;
+            --card-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--warm-white); color: var(--navy); min-height: 100vh; }
+        
+        /* Header */
+        .header { background: var(--navy); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 20px; }
+        .header-title { color: white; font-size: 15px; font-weight: 700; letter-spacing: 0.3px; }
+        .header-subtitle { color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 1px; }
+
+        /* Period selector */
+        .period-bar { background: white; border-bottom: 1px solid var(--gray-border); padding: 10px 16px; display: flex; gap: 8px; overflow-x: auto; }
+        .period-btn { flex-shrink: 0; padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--gray-border); background: white; font-size: 12px; font-weight: 600; color: var(--gray-text); cursor: pointer; transition: all 0.2s; }
+        .period-btn.active { background: var(--navy); border-color: var(--navy); color: white; }
+
+        /* Content */
+        .content { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+        /* Stat cards */
+        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+        .stat-card { background: white; border-radius: 14px; padding: 16px; box-shadow: var(--card-shadow); border: 1px solid var(--gray-border); }
+        .stat-label { font-size: 9px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1; }
+        .stat-sub { font-size: 11px; color: var(--gray-text); margin-top: 4px; }
+        .stat-icon { float: right; font-size: 20px; color: var(--teal); opacity: 0.4; margin-top: -4px; }
+
+        /* Section */
+        .section { background: white; border-radius: 14px; padding: 16px; box-shadow: var(--card-shadow); border: 1px solid var(--gray-border); margin-bottom: 12px; }
+        .section-title { font-size: 10px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .section-title i { color: var(--teal); font-size: 13px; }
+
+        /* Funnel */
+        .funnel-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .funnel-label { font-size: 11px; font-weight: 600; color: var(--navy); width: 110px; flex-shrink: 0; }
+        .funnel-bar-wrap { flex: 1; background: var(--gray-light); border-radius: 4px; height: 24px; overflow: hidden; }
+        .funnel-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--teal), #2a9d96); display: flex; align-items: center; padding-left: 8px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); min-width: 30px; }
+        .funnel-bar span { font-size: 11px; font-weight: 700; color: white; }
+        .funnel-pct { font-size: 10px; color: var(--gray-text); width: 36px; text-align: right; flex-shrink: 0; }
+
+        /* Sources */
+        .source-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--gray-border); }
+        .source-row:last-child { border-bottom: none; }
+        .source-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+        .source-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--navy); }
+        .source-count { font-size: 13px; font-weight: 700; color: var(--navy); }
+        .source-bar { width: 60px; height: 4px; background: var(--gray-light); border-radius: 2px; margin-top: 3px; }
+        .source-bar-fill { height: 100%; border-radius: 2px; background: var(--teal); }
+
+        /* Unit cards */
+        .unit-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--gray-border); }
+        .unit-row:last-child { border-bottom: none; }
+        .unit-badge { width: 36px; height: 36px; border-radius: 10px; background: var(--gray-light); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: var(--navy); flex-shrink: 0; }
+        .unit-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--navy); }
+        .unit-views { font-size: 12px; color: var(--gray-text); }
+        .unit-views strong { color: var(--navy); }
+
+        /* Daily chart */
+        .chart-wrap { height: 80px; display: flex; align-items: flex-end; gap: 3px; padding-top: 8px; }
+        .chart-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .chart-bar { width: 100%; border-radius: 3px 3px 0 0; background: linear-gradient(180deg, var(--teal), #2a9d96); min-height: 2px; transition: height 0.6s ease; }
+        .chart-label { font-size: 8px; color: var(--gray-text); text-align: center; }
+
+        /* Events list */
+        .event-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--gray-border); }
+        .event-row:last-child { border-bottom: none; }
+        .event-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+        .event-name { flex: 1; font-size: 12px; color: var(--navy); font-weight: 500; }
+        .event-count { font-size: 12px; font-weight: 700; color: var(--navy); }
+
+        /* Device */
+        .device-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+        .device-label { font-size: 12px; font-weight: 600; color: var(--navy); width: 70px; }
+        .device-bar-wrap { flex: 1; background: var(--gray-light); border-radius: 4px; height: 20px; overflow: hidden; }
+        .device-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; }
+        .device-bar span { font-size: 10px; font-weight: 700; color: white; }
+        .device-pct { font-size: 11px; font-weight: 700; color: var(--navy); width: 36px; text-align: right; }
+
+        .empty-state { text-align: center; padding: 32px 16px; color: var(--gray-text); font-size: 13px; }
+        .loading { text-align: center; padding: 40px; color: var(--gray-text); font-size: 13px; }
+        .nav-bottom { height: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-left">
+        <a href="admin.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+        <div>
+            <div class="header-title">Analytics</div>
+            <div class="header-subtitle">Visitor & booking insights</div>
+        </div>
+    </div>
+    <i class="fas fa-chart-line" style="color:rgba(255,255,255,0.3);font-size:18px;"></i>
+</div>
+
+<div class="period-bar">
+    <button class="period-btn" onclick="setPeriod(1)">Today</button>
+    <button class="period-btn active" onclick="setPeriod(7)">7 Days</button>
+    <button class="period-btn" onclick="setPeriod(30)">30 Days</button>
+    <button class="period-btn" onclick="setPeriod(90)">90 Days</button>
+</div>
+
+<div class="content">
+    <div id="dashboard"><div class="loading"><i class="fas fa-circle-notch fa-spin"></i> Loading...</div></div>
+    <div class="nav-bottom"></div>
+</div>
+
+<script>
+const API = 'https://api.htmrentals.com';
+let currentPeriod = 7;
+
+function getToken() { return localStorage.getItem('adminToken'); }
+function hdrs() { return { 'Authorization': 'Bearer ' + getToken(), 'Content-Type': 'application/json' }; }
+
+if (!getToken()) window.location.href = 'admin.html';
+
+function setPeriod(days) {
+    currentPeriod = days;
+    document.querySelectorAll('.period-btn').forEach((b,i) => b.classList.toggle('active', [1,7,30,90][i] === days));
+    loadAnalytics();
+}
+
+async function loadAnalytics() {
+    document.getElementById('dashboard').innerHTML = '<div class="loading"><i class="fas fa-circle-notch fa-spin"></i> Loading...</div>';
+    try {
+        const res = await fetch(`${API}/api/admin/analytics/overview?period=${currentPeriod}`, { headers: hdrs() });
+        const data = await res.json();
+        if (!data.success) throw new Error('Failed');
+        renderDashboard(data);
+    } catch(e) {
+        document.getElementById('dashboard').innerHTML = '<div class="empty-state">Failed to load analytics</div>';
+    }
+}
+
+function renderDashboard(data) {
+    const { sessions, funnel, unitViews, sources, daily, topEvents } = data;
+
+    // Funnel map
+    const funnelMap = {};
+    (funnel || []).forEach(f => funnelMap[f.event_type] = parseInt(f.count));
+    const funnelSteps = [
+        { key: 'UNIT_VIEW', label: 'Unit Views' },
+        { key: 'AVAILABILITY_TAP', label: 'Availability' },
+        { key: 'FORM_START', label: 'Form Start' },
+        { key: 'BOOKING_SUBMIT', label: 'Submitted' },
+        { key: 'BOOKING_SUCCESS', label: 'Confirmed' },
+    ];
+    const maxFunnel = Math.max(...funnelSteps.map(s => funnelMap[s.key] || 0), 1);
+
+    // Source icons
+    const sourceIcons = {
+        'Direct': {icon:'fa-link', bg:'#e8f4fd', color:'#0A2540'},
+        'Google': {icon:'fa-google', bg:'#fce8e8', color:'#ea4335'},
+        'Airbnb': {icon:'fa-house', bg:'#ffe8e8', color:'#ff5a5f'},
+        'Booking.com': {icon:'fa-b', bg:'#e8eeff', color:'#003580'},
+        'Facebook': {icon:'fa-facebook', bg:'#e8eeff', color:'#1877f2'},
+        'Instagram': {icon:'fa-instagram', bg:'#fde8ff', color:'#c13584'},
+        'Other': {icon:'fa-globe', bg:'#f0f0f0', color:'#666'},
+    };
+    const maxSource = Math.max(...(sources||[]).map(s => parseInt(s.count)), 1);
+
+    // Daily chart
+    const maxDaily = Math.max(...(daily||[]).map(d => parseInt(d.visitors)), 1);
+
+    // Unit names
+    const unitNames = {4:'A-701', 5:'A-701-01', 6:'A-701-02', 7:'A-207', 8:'A-106'};
+
+    const convRate = funnelMap['UNIT_VIEW'] ? Math.round((funnelMap['BOOKING_SUBMIT']||0) / funnelMap['UNIT_VIEW'] * 100) : 0;
+
+    document.getElementById('dashboard').innerHTML = `
+        <div class="stat-grid">
+            <div class="stat-card">
+                <i class="fas fa-users stat-icon"></i>
+                <div class="stat-label">Visitors</div>
+                <div class="stat-value">${sessions.total || 0}</div>
+                <div class="stat-sub">${sessions.today || 0} today</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-percent stat-icon"></i>
+                <div class="stat-label">Conversion</div>
+                <div class="stat-value">${convRate}%</div>
+                <div class="stat-sub">views → bookings</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-mobile-alt stat-icon"></i>
+                <div class="stat-label">Mobile</div>
+                <div class="stat-value">${sessions.total ? Math.round(sessions.mobile/sessions.total*100) : 0}%</div>
+                <div class="stat-sub">${sessions.mobile || 0} of ${sessions.total || 0}</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-check stat-icon"></i>
+                <div class="stat-label">Form Starts</div>
+                <div class="stat-value">${funnelMap['FORM_START'] || 0}</div>
+                <div class="stat-sub">${funnelMap['BOOKING_SUBMIT'] || 0} submitted</div>
+            </div>
+        </div>
+
+        ${daily && daily.length > 0 ? `
+        <div class="section">
+            <div class="section-title"><i class="fas fa-chart-bar"></i> Daily Visitors</div>
+            <div class="chart-wrap">
+                ${daily.map(d => {
+                    const h = Math.max(4, Math.round((parseInt(d.visitors)/maxDaily)*72));
+                    const label = new Date(d.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'}).replace(' ','\n');
+                    return `<div class="chart-bar-col"><div class="chart-bar" style="height:${h}px"></div><div class="chart-label">${label.split(' ')[0]}</div></div>`;
+                }).join('')}
+            </div>
+        </div>` : ''}
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-filter"></i> Booking Funnel</div>
+            ${funnelSteps.map((step, i) => {
+                const count = funnelMap[step.key] || 0;
+                const pct = Math.round(count/maxFunnel*100);
+                const prevCount = i > 0 ? (funnelMap[funnelSteps[i-1].key] || 0) : count;
+                const dropPct = prevCount > 0 && i > 0 ? Math.round(count/prevCount*100) : 100;
+                return `<div class="funnel-row">
+                    <div class="funnel-label">${step.label}</div>
+                    <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${Math.max(pct,5)}%"><span>${count}</span></div></div>
+                    <div class="funnel-pct">${i > 0 ? dropPct+'%' : ''}</div>
+                </div>`;
+            }).join('')}
+        </div>
+
+        ${unitViews && unitViews.length > 0 ? `
+        <div class="section">
+            <div class="section-title"><i class="fas fa-building"></i> Unit Views</div>
+            ${unitViews.map(u => `
+                <div class="unit-row">
+                    <div class="unit-badge">${unitNames[u.unit_id] || 'U'+u.unit_id}</div>
+                    <div class="unit-name">${unitNames[u.unit_id] || 'Unit '+u.unit_id}</div>
+                    <div class="unit-views"><strong>${u.views}</strong> views</div>
+                </div>
+            `).join('')}
+        </div>` : ''}
+
+        ${sources && sources.length > 0 ? `
+        <div class="section">
+            <div class="section-title"><i class="fas fa-share-alt"></i> Traffic Sources</div>
+            ${sources.map(s => {
+                const si = sourceIcons[s.source] || sourceIcons['Other'];
+                const pct = Math.round(parseInt(s.count)/maxSource*100);
+                return `<div class="source-row">
+                    <div class="source-icon" style="background:${si.bg};color:${si.color}"><i class="fab ${si.icon}" onerror="this.className='fas ${si.icon}'"></i></div>
+                    <div style="flex:1">
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <span class="source-name">${s.source}</span>
+                            <span class="source-count">${s.count}</span>
+                        </div>
+                        <div class="source-bar"><div class="source-bar-fill" style="width:${pct}%"></div></div>
+                    </div>
+                </div>`;
+            }).join('')}
+        </div>` : ''}
+
+        ${topEvents && topEvents.length > 0 ? `
+        <div class="section">
+            <div class="section-title"><i class="fas fa-bolt"></i> Top Events</div>
+            ${topEvents.map(e => `
+                <div class="event-row">
+                    <div class="event-dot"></div>
+                    <div class="event-name">${e.event_type.replace(/_/g,' ')}</div>
+                    <div class="event-count">${e.count}</div>
+                </div>
+            `).join('')}
+        </div>` : ''}
+    `;
+}
+
+loadAnalytics();
+</script>
+</body>
+</html>
