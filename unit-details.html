@@ -202,11 +202,11 @@
         .calendar-weekday { font-weight: 600; padding: 10px 0; font-size: 12px; color: var(--gray-text); }
         .calendar-day { padding: 8px 4px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s; font-weight: 500; color: var(--navy); border: 1.5px solid var(--gray-border); }
         .calendar-day.available:hover { background: rgba(64,181,173,0.1); border-color: var(--teal); color: var(--teal); }
-        .calendar-day.booked { background: none; color: #e53e3e; text-decoration: line-through; cursor: not-allowed; border-color: rgba(229,62,62,0.3); opacity: 0.8; }
+        .calendar-day.booked { background: none !important; color: #e53e3e !important; text-decoration: line-through; cursor: not-allowed !important; border-color: var(--gray-border) !important; opacity: 0.8; }
         .calendar-day.selected { background: var(--teal); color: white; border-radius: 6px; font-weight: 700; border-color: var(--teal); }
         .calendar-day.in-range { background: rgba(64,181,173,0.08); color: var(--navy); border-radius: 0; border-color: transparent; }
         .calendar-day.today { border: 1.5px solid var(--teal); font-weight: 700; color: var(--teal); box-shadow: 0 0 0 2px rgba(64,181,173,0.2); }
-        .calendar-day.booked.today { border-color: rgba(229,62,62,0.3); color: #e53e3e; box-shadow: none; }
+        .calendar-day.booked.today { border-color: var(--gray-border) !important; color: #e53e3e !important; box-shadow: none !important; }
         .calendar-day.empty { cursor: default; background: transparent; color: transparent; border-color: transparent; }
         .calendar-instruction { font-size: 11px; color: var(--gray-text); text-align: center; margin-top: 12px; font-style: italic; }
 
@@ -810,7 +810,7 @@ Payment: ${payment}`;
                         if (bookedDates.includes(ds)) { rangeBlocked = true; break; }
                         checkD.setDate(checkD.getDate() + 1);
                     }
-                    if (rangeBlocked) { showMessage('Selected range includes unavailable dates', 'error'); return; }
+                    if (rangeBlocked) { showMessage('Selected range includes unavailable dates. Please choose different dates.', 'error'); startDate = null; endDate = null; document.getElementById('check-in').value = ''; document.getElementById('check-out').value = ''; document.getElementById('price-breakdown').style.display = 'none'; generateCalendar(currentMonth, currentYear); return; }
                     endDate = dateStr;
                     const checkOutDate = new Date(endDate); checkOutDate.setDate(checkOutDate.getDate() + 1);
                     const checkOutStr = checkOutDate.toISOString().split('T')[0];
