@@ -277,6 +277,7 @@
         let bookedDates = [];
         const _today = new Date();
         const todayStr = _today.getFullYear() + '-' + String(_today.getMonth()+1).padStart(2,'0') + '-' + String(_today.getDate()).padStart(2,'0');
+        document.title = 'Today: ' + todayStr;
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
