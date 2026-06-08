@@ -210,7 +210,7 @@
         .calendar-day.today, .calendar-day.available.today { border: 2px solid var(--teal) !important; font-weight: 700 !important; color: var(--teal) !important; box-shadow: 0 0 0 3px rgba(64,181,173,0.25) !important; }
         .calendar-day.booked.today { border-color: var(--teal) !important; box-shadow: 0 0 0 3px rgba(64,181,173,0.25) !important; color: #e53e3e !important; }
         .calendar-day.empty { cursor: default; background: transparent; color: transparent; border-color: transparent; }
-        .calendar-day.past { cursor: not-allowed !important; opacity: 0.3 !important; pointer-events: none; }
+        .calendar-day.past, .calendar-day.past.booked { cursor: not-allowed !important; opacity: 0.3 !important; pointer-events: none !important; text-decoration: none !important; color: var(--navy) !important; border-color: var(--gray-border) !important; }
         .calendar-day.today { opacity: 1 !important; pointer-events: auto !important; }
         .calendar-instruction { font-size: 11px; color: var(--gray-text); text-align: center; margin-top: 12px; font-style: italic; }
 
