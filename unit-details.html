@@ -206,6 +206,7 @@
         .calendar-day.selected { background: var(--teal); color: white; border-radius: 6px; font-weight: 700; border-color: var(--teal); }
         .calendar-day.in-range { background: rgba(64,181,173,0.08); color: var(--navy); border-radius: 0; border-color: transparent; }
         .calendar-day.today { border: 1.5px solid var(--teal); font-weight: 700; color: var(--teal); box-shadow: 0 0 0 2px rgba(64,181,173,0.2); }
+        .calendar-day.booked.today { border-color: rgba(229,62,62,0.3); color: #e53e3e; box-shadow: none; }
         .calendar-day.empty { cursor: default; background: transparent; color: transparent; border-color: transparent; }
         .calendar-instruction { font-size: 11px; color: var(--gray-text); text-align: center; margin-top: 12px; font-style: italic; }
 
@@ -744,8 +745,10 @@ Payment: ${payment}`;
                     if (dateStr === startDate || dateStr === endDate) isSelected = true;
                     else if (dateStr > startDate && dateStr < endDate) isInRange = true;
                 } else if (startDate && dateStr === startDate) isSelected = true;
+                const isPast = dateStr < todayStr;
                 let classes = 'calendar-day';
                 if (isBooked) classes += ' booked';
+                else if (isPast) classes += ' past';
                 else classes += ' available';
                 if (isToday) classes += ' today';
                 if (isSelected) classes += ' selected';
@@ -760,6 +763,7 @@ Payment: ${payment}`;
 
         function selectDate(dateStr, isBooked) {
             if (isBooked) { showMessage('This date is not available', 'error'); return; }
+            if (dateStr < todayStr) { showMessage('Cannot select past dates', 'error'); return; }
             if (startDate === dateStr && !endDate) {
                 startDate = null; endDate = null;
                 document.getElementById('check-in').value = '';
@@ -796,6 +800,16 @@ Payment: ${payment}`;
                     if(document.getElementById('subtotal-mvr')) document.getElementById('subtotal-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                     if(document.getElementById('total-mvr')) document.getElementById('total-mvr').textContent = `MVR ${totalMvr.toFixed(2)}`;
                 } else {
+                    // Check if range crosses any booked date
+                    let rangeBlocked = false;
+                    let checkD = new Date(startDate); checkD.setDate(checkD.getDate() + 1);
+                    const endD = new Date(dateStr);
+                    while (checkD <= endD) {
+                        const ds = checkD.toISOString().split('T')[0];
+                        if (bookedDates.includes(ds)) { rangeBlocked = true; break; }
+                        checkD.setDate(checkD.getDate() + 1);
+                    }
+                    if (rangeBlocked) { showMessage('Selected range includes unavailable dates', 'error'); return; }
                     endDate = dateStr;
                     const checkOutDate = new Date(endDate); checkOutDate.setDate(checkOutDate.getDate() + 1);
                     const checkOutStr = checkOutDate.toISOString().split('T')[0];
