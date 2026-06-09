@@ -183,7 +183,7 @@ function renderDashboard(data) {
     const maxDaily = Math.max(...(daily||[]).map(d => parseInt(d.visitors)), 1);
 
     // Unit names
-    const unitNames = {4:'A-701', 5:'A-701-01', 6:'A-701-02', 7:'A-207', 8:'A-106'};
+    const unitNames = {1:'A-207', 4:'A-701', 5:'A-701-01', 6:'A-701-02', 7:'A-106'};
 
     const convRate = funnelMap['UNIT_VIEW'] ? Math.round((funnelMap['BOOKING_SUBMIT']||0) / funnelMap['UNIT_VIEW'] * 100) : 0;
 
