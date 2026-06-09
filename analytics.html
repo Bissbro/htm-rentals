@@ -129,7 +129,7 @@
 const API = 'https://api.htmrentals.com';
 let currentPeriod = 7;
 
-function getToken() { return localStorage.getItem('adminToken'); }
+function getToken() { return sessionStorage.getItem('adminToken'); }
 function hdrs() { return { 'Authorization': 'Bearer ' + getToken(), 'Content-Type': 'application/json' }; }
 
 if (!getToken()) window.location.href = 'admin.html';
