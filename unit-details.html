@@ -274,6 +274,7 @@
         const API_BASE_URL = 'https://api.htmrentals.com/api';
         const urlParams = new URLSearchParams(window.location.search);
         const unitId = urlParams.get('id');
+        let currentUnitId = unitId;
 
         let unit = null;
         let startDate = null;
