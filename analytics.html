@@ -169,13 +169,13 @@ function renderDashboard(data) {
 
     // Source icons
     const sourceIcons = {
-        'Direct': {icon:'fa-link', bg:'#e8f4fd', color:'#0A2540'},
-        'Google': {icon:'fa-google', bg:'#fce8e8', color:'#ea4335'},
-        'Airbnb': {icon:'fa-house', bg:'#ffe8e8', color:'#ff5a5f'},
-        'Booking.com': {icon:'fa-b', bg:'#e8eeff', color:'#003580'},
-        'Facebook': {icon:'fa-facebook', bg:'#e8eeff', color:'#1877f2'},
-        'Instagram': {icon:'fa-instagram', bg:'#fde8ff', color:'#c13584'},
-        'Other': {icon:'fa-globe', bg:'#f0f0f0', color:'#666'},
+        'Direct': {icon:'fas fa-link', bg:'#e8f4fd', color:'#0A2540'},
+        'Google': {icon:'fab fa-google', bg:'#fce8e8', color:'#ea4335'},
+        'Airbnb': {icon:'fas fa-house', bg:'#ffe8e8', color:'#ff5a5f'},
+        'Booking.com': {icon:'fas fa-bed', bg:'#e8eeff', color:'#003580'},
+        'Facebook': {icon:'fab fa-facebook', bg:'#e8eeff', color:'#1877f2'},
+        'Instagram': {icon:'fab fa-instagram', bg:'#fde8ff', color:'#c13584'},
+        'Other': {icon:'fas fa-globe', bg:'#f0f0f0', color:'#666'},
     };
     const maxSource = Math.max(...(sources||[]).map(s => parseInt(s.count)), 1);
 
@@ -261,7 +261,7 @@ function renderDashboard(data) {
                 const si = sourceIcons[s.source] || sourceIcons['Other'];
                 const pct = Math.round(parseInt(s.count)/maxSource*100);
                 return `<div class="source-row">
-                    <div class="source-icon" style="background:${si.bg};color:${si.color}"><i class="fab ${si.icon}" onerror="this.className='fas ${si.icon}'"></i></div>
+                    <div class="source-icon" style="background:${si.bg};color:${si.color}"><i class="${si.icon}"></i></div>
                     <div style="flex:1">
                         <div style="display:flex;justify-content:space-between;align-items:center">
                             <span class="source-name">${s.source}</span>
