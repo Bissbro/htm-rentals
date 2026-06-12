@@ -245,15 +245,15 @@
 
         /* ========== DESKTOP RESPONSIVE ========== */
 
-        /* --- Gallery max-width --- */
+        /* --- Gallery inside left column --- */
         @media (min-width: 900px) {
             .gallery-container {
-                max-width: 1200px;
-                margin-left: auto;
-                margin-right: auto;
+                margin-bottom: 24px;
+                border-radius: 16px;
+                overflow: hidden;
             }
             .gallery-slider {
-                aspect-ratio: 16/7;
+                aspect-ratio: 4/3;
                 min-height: 0;
             }
         }
@@ -1137,9 +1137,9 @@ Payment: ${payment}`;
             const showDescMore = description.length > 150;
             if(window.HTMAnalytics) HTMAnalytics.track('UNIT_VIEW', {unit_id: unit.id, metadata: {unit_name: unit.unit_name}});
                 document.getElementById('content').innerHTML = `
-                        <div class="gallery-container"><div class="gallery-slider" id="gallery-slider">${slidesHtml}${galleryImages.length > 1 ? `<button class="gallery-nav prev" onclick="prevImage()"><i class="fas fa-chevron-left"></i></button><button class="gallery-nav next" onclick="nextImage()"><i class="fas fa-chevron-right"></i></button><div class="gallery-unit-badge">${escapeHtml(unit.unit_number || "")}</div><div class="gallery-counter">1 / ${galleryImages.length}</div>` : ''}</div>${galleryImages.length > 1 ? `<div class="gallery-dots" id="gallery-dots">${dotsHtml}</div>` : ''}</div>
-                <div class="container content-container"><div class="unit-layout">
+                        <div class="container content-container"><div class="unit-layout">
                 <div>
+                        <div class="gallery-container"><div class="gallery-slider" id="gallery-slider">${slidesHtml}${galleryImages.length > 1 ? `<button class="gallery-nav prev" onclick="prevImage()"><i class="fas fa-chevron-left"></i></button><button class="gallery-nav next" onclick="nextImage()"><i class="fas fa-chevron-right"></i></button><div class="gallery-unit-badge">${escapeHtml(unit.unit_number || "")}</div><div class="gallery-counter">1 / ${galleryImages.length}</div>` : ''}</div>${galleryImages.length > 1 ? `<div class="gallery-dots" id="gallery-dots">${dotsHtml}</div>` : ''}</div>
                         <div class="unit-title">
                             <span class="unit-title-building">${escapeHtml(unit.building_name || 'HTM Rentals')}</span>
                             <h1>${escapeHtml(unit.unit_type_label || unit.unit_name)}</h1>
