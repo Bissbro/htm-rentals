@@ -711,6 +711,7 @@ Payment: ${payment}`;
                 });
                 const data = await res.json();
                 if (data.success) {
+                    if(window.HTMAnalytics) HTMAnalytics.track('BOOKING_COMPLETE', {unit_id: currentUnitId});
                     // Show thank you screen
                     const bookingIdVal = document.getElementById("pay-booking-id-hidden").value;
                     document.getElementById("success-booking-id").textContent = "#" + bookingIdVal;
@@ -885,7 +886,6 @@ Payment: ${payment}`;
         }
 
         async function submitBooking(e) {
-            if(window.HTMAnalytics) HTMAnalytics.track('BOOKING_SUBMIT', {unit_id: currentUnitId});
             e.preventDefault();
             if (!startDate) { showMessage('Please select a check-in date', 'error'); return; }
             if (!endDate) { endDate = startDate; } // single night booking
@@ -914,6 +914,7 @@ Payment: ${payment}`;
                 });
                 const data = await res.json();
                 if (data.success) {
+                    if(window.HTMAnalytics) HTMAnalytics.track('BOOKING_SUCCESS', {unit_id: currentUnitId});
                     // Show payment page
                     showPaymentPage(data.booking_id, name, phone, nights, total, startDate, checkOutStr);
                     startDate = null; endDate = null;
