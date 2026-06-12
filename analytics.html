@@ -162,8 +162,8 @@ function renderDashboard(data) {
         { key: 'UNIT_VIEW', label: 'Unit Views' },
         { key: 'AVAILABILITY_TAP', label: 'Availability' },
         { key: 'FORM_START', label: 'Form Start' },
-        { key: 'BOOKING_SUBMIT', label: 'Submitted' },
-        { key: 'BOOKING_SUCCESS', label: 'Confirmed' },
+        { key: 'BOOKING_SUCCESS', label: 'Submitted' },
+        { key: 'BOOKING_COMPLETE', label: 'Confirmed' },
     ];
     const maxFunnel = Math.max(...funnelSteps.map(s => funnelMap[s.key] || 0), 1);
 
@@ -185,7 +185,7 @@ function renderDashboard(data) {
     // Unit names
     const unitNames = {1:'A-207', 4:'A-701', 5:'A-701-01', 6:'A-701-02', 7:'A-106'};
 
-    const convRate = funnelMap['UNIT_VIEW'] ? Math.round((funnelMap['BOOKING_SUBMIT']||0) / funnelMap['UNIT_VIEW'] * 100) : 0;
+    const convRate = funnelMap['UNIT_VIEW'] ? Math.round((funnelMap['BOOKING_SUCCESS']||0) / funnelMap['UNIT_VIEW'] * 100) : 0;
 
     document.getElementById('dashboard').innerHTML = `
         <div class="stat-grid">
@@ -211,7 +211,7 @@ function renderDashboard(data) {
                 <i class="fas fa-calendar-check stat-icon"></i>
                 <div class="stat-label">Form Starts</div>
                 <div class="stat-value">${funnelMap['FORM_START'] || 0}</div>
-                <div class="stat-sub">${funnelMap['BOOKING_SUBMIT'] || 0} submitted</div>
+                <div class="stat-sub">${funnelMap['BOOKING_SUCCESS'] || 0} submitted</div>
             </div>
         </div>
 
@@ -233,7 +233,7 @@ function renderDashboard(data) {
                 const count = funnelMap[step.key] || 0;
                 const pct = Math.round(count/maxFunnel*100);
                 const prevCount = i > 0 ? (funnelMap[funnelSteps[i-1].key] || 0) : count;
-                const dropPct = prevCount > 0 && i > 0 ? Math.round(count/prevCount*100) : 100;
+                const dropPct = prevCount > 0 && i > 0 ? Math.round(count/prevCount*100) : (i > 0 ? 0 : 100);
                 return `<div class="funnel-row">
                     <div class="funnel-label">${step.label}</div>
                     <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${Math.max(pct,5)}%"><span>${count}</span></div></div>
