@@ -371,7 +371,20 @@
         if (ci && co) {
             const n = Math.round((new Date(co)-new Date(ci))/86400000);
             el.innerHTML = n > 0 ? `<strong>${n} night${n>1?'s':''}</strong> · ${fmt(ci)} → ${fmt(co)}` : `<span style="color:var(--danger);">Check-out must be after check-in</span>`;
+            if (n > 0) autoCalcAmount(n);
         } else el.textContent = 'Select check-in and check-out dates';
+    }
+
+    function autoCalcAmount(nights) {
+        const unitId = document.getElementById('f-unit').value;
+        const currency = document.getElementById('f-currency').value || 'MVR';
+        if (!unitId) return;
+        const unit = allUnits.find(u => u.id == unitId);
+        if (!unit) return;
+        const rate = currency === 'MVR' ? (unit.rate_mvr || unit.rate) : (unit.rate_usd || unit.rate);
+        if (rate && nights > 0) {
+            document.getElementById('f-amount').value = (parseFloat(rate) * nights).toFixed(2);
+        }
     }
 
     function openModal() {
@@ -386,10 +399,10 @@
         document.getElementById('f-nid').value = '';
         document.getElementById('f-guests').value = '1';
         document.getElementById('f-amount').value = '';
-        document.getElementById('f-currency').value = 'USD';
+        document.getElementById('f-currency').value = 'MVR';
         document.getElementById('f-status').value = 'confirmed';
         document.getElementById('f-notes').value = '';
-        document.getElementById('f-payment-method').value = 'cash';
+        document.getElementById('f-payment-method').value = 'transfer';
         document.getElementById('f-reference').value = '';
         document.getElementById('f-custom-source').value = '';
         document.getElementById('custom-source-group').style.display = 'none';

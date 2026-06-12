@@ -72,7 +72,8 @@
             --radius-lg: 24px;
             --radius-xl: 32px;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; scrollbar-width: none; }
+        *::-webkit-scrollbar { display: none; }
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background: #ffffff; color: var(--charcoal); overflow-x: hidden; }
         html { background: var(--navy); }
@@ -359,19 +360,21 @@
             overflow-x: auto; scrollbar-width: none;
             padding: 4px 0 20px 20px;
             scroll-snap-type: x mandatory;
+            scroll-padding-left: 20px;
         }
         .experiences-scroll::-webkit-scrollbar { display: none; }
         .experience-card {
             min-width: 44vw; max-width: 44vw;
             border-radius: var(--radius-lg);
-            overflow: hidden; box-shadow: var(--shadow-md);
+            overflow: hidden; box-shadow: 0 0 0 1.5px rgba(42,157,143,0.5);
             scroll-snap-align: start; flex-shrink: 0;
-            position: relative; cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative; cursor: default;
+            transition: none;
             aspect-ratio: 3/4;
+            -webkit-tap-highlight-color: transparent;
         }
         @media (min-width: 768px) { .experience-card { min-width: 280px; max-width: 280px; } }
-        .experience-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .experience-card:hover { transform: none; box-shadow: none; }
         .experience-img {
             width: 100%; height: 100%; object-fit: cover;
             display: block; background: var(--navy);
@@ -413,7 +416,7 @@
             flex: 1; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             padding: clamp(16px, 4vw, 28px) clamp(6px, 2vw, 12px);
-            text-align: center; text-decoration: none;
+            text-align: left; text-decoration: none;
             transition: background 0.2s; position: relative;
             min-width: 0;
         }
@@ -525,7 +528,7 @@
         .rc-card {
             border: 1px solid rgba(184,151,90,0.2);
             border-radius: 24px; padding: 36px 28px;
-            text-align: center; background: rgba(184,151,90,0.03);
+            text-align: left; background: rgba(184,151,90,0.03);
         }
         .rc-title {
             font-family: 'Playfair Display', serif;
@@ -641,7 +644,7 @@
             width: 100%; outline: none; font-weight: 500;
             -webkit-appearance: none; padding: 0;
             touch-action: manipulation;
-            text-align: center;
+            text-align: left;
             -webkit-tap-highlight-color: transparent;
             cursor: pointer;
         }
@@ -764,11 +767,13 @@
 
         /* Flatpickr Theme */
         .flatpickr-calendar { background: #0A2540; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-        .flatpickr-months { padding: 8px 0; }
-        .flatpickr-month { color: white; }
-        .flatpickr-current-month { color: white; font-size: 14px; }
-        .flatpickr-current-month .flatpickr-monthDropdown-months { color: white; background: #0A2540; }
-        .flatpickr-current-month input.cur-year { color: white; }
+        .flatpickr-months { padding: 8px 0; display: flex; align-items: center; justify-content: space-between; }
+        .flatpickr-month { color: white; flex: 1; text-align: center; }
+        .flatpickr-current-month { color: white; font-size: 15px; font-weight: 600; letter-spacing: 0.03em; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0; }
+        .flatpickr-current-month .flatpickr-monthDropdown-months { color: white; background: #0A2540; border: none; outline: none; appearance: none; -webkit-appearance: none; font-size: 15px; font-weight: 600; cursor: default; pointer-events: none; padding: 0; margin: 0; }
+        .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month { background: #0A2540; }
+        .flatpickr-current-month .arrowUp, .flatpickr-current-month .arrowDown { display: none; }
+        .flatpickr-current-month input.cur-year { color: white; font-size: 15px; font-weight: 600; pointer-events: none; }
         .flatpickr-weekdays { background: rgba(255,255,255,0.05); }
         span.flatpickr-weekday { color: rgba(255,255,255,0.4); font-size: 11px; }
         .flatpickr-day { color: white; border-radius: 8px; font-weight: 500; -webkit-tap-highlight-color: transparent; }
@@ -778,10 +783,12 @@
         .flatpickr-day.today { border-color: rgba(201,169,110,0.5); color: #C9A96E; }
         .flatpickr-day.disabled, .flatpickr-day.flatpickr-disabled { color: rgba(255,255,255,0.2); background: none; border-color: transparent; text-decoration: none; } .flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay { color: rgba(255,255,255,0.15); }
         .flatpickr-day.inRange { background: rgba(42,157,143,0.15); border-color: transparent; color: white; }
-        .flatpickr-prev-month, .flatpickr-next-month { color: white; fill: white; }
-        .flatpickr-prev-month svg, .flatpickr-next-month svg { fill: white; }
-        .flatpickr-prev-month:hover, .flatpickr-next-month:hover { color: var(--teal); fill: var(--teal); }
-        .flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg { fill: var(--teal); }
+        .flatpickr-prev-month, .flatpickr-next-month { color: white !important; fill: white !important; }
+        .flatpickr-prev-month svg, .flatpickr-next-month svg { fill: white !important; }
+        .flatpickr-prev-month:hover, .flatpickr-next-month:hover { color: white !important; fill: white !important; }
+        .flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg { fill: white !important; }
+        .flatpickr-prev-month:active, .flatpickr-next-month:active { color: white !important; fill: white !important; }
+        .flatpickr-prev-month:active svg, .flatpickr-next-month:active svg { fill: white !important; }
 
 
 
@@ -1662,5 +1669,6 @@ async function loadPromoBanners() {
 
 loadPromoBanners();
 </script>
+<script src="/analytics.js"></script>
 </body>
 </html>
