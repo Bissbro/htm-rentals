@@ -792,6 +792,81 @@
 
 
 
+
+        /* ========== DESKTOP RESPONSIVE ========== */
+
+        /* --- Units Grid --- */
+        @media (min-width: 768px) {
+            .units-carousel {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 28px;
+            }
+            .unit-card {
+                flex: 0 0 calc(50% - 14px);
+            }
+            .unit-gallery {
+                aspect-ratio: 16/10;
+            }
+        }
+        @media (min-width: 1200px) {
+            .units-carousel {
+                gap: 32px;
+            }
+            .unit-card {
+                flex: 0 0 calc(33.333% - 22px);
+            }
+            .unit-gallery {
+                aspect-ratio: 4/3;
+            }
+        }
+
+        /* --- Hero content padding --- */
+        @media (min-width: 768px) {
+            .hero-content {
+                padding: 0 48px 56px;
+                max-width: 800px;
+            }
+        }
+
+        /* --- Availability strip --- */
+        @media (min-width: 768px) {
+            .availability-strip {
+                padding: 24px;
+            }
+            .availability-inner {
+                max-width: 560px;
+            }
+        }
+
+        /* --- Reviews scroll --- */
+        @media (min-width: 768px) {
+            .reviews-scroll {
+                padding-left: calc((100vw - 1100px) / 2 + 24px);
+                padding-right: calc((100vw - 1100px) / 2 + 24px);
+            }
+        }
+
+        /* --- RC card --- */
+        @media (min-width: 1200px) {
+            .rc-card {
+                max-width: 700px;
+            }
+            .rc-desc {
+                max-width: 480px;
+            }
+        }
+
+        /* --- Experiences scroll --- */
+        @media (min-width: 768px) {
+            .experiences-scroll {
+                padding-left: calc((100vw - 1100px) / 2 + 24px);
+            }
+            .experience-card {
+                min-width: 260px;
+                max-width: 260px;
+            }
+        }
         </style>
 </head>
 <body>
