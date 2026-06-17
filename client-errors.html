@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTM Rentals | Client Errors</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --navy: #0A2540; --ocean: #006994; --turquoise: #40B5AD; --gray-light: #F8F9FA; --gray-border: #E5E5E5; --gray-text: #6C757D; --success: #28a745; --warning: #ffc107; --danger: #dc3545; --radius-lg: 20px; --radius-md: 12px; --radius-sm: 8px; --shadow: 0 2px 12px rgba(0,0,0,0.06); }
+body { font-family: 'Inter', sans-serif; background: #F0F2F5; min-height: 100vh; }
+.header { background: white; border-bottom: 1px solid var(--gray-border); padding: 0 24px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+.header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 60px; gap: 12px; }
+.header h1 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--navy); }
+.back-link { display: flex; align-items: center; gap: 6px; color: var(--ocean); text-decoration: none; font-size: 0.85rem; font-weight: 500; padding: 6px 14px; border: 1px solid var(--ocean); border-radius: 40px; }
+.main { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: white; border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow); border-left: 4px solid var(--gray-border); }
+.stat-card.total { border-left-color: var(--ocean); }
+.stat-card.unresolved { border-left-color: var(--danger); }
+.stat-card.today { border-left-color: var(--warning); }
+.stat-val { font-size: 1.6rem; font-weight: 700; color: var(--navy); }
+.stat-lbl { font-size: 11px; color: var(--gray-text); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+.filters-card { background: white; border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 16px; box-shadow: var(--shadow); display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+.filter-group { flex: 1; min-width: 130px; }
+.filter-group label { display: block; font-size: 11px; font-weight: 600; color: var(--gray-text); margin-bottom: 4px; text-transform: uppercase; }
+.filter-group input, .filter-group select { width: 100%; padding: 8px 12px; border: 1.5px solid var(--gray-border); border-radius: var(--radius-sm); font-size: 13px; }
+.btn-clear { padding: 8px 16px; border: 1px solid var(--gray-border); border-radius: var(--radius-sm); background: var(--gray-light); color: var(--gray-text); font-weight: 600; cursor: pointer; font-size: 12px; }
+.error-card { background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden; border-left: 4px solid var(--danger); }
+.error-card.resolved { border-left-color: var(--success); opacity: 0.65; }
+.error-top { padding: 16px 20px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; cursor: pointer; }
+.error-msg { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; word-break: break-word; }
+.error-meta { font-size: 11px; color: var(--gray-text); display: flex; gap: 12px; flex-wrap: wrap; }
+.count-badge { background: var(--danger); color: white; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.count-badge.low { background: var(--warning); color: #5a4400; }
+.error-actions { display: flex; gap: 8px; padding: 0 20px 16px; }
+.btn-sm { padding: 6px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; border: none; }
+.btn-resolve { background: var(--success); color: white; }
+.btn-delete { background: #fee; color: var(--danger); }
+.error-stack { display: none; background: var(--gray-light); padding: 14px 20px; font-family: monospace; font-size: 11px; color: var(--gray-text); white-space: pre-wrap; word-break: break-word; border-top: 1px solid var(--gray-border); }
+.error-stack.open { display: block; }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--gray-text); }
+.empty-state i { font-size: 40px; color: var(--success); margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="header"><div class="header-inner">
+<h1><i class="fas fa-bug"></i> Client Errors</h1>
+<a href="admin.html" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+</div></div>
+<div class="main">
+<div class="stats-grid">
+<div class="stat-card total"><div class="stat-val" id="stat-total">0</div><div class="stat-lbl">Unique Errors</div></div>
+<div class="stat-card unresolved"><div class="stat-val" id="stat-unresolved">0</div><div class="stat-lbl">Unresolved</div></div>
+<div class="stat-card today"><div class="stat-val" id="stat-occurrences">0</div><div class="stat-lbl">Total Occurrences</div></div>
+</div>
+<div class="filters-card">
+<div class="filter-group"><label>Page</label><select id="filter-page"><option value="">All Pages</option></select></div>
+<div class="filter-group"><label>Status</label><select id="filter-status"><option value="">All</option><option value="unresolved">Unresolved</option><option value="resolved">Resolved</option></select></div>
+<div class="filter-group" style="flex:2;"><label>Search</label><input type="text" id="filter-search" placeholder="Search message..."></div>
+<button class="btn-clear" onclick="clearFilters()">Clear</button>
+</div>
+<div id="error-list"></div>
+</div>
+<script>
+const API = 'https://api.htmrentals.com/api';
+const token = sessionStorage.getItem('adminToken');
+if (!token) window.location.href = 'admin.html';
+let allErrors = [];
+function hdrs() { return { 'Authorization': 'Bearer ' + token }; }
+async function loadErrors() {
+  const res = await fetch(API + '/admin/client-errors', { headers: hdrs() });
+  const data = await res.json();
+  if (!data.success) return;
+  allErrors = data.errors;
+  populatePageFilter();
+  render();
+}
+function populatePageFilter() {
+  const sel = document.getElementById('filter-page');
+  const pages = [...new Set(allErrors.map(e => e.page).filter(Boolean))];
+  sel.innerHTML = '<option value="">All Pages</option>' + pages.map(p => `<option value="${p}">${p}</option>`).join('');
+}
+function clearFilters() {
+  document.getElementById('filter-page').value = '';
+  document.getElementById('filter-status').value = '';
+  document.getElementById('filter-search').value = '';
+  render();
+}
+function render() {
+  const pageFilter = document.getElementById('filter-page').value;
+  const statusFilter = document.getElementById('filter-status').value;
+  const search = document.getElementById('filter-search').value.toLowerCase();
+  let filtered = allErrors.filter(e => {
+    if (pageFilter && e.page !== pageFilter) return false;
+    if (statusFilter === 'unresolved' && e.resolved) return false;
+    if (statusFilter === 'resolved' && !e.resolved) return false;
+    if (search && !(e.message||'').toLowerCase().includes(search)) return false;
+    return true;
+  });
+  document.getElementById('stat-total').textContent = allErrors.length;
+  document.getElementById('stat-unresolved').textContent = allErrors.filter(e => !e.resolved).length;
+  document.getElementById('stat-occurrences').textContent = allErrors.reduce((s,e) => s + (e.occurrence_count||1), 0);
+  const list = document.getElementById('error-list');
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-state"><i class="fas fa-check-circle"></i><div>No errors match your filters</div></div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(e => {
+    const count = e.occurrence_count || 1;
+    const badgeClass = count >= 5 ? '' : 'low';
+    const lastSeen = e.last_seen ? new Date(e.last_seen).toLocaleString() : '';
+    const firstSeen = e.first_seen ? new Date(e.first_seen).toLocaleString() : '';
+    return `
+    <div class="error-card ${e.resolved ? 'resolved' : ''}">
+      <div class="error-top" onclick="toggleStack(${e.id})">
+        <div>
+          <div class="error-msg">${escapeHtml(e.message || 'Unknown error')}</div>
+          <div class="error-meta">
+            <span><i class="fas fa-file"></i> ${escapeHtml(e.page || '-')}</span>
+            <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(e.filename || '')}${e.lineno ? ':' + e.lineno : ''}</span>
+            <span><i class="fas fa-clock"></i> Last: ${lastSeen}</span>
+            <span><i class="fas fa-history"></i> First: ${firstSeen}</span>
+          </div>
+        </div>
+        <div class="count-badge ${badgeClass}">${count}x</div>
+      </div>
+      <div class="error-actions">
+        ${!e.resolved ? `<button class="btn-sm btn-resolve" onclick="resolveError(${e.id}, event)">Mark Resolved</button>` : ''}
+        <button class="btn-sm btn-delete" onclick="deleteError(${e.id}, event)">Delete</button>
+      </div>
+      <div class="error-stack" id="stack-${e.id}">${escapeHtml(e.stack || 'No stack trace available')}</div>
+    </div>`;
+  }).join('');
+}
+function toggleStack(id) { document.getElementById('stack-' + id).classList.toggle('open'); }
+async function resolveError(id, ev) {
+  ev.stopPropagation();
+  await fetch(API + '/admin/client-errors/' + id + '/resolve', { method: 'PATCH', headers: hdrs() });
+  loadErrors();
+}
+async function deleteError(id, ev) {
+  ev.stopPropagation();
+  if (!confirm('Delete this error permanently?')) return;
+  await fetch(API + '/admin/client-errors/' + id, { method: 'DELETE', headers: hdrs() });
+  loadErrors();
+}
+function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+document.getElementById('filter-page').addEventListener('change', render);
+document.getElementById('filter-status').addEventListener('change', render);
+document.getElementById('filter-search').addEventListener('input', render);
+loadErrors();
+setInterval(loadErrors, 30000);
+</script>
+</body>
+</html>
