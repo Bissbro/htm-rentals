@@ -4,6 +4,7 @@
 <script>
 window.__earlyAPI = "https://api.htmrentals.com/api";
 window.addEventListener("error", function(e) {
+  if(window.location.search.indexOf("debug")>-1) alert("ERR: "+e.message+" at "+e.filename+":"+e.lineno);
   try {
     fetch(window.__earlyAPI + "/client-error", {
       method: "POST",
