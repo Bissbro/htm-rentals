@@ -379,7 +379,10 @@
 
 <script>
 const API = 'https://api.htmrentals.com';
-const STRIPE_PK = 'pk_live_51SThlOC6iG157x7p0onlAPkrbW9Bhd7EkrZ1S7dPvkv6XYHIdXMwHiHomeK3hsS6gDJ2sZpFFqPYTuG4ftSOM9eP00IzmnoXsU';
+const TEST_MODE = new URLSearchParams(window.location.search).get('testmode') === '1';
+const STRIPE_PK = TEST_MODE
+    ? 'pk_test_51SThlOC6iG157x7pZl0vqD5502dFl4qrqf4jJzCFcUuCk9P1TPXU3nbmcIaNVKOYco8i1AnACepU4Qy8r540y3Wt00hQEv6Mk9'
+    : 'pk_live_51SThlOC6iG157x7p0onlAPkrbW9Bhd7EkrZ1S7dPvkv6XYHIdXMwHiHomeK3hsS6gDJ2sZpFFqPYTuG4ftSOM9eP00IzmnoXsU';
 const MVR_RATE = 15.42;
 
 let cart = JSON.parse(localStorage.getItem('htm_cart') || '[]');
@@ -645,7 +648,7 @@ async function placeOrder(){
         if(paymentMethod==='stripe'){
             var submitResult = await stripeElements.submit();
             if(submitResult.error){ document.getElementById('stripe-errors').textContent=submitResult.error.message; btn.disabled=false; btn.textContent='Place Order'; return; }
-            var piRes = await fetch(API+'/api/shop/create-payment-intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount_usd:totalUsd,order_description:'HTM Shop'})});
+            var piRes = await fetch(API+'/api/shop/create-payment-intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount_usd:totalUsd,order_description:'HTM Shop',test_mode:TEST_MODE})});
             var piData = await piRes.json();
             if(piData.error){ alert('Payment error: '+piData.error); btn.disabled=false; btn.textContent='Place Order'; return; }
             var confirmResult = await stripeInstance.confirmPayment({elements:stripeElements,clientSecret:piData.client_secret,confirmParams:{return_url:'https://htmrentals.com/shop.html',payment_method_data:{billing_details:{name:name,email:email}}},redirect:'if_required'});
