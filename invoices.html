@@ -573,6 +573,7 @@
         await Promise.all([loadBookings(), loadUnits(), loadMinibarItems()]);
         loadInvoices();
         loadMinibarSummary();
+        loadCustomInvoices();
         const savedTab = sessionStorage.getItem('activeInvoiceTab');
         if (savedTab) {
             sessionStorage.removeItem('activeInvoiceTab');
@@ -790,6 +791,190 @@
             viewInvoice(data.invoice_id);
         } else alert(data.error || 'Failed to create invoice');
     }
+
+
+    // ==================== CUSTOM INVOICE ====================
+    let customInvoiceLines = [];
+
+    function populateCustomInvoiceSelects() {
+        const bSel = document.getElementById('ci-booking-select');
+        const mSel = document.getElementById('ci-minibar-select');
+        const bookingInvs = allInvoices.filter(i => i.invoice_type !== 'minibar');
+        const minibarInvs = allInvoices.filter(i => i.invoice_type === 'minibar');
+        bSel.innerHTML = bookingInvs.map(i => `<option value="${i.id}">${i.invoice_number} - ${i.guest_name || ''} (${i.currency} ${fmt(i.total_amount)})</option>`).join('');
+        mSel.innerHTML = minibarInvs.map(i => `<option value="${i.id}">${i.invoice_number} - ${i.unit_name || ''} (${i.currency} ${fmt(i.total_amount)})</option>`).join('');
+    }
+
+    function openCustomInvoiceModal() {
+        customInvoiceLines = [];
+        renderCustomInvoiceLines();
+        document.getElementById('ci-customer-name').value = '';
+        document.getElementById('ci-customer-phone').value = '';
+        document.getElementById('ci-currency').value = 'MVR';
+        document.getElementById('ci-payment-status').value = 'pending';
+        document.getElementById('ci-paid-amount').value = '';
+        document.getElementById('ci-pending-amount').value = '';
+        document.getElementById('ci-notes').value = '';
+        document.getElementById('ci-half-fields').style.display = 'none';
+        populateCustomInvoiceSelects();
+        document.getElementById('custom-invoice-modal').style.display = 'flex';
+    }
+
+    function addSelectedInvoicesToCustomLines() {
+        const bSel = document.getElementById('ci-booking-select');
+        const mSel = document.getElementById('ci-minibar-select');
+        const selectedIds = [
+            ...Array.from(bSel.selectedOptions).map(o => parseInt(o.value)),
+            ...Array.from(mSel.selectedOptions).map(o => parseInt(o.value))
+        ];
+        selectedIds.forEach(id => {
+            if (customInvoiceLines.some(l => l.invoiceId === id)) return;
+            const inv = allInvoices.find(i => i.id === id);
+            if (!inv) return;
+            let description;
+            if (inv.invoice_type === 'minibar') {
+                description = `Minibar Charges - ${inv.unit_name || ''} (${inv.invoice_number})`;
+            } else {
+                const dates = inv.check_in_date ? ` · ${inv.check_in_date} to ${inv.check_out_date} (${inv.total_nights || ''} nights)` : '';
+                description = `${inv.unit_name || 'Booking'}${dates}`;
+            }
+            customInvoiceLines.push({
+                invoiceId: id,
+                description,
+                qty: 1,
+                unit_price: parseFloat(inv.total_amount),
+                amount: parseFloat(inv.total_amount)
+            });
+        });
+        renderCustomInvoiceLines();
+        Array.from(bSel.options).forEach(o => o.selected = false);
+        Array.from(mSel.options).forEach(o => o.selected = false);
+    }
+
+    function removeCustomInvoiceLine(idx) {
+        customInvoiceLines.splice(idx, 1);
+        renderCustomInvoiceLines();
+    }
+
+    function renderCustomInvoiceLines() {
+        const container = document.getElementById('ci-line-items');
+        if (!customInvoiceLines.length) {
+            container.innerHTML = '<div style="text-align:center; color:var(--gray-text); font-size:13px;" id="ci-empty-msg">No line items yet. Select invoices above and click "Add Selected".</div>';
+        } else {
+            const currency = document.getElementById('ci-currency').value;
+            container.innerHTML = customInvoiceLines.map((l, idx) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--gray-border);">
+                    <div style="flex:1; font-size:13px; color:var(--navy);">${l.description}</div>
+                    <div style="font-weight:600; font-size:13px; margin-right:12px;">${currency} ${fmt(l.amount)}</div>
+                    <button class="btn btn-danger btn-sm" onclick="removeCustomInvoiceLine(${idx})" style="padding:4px 8px;"><i class="fas fa-times"></i></button>
+                </div>
+            `).join('');
+        }
+        updateCustomInvoiceTotal();
+    }
+
+    function updateCustomInvoiceTotal() {
+        const currency = document.getElementById('ci-currency').value;
+        const total = customInvoiceLines.reduce((s, l) => s + l.amount, 0);
+        document.getElementById('ci-total-display').textContent = `Total: ${currency} ${fmt(total)}`;
+        if (document.getElementById('ci-payment-status').value === 'pending') {
+            document.getElementById('ci-pending-amount').value = total.toFixed(2);
+        }
+    }
+
+    function toggleHalfPaymentFields() {
+        const status = document.getElementById('ci-payment-status').value;
+        document.getElementById('ci-half-fields').style.display = status === 'half' ? 'flex' : 'none';
+    }
+
+    function updatePendingFromPaid() {
+        const total = customInvoiceLines.reduce((s, l) => s + l.amount, 0);
+        const paid = parseFloat(document.getElementById('ci-paid-amount').value) || 0;
+        document.getElementById('ci-pending-amount').value = (total - paid).toFixed(2);
+    }
+
+    async function createCustomInvoice() {
+        if (!customInvoiceLines.length) { alert('Please add at least one invoice to the custom invoice'); return; }
+        const customer_name = document.getElementById('ci-customer-name').value.trim();
+        if (!customer_name) { alert('Please enter customer name'); return; }
+        const status = document.getElementById('ci-payment-status').value;
+        const total = customInvoiceLines.reduce((s, l) => s + l.amount, 0);
+        let paid_amount = 0, pending_amount = 0;
+        if (status === 'paid') { paid_amount = total; pending_amount = 0; }
+        else if (status === 'pending') { paid_amount = 0; pending_amount = total; }
+        else if (status === 'half') {
+            paid_amount = parseFloat(document.getElementById('ci-paid-amount').value) || 0;
+            pending_amount = parseFloat(document.getElementById('ci-pending-amount').value) || 0;
+        }
+        const body = {
+            customer_name,
+            customer_phone: document.getElementById('ci-customer-phone').value.trim(),
+            included_invoice_ids: customInvoiceLines.map(l => l.invoiceId),
+            line_items: customInvoiceLines.map(l => ({ description: l.description, qty: l.qty, unit_price: l.unit_price, amount: l.amount })),
+            currency: document.getElementById('ci-currency').value,
+            payment_status: status,
+            paid_amount,
+            pending_amount,
+            notes: document.getElementById('ci-notes').value
+        };
+        const res = await fetch(`${API}/admin/custom-invoices`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) });
+        const data = await res.json();
+        if (data.success) {
+            closeModal('custom-invoice-modal');
+            await loadCustomInvoices();
+            window.open(`${API}/admin/custom-invoices/${data.id}/pdf?token=${getToken()}`, '_blank');
+        } else alert(data.error || 'Failed to create custom invoice');
+    }
+
+    async function loadCustomInvoices() {
+        try {
+            const res = await fetch(`${API}/admin/custom-invoices`, { headers: authHeaders() });
+            const data = await res.json();
+            const list = data.invoices || [];
+            const body = document.getElementById('custom-invoices-body');
+            const mobile = document.getElementById('custom-invoices-mobile');
+            if (!list.length) {
+                body.innerHTML = '<tr><td colspan="6" class="empty">No custom invoices yet.</td></tr>';
+                mobile.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray-text);">No custom invoices yet.</div>';
+                return;
+            }
+            body.innerHTML = list.map(ci => `
+                <tr>
+                    <td><strong>${ci.reference_number}</strong></td>
+                    <td>${ci.customer_name}</td>
+                    <td>${ci.currency} ${fmt(ci.total_amount)}</td>
+                    <td><span class="badge badge-${ci.payment_status === 'paid' ? 'success' : ci.payment_status === 'half' ? 'info' : 'warning'}">${ci.payment_status}</span></td>
+                    <td>${new Date(ci.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm" onclick="window.open('${API}/admin/custom-invoices/${ci.id}/pdf?token=' + getToken(), '_blank')"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteCustomInvoice(${ci.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            mobile.innerHTML = list.map(ci => `
+                <div class="inv-card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <strong>${ci.reference_number}</strong>
+                        <span class="badge badge-${ci.payment_status === 'paid' ? 'success' : ci.payment_status === 'half' ? 'info' : 'warning'}">${ci.payment_status}</span>
+                    </div>
+                    <div style="color:var(--gray-text); font-size:13px; margin-bottom:8px;">${ci.customer_name} · ${ci.currency} ${fmt(ci.total_amount)}</div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-secondary btn-sm" onclick="window.open('${API}/admin/custom-invoices/${ci.id}/pdf?token=' + getToken(), '_blank')">View</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteCustomInvoice(${ci.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (e) { console.error(e); }
+    }
+
+    async function deleteCustomInvoice(id) {
+        if (!confirm('Delete this custom invoice?')) return;
+        const res = await fetch(`${API}/admin/custom-invoices/${id}`, { method: 'DELETE', headers: authHeaders() });
+        const data = await res.json();
+        if (data.success) loadCustomInvoices();
+    }
+
+    document.getElementById('ci-currency').addEventListener('change', renderCustomInvoiceLines);
 
     // ==================== MINIBAR INVOICE ====================
     function renderMinibarItems() {
