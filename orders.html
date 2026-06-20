@@ -156,6 +156,7 @@ function renderOrders(){
                 (o.payment_slip?'<div class="section-label" style="margin-top:12px;">Payment Slip</div><img class="slip-img" src="'+o.payment_slip+'" onclick="window.open(\''+o.payment_slip+'\',\'_blank\')" alt="Payment slip">':'') +
                 (o.notes?'<div class="section-label" style="margin-top:12px;">Notes</div><div class="address-box">'+o.notes+'</div>':'') +
                 '<div class="actions">' +
+                    '<input type="text" class="status-select" id="tracking-'+o.id+'" placeholder="Tracking number" value="'+(o.tracking_number||'')+'" style="max-width:160px;">' +
                     '<select class="status-select" id="status-'+o.id+'">' +
                         '<option value="pending"'+(o.status==='pending'?' selected':'')+'>Pending</option>' +
                         '<option value="paid"'+(o.status==='paid'?' selected':'')+'>Paid</option>' +
@@ -184,8 +185,9 @@ document.querySelectorAll('.filter-pill').forEach(function(btn){
 
 async function updateStatus(id){
     var status=document.getElementById('status-'+id).value;
+    var tracking=document.getElementById('tracking-'+id).value;
     try{
-        var res=await fetch(API+'/api/admin/orders/'+id,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tkn()},body:JSON.stringify({status:status})});
+        var res=await fetch(API+'/api/admin/orders/'+id,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tkn()},body:JSON.stringify({status:status,tracking_number:tracking})});
         var data=await res.json();
         if(data.success){showToast('Status updated');loadOrders();}
         else showToast('Error updating status');
