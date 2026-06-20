@@ -232,6 +232,7 @@
         <button class="tab" onclick="switchTab('booking', this)"><i class="fas fa-bed"></i> Booking</button>
         <button class="tab" onclick="switchTab('minibar', this)"><i class="fas fa-wine-bottle"></i> Minibar</button>
         <button class="tab" onclick="switchTab('minibar-pl', this)"><i class="fas fa-chart-pie"></i> Minibar P&L</button>
+        <button class="tab" onclick="switchTab('custom', this)"><i class="fas fa-file-invoice-dollar"></i> Custom</button>
     </div>
 
     <!-- ALL / BOOKING / MINIBAR TABS -->
@@ -240,7 +241,7 @@
             <div class="card-header">
                 <h2>All Invoices</h2>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <button class="btn btn-primary btn-sm" onclick="openBookingInvoiceModal()"><i class="fas fa-bed"></i> Booking Invoice</button>
+                    <button class="btn btn-primary btn-sm" onclick="openCustomInvoiceModal()"><i class="fas fa-file-invoice-dollar"></i> Custom Invoice</button>
                     <button class="btn btn-secondary btn-sm" onclick="openMinibarInvoiceModal()"><i class="fas fa-wine-bottle"></i> Minibar Invoice</button>
                 </div>
             </div>
@@ -258,7 +259,7 @@
         <div class="card">
             <div class="card-header">
                 <h2>Booking Invoices</h2>
-                <button class="btn btn-primary btn-sm" onclick="openBookingInvoiceModal()"><i class="fas fa-plus"></i> New Booking Invoice</button>
+                
             </div>
             <div class="table-wrap">
                 <table>
@@ -313,6 +314,94 @@
                     <tbody id="minibar-expenses-body"><tr><td colspan="4" class="empty">Loading...</td></tr></tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="tab-custom">
+        <div class="card">
+            <div class="card-header">
+                <h2>Custom Invoices</h2>
+                <span style="font-size:12px; color:var(--gray-text);">Presentational only — does not affect revenue</span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Reference #</th><th>Customer</th><th>Amount</th><th>Status</th><th>Created</th><th></th></tr></thead>
+                    <tbody id="custom-invoices-body"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody>
+                </table>
+            </div>
+            <div class="inv-mobile-cards" id="custom-invoices-mobile"><div style="text-align:center;padding:20px;color:var(--gray-text);">Loading...</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- CUSTOM INVOICE MODAL -->
+<div class="modal" id="custom-invoice-modal">
+    <div class="modal-box" style="max-width:700px;">
+        <div class="modal-title">Create Custom Invoice</div>
+
+        <div class="form-group">
+            <label>Add Booking Invoices</label>
+            <select id="ci-booking-select" multiple style="height:100px;"></select>
+        </div>
+        <div class="form-group">
+            <label>Add Minibar Invoices</label>
+            <select id="ci-minibar-select" multiple style="height:100px;"></select>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="addSelectedInvoicesToCustomLines()" style="margin-bottom:16px;">+ Add Selected to Invoice</button>
+
+        <div id="ci-line-items" style="background:var(--gray-light); border-radius:var(--radius-sm); padding:12px; margin-bottom:16px; min-height:60px;">
+            <div style="text-align:center; color:var(--gray-text); font-size:13px;" id="ci-empty-msg">No line items yet. Select invoices above and click "Add Selected".</div>
+        </div>
+
+        <div style="text-align:right; font-weight:700; font-size:16px; color:var(--navy); margin-bottom:20px;" id="ci-total-display">Total: MVR 0.00</div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Customer Name</label>
+                <input type="text" id="ci-customer-name" placeholder="Full name">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" id="ci-customer-phone" placeholder="+960 ...">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Currency</label>
+            <select id="ci-currency">
+                <option value="MVR">MVR</option>
+                <option value="USD">USD</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Payment Status</label>
+            <select id="ci-payment-status" onchange="toggleHalfPaymentFields()">
+                <option value="pending">Pending Payment</option>
+                <option value="paid">Paid</option>
+                <option value="half">Half Payment</option>
+            </select>
+        </div>
+
+        <div class="form-row" id="ci-half-fields" style="display:none;">
+            <div class="form-group">
+                <label>Paid Amount</label>
+                <input type="number" id="ci-paid-amount" step="0.01" placeholder="0.00" oninput="updatePendingFromPaid()">
+            </div>
+            <div class="form-group">
+                <label>Pending Amount</label>
+                <input type="number" id="ci-pending-amount" step="0.01" placeholder="0.00" readonly>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Notes (optional)</label>
+            <textarea id="ci-notes" rows="2" placeholder="Any additional notes..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal('custom-invoice-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="createCustomInvoice()">Generate Invoice</button>
         </div>
     </div>
 </div>
