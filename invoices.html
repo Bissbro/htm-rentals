@@ -100,6 +100,7 @@
         @media print {
             body > .container { display: none; }
             .modal { display: none !important; }
+            #invoice-doc { display: block !important; position: static !important; padding: 0 !important; }
             .doc-actions { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .inv-header { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -114,6 +115,8 @@
             .inv-payment-section { padding: 12px !important; margin-bottom: 10px !important; }
             .inv-footer { padding-top: 12px !important; }
         }
+        #invoice-doc { display: none; position: fixed; inset: 0; z-index: 2000; background: white; overflow-y: auto; padding: 24px; }
+        #invoice-doc.show { display: block; }
         .doc-actions { display: flex; gap: 12px; justify-content: flex-end; margin-bottom: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
         .inv-wrapper { max-width: 800px; margin: 0 auto; font-family: 'Inter', sans-serif; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; }
 
@@ -177,32 +180,12 @@
             z-index: 10;
         }
 
-
-        .inv-mobile-cards { display: none; flex-direction: column; gap: 10px; }
-        .inv-card { background: white; border-radius: 12px; padding: 14px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid var(--turquoise); }
-        .inv-card.status-paid { border-left-color: var(--success); }
-        .inv-card.status-sent { border-left-color: var(--warning); }
-        .inv-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .inv-card-num { font-size: 13px; font-weight: 700; color: var(--navy); }
-        .inv-card-amt { font-size: 14px; font-weight: 800; color: var(--navy); }
-        .inv-card-row { font-size: 12px; color: var(--gray-text); margin-bottom: 3px; }
-        .inv-card-actions { display: flex; gap: 8px; margin-top: 10px; }
         @media (max-width: 600px) {
             .form-row { grid-template-columns: 1fr; }
             .inv-parties { grid-template-columns: 1fr; }
             .inv-payment-grid { grid-template-columns: 1fr; }
-            .inv-header { flex-direction: column; padding: 20px; }
+            .inv-header { flex-direction: column; }
             .inv-meta { text-align: left; }
-            .inv-body { padding: 16px; }
-            .inv-wrapper { border-radius: 0; border-left: none; border-right: none; }
-            .inv-booking-strip { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .inv-totals { justify-content: stretch; }
-            .inv-totals-box { min-width: unset; width: 100%; }
-            .inv-items-table th, .inv-items-table td { padding: 8px 6px; font-size: 12px; }
-            .doc-actions { padding: 0 16px; }
-            .paid-stamp { bottom: 30px; right: 20px; font-size: 24px; }
-            .table-wrap { display: none; }
-            .inv-mobile-cards { display: flex; }
         }
     </style>
 </head>
@@ -241,6 +224,7 @@
                 <h2>All Invoices</h2>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                     <button class="btn btn-primary btn-sm" onclick="openBookingInvoiceModal()"><i class="fas fa-bed"></i> Booking Invoice</button>
+                    <button class="btn btn-accent btn-sm" onclick="openCombinedInvoiceModal()" style="background:#E67E22;color:white;border:none;"><i class="fas fa-layer-group"></i> Combined Invoice</button>
                     <button class="btn btn-secondary btn-sm" onclick="openMinibarInvoiceModal()"><i class="fas fa-wine-bottle"></i> Minibar Invoice</button>
                 </div>
             </div>
@@ -250,7 +234,6 @@
                     <tbody id="all-invoices-body"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
                 </table>
             </div>
-            <div class="inv-mobile-cards" id="all-invoices-mobile"><div style="text-align:center;padding:20px;color:var(--gray-text);">Loading...</div></div>
         </div>
     </div>
 
@@ -266,7 +249,6 @@
                     <tbody id="booking-invoices-body"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
                 </table>
             </div>
-            <div class="inv-mobile-cards" id="booking-invoices-mobile"><div style="text-align:center;padding:20px;color:var(--gray-text);">Loading...</div></div>
         </div>
     </div>
 
@@ -279,10 +261,9 @@
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Invoice #</th><th>Guest</th><th>Currency</th><th>Amount</th><th>Status</th><th></th></tr></thead>
-                    <tbody id="minibar-invoices-body"></tbody>
+                    <tbody id="minibar-invoices-body"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody>
                 </table>
             </div>
-            <div class="inv-mobile-cards" id="minibar-invoices-mobile"></div>
         </div>
     </div>
 
@@ -348,6 +329,36 @@
         <div class="modal-actions">
             <button class="btn btn-secondary" onclick="closeModal('booking-invoice-modal')">Cancel</button>
             <button class="btn btn-primary" onclick="createBookingInvoice()">Create Invoice</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- COMBINED INVOICE MODAL -->
+<div class="modal" id="combined-invoice-modal">
+    <div class="modal-box" style="max-width:600px;">
+        <div class="modal-title">Generate Combined Invoice</div>
+        <p style="font-size:13px;color:var(--gray-text);margin-bottom:16px;">Combine multiple bookings for the same guest into one PDF invoice. This is visual only — no invoice record is saved.</p>
+        <div class="form-group">
+            <label>Guest Name</label>
+            <select id="ci-guest-select" onchange="onCombinedGuestChange()">
+                <option value="">— Select guest —</option>
+            </select>
+        </div>
+        <div class="form-group" id="ci-bookings-section" style="display:none;">
+            <label>Select Bookings</label>
+            <div id="ci-bookings-list" style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;"></div>
+        </div>
+        <div class="form-group">
+            <label>Currency</label>
+            <select id="ci-currency"><option value="MVR">MVR</option><option value="USD">USD</option></select>
+        </div>
+        <div id="ci-total-preview" style="display:none;background:var(--light-bg);padding:12px;border-radius:8px;margin-bottom:12px;">
+            <strong>Total:</strong> <span id="ci-total-amount">—</span>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal('combined-invoice-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="generateCombinedPDF()" id="ci-generate-btn" disabled>Generate PDF</button>
         </div>
     </div>
 </div>
@@ -470,6 +481,65 @@
 </div>
 
 <!-- INVOICE DOCUMENT -->
+<div id="invoice-doc">
+    <div class="doc-actions">
+        <button class="btn btn-secondary" onclick="closeInvoice()"><i class="fas fa-times"></i> Close</button>
+        <button class="btn btn-primary" onclick="window.print()"><i class="fas fa-download"></i> Download PDF</button>
+    </div>
+    <div class="inv-wrapper" style="position:relative">
+        <div class="paid-stamp" id="paid-stamp" style="display:none">PAID</div>
+        <div class="inv-header">
+            <div class="inv-brand">
+                <div class="inv-logo">HTM</div>
+                <div class="inv-address">Malas Residence<br>Hulhumale', Maldives</div>
+            </div>
+            <div class="inv-meta">
+                <div class="inv-type" id="doc-type">Invoice</div>
+                <div class="inv-number" id="doc-number">—</div>
+                <div class="inv-date" id="doc-date">—</div>
+                <div class="inv-currency-badge" id="doc-currency">MVR</div>
+            </div>
+        </div>
+        <div class="inv-body">
+            <div class="inv-parties">
+                <div class="inv-party">
+                    <div class="party-label">From</div>
+                    <div class="party-name">HTM Rentals</div>
+                    <div class="party-detail">Malas Residence, Hulhumale'</div>
+                    <div class="party-detail">Maldives</div>
+                </div>
+                <div class="inv-party">
+                    <div class="party-label">Bill To</div>
+                    <div class="party-name" id="doc-guest-name">—</div>
+                    <div class="party-detail" id="doc-guest-phone"></div>
+                    <div class="party-detail" id="doc-guest-email"></div>
+                </div>
+            </div>
+            <div class="inv-booking-strip" id="doc-booking-strip" style="display:none;">
+                <div class="inv-bstrip-item"><div class="bstrip-label">Unit</div><div class="bstrip-value" id="doc-unit">—</div></div>
+                <div class="inv-bstrip-item"><div class="bstrip-label">Check In</div><div class="bstrip-value" id="doc-checkin">—</div></div>
+                <div class="inv-bstrip-item"><div class="bstrip-label">Check Out</div><div class="bstrip-value" id="doc-checkout">—</div></div>
+                <div class="inv-bstrip-item"><div class="bstrip-label">Nights</div><div class="bstrip-value" id="doc-nights">—</div></div>
+            </div>
+            <table class="inv-items-table">
+                <thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th></tr></thead>
+                <tbody id="doc-items"></tbody>
+            </table>
+            <div class="inv-totals">
+                <div class="inv-totals-box" id="doc-totals"></div>
+            </div>
+            <div class="inv-payment-section" id="doc-payment-section">
+                <div class="inv-payment-title">Payment Details</div>
+                <div class="inv-payment-grid" id="doc-payment-details"></div>
+            </div>
+            <div class="inv-footer">
+                Thank you for choosing HTM Rentals • htmrentals.com<br>
+                <span id="doc-company-phone"></span> • <span id="doc-company-email"></span><br>
+                <span id="doc-company-address"></span>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     if (!sessionStorage.getItem('adminToken')) { window.location.href = 'admin.html'; }
@@ -484,12 +554,6 @@
         await Promise.all([loadBookings(), loadUnits(), loadMinibarItems()]);
         loadInvoices();
         loadMinibarSummary();
-        const savedTab = sessionStorage.getItem('activeInvoiceTab');
-        if (savedTab) {
-            sessionStorage.removeItem('activeInvoiceTab');
-            const tabEl = document.querySelector(`.tab[onclick*="'${savedTab}'"]`);
-            if (tabEl) switchTab(savedTab, tabEl);
-        }
     }
 
     async function loadBookings() {
@@ -523,8 +587,8 @@
     async function loadInvoices() {
         const res = await fetch(`${API}/admin/invoices`, { headers: authHeaders() });
         const data = await res.json();
-        if (!data.success) { console.log('loadInvoices failed:', data); return; }
-        allInvoices = data.invoices || [];
+        if (!data.success) return;
+        allInvoices = data.invoices;
 
         let totalInvoiced = 0, totalOutstanding = 0;
         allInvoices.forEach(inv => {
@@ -576,7 +640,7 @@
 
     function renderAllInvoices() {
         const tbody = document.getElementById('all-invoices-body');
-        if (allInvoices.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="empty">No invoices yet.</td></tr>`; var mA=document.getElementById('all-invoices-mobile'); if(mA) mA.innerHTML='<div style="text-align:center;padding:20px;">No invoices yet.</div>'; return; }
+        if (allInvoices.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="empty">No invoices yet.</td></tr>`; return; }
         tbody.innerHTML = allInvoices.map(inv => `
             <tr>
                 <td><strong>${inv.invoice_number}</strong></td>
@@ -593,29 +657,6 @@
                 </td>
             </tr>
         `).join('');
-        var mA = document.getElementById('all-invoices-mobile');
-        if (mA) mA.innerHTML = allInvoices.length ? allInvoices.map(function(inv){return invCard(inv);}).join('') : '<div style="text-align:center;padding:20px;">No invoices yet.</div>';
-    }
-
-    function invCard(inv) {
-        var sym = inv.currency === 'USD' ? '$' : 'MVR';
-        var amt = sym + ' ' + fmt(inv.total_amount);
-        var dates = inv.check_in_date ? inv.check_in_date + ' to ' + inv.check_out_date : '';
-        var html = '<div class="inv-card status-' + inv.status + '">';
-        html += '<div class="inv-card-top">';
-        html += '<div><div class="inv-card-num">' + inv.invoice_number + '</div>';
-        html += '<div style="margin-top:3px;">' + statusBadge(inv.status) + '</div></div>';
-        html += '<div class="inv-card-amt">' + amt + '</div></div>';
-        if (inv.guest_name) html += '<div class="inv-card-row"><i class="fas fa-user" style="width:14px;color:var(--turquoise);margin-right:6px;font-size:11px;"></i>' + inv.guest_name + '</div>';
-        if (inv.unit_name) html += '<div class="inv-card-row"><i class="fas fa-building" style="width:14px;color:var(--turquoise);margin-right:6px;font-size:11px;"></i>' + inv.unit_name + '</div>';
-        if (dates) html += '<div class="inv-card-row"><i class="fas fa-calendar" style="width:14px;color:var(--turquoise);margin-right:6px;font-size:11px;"></i>' + dates + '</div>';
-        html += '<div class="inv-card-row"><i class="fas fa-tag" style="width:14px;color:var(--turquoise);margin-right:6px;font-size:11px;"></i>' + inv.invoice_type + '</div>';
-        html += '<div class="inv-card-actions">';
-        html += '<button class="btn btn-sm btn-primary" onclick="viewInvoice(' + inv.id + ')"><i class="fas fa-eye"></i> View</button>';
-        if (inv.status !== 'paid') html += '<button class="btn btn-sm btn-success" onclick="openPaymentModal(' + inv.id + ',' + inv.total_amount + ')">Mark Paid</button>';
-        html += '<button class="btn btn-sm btn-danger" onclick="deleteInvoice(' + inv.id + ')"><i class="fas fa-trash"></i></button>';
-        html += '</div></div>';
-        return html;
     }
 
     function renderBookingInvoices() {
@@ -638,8 +679,6 @@
                 </td>
             </tr>
         `).join('');
-        var mB = document.getElementById('booking-invoices-mobile');
-        if (mB) mB.innerHTML = filtered.length ? filtered.map(function(inv){return invCard(inv);}).join('') : '<div style="text-align:center;padding:20px;">No booking invoices yet.</div>';
     }
 
     function renderMinibarInvoices() {
@@ -660,8 +699,6 @@
                 </td>
             </tr>
         `).join('');
-        var mM = document.getElementById('minibar-invoices-mobile');
-        if (mM) mM.innerHTML = filtered.length ? filtered.map(function(inv){return invCard(inv);}).join('') : '<div style="text-align:center;padding:20px;">No minibar invoices yet.</div>';
     }
 
     // ==================== BOOKING INVOICE ====================
@@ -700,6 +737,102 @@
             await loadInvoices();
             viewInvoice(data.invoice_id);
         } else alert(data.error || 'Failed to create invoice');
+    }
+
+
+    // ==================== COMBINED INVOICE ====================
+    let combinedGuestBookings = [];
+
+    async function openCombinedInvoiceModal() {
+        document.getElementById('combined-invoice-modal').style.display = 'flex';
+        document.getElementById('ci-bookings-section').style.display = 'none';
+        document.getElementById('ci-total-preview').style.display = 'none';
+        document.getElementById('ci-generate-btn').disabled = true;
+        document.getElementById('ci-guest-select').value = '';
+        try {
+            const res = await fetch(`${API}/admin/bookings`, { headers: authHeaders() });
+            const data = await res.json();
+            if (data.success) {
+                const guests = [...new Set(data.bookings.filter(b => b.booking_status === 'confirmed').map(b => b.guest_name))].sort();
+                const sel = document.getElementById('ci-guest-select');
+                sel.innerHTML = '<option value="">— Select guest —</option>' + guests.map(g => `<option value="${g}">${g}</option>`).join('');
+            }
+        } catch(e) { console.error(e); }
+    }
+
+    async function onCombinedGuestChange() {
+        const guestName = document.getElementById('ci-guest-select').value;
+        const section = document.getElementById('ci-bookings-section');
+        const list = document.getElementById('ci-bookings-list');
+        const totalEl = document.getElementById('ci-total-amount');
+        const preview = document.getElementById('ci-total-preview');
+        const genBtn = document.getElementById('ci-generate-btn');
+        if (!guestName) {
+            section.style.display = 'none';
+            preview.style.display = 'none';
+            genBtn.disabled = true;
+            return;
+        }
+        try {
+            const res = await fetch(`${API}/admin/bookings`, { headers: authHeaders() });
+            const data = await res.json();
+            if (data.success) {
+                combinedGuestBookings = data.bookings.filter(b => b.guest_name === guestName && b.booking_status === 'confirmed');
+                if (combinedGuestBookings.length < 2) {
+                    list.innerHTML = '<p style="padding:12px;color:var(--gray-text);">This guest has fewer than 2 confirmed bookings.</p>';
+                    section.style.display = 'block';
+                    preview.style.display = 'none';
+                    genBtn.disabled = true;
+                    return;
+                }
+                section.style.display = 'block';
+                list.innerHTML = combinedGuestBookings.map(b => `
+                    <label style="display:flex;align-items:center;padding:8px 12px;cursor:pointer;border-radius:6px;margin-bottom:4px;" onmouseover="this.style.background='var(--light-bg)'" onmouseout="this.style.background='transparent'">
+                        <input type="checkbox" class="ci-booking-cb" value="${b.id}" data-amount="${b.total_amount}" onchange="updateCombinedTotal()" style="margin-right:10px;">
+                        <span style="flex:1;"><strong>#${b.id}</strong> — ${b.unit_name || b.unit_number} — ${b.check_in_date} to ${b.check_out_date} (${b.total_nights} nights)</span>
+                        <span style="font-weight:600;">${b.currency} ${parseFloat(b.total_amount).toFixed(2)}</span>
+                    </label>`).join('');
+                preview.style.display = 'none';
+                genBtn.disabled = true;
+            }
+        } catch(e) { console.error(e); }
+    }
+
+    function updateCombinedTotal() {
+        const cbs = document.querySelectorAll('.ci-booking-cb:checked');
+        const preview = document.getElementById('ci-total-preview');
+        const totalEl = document.getElementById('ci-total-amount');
+        const genBtn = document.getElementById('ci-generate-btn');
+        const currency = document.getElementById('ci-currency').value;
+        if (cbs.length < 2) {
+            preview.style.display = 'none';
+            genBtn.disabled = true;
+            return;
+        }
+        const total = Array.from(cbs).reduce((sum, cb) => sum + parseFloat(cb.dataset.amount), 0);
+        totalEl.textContent = `${currency} ${total.toFixed(2)}`;
+        preview.style.display = 'block';
+        genBtn.disabled = false;
+    }
+
+    async function generateCombinedPDF() {
+        const cbs = document.querySelectorAll('.ci-booking-cb:checked');
+        const guestName = document.getElementById('ci-guest-select').value;
+        const currency = document.getElementById('ci-currency').value;
+        const bookingIds = Array.from(cbs).map(cb => parseInt(cb.value));
+        if (bookingIds.length < 2) { alert('Select at least 2 bookings'); return; }
+        try {
+            const res = await fetch(`${API}/admin/invoices/combined-pdf`, {
+                method: 'POST',
+                headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+                body: JSON.stringify({ booking_ids: bookingIds, guest_name: guestName, currency })
+            });
+            if (!res.ok) { const err = await res.json(); alert(err.error || 'Failed'); return; }
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+            closeModal('combined-invoice-modal');
+        } catch(e) { alert('Error: ' + e.message); }
     }
 
     // ==================== MINIBAR INVOICE ====================
@@ -858,24 +991,82 @@
     }
 
     // ==================== VIEW / DELETE ====================
+    async function viewInvoice(id) {
+        const res = await fetch(`${API}/admin/invoices/${id}`, { headers: authHeaders() });
+        const data = await res.json();
+        if (!data.success) { alert('Failed to load invoice'); return; }
+        const inv = data.invoice;
+        const items = data.items;
+        const sym = inv.currency === 'USD' ? '$' : 'MVR';
 
-    function viewInvoice(id) {
-        const token = sessionStorage.getItem('adminToken');
-        window.open('https://api.htmrentals.com/api/admin/invoices/' + id + '/pdf?token=' + token, '_blank');
+        document.getElementById('doc-type').textContent = inv.invoice_type === 'minibar' ? 'Minibar Invoice' : 'Invoice';
+        document.getElementById('doc-number').textContent = inv.invoice_number;
+        document.getElementById('doc-date').textContent = `Issued: ${formatDate(inv.issue_date)}`;
+        document.getElementById('doc-currency').textContent = inv.currency;
+        document.getElementById('doc-guest-name').textContent = inv.guest_name || '—';
+        document.getElementById('doc-guest-phone').textContent = inv.guest_phone || '';
+        document.getElementById('doc-guest-email').textContent = inv.guest_email || '';
+
+        // Paid stamp
+        document.getElementById('paid-stamp').style.display = inv.status === 'paid' ? 'inline-block' : 'none';
+
+        // Company footer
+        if (data.company) {
+            document.getElementById('doc-company-phone').textContent = data.company.whatsapp_number || '';
+            document.getElementById('doc-company-email').textContent = data.company.email_address || '';
+            document.getElementById('doc-company-address').textContent = data.company.address || '';
+        }
+
+        // Booking strip
+        const strip = document.getElementById('doc-booking-strip');
+        if (inv.invoice_type === 'booking' && inv.check_in_date) {
+            strip.style.display = 'grid';
+            document.getElementById('doc-unit').textContent = inv.unit_name || '—';
+            document.getElementById('doc-checkin').textContent = formatDate(inv.check_in_date);
+            document.getElementById('doc-checkout').textContent = formatDate(inv.check_out_date);
+            document.getElementById('doc-nights').textContent = inv.total_nights || '—';
+        } else {
+            strip.style.display = 'none';
+        }
+
+        // Items
+        document.getElementById('doc-items').innerHTML = items.map(item => `
+            <tr${item.item_type === 'discount' ? ' class="discount-row"' : ''}>
+                <td>${item.description}</td>
+                <td>${item.quantity}</td>
+                <td>${sym} ${fmt(Math.abs(item.unit_price))}</td>
+                <td>${item.amount < 0 ? '−' : ''}${sym} ${fmt(Math.abs(item.amount))}</td>
+            </tr>
+        `).join('');
+
+        // Totals
+        const discount = parseFloat(inv.discount_amount || 0);
+        document.getElementById('doc-totals').innerHTML = `
+            <div class="inv-total-row"><span class="tr-label">Subtotal</span><span>${sym} ${fmt(inv.subtotal)}</span></div>
+            ${discount > 0 ? `<div class="inv-total-row"><span class="tr-label">Discount</span><span>− ${sym} ${fmt(discount)}</span></div>` : ''}
+            <div class="inv-total-row"><span>Total</span><span>${sym} ${fmt(inv.total_amount)}</span></div>
+        `;
+
+        // Payment details
+        const paymentDetails = inv.invoice_type === 'minibar' || true ? `
+            <div class="inv-payment-item"><div class="pi-label">MVR Payments</div><div class="pi-value">BML 7730000770586 (HTM)<br>MIB 90501400052311000 (HTM)</div></div>
+            <div class="inv-payment-item"><div class="pi-label">USD Payments</div><div class="pi-value">BML 7730000770587 (HTM)<br>MIB 90403100427391000 (HTM)</div></div>
+        ` : '';
+        document.getElementById('doc-payment-details').innerHTML = paymentDetails;
+
+        document.getElementById('invoice-doc').classList.add('show');
+        window.scrollTo(0, 0);
     }
-
-
 
     async function deleteInvoice(id) {
         if (!confirm('Delete this invoice? This cannot be undone.')) return;
         const res = await fetch(`${API}/admin/invoices/${id}`, { method: 'DELETE', headers: authHeaders() });
         const data = await res.json();
-        if (data.success) {
-            sessionStorage.setItem('activeInvoiceTab', activeTab);
-            location.reload();
-        } else alert(data.error || 'Failed to delete');
+        if (data.success) loadInvoices();
+        else alert(data.error || 'Failed to delete');
     }
 
+    function closeInvoice() { document.getElementById('invoice-doc').classList.remove('show'); }
 
     // ==================== TABS ====================
     function switchTab(tab, el) {
