@@ -157,6 +157,14 @@
                 <label>To</label>
                 <input type="date" id="to-date" onchange="applyFilters()">
             </div>
+            <div class="filter-group">
+                <label>Sort By</label>
+                <select id="sort-filter" onchange="applyFilters()">
+                    <option value="created_desc">Most Recent</option>
+                    <option value="checkin_asc">Check-in Date</option>
+                    <option value="checkin_desc">Check-in Date (Latest First)</option>
+                </select>
+            </div>
             <div style="align-self:flex-end;padding-bottom:1px;">
                 <button class="btn-filter btn-clear" onclick="clearFilters()">Clear</button>
             </div>
@@ -313,12 +321,22 @@
             if (search && !b.guest_name?.toLowerCase().includes(search) && !(b.guest_phone||'').includes(search)) return false;
             return true;
         });
+        const sortBy = document.getElementById('sort-filter').value;
+        if (sortBy === 'checkin_asc') {
+            f.sort((a,b) => new Date(a.check_in_date||0) - new Date(b.check_in_date||0));
+        } else if (sortBy === 'checkin_desc') {
+            f.sort((a,b) => new Date(b.check_in_date||0) - new Date(a.check_in_date||0));
+        } else {
+            f.sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+        }
+
         document.getElementById('booking-count').textContent = `${f.length} booking${f.length!==1?'s':''}`;
         renderTable(f); renderMobile(f);
     }
 
     function clearFilters() {
         ['search-input','status-filter','unit-filter','from-date','to-date'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('sort-filter').value = 'created_desc';
         applyFilters();
     }
 
