@@ -337,7 +337,7 @@
                 <strong style="font-size:14px;">Bank Transfer Details</strong>
                 <div style="margin-top:14px;display:flex;align-items:center;gap:8px;">
                     <img src="https://api.htmrentals.com/uploads/1782126811385-952673147.png" alt="BML" style="height:22px;width:auto;">
-                    <span style="font-weight:600;font-size:13px;color:var(--navy);">MVR Account</span>
+                    <span style="font-weight:600;font-size:13px;color:var(--navy);">BML</span>
                 </div>
                 <div style="display:flex;align-items:center;justify-content:space-between;background:white;border-radius:8px;padding:8px 12px;margin-top:6px;border:1px solid var(--gray-border);">
                     <span style="font-family:monospace;font-size:13px;">7730000770586 (HTM)</span>
@@ -345,29 +345,13 @@
                 </div>
                 <div style="margin-top:14px;display:flex;align-items:center;gap:8px;">
                     <img src="https://api.htmrentals.com/uploads/1782126885759-822981705.png" alt="MIB" style="height:22px;width:auto;">
-                    <span style="font-weight:600;font-size:13px;color:var(--navy);">MVR Account</span>
+                    <span style="font-weight:600;font-size:13px;color:var(--navy);">MIB</span>
                 </div>
                 <div style="display:flex;align-items:center;justify-content:space-between;background:white;border-radius:8px;padding:8px 12px;margin-top:6px;border:1px solid var(--gray-border);">
                     <span style="font-family:monospace;font-size:13px;">90501400052311000 (HTM)</span>
                     <button type="button" onclick="copyAccountNumber('90501400052311000', this)" style="border:none;background:none;color:var(--teal);cursor:pointer;font-size:13px;"><i class="far fa-copy"></i></button>
                 </div>
 
-                <div style="margin-top:18px;display:flex;align-items:center;gap:8px;">
-                    <img src="https://api.htmrentals.com/uploads/1782126811385-952673147.png" alt="BML" style="height:22px;width:auto;">
-                    <span style="font-weight:600;font-size:13px;color:var(--navy);">USD Account</span>
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;background:white;border-radius:8px;padding:8px 12px;margin-top:6px;border:1px solid var(--gray-border);">
-                    <span style="font-family:monospace;font-size:13px;">7730000770587 (HTM)</span>
-                    <button type="button" onclick="copyAccountNumber('7730000770587', this)" style="border:none;background:none;color:var(--teal);cursor:pointer;font-size:13px;"><i class="far fa-copy"></i></button>
-                </div>
-                <div style="margin-top:14px;display:flex;align-items:center;gap:8px;">
-                    <img src="https://api.htmrentals.com/uploads/1782126885759-822981705.png" alt="MIB" style="height:22px;width:auto;">
-                    <span style="font-weight:600;font-size:13px;color:var(--navy);">USD Account</span>
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;background:white;border-radius:8px;padding:8px 12px;margin-top:6px;border:1px solid var(--gray-border);">
-                    <span style="font-family:monospace;font-size:13px;">90403100427391000 (HTM)</span>
-                    <button type="button" onclick="copyAccountNumber('90403100427391000', this)" style="border:none;background:none;color:var(--teal);cursor:pointer;font-size:13px;"><i class="far fa-copy"></i></button>
-                </div>
 
                 <div style="margin-top:16px;font-size:12px;color:var(--gray-text);">Transfer the exact amount and upload your slip below.</div>
             </div>
@@ -560,14 +544,14 @@ function onDeliveryTypeChange(){
     document.getElementById('shipping-options-wrap').style.display = 'none';
     document.getElementById('btn-continue-delivery').style.display = 'none';
     selectedShipping = null;
+    if(type==='hulhumale' || type==='domestic') currency='MVR';
+    if(type==='international') currency='USD';
     updateTotals();
     if(type==='hulhumale'){
         selectedShipping = {name:'Free Delivery',usd:0,mvr:0,eta:'Same day / Next day'};
         updateTotals();
         document.getElementById('btn-continue-delivery').style.display='block';
     }
-    if(type==='hulhumale' || type==='domestic') currency='MVR';
-    if(type==='international') currency='USD';
 }
 
 function onAtollChange(){
