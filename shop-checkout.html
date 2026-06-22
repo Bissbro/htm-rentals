@@ -190,15 +190,19 @@
             <label class="form-label">Delivery Location</label>
             <select class="form-select" id="co-delivery-type" onchange="onDeliveryTypeChange()">
                 <option value="">Select delivery option</option>
-                <option value="hulhumale">Hulhumale' — Free Delivery</option>
+                <option value="hulhumale">Male' / Hulhumale' — Free Delivery</option>
                 <option value="domestic">Other Maldives Islands</option>
                 <option value="international">International</option>
             </select>
         </div>
         <div id="hulhumale-fields" style="display:none;">
             <div class="form-group">
+                <label class="form-label">Vessel Name (optional)</label>
+                <input class="form-input" type="text" id="co-vessel-name" placeholder="If delivering to a docked vessel">
+            </div>
+            <div class="form-group">
                 <label class="form-label">Delivery Address</label>
-                <input class="form-input" type="text" id="co-hulhumale-address" placeholder="Building, Floor, Unit number">
+                <input class="form-input" type="text" id="co-hulhumale-address" placeholder="Building, Floor, Unit number or Harbour/Dock details">
             </div>
         </div>
         <div id="domestic-fields" style="display:none;">
@@ -330,10 +334,13 @@
         </div>
         <div id="mvr-slip-section" style="display:none;">
             <div class="slip-info">
-                <strong>Bank Transfer Details</strong><br>
-                Bank of Maldives<br>
-                Account: 7730000012345<br>
-                Name: HTM Rentals<br><br>
+                <strong>Bank Transfer Details</strong><br><br>
+                <strong>MVR Payments</strong><br>
+                BML 7730000770586 (HTM)<br>
+                MIB 90501400052311000 (HTM)<br><br>
+                <strong>USD Payments</strong><br>
+                BML 7730000770587 (HTM)<br>
+                MIB 90403100427391000 (HTM)<br><br>
                 Transfer the exact amount and upload your slip below.
             </div>
             <div class="form-group">
@@ -525,7 +532,7 @@ function onDeliveryTypeChange(){
         updateTotals();
         document.getElementById('btn-continue-delivery').style.display='block';
     }
-    if(type==='domestic') currency='MVR';
+    if(type==='hulhumale' || type==='domestic') currency='MVR';
     if(type==='international') currency='USD';
 }
 
@@ -632,7 +639,11 @@ async function placeOrder(){
     var phone=document.getElementById('co-phone').value.trim();
     var deliveryType=document.getElementById('co-delivery-type').value;
     var address='';
-    if(deliveryType==='hulhumale') address=document.getElementById('co-hulhumale-address').value.trim();
+    if(deliveryType==='hulhumale'){
+        var vesselName=document.getElementById('co-vessel-name').value.trim();
+        var addr=document.getElementById('co-hulhumale-address').value.trim();
+        address = vesselName ? ('Vessel: '+vesselName+' — '+addr) : addr;
+    }
     else if(deliveryType==='domestic') address=(document.getElementById('co-island').value||'')+' — '+document.getElementById('co-atoll').options[document.getElementById('co-atoll').selectedIndex].text;
     else if(deliveryType==='international'){ var street=document.getElementById('co-street').value.trim(); var city=document.getElementById('co-city').value.trim(); var postal=document.getElementById('co-postal').value.trim(); var countryName=document.getElementById('co-country').options[document.getElementById('co-country').selectedIndex].text; address=street+', '+city+(postal?', '+postal:'')+', '+countryName; }
 
