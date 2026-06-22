@@ -333,15 +333,43 @@
             <div id="stripe-errors"></div>
         </div>
         <div id="mvr-slip-section" style="display:none;">
-            <div class="slip-info">
-                <strong>Bank Transfer Details</strong><br><br>
-                <strong>MVR Payments</strong><br>
-                BML 7730000770586 (HTM)<br>
-                MIB 90501400052311000 (HTM)<br><br>
-                <strong>USD Payments</strong><br>
-                BML 7730000770587 (HTM)<br>
-                MIB 90403100427391000 (HTM)<br><br>
-                Transfer the exact amount and upload your slip below.
+            <div class="slip-info" style="padding:20px;">
+                <strong style="font-size:14px;">Bank Transfer Details</strong>
+                <div style="margin-top:14px;display:flex;align-items:center;gap:8px;">
+                    <img src="https://api.htmrentals.com/uploads/1782126811385-952673147.png" alt="BML" style="height:22px;width:auto;">
+                    <span style="font-weight:600;font-size:13px;color:var(--navy);">MVR Account</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:white;border-radius:8px;padding:8px 12px;margin-top:6px;border:1px solid var(--gray-border);">
+                    <span style="font-family:monospace;font-size:13px;">7730000770586 (HTM)</span>
+                    <button type="button" onclick="copyAccountNumber('7730000770586', this)" style="border:none;background:none;color:var(--teal);cursor:pointer;font-size:13px;"><i class="far fa-copy"></i></button>
+                </div>
+                <div style="margin-top:14px;display:flex;align-items:center;gap:8px;">
+                    <img src="https://api.htmrentals.com/uploads/1782126885759-822981705.png" alt="MIB" style="height:22px;width:auto;">
+                    <span style="font-weight:600;font-size:13px;color:var(--navy);">MVR Account</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:white;border-radius:8px;padding:8px 12px;margin-top:6px;border:1px solid var(--gray-border);">
+                    <span style="font-family:monospace;font-size:13px;">90501400052311000 (HTM)</span>
+                    <button type="button" onclick="copyAccountNumber('90501400052311000', this)" style="border:none;background:none;color:var(--teal);cursor:pointer;font-size:13px;"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div style="margin-top:18px;display:flex;align-items:center;gap:8px;">
+                    <img src="https://api.htmrentals.com/uploads/1782126811385-952673147.png" alt="BML" style="height:22px;width:auto;">
+                    <span style="font-weight:600;font-size:13px;color:var(--navy);">USD Account</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:white;border-radius:8px;padding:8px 12px;margin-top:6px;border:1px solid var(--gray-border);">
+                    <span style="font-family:monospace;font-size:13px;">7730000770587 (HTM)</span>
+                    <button type="button" onclick="copyAccountNumber('7730000770587', this)" style="border:none;background:none;color:var(--teal);cursor:pointer;font-size:13px;"><i class="far fa-copy"></i></button>
+                </div>
+                <div style="margin-top:14px;display:flex;align-items:center;gap:8px;">
+                    <img src="https://api.htmrentals.com/uploads/1782126885759-822981705.png" alt="MIB" style="height:22px;width:auto;">
+                    <span style="font-weight:600;font-size:13px;color:var(--navy);">USD Account</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:white;border-radius:8px;padding:8px 12px;margin-top:6px;border:1px solid var(--gray-border);">
+                    <span style="font-family:monospace;font-size:13px;">90403100427391000 (HTM)</span>
+                    <button type="button" onclick="copyAccountNumber('90403100427391000', this)" style="border:none;background:none;color:var(--teal);cursor:pointer;font-size:13px;"><i class="far fa-copy"></i></button>
+                </div>
+
+                <div style="margin-top:16px;font-size:12px;color:var(--gray-text);">Transfer the exact amount and upload your slip below.</div>
             </div>
             <div class="form-group">
                 <label class="form-label">Upload Payment Slip</label>
@@ -350,7 +378,6 @@
         </div>
         <div class="trust-badges">
             <div class="trust-badge"><i class="fas fa-lock"></i> SSL Secured</div>
-            <div class="trust-badge"><i class="fab fa-stripe"></i> Stripe</div>
             <div class="trust-badge"><i class="fas fa-shield-alt"></i> Safe Checkout</div>
         </div>
         <div style="background:white;border-radius:var(--radius-md);padding:16px;border:1px solid var(--gray-border);margin-bottom:20px;">
@@ -385,6 +412,13 @@
 </div>
 
 <script>
+function copyAccountNumber(num, btn) {
+    navigator.clipboard.writeText(num).then(() => {
+        const icon = btn.querySelector("i");
+        icon.className = "fas fa-check";
+        setTimeout(() => { icon.className = "far fa-copy"; }, 1500);
+    });
+}
 const API = 'https://api.htmrentals.com';
 const TEST_MODE = true;
 const STRIPE_PK = TEST_MODE
