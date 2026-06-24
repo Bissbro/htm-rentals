@@ -598,7 +598,7 @@ function renderShippingOpts(services, curr){
         return '<div class="delivery-opt'+(i===0?' selected':'')+'" onclick="selectShipping(this,\''+s.name+'\','+s.total_mvr+','+s.total_usd+',\''+s.eta+'\')">' +
             '<div class="delivery-opt-header"><span class="delivery-opt-name">'+s.name+'</span><span class="delivery-opt-price">'+priceDisplay+'</span></div>' +
             '<div class="delivery-opt-meta">' +
-            '<span class="provider-badge" style="background:'+providerColor+';">Maldives Post</span>' +
+            '<span class="provider-badge" style="background:#fff;border:1px solid #e5e5e5;padding:2px 8px;display:inline-flex;align-items:center;"><img src="https://api.htmrentals.com/uploads/1782277510816-155379972.png" alt="Maldives Post" style="height:16px;width:auto;"></span>' +
             (s.eta?'<span class="eta-text"><i class="fas fa-clock" style="margin-right:3px;"></i>Est. '+s.eta+'</span>':'') +
             (s.trackable?'<span class="trackable-text"><i class="fas fa-map-marker-alt" style="margin-right:3px;"></i>Trackable</span>':'') +
             '</div></div>';
