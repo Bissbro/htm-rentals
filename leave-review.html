@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leave a Review — HTM Rentals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #0A2540;
+    --accent: #40B5AD;
+    --gold: #B8975A;
+    --off-white: #FAFAF8;
+    --text: #1C1C1E;
+    --muted: #6B7280;
+    --line: #E8E8E4;
+    --card: #FFFFFF;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--off-white);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(10,37,64,0.1);
+    max-width: 440px;
+    width: 100%;
+    padding: 32px 28px 36px;
+  }
+  .brand {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .brand span { color: var(--accent); }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    text-align: center;
+    color: var(--primary);
+    margin: 8px 0 6px;
+  }
+  .sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .stay-info {
+    background: var(--off-white);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 22px;
+    font-size: 14px;
+    color: var(--text);
+    display: none;
+  }
+  .stay-info strong { color: var(--primary); }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 6px;
+    margin-top: 18px;
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--off-white);
+  }
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  textarea { min-height: 110px; resize: vertical; }
+  .stars {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 4px 0 8px;
+  }
+  .stars i {
+    font-size: 34px;
+    color: var(--line);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .stars i.filled { color: var(--gold); }
+  .rating-label {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    min-height: 18px;
+    margin-bottom: 4px;
+  }
+  .submit-btn {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    margin-top: 26px;
+    cursor: pointer;
+  }
+  .submit-btn:disabled { opacity: 0.5; }
+  .state-view { display: none; text-align: center; }
+  .state-view.active { display: block; }
+  .state-view i.big-icon {
+    font-size: 48px;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: block;
+  }
+  .state-view.error i.big-icon { color: #C0392B; }
+  .state-view h2 {
+    font-family: 'Playfair Display', serif;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+  .state-view p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+  #form-view { display: none; }
+  #form-view.active { display: block; }
+  .loading-view { text-align: center; padding: 20px 0; color: var(--muted); }
+  .loading-view i { font-size: 28px; color: var(--accent); margin-bottom: 10px; display: block; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">HTM <span>Rentals</span></div>
+  <h1>How was your stay?</h1>
+  <p class="sub">We'd love to hear about your experience — it only takes a minute.</p>
+
+  <div id="loading-view" class="loading-view">
+    <i class="fas fa-circle-notch fa-spin"></i>
+    Loading your stay details...
+  </div>
+
+  <div id="error-view" class="state-view">
+    <i class="fas fa-circle-exclamation big-icon"></i>
+    <h2>Link not valid</h2>
+    <p id="error-msg">This review link doesn't match a booking we have on file. If you believe this is a mistake, please contact us directly.</p>
+  </div>
+
+  <div id="form-view">
+    <div class="stay-info" id="stay-info">
+      <div><strong id="stay-unit"></strong></div>
+    </div>
+
+    <form id="review-form">
+      <label>Your rating</label>
+      <div class="stars" id="star-picker">
+        <i class="fa-solid fa-star" data-val="1"></i>
+        <i class="fa-solid fa-star" data-val="2"></i>
+        <i class="fa-solid fa-star" data-val="3"></i>
+        <i class="fa-solid fa-star" data-val="4"></i>
+        <i class="fa-solid fa-star" data-val="5"></i>
+      </div>
+      <div class="rating-label" id="rating-label"></div>
+
+      <label for="guest_name">Your name</label>
+      <input type="text" id="guest_name" required>
+
+      <label for="country">Country <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+      <input type="text" id="country" placeholder="e.g. Germany">
+
+      <label for="comment">Your review</label>
+      <textarea id="comment" placeholder="Tell us about your stay..." required></textarea>
+
+      <button type="submit" class="submit-btn" id="submit-btn">Submit Review</button>
+    </form>
+  </div>
+
+  <div id="success-view" class="state-view">
+    <i class="fas fa-circle-check big-icon"></i>
+    <h2>Thank you!</h2>
+    <p>Your review has been submitted and will appear on our site shortly after a quick check by our team.</p>
+  </div>
+
+  <div id="duplicate-view" class="state-view">
+    <i class="fas fa-circle-check big-icon"></i>
+    <h2>Already submitted</h2>
+    <p>Looks like you've already left a review for this stay. Thank you for sharing your feedback with us!</p>
+  </div>
+</div>
+
+<script>
+  const API = 'https://api.htmrentals.com';
+  const params = new URLSearchParams(window.location.search);
+  const bookingRef = params.get('booking');
+
+  const loadingView = document.getElementById('loading-view');
+  const errorView = document.getElementById('error-view');
+  const formView = document.getElementById('form-view');
+  const successView = document.getElementById('success-view');
+  const duplicateView = document.getElementById('duplicate-view');
+  const stayInfo = document.getElementById('stay-info');
+  const stayUnit = document.getElementById('stay-unit');
+  const guestNameInput = document.getElementById('guest_name');
+
+  let selectedRating = 0;
+
+  function showView(view) {
+    [errorView, formView, successView, duplicateView].forEach(v => v.classList.remove('active'));
+    loadingView.style.display = 'none';
+    view.classList.add('active');
+  }
+
+  async function init() {
+    if (!bookingRef) {
+      document.getElementById('error-msg').textContent = 'No booking reference found in this link. Please use the link exactly as it was sent to you.';
+      showView(errorView);
+      return;
+    }
+    try {
+      const res = await fetch(`${API}/api/public/booking-lookup/${encodeURIComponent(bookingRef)}`);
+      const data = await res.json();
+      if (!data.success) {
+        showView(errorView);
+        return;
+      }
+      if (data.already_reviewed) {
+        showView(duplicateView);
+        return;
+      }
+      if (data.guest_name) guestNameInput.value = data.guest_name;
+      if (data.unit_label) {
+        stayUnit.textContent = data.unit_label;
+        stayInfo.style.display = 'block';
+      }
+      showView(formView);
+    } catch (e) {
+      showView(errorView);
+    }
+  }
+
+  const stars = document.querySelectorAll('#star-picker i');
+  const ratingLabel = document.getElementById('rating-label');
+  const ratingWords = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+
+  function paintStars(val) {
+    stars.forEach(s => {
+      s.classList.toggle('filled', parseInt(s.dataset.val) <= val);
+    });
+    ratingLabel.textContent = val ? ratingWords[val] : '';
+  }
+  stars.forEach(s => {
+    s.addEventListener('click', () => {
+      selectedRating = parseInt(s.dataset.val);
+      paintStars(selectedRating);
+    });
+  });
+
+  document.getElementById('review-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!selectedRating) {
+      alert('Please select a star rating.');
+      return;
+    }
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    try {
+      const res = await fetch(`${API}/api/public/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          booking_reference: bookingRef,
+          guest_name: guestNameInput.value.trim(),
+          country: document.getElementById('country').value.trim(),
+          rating: selectedRating,
+          comment: document.getElementById('comment').value.trim()
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showView(successView);
+      } else if (res.status === 409) {
+        showView(duplicateView);
+      } else {
+        alert(data.error || 'Something went wrong. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Submit Review';
+      }
+    } catch (e) {
+      alert('Network error. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Submit Review';
+    }
+  });
+
+  init();
+</script>
+
+</body>
+</html>
