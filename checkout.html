@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18379666476"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-18379666476');
+</script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout — HTM Rentals</title>
@@ -551,6 +560,16 @@ async function submitCheckout() {
         if (!upData.success) throw new Error(upData.error || 'Upload failed');
 
         showLoading(false);
+        // Google Ads conversion
+        if (typeof gtag === 'function') {
+            const usdValue = (currency === 'USD') ? amount : Math.round(amount / 15.4 * 100) / 100;
+            gtag('event', 'conversion', {
+                'send_to': 'AW-18379666476/-2nlCPmuiOAcEKzojbxE',
+                'value': usdValue,
+                'currency': 'USD',
+                'transaction_id': String(bookingId)
+            });
+        }
         showSuccess(bookingId);
 
     } catch(e) {
