@@ -369,7 +369,7 @@
         </div>
 
         <!-- Submit -->
-        <div style="padding: 20px; border-top: 1px solid var(--gray-border);">
+        <div id="agreement-section" style="padding: 20px; border-top: 1px solid var(--gray-border);">
             <div style="font-weight: 600; margin-bottom: 10px; color: var(--navy, #0A2540);"><i class="fas fa-file-contract" style="color:#B8975A;"></i> Rental Agreement</div>
             <div style="font-size: 13px; color: #555; margin-bottom: 12px;">Please read the <a href="agreement.html" target="_blank" style="color:#40B5AD; font-weight:600;">Short-Term Rental Agreement</a> before confirming your booking.</div>
             <label style="display:flex; gap:10px; align-items:flex-start; font-size:13px; color:#333; margin-bottom:12px; cursor:pointer;">
@@ -411,15 +411,15 @@
 <script>
 const API = 'https://api.htmrentals.com/api';
 const params = new URLSearchParams(window.location.search);
-const unitId = params.get('unit');
-const checkin = params.get('checkin');
-const checkout = params.get('checkout');
-const guests = parseInt(params.get('guests')) || 1;
-const amount = parseFloat(params.get('amount')) || 0;
-const currency = params.get('currency') || 'MVR';
-const guestName = decodeURIComponent(params.get('name') || '');
-const guestPhone = params.get('phone') || '';
-const guestNid = params.get('nid') || '';
+let unitId = params.get('unit');
+let checkin = params.get('checkin');
+let checkout = params.get('checkout');
+let guests = parseInt(params.get('guests')) || 1;
+let amount = parseFloat(params.get('amount')) || 0;
+let currency = params.get('currency') || 'MVR';
+let guestName = decodeURIComponent(params.get('name') || '');
+let guestPhone = params.get('phone') || '';
+let guestNid = params.get('nid') || '';
 let bookingId = params.get('booking_id') || null;
 
 function fmtDate(d) {
@@ -595,6 +595,9 @@ async function submitCheckout() {
 }
 
 function showSuccess(bId) {
+    var agSec = document.getElementById('agreement-section');
+    if (agSec) agSec.style.display = 'none';
+
     document.querySelector('.unit-summary').style.display = 'none';
     document.querySelector('.booking-strip').style.display = 'none';
     document.querySelector('.price-strip').style.display = 'none';
@@ -644,14 +647,19 @@ window.TOKEN_BOOKING = null;
         window.TOKEN_MODE = true;
         window.TOKEN_BOOKING = data.booking;
         const b = data.booking;
-        // Prefill + lock summary-related fields if present on page
-        const summaryHtml = '<div style="padding:16px 20px;background:#f7f9fb;border-bottom:1px solid #e3e8ee;">' +
-            '<div style="font-weight:700;color:#0A2540;margin-bottom:6px;">Booking Summary — ' + b.booking_reference + '</div>' +
-            '<div style="font-size:13px;color:#333;line-height:1.9;">' +
-            '👤 ' + b.guest_name + '<br>🏠 ' + b.unit_number + '<br>📅 ' + String(b.check_in_date).slice(0,10) + ' → ' + String(b.check_out_date).slice(0,10) + ' · ' + b.total_nights + ' night(s)<br>' +
-            '💰 ' + b.currency + ' ' + Number(b.total_amount).toFixed(2) + '</div></div>';
-        const container = document.querySelector('.checkout-card') || document.body;
-        container.insertAdjacentHTML('afterbegin', summaryHtml);
+        // Feed the existing designed UI: override page vars then reuse loadSummary()
+        unitId = String(b.unit_id);
+        checkin = String(b.check_in_date).slice(0,10);
+        checkout = String(b.check_out_date).slice(0,10);
+        guests = parseInt(b.number_of_guests) || 1;
+        amount = parseFloat(b.total_amount) || 0;
+        currency = b.currency || 'MVR';
+        guestName = b.guest_name || '';
+        bookingId = b.id;
+        await loadSummary();
+        // Show booking reference subtly in the designed header area
+        const refEl = document.getElementById('sum-type');
+        if (refEl) refEl.textContent = 'Booking ' + b.booking_reference;
     } catch (e) {
         console.error('Token init failed', e);
     }
