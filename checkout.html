@@ -369,6 +369,17 @@
         </div>
 
         <!-- Submit -->
+        <div style="padding: 20px; border-top: 1px solid var(--gray-border);">
+            <div style="font-weight: 600; margin-bottom: 10px; color: var(--navy, #0A2540);"><i class="fas fa-file-contract" style="color:#B8975A;"></i> Rental Agreement</div>
+            <div style="font-size: 13px; color: #555; margin-bottom: 12px;">Please read the <a href="agreement.html" target="_blank" style="color:#40B5AD; font-weight:600;">Short-Term Rental Agreement</a> before confirming your booking.</div>
+            <label style="display:flex; gap:10px; align-items:flex-start; font-size:13px; color:#333; margin-bottom:12px; cursor:pointer;">
+                <input type="checkbox" id="agree-check" style="margin-top:2px; width:18px; height:18px;" onchange="updateAgreeState()">
+                <span>I have read, understood and agree to the Short-Term Rental Agreement (v1.0)</span>
+            </label>
+            <label class="form-label" for="signed-name">Type your full name as signature <span class="required">*</span></label>
+            <input type="text" class="form-input" id="signed-name" placeholder="Your full name" oninput="updateAgreeState()">
+        </div>
+
         <div class="submit-section">
             <button class="submit-btn" id="submit-btn" onclick="submitCheckout()">
                 <i class="fas fa-check-circle"></i> Confirm Booking
@@ -521,6 +532,10 @@ async function submitCheckout() {
     if (!slipInput.files[0]) { alert('Please upload your payment slip'); return; }
     if (!idInput.files[0]) { alert('Please upload your ID card'); return; }
     if (!email || !email.includes('@')) { alert('Please enter a valid email address'); return; }
+    if (!document.getElementById('agree-check').checked) { alert('Please agree to the Rental Agreement'); return; }
+    const signedName = document.getElementById('signed-name').value.trim();
+    if (!signedName) { alert('Please type your full name as signature'); return; }
+    if (window.TOKEN_MODE) { await tokenSubmit(email, signedName, slipInput, idInput); return; }
 
     showLoading(true);
 
@@ -533,7 +548,8 @@ async function submitCheckout() {
                     unit_id: unitId, check_in_date: checkin, check_out_date: checkout,
                     guest_name: guestName, guest_email: email, guest_phone: guestPhone,
                     guest_nid: guestNid, number_of_guests: guests,
-                    total_amount: amount, currency: currency, booking_source: 'Direct'
+                    total_amount: amount, currency: currency, booking_source: 'Direct',
+                    agreement_signed_name: signedName, agreement_version: '1.0'
                 })
             });
             const bData = await bRes.json();
@@ -603,5 +619,83 @@ function showLoading(show) {
 loadSummary();
 </script>
 <script src="/analytics.js"></script>
+<script>
+window.TOKEN_MODE = false;
+window.TOKEN = null;
+window.TOKEN_BOOKING = null;
+
+(async function initTokenMode() {
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+    if (!token) return;
+    window.TOKEN = token;
+    try {
+        const res = await fetch(API + '/checkout/prefill?token=' + encodeURIComponent(token));
+        const data = await res.json();
+        if (!data.success) {
+            const msgs = {
+                expired: 'This checkout link has expired. Please contact us on WhatsApp +960 9373113 for a new link.',
+                completed: 'This booking is already confirmed. Check your email for your confirmation.',
+                invalid: 'This checkout link is not valid. Please contact us on WhatsApp +960 9373113.'
+            };
+            document.body.innerHTML = '<div style="max-width:420px;margin:80px auto;padding:30px;text-align:center;font-family:Inter,sans-serif;"><div style="font-size:40px;margin-bottom:16px;">🔗</div><div style="font-size:16px;color:#0A2540;line-height:1.6;">' + (msgs[data.error] || msgs.invalid) + '</div></div>';
+            return;
+        }
+        window.TOKEN_MODE = true;
+        window.TOKEN_BOOKING = data.booking;
+        const b = data.booking;
+        // Prefill + lock summary-related fields if present on page
+        const summaryHtml = '<div style="padding:16px 20px;background:#f7f9fb;border-bottom:1px solid #e3e8ee;">' +
+            '<div style="font-weight:700;color:#0A2540;margin-bottom:6px;">Booking Summary — ' + b.booking_reference + '</div>' +
+            '<div style="font-size:13px;color:#333;line-height:1.9;">' +
+            '👤 ' + b.guest_name + '<br>🏠 ' + b.unit_number + '<br>📅 ' + String(b.check_in_date).slice(0,10) + ' → ' + String(b.check_out_date).slice(0,10) + ' · ' + b.total_nights + ' night(s)<br>' +
+            '💰 ' + b.currency + ' ' + Number(b.total_amount).toFixed(2) + '</div></div>';
+        const container = document.querySelector('.checkout-card') || document.body;
+        container.insertAdjacentHTML('afterbegin', summaryHtml);
+    } catch (e) {
+        console.error('Token init failed', e);
+    }
+})();
+
+async function tokenSubmit(email, signedName, slipInput, idInput) {
+    showLoading(true);
+    try {
+        const bookingId = window.TOKEN_BOOKING.id;
+        let slip = slipInput.files[0];
+        let idCard = idInput.files[0];
+        if (slip.type.startsWith('image/')) slip = await compressImage(slip);
+        if (idCard.type.startsWith('image/')) idCard = await compressImage(idCard);
+        const fd = new FormData();
+        fd.append('slip', slip);
+        fd.append('id_card', idCard);
+        const upRes = await fetch(API + '/bookings/' + bookingId + '/slip', { method: 'POST', body: fd });
+        const upData = await upRes.json();
+        if (!upData.success) throw new Error(upData.error || 'Upload failed');
+
+        const res = await fetch(API + '/checkout/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: window.TOKEN, email: email, signed_name: signedName, agree: true })
+        });
+        const data = await res.json();
+        if (!data.success) {
+            const msgs = { expired: 'Link expired. Contact us on WhatsApp +960 9373113.', conflict: 'These dates were just booked by another guest. Please contact us on WhatsApp +960 9373113.', completed: 'Already confirmed.' };
+            throw new Error(msgs[data.error] || data.error || 'Could not complete booking');
+        }
+        showLoading(false);
+        showSuccess(data.booking_reference);
+    } catch (e) {
+        showLoading(false);
+        alert('Something went wrong: ' + e.message);
+    }
+}
+
+function updateAgreeState() {
+    const btn = document.getElementById('submit-btn');
+    const ok = document.getElementById('agree-check').checked && document.getElementById('signed-name').value.trim().length > 1;
+    if (btn) btn.disabled = !ok;
+}
+document.addEventListener('DOMContentLoaded', updateAgreeState);
+</script>
 </body>
 </html>
