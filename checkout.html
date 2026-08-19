@@ -586,7 +586,7 @@ async function submitCheckout() {
                 'transaction_id': String(bookingId)
             });
         }
-        showSuccess(bookingId);
+        showSuccess(bData && bData.booking_reference ? bData.booking_reference : ('HTM-' + String(bookingId).padStart(6, '0')));
 
     } catch(e) {
         showLoading(false);
