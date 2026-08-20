@@ -559,7 +559,7 @@ async function submitCheckout() {
 
         await fetch(API + '/bookings/' + bookingId + '/update-email', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
+            body: JSON.stringify({ email, agreement_signed_name: signedName, agreement_version: '1.0' })
         });
 
         let slip = slipInput.files[0];
