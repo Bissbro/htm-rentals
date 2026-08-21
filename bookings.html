@@ -347,9 +347,33 @@
         try {
             const res = await fetch(`${API}/admin/bookings/${id}/checkout-link`, { method: 'POST', headers: hdrs() });
             const d = await res.json();
-            if (!d.success) return alert(d.error || 'Failed');
-            prompt('Checkout link (15 min) - copy and send to guest:', d.url);
-        } catch(e) { alert('Error: ' + e.message); }
+            if (!d.success) return showToast(d.error || 'Failed to generate link', 'error');
+            showCheckoutLinkModal(d.url);
+        } catch(e) { showToast('Error: ' + e.message, 'error'); }
+    }
+
+    function showCheckoutLinkModal(url) {
+        const existing = document.getElementById('checkout-link-modal');
+        if (existing) existing.remove();
+        const modal = document.createElement('div');
+        modal.id = 'checkout-link-modal';
+        modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+        modal.innerHTML = `
+        <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <div style="text-align:center;margin-bottom:20px;">
+                <div style="font-size:32px;margin-bottom:8px;">🔗</div>
+                <h3 style="margin:0;color:#0A2540;font-size:18px;">Guest Checkout Link</h3>
+                <p style="margin:6px 0 0;color:#666;font-size:13px;">Valid for 15 minutes · Share with guest to complete booking</p>
+            </div>
+            <div style="background:#f4f6f9;border-radius:10px;padding:12px 14px;margin-bottom:16px;word-break:break-all;font-size:12px;color:#0A2540;font-family:monospace;">${url}</div>
+            <div style="display:flex;gap:10px;margin-bottom:12px;">
+                <button onclick="navigator.clipboard.writeText('${url}').then(()=>showToast('Link copied!','success'))" style="flex:1;padding:12px;background:#0A2540;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">📋 Copy Link</button>
+                <button onclick="window.open('https://wa.me/?text='+encodeURIComponent('Your booking checkout link (valid 15 min):\n${url}'),'_blank')" style="flex:1;padding:12px;background:#25D366;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">💬 WhatsApp</button>
+            </div>
+            <button onclick="document.getElementById('checkout-link-modal').remove()" style="width:100%;padding:10px;background:#f4f6f9;color:#666;border:none;border-radius:10px;font-size:14px;cursor:pointer;">Close</button>
+        </div>`;
+        document.body.appendChild(modal);
+        modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
     }
     function clearFilters() {
         ['search-input','status-filter','unit-filter','from-date','to-date'].forEach(id => document.getElementById(id).value = '');
@@ -492,7 +516,15 @@
         try {
             const res = await fetch(url, { method, headers: hdrs(), body: JSON.stringify(body) });
             const data = await res.json();
-            if (data.success) { showToast(id?'Booking updated':'Booking added','success'); closeModal(); await loadBookings(); }
+            if (data.success) {
+                closeModal(); await loadBookings();
+                if (!id && data.checkout_url) {
+                    showToast('Booking created — share checkout link with guest', 'success');
+                    showCheckoutLinkModal(data.checkout_url);
+                } else {
+                    showToast(id ? 'Booking updated' : 'Booking added', 'success');
+                }
+            }
             else showToast(data.error||'Failed to save','error');
         } catch(e) { showToast('Error saving','error'); }
     }
