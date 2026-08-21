@@ -388,7 +388,7 @@
 
     function actionBtns(b) {
         let s = `<button class="action-btn btn-edit" onclick="editBooking(${b.id})"><i class="fas fa-pen"></i> Edit</button>`;
-        if (['pending','pending_guest','lead'].includes(b.booking_status)) s += `<button class="action-btn btn-confirm" onclick="genCheckoutLink(${b.id})"><i class="fas fa-link"></i> Link</button>`;
+        if (['pending','pending_guest','lead','confirmed'].includes(b.booking_status)) s += `<button class="action-btn btn-confirm" onclick="genCheckoutLink(${b.id})"><i class="fas fa-link"></i> Link</button>`;
         if (b.agreement_signed_name) s += `<button class="action-btn btn-edit" onclick="window.open('https://api.htmrentals.com/api/admin/bookings/'+${b.id}+'/agreement?t='+tkn(),'_blank')"><i class="fas fa-file-contract"></i> Agreement</button>`;
         if (b.booking_status==='pending') s += `<button class="action-btn btn-confirm" onclick="changeStatus(${b.id},'confirmed')">Confirm</button>`;
         if (b.booking_status==='confirmed') s += `<button class="action-btn btn-cancel" onclick="changeStatus(${b.id},'cancelled')">Cancel</button>`;
