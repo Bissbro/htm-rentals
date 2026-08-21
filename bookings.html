@@ -375,6 +375,17 @@
         document.body.appendChild(modal);
         modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
     }
+    async function reactivateBooking(id) {
+        if (!confirm('Regenerate checkout link for this booking? Dates will be re-blocked and a new 15-min link will be generated.')) return;
+        try {
+            const res = await fetch(`${API}/admin/bookings/${id}/reactivate`, { method: 'POST', headers: hdrs() });
+            const d = await res.json();
+            if (!d.success) return showToast(d.error || 'Failed to reactivate', 'error');
+            await loadBookings();
+            showToast('Booking reactivated — share new checkout link with guest', 'success');
+            showCheckoutLinkModal(d.checkout_url);
+        } catch(e) { showToast('Error: ' + e.message, 'error'); }
+    }
     function clearFilters() {
         ['search-input','status-filter','unit-filter','from-date','to-date'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('sort-filter').value = 'created_desc';
@@ -416,6 +427,7 @@
         if (b.agreement_signed_name) s += `<button class="action-btn btn-edit" onclick="window.open('https://api.htmrentals.com/api/admin/bookings/'+${b.id}+'/agreement?t='+tkn(),'_blank')"><i class="fas fa-file-contract"></i> Agreement</button>`;
         if (b.booking_status==='pending') s += `<button class="action-btn btn-confirm" onclick="changeStatus(${b.id},'confirmed')">Confirm</button>`;
         if (b.booking_status==='confirmed') s += `<button class="action-btn btn-cancel" onclick="changeStatus(${b.id},'cancelled')">Cancel</button>`;
+        if (b.booking_status==='expired') s += `<button class="action-btn btn-confirm" onclick="reactivateBooking(${b.id})"><i class="fas fa-redo"></i> Regenerate</button>`;
         s += `<button class="action-btn btn-delete" onclick="delBooking(${b.id})">Delete</button>`;
         return s;
     }
