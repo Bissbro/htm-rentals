@@ -343,6 +343,14 @@
         renderTable(f); renderMobile(f);
     }
 
+    async function genCheckoutLink(id) {
+        try {
+            const res = await fetch(`${API}/admin/bookings/${id}/checkout-link`, { method: 'POST', headers: hdrs() });
+            const d = await res.json();
+            if (!d.success) return alert(d.error || 'Failed');
+            prompt('Checkout link (15 min) - copy and send to guest:', d.url);
+        } catch(e) { alert('Error: ' + e.message); }
+    }
     function clearFilters() {
         ['search-input','status-filter','unit-filter','from-date','to-date'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('sort-filter').value = 'created_desc';
@@ -380,6 +388,8 @@
 
     function actionBtns(b) {
         let s = `<button class="action-btn btn-edit" onclick="editBooking(${b.id})"><i class="fas fa-pen"></i> Edit</button>`;
+        if (['pending','pending_guest','lead'].includes(b.booking_status)) s += `<button class="action-btn btn-confirm" onclick="genCheckoutLink(${b.id})"><i class="fas fa-link"></i> Link</button>`;
+        if (b.agreement_signed_name) s += `<button class="action-btn btn-edit" onclick="window.open('https://api.htmrentals.com/api/admin/bookings/'+${b.id}+'/agreement?t='+tkn(),'_blank')"><i class="fas fa-file-contract"></i> Agreement</button>`;
         if (b.booking_status==='pending') s += `<button class="action-btn btn-confirm" onclick="changeStatus(${b.id},'confirmed')">Confirm</button>`;
         if (b.booking_status==='confirmed') s += `<button class="action-btn btn-cancel" onclick="changeStatus(${b.id},'cancelled')">Cancel</button>`;
         s += `<button class="action-btn btn-delete" onclick="delBooking(${b.id})">Delete</button>`;
