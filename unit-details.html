@@ -265,7 +265,7 @@ window.addEventListener("unhandledrejection", function(e) {
         #inquiry-modal.active { display:flex; }
         #inquiry-modal .modal-box { background:#fff; border-radius:16px; padding:28px 24px; max-width:440px; width:100%; max-height:90vh; overflow-y:auto; }
         #inquiry-modal h3 { color:#0A2540; margin:0 0 6px; font-size:18px; }
-        #inquiry-modal .inq-notice { background:#fffbf0; border:1px solid #B8975A; border-radius:8px; padding:10px 14px; font-size:13px; color:#7a5c1e; margin-bottom:18px; }
+        #inquiry-modal .inq-notice { background:#f8f4ee; border-left:3px solid #B8975A; border-radius:6px; padding:10px 14px; font-size:13px; color:#5a4010; margin-bottom:18px; font-weight:500; }
         #inquiry-modal .inq-field { margin-bottom:14px; }
         #inquiry-modal .inq-field label { display:block; font-size:12px; font-weight:600; color:#0A2540; margin-bottom:4px; }
         #inquiry-modal .inq-field input, #inquiry-modal .inq-field textarea, #inquiry-modal .inq-field select { width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; box-sizing:border-box; }
@@ -841,9 +841,6 @@ Payment: ${payment}`;
         function selectDate(dateStr, isBooked) {
             if (isBooked) { showMessage('This date is not available', 'error'); return; }
             if (dateStr < todayStr) { showMessage('Cannot select past dates', 'error'); return; }
-            const maxBook2 = new Date(_today.getFullYear(), _today.getMonth() + 2, 0);
-            const maxBookStr2 = maxBook2.toISOString().split('T')[0];
-            if (dateStr > maxBookStr2) { openInquiryModal(dateStr, null); return; }
             if (startDate === dateStr && !endDate) {
                 startDate = null; endDate = null;
                 document.getElementById('check-in').value = '';
@@ -891,6 +888,18 @@ Payment: ${payment}`;
                     }
                     if (rangeBlocked) { showMessage('Selected range includes unavailable dates. Please choose different dates.', 'error'); startDate = null; endDate = null; document.getElementById('check-in').value = ''; document.getElementById('check-out').value = ''; document.getElementById('price-breakdown').style.display = 'none'; generateCalendar(currentMonth, currentYear); return; }
                     endDate = dateStr;
+                    // Check if checkout is beyond 1-month advance booking window
+                    const maxBookAdv = new Date(_today.getFullYear(), _today.getMonth() + 2, 0);
+                    const maxBookAdvStr = maxBookAdv.toISOString().split('T')[0];
+                    if (endDate > maxBookAdvStr || startDate > maxBookAdvStr) {
+                        openInquiryModal(startDate, endDate);
+                        startDate = null; endDate = null;
+                        document.getElementById('check-in').value = '';
+                        document.getElementById('check-out').value = '';
+                        document.getElementById('price-breakdown').style.display = 'none';
+                        generateCalendar(currentMonth, currentYear);
+                        return;
+                    }
                     const checkOutDate = new Date(endDate); checkOutDate.setDate(checkOutDate.getDate() + 1);
                     const checkOutStr = checkOutDate.toISOString().split('T')[0];
                     document.getElementById('check-out').value = formatDate(checkOutStr);
@@ -1609,9 +1618,9 @@ window.addEventListener("unhandledrejection", function(e) {
 </script>
 <div id="inquiry-modal">
   <div class="modal-box">
-    <h3>📅 Booking Inquiry</h3>
+    <h3 style="color:#0A2540;font-size:18px;font-weight:700;margin:0 0 4px;">Booking Inquiry</h3>
     <p style="color:#666;font-size:13px;margin:0 0 14px;">For stays beyond 1 month ahead, we'll confirm availability within 24 hours.</p>
-    <div class="inq-notice">⏰ Requested dates: <strong id="inq-dates"></strong></div>
+    <div class="inq-notice">Requested dates: <strong id="inq-dates"></strong></div>
     <div class="inq-field"><label>Full Name *</label><input id="inq-name" type="text" placeholder="Your full name"></div>
     <div class="inq-field"><label>Phone / WhatsApp *</label><input id="inq-phone" type="tel" placeholder="+960 XXXXXXX"></div>
     <div class="inq-field"><label>NID</label><input id="inq-nid" type="text" placeholder="National ID (optional)"></div>
