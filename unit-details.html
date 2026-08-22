@@ -891,7 +891,7 @@ Payment: ${payment}`;
                     // Check if checkout is beyond 1-month advance booking window
                     const maxBookAdv = new Date(_today.getFullYear(), _today.getMonth() + 2, 0);
                     const maxBookAdvStr = maxBookAdv.toISOString().split('T')[0];
-                    if (endDate > maxBookAdvStr || startDate > maxBookAdvStr) {
+                    if (endDate >= maxBookAdvStr || startDate >= maxBookAdvStr) {
                         openInquiryModal(startDate, endDate);
                         startDate = null; endDate = null;
                         document.getElementById('check-in').value = '';
@@ -1610,7 +1610,7 @@ window.addEventListener("unhandledrejection", function(e) {
                     body: JSON.stringify({ unit_id: unit?.id, unit_number: unit?.unit_number, check_in: inquiryCheckin, check_out: inquiryCheckout, guest_name: name, guest_phone: phone, guest_nid: nid, number_of_guests: guests, notes })
                 });
                 const d = await res.json();
-                if (d.success) { closeInquiryModal(); showMessage('✅ Inquiry sent! We will contact you within 24 hours.', 'success'); }
+                if (d.success) { closeInquiryModal(); showMessage('Inquiry sent! We will contact you within 24 hours.', 'success'); }
                 else { alert(d.error || 'Failed to send. Please contact us on WhatsApp.'); }
             } catch(e) { alert('Error sending inquiry. Please contact us on WhatsApp.'); }
             finally { btn.disabled = false; btn.textContent = 'Send Inquiry'; }
