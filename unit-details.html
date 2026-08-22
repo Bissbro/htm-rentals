@@ -891,7 +891,7 @@ Payment: ${payment}`;
                     // Check if checkout is beyond 1-month advance booking window
                     const maxBookAdv = new Date(_today.getFullYear(), _today.getMonth() + 2, 0);
                     const maxBookAdvStr = maxBookAdv.toISOString().split('T')[0];
-                    if (endDate >= maxBookAdvStr || startDate >= maxBookAdvStr) {
+                    if (endDate > maxBookAdvStr || startDate > maxBookAdvStr) {
                         openInquiryModal(startDate, endDate);
                         startDate = null; endDate = null;
                         document.getElementById('check-in').value = '';
