@@ -1610,7 +1610,9 @@ window.addEventListener("unhandledrejection", function(e) {
                     body: JSON.stringify({ unit_id: unit?.id, unit_number: unit?.unit_number, check_in: inquiryCheckin, check_out: inquiryCheckout, guest_name: name, guest_phone: phone, guest_nid: nid, number_of_guests: guests, notes })
                 });
                 const d = await res.json();
-                if (d.success) { closeInquiryModal(); showMessage('Inquiry sent! We will contact you within 24 hours.', 'success'); }
+                if (d.success) {
+                    document.querySelector('.modal-box').innerHTML = '<div style="text-align:center;padding:40px 20px;"><div style="width:56px;height:56px;background:#e8f5e9;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width=\'24\' height=\'24\' fill=\'none\' stroke=\'#2e7d32\' stroke-width=\'2.5\' viewBox=\'0 0 24 24\'><polyline points=\'20 6 9 17 4 12\'/></svg></div><h3 style=\'color:#0A2540;margin:0 0 8px;\'>Inquiry Sent!</h3><p style=\'color:#555;font-size:14px;margin:0 0 24px;\'>We will confirm availability and contact you within 24 hours.</p><button onclick=\"closeInquiryModal()\" style=\"padding:12px 32px;background:#0A2540;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;\">Done</button></div>';
+                }
                 else { alert(d.error || 'Failed to send. Please contact us on WhatsApp.'); }
             } catch(e) { alert('Error sending inquiry. Please contact us on WhatsApp.'); }
             finally { btn.disabled = false; btn.textContent = 'Send Inquiry'; }
