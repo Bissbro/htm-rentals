@@ -841,7 +841,7 @@ Payment: ${payment}`;
         function selectDate(dateStr, isBooked) {
             if (isBooked) { showMessage('This date is not available', 'error'); return; }
             if (dateStr < todayStr) { showMessage('Cannot select past dates', 'error'); return; }
-            const maxBook2 = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+            const maxBook2 = new Date(_today.getFullYear(), _today.getMonth() + 2, 0);
             const maxBookStr2 = maxBook2.toISOString().split('T')[0];
             if (dateStr > maxBookStr2) { openInquiryModal(dateStr, null); return; }
             if (startDate === dateStr && !endDate) {
