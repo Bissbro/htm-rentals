@@ -348,7 +348,7 @@
             </label>
             <input type="file" id="slip-file" accept="image/*" style="display:none;" onchange="handleFile(this,'slip-area')">
 
-            <div class="upload-label-text" style="margin-top:4px;">ID Card — Front <span class="required">*</span></div>
+            <div class="upload-label-text" id="id-label" style="margin-top:4px;">ID Card — Front <span class="required">*</span></div>
             <label for="id-file" class="upload-area" id="id-area">
                 <div class="upload-icon">🪪</div>
                 <div class="upload-title">Tap to upload ID card</div>
@@ -659,13 +659,10 @@ window.TOKEN_BOOKING = null;
         await loadSummary();
         // Manual-booking links: identity already collected, hide ID upload
         try {
-            let n = document.getElementById('id-file');
-            while (n && n.parentElement) {
-                const p = n.parentElement;
-                if ((p.textContent||'').includes('ID CARD') && !(p.textContent||'').includes('TRANSFER SLIP')) { n = p; } 
-                else break;
-            }
-            if (n && n.id !== 'id-file') n.style.display = 'none';
+            const a = document.getElementById('id-area');
+            const l = document.getElementById('id-label');
+            if (a) a.style.display = 'none';
+            if (l) l.style.display = 'none';
         } catch(e) {}
         // Show booking reference subtly in the designed header area
         const refEl = document.getElementById('sum-type');
