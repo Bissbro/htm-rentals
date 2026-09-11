@@ -503,13 +503,26 @@
             .contact-grid { grid-template-columns: 1fr; }
             .reviews-section { padding: 32px 0 16px; }
             .units-section { padding: 28px 0 36px; }
-            .rental-connect-section { padding: 40px 0; }
+            .blog-section { padding: 40px 0; }
             .contact-section { padding: 40px 0; }
         }
     
-        /* ========== RENTAL CONNECT ========== */
-        .rental-connect-section { background: var(--navy); padding: 60px 0; position: relative; overflow: hidden; }
-        .rental-connect-section::before {
+        /* ========== BLOG SECTION ========== */
+        .blog-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 32px; }
+        @media(min-width:640px) { .blog-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media(min-width:900px) { .blog-grid { grid-template-columns: repeat(3, 1fr); } }
+        .blog-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(184,151,90,0.2); border-radius: 16px; overflow: hidden; text-decoration: none; display: block; transition: transform 0.2s, border-color 0.2s; }
+        .blog-card:hover { transform: translateY(-4px); border-color: rgba(184,151,90,0.5); }
+        .blog-card-img { width: 100%; height: 160px; object-fit: cover; }
+        .blog-card-body { padding: 20px; }
+        .blog-card-tag { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); font-weight: 700; margin-bottom: 8px; }
+        .blog-card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: white; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+        .blog-card-excerpt { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; margin-bottom: 14px; }
+        .blog-card-meta { font-size: 11px; color: rgba(255,255,255,0.3); }
+        .blog-view-all { display: inline-flex; align-items: center; gap: 8px; margin-top: 32px; padding: 12px 28px; border: 1px solid rgba(184,151,90,0.4); border-radius: 40px; color: var(--gold); font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .blog-view-all:hover { background: rgba(184,151,90,0.1); border-color: var(--gold); }
+        .blog-section { background: var(--navy); padding: 60px 0; position: relative; overflow: hidden; }
+        .blog-section::before {
             content: ''; position: absolute; top: -80px; right: -80px;
             width: 300px; height: 300px; border-radius: 50%;
             background: radial-gradient(circle, rgba(184,151,90,0.08) 0%, transparent 70%);
@@ -531,8 +544,8 @@
         }
         .rc-verified-pill i { color: var(--teal); font-size: 9px; }
         .rc-verified-pill span { color: var(--teal); font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-        .rental-connect-section .section-title { color: white; }
-        .rental-connect-section .section-divider { background: var(--teal); }
+        .blog-section .section-title { color: white; }
+        .blog-section .section-divider { background: var(--teal); }
         .rc-tagline { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 32px; font-style: italic; }
         .rc-card {
             border: 1px solid rgba(184,151,90,0.2);
@@ -937,6 +950,7 @@
     <nav class="header-nav" aria-label="Main navigation">
         <a href="#units">Units</a>
         <a href="#experiences">Experiences</a>
+        <a href="#blog">Blog</a>
         <a href="#contact">Contact</a>
     </nav>
     <div class="header-right">
@@ -957,6 +971,7 @@
     <nav class="drawer-nav">
         <a href="#units" onclick="closeDrawer()">Units <i class="fas fa-chevron-right" style="font-size:11px;opacity:0.4;"></i></a>
         <a href="#experiences" onclick="closeDrawer()">Experiences <i class="fas fa-chevron-right" style="font-size:11px;opacity:0.4;"></i></a>
+        <a href="#blog" onclick="closeDrawer()">Blog <i class="fas fa-chevron-right" style="font-size:11px;opacity:0.4;"></i></a>
         <a href="#contact" onclick="closeDrawer()">Contact <i class="fas fa-chevron-right" style="font-size:11px;opacity:0.4;"></i></a>
     </nav>
     <div class="drawer-footer">
@@ -1223,30 +1238,46 @@
     </g>
     </svg>
     </div>
-    <!-- RENTAL CONNECT -->
-    <section class="rental-connect-section" id="rental-connect">
+    <!-- BLOG SECTION -->
+    <section class="blog-section" id="blog">
         <div class="container">
-            <div class="rc-header">
-                <div class="rc-powered">Powered by <span>HTM</span></div>
-                <div class="rc-verified-pill"><i class="fas fa-shield-alt"></i><span>100% Verified</span></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+                <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);font-weight:600;">FROM THE BLOG</div>
             </div>
-            <h2 class="section-title" style="background: linear-gradient(135deg, #A8864E, #E8C484, #A8864E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Rental Connect</h2>
+            <h2 class="section-title" style="background: linear-gradient(135deg, #A8864E, #E8C484, #A8864E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Maldives Living</h2>
             <div class="section-divider"></div>
-            <p class="rc-tagline">Verified rentals, trusted connections.</p>
-            <div class="rc-card">
-                <div class="rc-title">A home for every rental<br>in the Maldives</div>
-                <p class="rc-desc">Every island has something to offer. List your rentals, reach more people, and grow with a brand that stands behind you.</p>
-                <div class="rc-grid">
-                    <div class="rc-feature"><i class="fas fa-shield-alt"></i><span>HTM Verified</span></div>
-                    <div class="rc-feature"><i class="fas fa-handshake"></i><span>Trusted Providers</span></div>
-                    <div class="rc-feature"><i class="fas fa-map-marker-alt"></i><span>All Islands</span></div>
-                    <div class="rc-feature"><i class="fas fa-star"></i><span>Best Rated</span></div>
-                </div>
-                <a href="https://wa.me/9607555608?text=Hi%2C%20I%27d%20love%20to%20join%20Rental%20Connect" class="rc-cta" target="_blank">
-                    <i class="fab fa-whatsapp"></i>
-                    🔜 Coming Soon · Let's connect
+            <p style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:32px;font-style:italic;">Tips, guides and stories about living and staying in Hulhumale'</p>
+            <div class="blog-grid">
+                <a href="/blog/apartments-for-rent-hulhumale.html" class="blog-card">
+                    <img class="blog-card-img" src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="Apartments for rent in Hulhumale">
+                    <div class="blog-card-body">
+                        <div class="blog-card-tag">Accommodation</div>
+                        <div class="blog-card-title">Apartments for Rent in Hulhumale' Phase 2 — Complete Guide</div>
+                        <div class="blog-card-excerpt">Everything you need to know about finding the perfect short-term apartment in Hulhumale' Phase 2, Maldives.</div>
+                        <div class="blog-card-meta">HTM Rentals &middot; September 2026</div>
+                    </div>
                 </a>
-                <div class="rc-cta-sub">We'd love to have you in the family</div>
+                <a href="/blog/malas-residence-hulhumale.html" class="blog-card">
+                    <img class="blog-card-img" src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="Malas Residence Hulhumale">
+                    <div class="blog-card-body">
+                        <div class="blog-card-tag">Guide</div>
+                        <div class="blog-card-title">Malas Residence Hulhumale' — What Makes It Special</div>
+                        <div class="blog-card-excerpt">A closer look at Malas Residence in Hulhumale' Phase 2 — location, amenities, and why it's one of the best addresses on the island.</div>
+                        <div class="blog-card-meta">HTM Rentals &middot; September 2026</div>
+                    </div>
+                </a>
+                <a href="/blog/things-to-do-hulhumale.html" class="blog-card">
+                    <img class="blog-card-img" src="https://i.ibb.co/PvXs30RQ/IMG-20260204-180053-375.webp" alt="Things to do in Hulhumale">
+                    <div class="blog-card-body">
+                        <div class="blog-card-tag">Travel</div>
+                        <div class="blog-card-title">10 Things to Do in Hulhumale', Maldives</div>
+                        <div class="blog-card-excerpt">From dolphin cruises to local cafes — how to make the most of your stay in Hulhumale', the modern city island of the Maldives.</div>
+                        <div class="blog-card-meta">HTM Rentals &middot; September 2026</div>
+                    </div>
+                </a>
+            </div>
+            <div style="text-align:center;">
+                <a href="/blog.html" class="blog-view-all">View All Articles <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </section>
