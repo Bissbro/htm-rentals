@@ -709,7 +709,7 @@ async function placeOrder(){
             var slipFile=document.getElementById('co-slip').files[0];
             if(slipFile){
                 var fd=new FormData(); fd.append('image',slipFile);
-                var upRes=await fetch(API+'/api/admin/upload',{method:'POST',body:fd});
+                var upRes=await fetch(API+'/api/shop/upload-slip',{method:'POST',body:fd});
                 var upData=await upRes.json();
                 if(upData.url) payload.payment_slip=upData.url;
             }
