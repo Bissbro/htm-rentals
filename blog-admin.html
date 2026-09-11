@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Admin — HTM Rentals</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root { --navy:#0A2540; --teal:#40B5AD; --gold:#B8975A; --warm-white:#FAFAF8; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:var(--warm-white); color:var(--navy); }
+.nav { background:var(--navy); padding:16px 20px; display:flex; align-items:center; justify-content:space-between; }
+.nav-title { font-family:'Playfair Display',serif; color:white; font-size:1.1rem; font-weight:700; }
+.nav-back { color:rgba(255,255,255,0.7); font-size:13px; display:flex; align-items:center; gap:6px; text-decoration:none; }
+.container { max-width:800px; margin:0 auto; padding:24px 20px; }
+h2 { font-family:'Playfair Display',serif; font-size:1.4rem; margin-bottom:20px; color:var(--navy); }
+.section { background:white; border-radius:16px; padding:24px; margin-bottom:24px; box-shadow:0 2px 12px rgba(10,37,64,0.07); }
+.section h3 { font-size:14px; font-weight:700; color:var(--navy); margin-bottom:16px; text-transform:uppercase; letter-spacing:1px; }
+.upload-area { border:2px dashed rgba(10,37,64,0.15); border-radius:12px; padding:24px; text-align:center; margin-bottom:16px; }
+.upload-area input { display:none; }
+.upload-label { display:inline-block; background:var(--teal); color:white; padding:10px 20px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; margin-bottom:12px; }
+.upload-preview { width:100%; max-height:200px; object-fit:cover; border-radius:8px; margin-top:12px; display:none; }
+.url-result { background:#f0f9f8; border:1px solid rgba(64,181,173,0.3); border-radius:8px; padding:12px; margin-top:12px; font-size:12px; word-break:break-all; display:none; }
+.url-result strong { color:var(--teal); display:block; margin-bottom:6px; }
+.copy-btn { background:var(--navy); color:white; border:none; padding:6px 14px; border-radius:6px; font-size:12px; cursor:pointer; margin-top:8px; }
+.upload-btn { background:var(--gold); color:white; border:none; padding:10px 24px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; width:100%; }
+.blog-list { list-style:none; }
+.blog-list li { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid rgba(10,37,64,0.07); }
+.blog-list li:last-child { border-bottom:none; }
+.blog-title { font-size:14px; font-weight:600; color:var(--navy); }
+.blog-tag { font-size:10px; color:var(--teal); text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
+.blog-actions { display:flex; gap:8px; }
+.btn-view { background:rgba(64,181,173,0.1); color:var(--teal); border:none; padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer; text-decoration:none; }
+.btn-edit { background:rgba(10,37,64,0.08); color:var(--navy); border:none; padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer; }
+.status { font-size:11px; padding:3px 8px; border-radius:20px; background:rgba(64,181,173,0.15); color:var(--teal); font-weight:600; }
+.img-status { font-size:12px; color:rgba(10,37,64,0.4); margin-top:8px; }
+</style>
+</head>
+<body>
+<nav class="nav">
+    <div class="nav-title">HTM Rentals</div>
+    <a href="admin.html" class="nav-back"><i class="fas fa-arrow-left"></i> Dashboard</a>
+</nav>
+<div class="container">
+    <h2>Blog Management</h2>
+
+    <!-- Image Uploader -->
+    <div class="section">
+        <h3>Upload Blog Image</h3>
+        <div class="upload-area">
+            <label class="upload-label" for="imgFile"><i class="fas fa-image"></i> Choose Image</label>
+            <input type="file" id="imgFile" accept="image/*" onchange="previewImage(this)">
+            <div class="img-status" id="imgName">No file selected</div>
+            <img id="preview" class="upload-preview">
+        </div>
+        <button class="upload-btn" onclick="uploadImage()"><i class="fas fa-upload"></i> Upload Image</button>
+        <div class="url-result" id="urlResult">
+            <strong>Image URL (copy and use in your article):</strong>
+            <span id="urlText"></span>
+            <br>
+            <button class="copy-btn" onclick="copyUrl()"><i class="fas fa-copy"></i> Copy URL</button>
+        </div>
+    </div>
+
+    <!-- Blog Articles -->
+    <div class="section">
+        <h3>Published Articles</h3>
+        <ul class="blog-list">
+            <li>
+                <div>
+                    <div class="blog-title">Apartments for Rent in Hulhumale' Phase 2</div>
+                    <div class="blog-tag">Accommodation</div>
+                </div>
+                <div class="blog-actions">
+                    <span class="status">Live</span>
+                    <a href="/blog/apartments-for-rent-hulhumale.html" target="_blank" class="btn-view">View</a>
+                </div>
+            </li>
+            <li>
+                <div>
+                    <div class="blog-title">Malas Residence Hulhumale' — What Makes It Special</div>
+                    <div class="blog-tag">Guide</div>
+                </div>
+                <div class="blog-actions">
+                    <span class="status">Live</span>
+                    <a href="/blog/malas-residence-hulhumale.html" target="_blank" class="btn-view">View</a>
+                </div>
+            </li>
+            <li>
+                <div>
+                    <div class="blog-title">10 Things to Do in Hulhumale', Maldives</div>
+                    <div class="blog-tag">Travel</div>
+                </div>
+                <div class="blog-actions">
+                    <span class="status">Live</span>
+                    <a href="/blog/things-to-do-hulhumale.html" target="_blank" class="btn-view">View</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+const API = 'https://api.htmrentals.com';
+
+function previewImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+    document.getElementById('imgName').textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = e => {
+        const preview = document.getElementById('preview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
+async function uploadImage() {
+    const file = document.getElementById('imgFile').files[0];
+    if (!file) { alert('Please select an image first'); return; }
+    const fd = new FormData();
+    fd.append('image', file);
+    document.querySelector('.upload-btn').textContent = 'Uploading...';
+    try {
+        const res = await fetch(API + '/api/shop/upload-slip', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.url) {
+            document.getElementById('urlText').textContent = data.url;
+            document.getElementById('urlResult').style.display = 'block';
+        } else {
+            alert('Upload failed: ' + JSON.stringify(data));
+        }
+    } catch(e) {
+        alert('Error: ' + e.message);
+    }
+    document.querySelector('.upload-btn').textContent = 'Upload Image';
+}
+
+function copyUrl() {
+    const url = document.getElementById('urlText').textContent;
+    navigator.clipboard.writeText(url).then(() => {
+        document.querySelector('.copy-btn').textContent = 'Copied!';
+        setTimeout(() => document.querySelector('.copy-btn').innerHTML = '<i class="fas fa-copy"></i> Copy URL', 2000);
+    });
+}
+</script>
+</body>
+</html>
