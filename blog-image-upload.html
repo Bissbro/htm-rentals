@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Image Upload</title>
+<style>
+body { font-family: sans-serif; padding: 20px; background: #0A2540; color: white; }
+h2 { margin-bottom: 20px; }
+input[type=file] { display: block; margin: 10px 0; }
+button { background: #40B5AD; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; margin-top: 10px; }
+.result { margin-top: 16px; background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; word-break: break-all; font-size: 13px; }
+label { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 16px; display: block; }
+</style>
+</head>
+<body>
+<h2>Blog Image Upload</h2>
+<label>Select image:</label>
+<input type="file" id="imgFile" accept="image/*">
+<button onclick="upload()">Upload</button>
+<div class="result" id="result" style="display:none;"></div>
+<script>
+async function upload() {
+    const file = document.getElementById('imgFile').files[0];
+    if (!file) { alert('Select a file first'); return; }
+    const fd = new FormData();
+    fd.append('image', file);
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').textContent = 'Uploading...';
+    try {
+        const res = await fetch('https://api.htmrentals.com/api/shop/upload-slip', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.url) {
+            document.getElementById('result').innerHTML = 'URL: <br><strong>' + data.url + '</strong><br><br><button onclick="navigator.clipboard.writeText(\'' + data.url + '\')">Copy URL</button>';
+        } else {
+            document.getElementById('result').textContent = 'Error: ' + JSON.stringify(data);
+        }
+    } catch(e) {
+        document.getElementById('result').textContent = 'Error: ' + e.message;
+    }
+}
+</script>
+</body>
+</html>
