@@ -932,7 +932,12 @@
             .hero-title { font-size: 3.5rem; }
             .container { padding: 0 48px; }
         }
-    </style>
+    .unit-name-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ota-badges{display:flex;align-items:center;gap:6px}
+.ota-badges:not(:empty)::before{content:"Book on";font-size:11px;color:#8a8f98;margin-right:2px;white-space:nowrap}
+.ota-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font:800 14px Arial,sans-serif;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.ota-badge.airbnb{background:#FF5A5F}.ota-badge.booking{background:#003580}.ota-badge.agoda{background:#9B0D2A}
+</style>
 </head>
 <body>
 
@@ -1668,7 +1673,7 @@ function renderUnit(unit) {
                 <div class="unit-building">${building}</div>
                 <div class="unit-type-badge">${unitType}</div>
             </div>
-            <h3 class="unit-name">${unitNumber}</h3>
+            <div class="unit-name-row"><h3 class="unit-name">${unitNumber}</h3><div class="ota-badges">${unit.airbnb_url?`<a href="${unit.airbnb_url}" target="_blank" rel="noopener" class="ota-badge airbnb" aria-label="Airbnb"><i class="fab fa-airbnb"></i></a>`:""}${(unit.booking_url||unit.booking_com_url)?`<a href="${(unit.booking_url||unit.booking_com_url)}" target="_blank" rel="noopener" class="ota-badge booking" aria-label="Booking.com">B.</a>`:""}${unit.agoda_url?`<a href="${unit.agoda_url}" target="_blank" rel="noopener" class="ota-badge agoda" aria-label="Agoda">A</a>`:""}</div></div>
             <div class="unit-gold-divider"></div>
             <div class="unit-pricing">
                 <div class="unit-price-mvr">MVR ${mvr.toLocaleString()}.00</div>
