@@ -849,6 +849,16 @@ Payment: ${payment}`;
                 generateCalendar(currentMonth, currentYear);
                 return;
             }
+            if ((!startDate || endDate || dateStr < startDate) && dateStr >= '2026-11-20') {
+                const _n = new Date(dateStr); _n.setDate(_n.getDate() + 1);
+                openInquiryModal(dateStr, _n.toISOString().split('T')[0]);
+                startDate = null; endDate = null;
+                document.getElementById('check-in').value = '';
+                document.getElementById('check-out').value = '';
+                document.getElementById('price-breakdown').style.display = 'none';
+                generateCalendar(currentMonth, currentYear);
+                return;
+            }
             if (!startDate) {
                 startDate = dateStr; endDate = null;
                 const nextDay = new Date(dateStr); nextDay.setDate(nextDay.getDate() + 1);
