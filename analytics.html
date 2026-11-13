@@ -108,6 +108,24 @@
         .chart-num { font-size: 9px; font-weight: 700; color: var(--navy); }
         .funnel-count { font-size: 12px; font-weight: 700; color: var(--navy); width: 30px; text-align: right; flex-shrink: 0; }
         html, body { background: #F4F5F7; }
+        .biz-head { font-size: 11px; font-weight: 800; color: var(--gray-text); text-transform: uppercase; letter-spacing: 1.5px; margin: 6px 2px 10px; }
+        .occ-legend { display: flex; gap: 14px; font-size: 10px; color: var(--gray-text); margin-bottom: 10px; }
+        .occ-legend .dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: var(--teal); margin-right: 5px; }
+        .occ-legend .dot.next { background: var(--gold); }
+        .occ-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--gray-border); }
+        .occ-row:last-child { border-bottom: none; }
+        .occ-unit { width: 46px; font-size: 12px; font-weight: 700; color: var(--navy); flex-shrink: 0; }
+        .occ-bars { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .occ-line { display: flex; align-items: center; gap: 6px; }
+        .occ-line span { font-size: 10px; font-weight: 700; color: var(--navy); width: 30px; text-align: right; }
+        .occ-track { flex: 1; height: 8px; background: var(--gray-light); border-radius: 4px; overflow: hidden; }
+        .occ-fill { height: 100%; background: var(--teal); border-radius: 4px; }
+        .occ-fill.next { background: var(--gold); }
+        .occ-adr { width: 72px; text-align: right; font-size: 11px; font-weight: 600; color: var(--gray-text); flex-shrink: 0; }
+        .biz-src { display: grid; grid-template-columns: 1fr 44px 36px auto; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gray-border); font-size: 12px; color: var(--gray-text); }
+        .biz-src-name { font-weight: 600; color: var(--navy); }
+        .biz-src-rev { font-weight: 700; color: var(--navy); text-align: right; }
+        .biz-foot { font-size: 11px; color: var(--gray-text); margin-top: 10px; }
         .empty-state { text-align: center; padding: 32px 16px; color: var(--gray-text); font-size: 13px; }
         .loading { text-align: center; padding: 40px; color: var(--gray-text); font-size: 13px; }
         .nav-bottom { height: 20px; }
@@ -201,6 +219,7 @@ function renderDashboard(data) {
     const convRate = funnelMap['UNIT_VIEW'] ? Math.round((funnelMap['BOOKING_SUCCESS']||0) / funnelMap['UNIT_VIEW'] * 100) : 0;
 
     document.getElementById('dashboard').innerHTML = `
+        ${renderBiz(data)}
         <div class="stat-grid">
             <div class="stat-card">
                 <i class="fas fa-users stat-icon"></i>
@@ -298,6 +317,51 @@ function renderDashboard(data) {
             `).join('')}
         </div>` : ''}
     `;
+}
+
+const UNIT_LABEL = {1:'A-207', 4:'A-701', 7:'A-106', 9:'A-118'};
+function fmt(n) { return Math.round(parseFloat(n) || 0).toLocaleString(); }
+function renderBiz(data) {
+    const b = data.biz; if (!b) return '';
+    const st = {}; (b.status || []).forEach(r => st[r.status] = parseInt(r.count));
+    const booked = (st.confirmed || 0) + (st.completed || 0);
+    let mvr = 0, usd = 0, nights = 0;
+    (b.sources || []).forEach(r => { mvr += parseFloat(r.mvr) || 0; usd += parseFloat(r.usd) || 0; nights += parseInt(r.nights) || 0; });
+    const past = {}, next = {};
+    (b.occPast || []).forEach(r => past[r.unit_id] = r);
+    (b.occNext || []).forEach(r => next[r.unit_id] = parseInt(r.nights) || 0);
+    let totN = 0, totE = 0;
+    const occRows = [4, 7, 1, 9].map(id => {
+        const n = parseInt((past[id] || {}).nights) || 0, e = parseFloat((past[id] || {}).earned) || 0;
+        totN += n; totE += e;
+        const pct = Math.min(100, Math.round(n / b.days * 100)), nx = Math.min(100, Math.round((next[id] || 0) / 30 * 100));
+        return `<div class="occ-row"><div class="occ-unit">${UNIT_LABEL[id]}</div>
+            <div class="occ-bars"><div class="occ-line"><div class="occ-track"><div class="occ-fill" style="width:${pct}%"></div></div><span>${pct}%</span></div>
+            <div class="occ-line"><div class="occ-track"><div class="occ-fill next" style="width:${nx}%"></div></div><span>${nx}%</span></div></div>
+            <div class="occ-adr">${n ? 'MVR ' + fmt(e / n) : '—'}</div></div>`;
+    }).join('');
+    const totPct = Math.round(totN / (b.days * 4) * 100);
+    const srcRows = (b.sources || []).map(r => `<div class="biz-src"><span class="biz-src-name">${r.source}</span><span>${r.bookings} bk</span><span>${r.nights || 0} n</span><span class="biz-src-rev">${[parseFloat(r.usd) ? '$' + fmt(r.usd) : '', (parseFloat(r.mvr) || !parseFloat(r.usd)) ? 'MVR ' + fmt(r.mvr) : ''].filter(Boolean).join(' + ')}</span></div>`).join('') || '<div class="empty-state">No bookings in this period</div>';
+    const cancelRate = (booked + (st.cancelled || 0)) ? Math.round((st.cancelled || 0) / (booked + (st.cancelled || 0)) * 100) : 0;
+    return `
+        <div class="biz-head">Business</div>
+        <div class="stat-grid">
+            <div class="stat-card"><i class="fas fa-calendar-check stat-icon"></i><div class="stat-label">Bookings</div><div class="stat-value">${booked}</div><div class="stat-sub">${nights} nights sold</div></div>
+            <div class="stat-card"><i class="fas fa-coins stat-icon"></i><div class="stat-label">Revenue booked</div><div class="stat-value" style="font-size:20px">MVR ${fmt(mvr)}</div><div class="stat-sub">${usd ? '+ $' + fmt(usd) + ' USD' : 'by booking date'}</div></div>
+            <div class="stat-card"><i class="fas fa-bed stat-icon"></i><div class="stat-label">Occupancy</div><div class="stat-value">${totPct}%</div><div class="stat-sub">avg MVR ${totN ? fmt(totE / totN) : 0} / night</div></div>
+            <div class="stat-card"><i class="fas fa-envelope-open-text stat-icon"></i><div class="stat-label">Inquiries</div><div class="stat-value">${st.lead || 0}</div><div class="stat-sub">${st.cancelled || 0} cancelled (${cancelRate}%)</div></div>
+        </div>
+        <div class="section">
+            <div class="section-title"><i class="fas fa-bed"></i> Occupancy by Unit</div>
+            <div class="occ-legend"><span><i class="dot"></i>Last ${b.days} day${b.days > 1 ? 's' : ''}</span><span><i class="dot next"></i>Next 30 days</span><span style="margin-left:auto">ADR</span></div>
+            ${occRows}
+        </div>
+        <div class="section">
+            <div class="section-title"><i class="fas fa-route"></i> Bookings by Source</div>
+            ${srcRows}
+            <div class="biz-foot">Avg stay ${(b.stay || {}).avgStay || 0} nights · Avg booked ${(b.stay || {}).avgLead || 0} days ahead</div>
+        </div>
+        <div class="biz-head">Website traffic</div>`;
 }
 
 loadAnalytics();
