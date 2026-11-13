@@ -12,6 +12,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
     <title>Analytics — HTM Rentals</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -84,7 +85,7 @@
         .unit-views strong { color: var(--navy); }
 
         /* Daily chart */
-        .chart-wrap { height: 80px; display: flex; align-items: flex-end; gap: 3px; padding-top: 8px; }
+        .chart-wrap { height: 110px; display: flex; align-items: flex-end; gap: 3px; padding-top: 8px; }
         .chart-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
         .chart-bar { width: 100%; border-radius: 3px 3px 0 0; background: linear-gradient(180deg, var(--teal), #2a9d96); min-height: 2px; transition: height 0.6s ease; }
         .chart-label { font-size: 8px; color: var(--gray-text); text-align: center; }
@@ -104,6 +105,9 @@
         .device-bar span { font-size: 10px; font-weight: 700; color: white; }
         .device-pct { font-size: 11px; font-weight: 700; color: var(--navy); width: 36px; text-align: right; }
 
+        .chart-num { font-size: 9px; font-weight: 700; color: var(--navy); }
+        .funnel-count { font-size: 12px; font-weight: 700; color: var(--navy); width: 30px; text-align: right; flex-shrink: 0; }
+        html, body { background: #F4F5F7; }
         .empty-state { text-align: center; padding: 32px 16px; color: var(--gray-text); font-size: 13px; }
         .loading { text-align: center; padding: 40px; color: var(--gray-text); font-size: 13px; }
         .nav-bottom { height: 20px; }
@@ -172,7 +176,7 @@ function renderDashboard(data) {
         { key: 'AVAILABILITY_TAP', label: 'Availability' },
         { key: 'FORM_START', label: 'Form Start' },
         { key: 'BOOKING_SUCCESS', label: 'Submitted' },
-        { key: 'BOOKING_COMPLETE', label: 'Confirmed' },
+        { key: 'BOOKING_COMPLETE', label: 'Slip Uploaded' },
     ];
     const maxFunnel = Math.max(...funnelSteps.map(s => funnelMap[s.key] || 0), 1);
 
@@ -192,7 +196,7 @@ function renderDashboard(data) {
     const maxDaily = Math.max(...(daily||[]).map(d => parseInt(d.visitors)), 1);
 
     // Unit names
-    const unitNames = {1:'A-207', 4:'A-701', 5:'A-701-01', 6:'A-701-02', 7:'A-106'};
+    const unitNames = {1:'A-207', 4:'A-701', 5:'A-701-01', 6:'A-701-02', 7:'A-106', 9:'A-118'};
 
     const convRate = funnelMap['UNIT_VIEW'] ? Math.round((funnelMap['BOOKING_SUCCESS']||0) / funnelMap['UNIT_VIEW'] * 100) : 0;
 
@@ -231,7 +235,7 @@ function renderDashboard(data) {
                 ${daily.map(d => {
                     const h = Math.max(4, Math.round((parseInt(d.visitors)/maxDaily)*72));
                     const label = new Date(d.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'}).replace(' ','\n');
-                    return `<div class="chart-bar-col"><div class="chart-bar" style="height:${h}px"></div><div class="chart-label">${label.split(' ')[0]}</div></div>`;
+                    return `<div class="chart-bar-col"><div class="chart-num">${d.visitors}</div><div class="chart-bar" style="height:${h}px"></div><div class="chart-label">${label.split(' ')[0]}</div></div>`;
                 }).join('')}
             </div>
         </div>` : ''}
@@ -242,10 +246,10 @@ function renderDashboard(data) {
                 const count = funnelMap[step.key] || 0;
                 const pct = Math.round(count/maxFunnel*100);
                 const prevCount = i > 0 ? (funnelMap[funnelSteps[i-1].key] || 0) : count;
-                const dropPct = prevCount > 0 && i > 0 ? Math.round(count/prevCount*100) : (i > 0 ? 0 : 100);
+                const base = funnelMap['UNIT_VIEW'] || 0; const dropPct = base ? (count/base*100 < 10 && count ? (count/base*100).toFixed(1) : Math.round(count/base*100)) : 0;
                 return `<div class="funnel-row">
                     <div class="funnel-label">${step.label}</div>
-                    <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${Math.max(pct,5)}%"><span>${count}</span></div></div>
+                    <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${count ? Math.max(pct,8) : 0}%;min-width:0;padding:0"></div></div><div class="funnel-count">${count}</div>
                     <div class="funnel-pct">${i > 0 ? dropPct+'%' : ''}</div>
                 </div>`;
             }).join('')}
@@ -284,8 +288,8 @@ function renderDashboard(data) {
 
         ${topEvents && topEvents.length > 0 ? `
         <div class="section">
-            <div class="section-title"><i class="fas fa-bolt"></i> Top Events</div>
-            ${topEvents.map(e => `
+            <div class="section-title"><i class="fas fa-bolt"></i> Key Actions</div>
+            ${topEvents.filter(e => !['SCROLL_DEPTH','PAGE_VIEW','PAGE_EXIT','GALLERY_SWIPE'].includes(e.event_type)).map(e => `
                 <div class="event-row">
                     <div class="event-dot"></div>
                     <div class="event-name">${e.event_type.replace(/_/g,' ')}</div>

@@ -1340,7 +1340,7 @@ Payment: ${payment}`;
             window.scrollToBookingCard = scrollToBookingCard;
             // Track form start on first input focus
             setTimeout(function() {
-                const firstInput = document.getElementById('guest-name');
+                const firstInput = document.getElementById('name');
                 if (firstInput && !firstInput._tracked) {
                     firstInput.addEventListener('focus', function() {
                         if (!this._tracked) {
