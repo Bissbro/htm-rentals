@@ -85,10 +85,10 @@
         .unit-views strong { color: var(--navy); }
 
         /* Daily chart */
-        .chart-wrap { height: 110px; display: flex; align-items: flex-end; gap: 3px; padding-top: 8px; }
-        .chart-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .chart-wrap { overflow: hidden; height: 110px; display: flex; align-items: flex-end; gap: 3px; padding-top: 8px; }
+        .chart-bar-col { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; }
         .chart-bar { width: 100%; border-radius: 3px 3px 0 0; background: linear-gradient(180deg, var(--teal), #2a9d96); min-height: 2px; transition: height 0.6s ease; }
-        .chart-label { font-size: 8px; color: var(--gray-text); text-align: center; }
+        .chart-label { height: 20px; line-height: 10px; font-size: 8px; color: var(--gray-text); text-align: center; }
 
         /* Events list */
         .event-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--gray-border); }
@@ -193,7 +193,7 @@ function renderDashboard(data) {
     const maxSource = Math.max(...(sources||[]).map(s => parseInt(s.count)), 1);
 
     // Daily chart
-    const maxDaily = Math.max(...(daily||[]).map(d => parseInt(d.visitors)), 1);
+    let chartData = daily||[]; const weekly = chartData.length > 14; if (weekly) { const w = []; chartData.forEach((d,i) => { if (i % 7 === 0) w.push({date:d.date, visitors:0}); w[w.length-1].visitors += parseInt(d.visitors); }); chartData = w; } const maxDaily = Math.max(...chartData.map(d => parseInt(d.visitors)), 1);
 
     // Unit names
     const unitNames = {1:'A-207', 4:'A-701', 5:'A-701-01', 6:'A-701-02', 7:'A-106', 9:'A-118'};
@@ -230,9 +230,9 @@ function renderDashboard(data) {
 
         ${daily && daily.length > 0 ? `
         <div class="section">
-            <div class="section-title"><i class="fas fa-chart-bar"></i> Daily Visitors</div>
+            <div class="section-title"><i class="fas fa-chart-bar"></i> ${weekly ? 'Weekly' : 'Daily'} Visitors</div>
             <div class="chart-wrap">
-                ${daily.map(d => {
+                ${chartData.map(d => {
                     const h = Math.max(4, Math.round((parseInt(d.visitors)/maxDaily)*72));
                     const label = new Date(d.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'}).replace(' ','\n');
                     return `<div class="chart-bar-col"><div class="chart-num">${d.visitors}</div><div class="chart-bar" style="height:${h}px"></div><div class="chart-label">${label.split(' ')[0]}</div></div>`;
